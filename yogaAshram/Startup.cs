@@ -5,9 +5,12 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using yogaAshram.Models;
 
 namespace yogaAshram
 {
@@ -24,6 +27,18 @@ namespace yogaAshram
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
+            string connection = Configuration.GetConnectionString("DefaultConnection");
+            services.AddDbContext<YogaAshramContext>(options => options.UseNpgsql(connection))
+                .AddIdentity<Employee, IdentityRole>(options =>
+                {
+                    options.Password.RequiredLength = 6; // минимальная длина
+                    options.Password.RequireNonAlphanumeric = false;   // требуются ли не алфавитно-цифровые символы
+                    options.Password.RequireLowercase = false; // требуются ли символы в нижнем регистре
+                    options.Password.RequireUppercase = false; // требуются ли символы в верхнем регистре
+                    options.Password.RequireDigit = false; // требуются ли цифры
+                    options.User.AllowedUserNameCharacters = null;
+                })
+                .AddEntityFrameworkStores<YogaAshramContext>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -44,7 +59,7 @@ namespace yogaAshram
             app.UseStaticFiles();
 
             app.UseRouting();
-
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
