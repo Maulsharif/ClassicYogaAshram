@@ -1,7 +1,13 @@
-﻿namespace yogaAshram.Models
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
+
+namespace yogaAshram.Models
 {
-    public class YogaAshramContext
+    public class YogaAshramContext : IdentityDbContext<Employee>
     {
         
+        public YogaAshramContext(DbContextOptions options) : base(options)
+        {
+        }
     }
 }
