@@ -69,3 +69,17 @@ body {
   white-space: nowrap;
   line-height: 60px; /* Vertically center the text there */
 }
+.field-validation-error {
+    padding: 3px 4px 3px 4px;
+    background-color: #e61c1c;
+    opacity: 0.8;
+    position: absolute;
+    border-radius: 3px;
+    margin-top: 3px;
+    color: white;
+    text-align: left;
+}
+
+.cursor-p {
+    cursor: pointer;
+}
