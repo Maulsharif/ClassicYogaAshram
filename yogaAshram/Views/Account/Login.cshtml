@@ -1,0 +1,34 @@
+﻿@model AccountLoginModelView
+@{
+    ViewBag.Title = "Аутентификация";
+}
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.8/css/all.css" />
+<div class="container">
+    <div class="card" style="width:800px;margin:auto;">
+        <div class="card-header text-center">
+            Аутентификация
+        </div>
+        <div class="card-body">
+            <form asp-action="Login" method="post" asp-antiforgery="true" style="position:relative;">
+                <div asp-validation-summary="ModelOnly"></div>
+                <div class="form-group">
+                    <label>Введите эл. почту или логин<span class="text-danger">*</span></label>
+                    <input class="form-control" asp-for="Authentificator">
+                    <span asp-validation-for="Authentificator"></span>
+                </div>
+                <div class="form-group">
+                    <label>Введите пароль<span class="text-danger">*</span></label>
+                    <input class="form-control" asp-for="Password">
+                    <span asp-validation-for="Password"></span>
+                </div>
+                <button type="submit" class="btn btn-primary mt-3">Войти</button>
+            </form>
+        </div>
+    </div>
+</div>
+@section Scripts
+    {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
