@@ -3,8 +3,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using yogaAshram.Models;
 
-namespace yogaAshram.Models
+namespace yogaAshram.Services
 {
     public static class RoleInitializer
     {
@@ -21,7 +22,7 @@ namespace yogaAshram.Models
                 if (await roleManager.FindByNameAsync(role) is null)
                     await roleManager.CreateAsync(new IdentityRole(role));
             }
-            if(await userManager.FindByEmailAsync(dirEmail) is null)
+            if (await userManager.FindByEmailAsync(dirEmail) is null)
             {
                 Employee chief = new Employee()
                 {
