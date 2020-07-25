@@ -35,7 +35,8 @@ namespace yogaAshram.Controllers
                 Employee employee = new Employee()
                 {
                     UserName = model.UserName,
-                    Email = model.Email
+                    Email = model.Email,
+                    NameSurname = model.NameSurname
                 };
                 var result = await _userManager.CreateAsync(employee, model.Password);
                 if (result.Succeeded)

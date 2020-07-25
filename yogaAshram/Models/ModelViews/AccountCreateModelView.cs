@@ -9,6 +9,8 @@ namespace yogaAshram.Models.ModelViews
 {
     public class AccountCreateModelView
     {
+        [Required(ErrorMessage = "Введите ваши имя и фамилию")]
+        public string NameSurname { get; set; }
         [Remote(action: "CheckUserNameCreate", controller: "Validation", ErrorMessage = "Такой логин уже существует")]
         [Required(ErrorMessage = "Введите логин")]
         public string UserName { get; set; }
