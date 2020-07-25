@@ -49,6 +49,33 @@ namespace yogaAshram.Controllers
             }
             return View(employee);
         }
-        
+        [HttpGet]
+        public IActionResult Login()
+        {
+            return View();
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Login(string authetificator, string password)
+        {
+            if (ModelState.IsValid)
+            {
+                Employee employee = await _userManager.FindByEmailAsync(authetificator);
+                if (employee is null)
+                    employee = await _userManager.FindByNameAsync(authetificator);
+                Microsoft.AspNetCore.Identity.SignInResult result = await _signInManager.PasswordSignInAsync(
+                    employee,
+                    password,
+                    true,
+                    false
+                    );
+                if (result.Succeeded)
+                {
+                    return RedirectToAction("Details");
+                }
+                ModelState.AddModelError("", "Не корректный пароль и(или) аутентификатор");
+            }
+            return View();
+        }
     }
 }
