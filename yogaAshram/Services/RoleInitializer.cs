@@ -27,7 +27,8 @@ namespace yogaAshram.Services
                 Employee chief = new Employee()
                 {
                     Email = dirEmail,
-                    UserName = dirUserName
+                    UserName = dirUserName,
+                    NameSurname = dirNameSurname
                 };
                 var result = await userManager.CreateAsync(chief, dirPassword);
                 if (result.Succeeded)
