@@ -21,7 +21,10 @@ namespace yogaAshram.Controllers
             _userManager = userManager;
             _signInManager = signInManager;
         }
-
+        public IActionResult Details()
+        {
+            return View();
+        }
         public IActionResult CreateEmployee()
         {
             return View();
