@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Hosting;
+using yogaAshram.Models.ModelViews;
 
 namespace yogaAshram.Controllers
 {
@@ -22,33 +23,7 @@ namespace yogaAshram.Controllers
             _userManager = userManager;
             _signInManager = signInManager;
             _db = db;
-        }
-        public string GeneratePassword()
-        {
-            string password = Guid.NewGuid().ToString();
-            return password.Remove(' ');
-        }
-        public IActionResult Create()
-        {
-            return View();
-        }
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Employee employee)
-        {
-            if (ModelState.IsValid)
-            {
-                var result = await _userManager.CreateAsync(employee, GeneratePassword());
-                if (result.Succeeded)
-                {
-                    await _signInManager.SignInAsync(employee, false);
-                    return RedirectToAction("Details");
-                }
-                foreach (var error in result.Errors)
-                    ModelState.AddModelError(string.Empty, error.Description);
-            }
-            return View(employee);
-        }
+        }     
         [HttpGet]
         public IActionResult Login()
         {
@@ -56,16 +31,16 @@ namespace yogaAshram.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Login(string authetificator, string password)
+        public async Task<IActionResult> Login(AccountLoginModelView model)
         {
             if (ModelState.IsValid)
             {
-                Employee employee = await _userManager.FindByEmailAsync(authetificator);
+                Employee employee = await _userManager.FindByEmailAsync(model.Authentificator);
                 if (employee is null)
-                    employee = await _userManager.FindByNameAsync(authetificator);
+                    employee = await _userManager.FindByNameAsync(model.Authentificator);
                 Microsoft.AspNetCore.Identity.SignInResult result = await _signInManager.PasswordSignInAsync(
                     employee,
-                    password,
+                    model.Password,
                     true,
                     false
                     );
@@ -75,7 +50,7 @@ namespace yogaAshram.Controllers
                 }
                 ModelState.AddModelError("", "Не корректный пароль и(или) аутентификатор");
             }
-            return View();
+            return View(model);
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
