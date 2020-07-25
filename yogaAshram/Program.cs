@@ -3,9 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using yogaAshram.Models;
+using yogaAshram.Services;
 
 namespace yogaAshram
 {
@@ -13,7 +17,21 @@ namespace yogaAshram
     {
         public static void Main(string[] args)
         {
-            CreateHostBuilder(args).Build().Run();
+            var host = CreateHostBuilder(args).Build();
+            using var scope = host.Services.CreateScope();
+            var services = scope.ServiceProvider;
+            try
+            {
+                var userManager = services.GetRequiredService<UserManager<Employee>>();
+                var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+                _ = RoleInitializer.Initialize(roleManager, userManager);
+            }
+            catch (Exception e)
+            {
+                var logger = services.GetRequiredService<ILogger<Program>>();
+                logger.LogError(e, "Возникло исключение при инициализации ролей");
+            }
+            host.Run();
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>

@@ -174,6 +174,9 @@ namespace yogaAshram.Migrations
                     b.Property<DateTimeOffset?>("LockoutEnd")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<string>("NameSurname")
+                        .HasColumnType("text");
+
                     b.Property<string>("NormalizedEmail")
                         .HasColumnType("character varying(256)")
                         .HasMaxLength(256);
@@ -181,6 +184,9 @@ namespace yogaAshram.Migrations
                     b.Property<string>("NormalizedUserName")
                         .HasColumnType("character varying(256)")
                         .HasMaxLength(256);
+
+                    b.Property<bool>("OnTimePassword")
+                        .HasColumnType("boolean");
 
                     b.Property<string>("PasswordHash")
                         .HasColumnType("text");
