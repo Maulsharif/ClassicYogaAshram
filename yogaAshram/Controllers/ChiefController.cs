@@ -22,20 +22,21 @@ namespace yogaAshram.Controllers
             _signInManager = signInManager;
         }
 
-        public IActionResult Create()
+        public IActionResult CreateEmployee()
         {
             return View();
         }
         [HttpPost]
         [ValidateAntiForgeryToken]        
-        public async Task<IActionResult> Create(AccountCreateModelView model)
+        public async Task<IActionResult> CreateEmployee(AccountCreateModelView model)
         {
             if (ModelState.IsValid)
             {
                 Employee employee = new Employee()
                 {
                     UserName = model.UserName,
-                    Email = model.Email
+                    Email = model.Email,
+                    NameSurname = model.NameSurname
                 };
                 var result = await _userManager.CreateAsync(employee, model.Password);
                 if (result.Succeeded)
