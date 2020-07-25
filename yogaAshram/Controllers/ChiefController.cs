@@ -22,13 +22,13 @@ namespace yogaAshram.Controllers
             _signInManager = signInManager;
         }
 
-        public IActionResult Create()
+        public IActionResult CreateEmployee()
         {
             return View();
         }
         [HttpPost]
         [ValidateAntiForgeryToken]        
-        public async Task<IActionResult> Create(AccountCreateModelView model)
+        public async Task<IActionResult> CreateEmployee(AccountCreateModelView model)
         {
             if (ModelState.IsValid)
             {
