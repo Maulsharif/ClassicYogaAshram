@@ -9,6 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using yogaAshram.Models;
+using yogaAshram.Services;
 
 namespace yogaAshram
 {
@@ -23,7 +24,7 @@ namespace yogaAshram
             {
                 var userManager = services.GetRequiredService<UserManager<Employee>>();
                 var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
-                RoleInitializer.Initialize(roleManager, userManager);
+                _ = RoleInitializer.Initialize(roleManager, userManager);
             }
             catch (Exception e)
             {
