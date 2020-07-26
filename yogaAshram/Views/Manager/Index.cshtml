@@ -1,6 +1,14 @@
-﻿@{
+﻿@inject UserManager<Employee> UserManager
+@using Microsoft.AspNetCore.Identity
+@model Employee
+@{
     ViewBag.Title = "Страница старший менеджера";
     Layout = "_Layout";
 }
 
 <h2>Старший менеджер</h2>
+
+<div class="col-6" style="margin-left: -400px;">
+    <h2>Пользователь : @Model.UserName </h2>
+    <h3>Email : @Model.Email</h3>
+</div>
