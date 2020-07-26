@@ -21,9 +21,10 @@ namespace yogaAshram.Controllers
             _userManager = userManager;
             _signInManager = signInManager;
         }
-        public IActionResult Details()
+        public async Task<IActionResult> Details()
         {
-            return View();
+            Employee empl = await _userManager.GetUserAsync(User);
+            return View(empl);
         }
         public IActionResult CreateEmployee()
         {

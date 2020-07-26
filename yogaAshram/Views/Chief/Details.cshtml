@@ -1,5 +1,39 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model Employee
 @{
+    ViewBag.Title = "Личный кабинет";
 }
+<div class="card">
+    <div class="row no-gutters">
+        <div class="col-md-6 border-right">
+            <div class="card-body">
+                <h5 class="card-title">Подробно</h5>
+                <ul class="list-group list-group-flush">
+                    <li id="username" class="list-group-item">Логин - @Model.UserName</li>
+                    <li id="email" class="list-group-item">Почта - @Model.Email</li>
+                    <li id="nameSurname" class="list-group-item">Имя фамилия - @Model.NameSurname</li>
+                </ul>
+                <div class="form-row mt-3">
+                    <div id="modal-placeholder"></div>
+                    <button type="button" class="btn btn-danger">
+                        Редактировать имя и фамилию
+                    </button>
+                </div>
+                <div class="form-row mt-3">
+                    <button type="button" class="btn btn-danger" >
+                        Редактировать пароль
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 border-right">
+            <div class="card-body">
+                <h5 class="card-title text-center border-bottom" style="padding-bottom:13px;">
+                    Все филиалы
+                </h5>
+                <div>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
