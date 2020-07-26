@@ -16,6 +16,10 @@ namespace yogaAshram.Models.ModelViews
         public string UserName { get; set; }
         [Remote(action: "CheckEmailCreate", controller: "Validation", ErrorMessage = "Такая почта уже существует")]
         public string Email { get; set; }
+        
+        [Required(ErrorMessage = "Это обязательное поле :")]
+        public string Role { get; set; } 
+        
         [Required(ErrorMessage = "Введите пароль")]
         public string Password { get; set; }
         [Required(ErrorMessage = "Подтвердите пароль")]
