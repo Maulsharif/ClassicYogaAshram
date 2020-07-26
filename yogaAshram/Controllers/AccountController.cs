@@ -58,7 +58,7 @@ namespace yogaAshram.Controllers
         public async Task<IActionResult> Logout()
         {
             await _signInManager.SignOutAsync();
-            return RedirectToAction("Home");
+            return RedirectToAction("Index", "Home");
         }
     }
 }
