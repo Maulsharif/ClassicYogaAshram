@@ -23,13 +23,20 @@
                     <button type="submit" class="btn btn-outline-secondary">Выйти</button>
                 </form>
                 }
-                <ul class="navbar-nav flex-grow-1">
-                    @if (!User.Identity.IsAuthenticated) {
+            <ul class="navbar-nav flex-grow-1">
+                @if (!User.Identity.IsAuthenticated)
+                {
                     <li class="nav-item">
                         <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Login">Войти</a>
                     </li>
-                    }
-                </ul>
+                }
+                else
+                {
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Details">Личный кабинет</a>
+                    </li>
+                }
+            </ul>
             </div>
         </div>
     </nav>

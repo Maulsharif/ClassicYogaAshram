@@ -23,7 +23,15 @@ namespace yogaAshram.Controllers
             _userManager = userManager;
             _signInManager = signInManager;
             _db = db;
-        }     
+        }
+        [HttpGet]
+        [Authorize]
+        public IActionResult Details()
+        {
+            if (User.IsInRole("chief"))
+                return RedirectToAction("Details", "Chief");
+            return RedirectToAction("Home");
+        }
         [HttpGet]
         public IActionResult Login()
         {
