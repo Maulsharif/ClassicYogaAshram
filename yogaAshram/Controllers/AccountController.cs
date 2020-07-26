@@ -19,13 +19,14 @@ namespace yogaAshram.Controllers
         private YogaAshramContext _db;
         private readonly RoleManager<IdentityRole> _roleManager;
 
-        public AccountController(UserManager<Employee> userManager, SignInManager<Employee> signInManager, YogaAshramContext db)
+        public AccountController(UserManager<Employee> userManager, SignInManager<Employee> signInManager, YogaAshramContext db, RoleManager<IdentityRole> roleManager)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _db = db;
+            _roleManager = roleManager;
         }
-        
+
         [HttpGet]
         public IActionResult Register()
         {
@@ -41,6 +42,7 @@ namespace yogaAshram.Controllers
                 {
                     Email = model.Email,
                     UserName = model.UserName,
+                    NameSurname = model.NameSurname
                 };
                 var result = await _userManager.CreateAsync(employee, model.Password);
                 if (result.Succeeded)
