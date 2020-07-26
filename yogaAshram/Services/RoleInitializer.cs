@@ -16,7 +16,7 @@ namespace yogaAshram.Services
             string dirPassword = "12345678910";
             string dirNameSurname = "Checdasd";
             string dirUserName = "Chief";
-            var roles = new[] { "chief", "manager", "seller", "marketer", "coach" };
+            var roles = new[] { "chief", "manager", "seller", "marketer", "admin" };
             foreach (var role in roles)
             {
                 if (await roleManager.FindByNameAsync(role) is null)
