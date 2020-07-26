@@ -48,6 +48,8 @@ namespace yogaAshram.Controllers
                 {
                     if(User.IsInRole("chief"))
                         return RedirectToAction("Details", "Chief");
+                    if(User.IsInRole("manager"))
+                        return RedirectToAction("Index", "Manager");
                 }
                 ModelState.AddModelError("", "Не корректный пароль и(или) аутентификатор");
             }
