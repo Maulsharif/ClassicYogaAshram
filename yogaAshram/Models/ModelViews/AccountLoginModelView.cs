@@ -10,8 +10,10 @@ namespace yogaAshram.Models.ModelViews
     public class AccountLoginModelView
     {
         [Remote(action: "CheckAuthValid", controller: "Validation", ErrorMessage = "Такой почты или логина не существует")]
-        [Required(ErrorMessage = "Введите логин")]
+        [Required(ErrorMessage = "Введите логин или почту")]
         public string Authentificator { get; set; }
+        [Required(ErrorMessage = "Введите пароль")]
+        [DataType(DataType.Password)]
         public string Password { get; set; }
     }
 }
