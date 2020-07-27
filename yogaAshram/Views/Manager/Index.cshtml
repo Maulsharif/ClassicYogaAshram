@@ -5,5 +5,17 @@
     ViewBag.Title = "Страница старший менеджера";
     Layout = "_Layout";
 }
-
 <h2>Старший менеджер</h2>
+
+<div class="row">
+    <div class="col-6">
+        <h6>ФИО : @Model.NameSurname </h6>
+        <h6>Email : @Model.Email</h6>
+        <h6>Логин : @Model.UserName</h6>
+    </div>
+    
+    <div class="col-6">
+        <a class="btn btn-primary" asp-action="" asp-controller="">Редактировать</a>
+        <a asp-action="CreateEmployee" asp-controller="Manager" class="btn btn-dark">Создать пользователя</a>
+    </div>
+</div>
