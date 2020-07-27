@@ -1,4 +1,4 @@
-﻿namespace yogaAshram.Models.ModelViews
+﻿﻿namespace yogaAshram.Models.ModelViews
 {
     public class EditModelView
     {
