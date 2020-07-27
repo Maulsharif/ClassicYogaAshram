@@ -26,39 +26,6 @@ namespace yogaAshram.Controllers
             _db = db;
             _roleManager = roleManager;
         }
-
-        [HttpGet]
-        public IActionResult Register()
-        {
-            return View();
-        }
-        
-        [HttpPost]
-        public async Task<IActionResult> Register(AccountCreateModelView model)
-        {
-            if (ModelState.IsValid)
-            {
-                Employee employee = new Employee
-                {
-                    Email = model.Email,
-                    UserName = model.UserName,
-                    NameSurname = model.NameSurname
-                };
-                var result = await _userManager.CreateAsync(employee, model.Password);
-                if (result.Succeeded)
-                {
-                    IdentityRole role = await _roleManager.FindByNameAsync(model.Role);
-                    await _userManager.AddToRoleAsync(employee, role.Name);
-                    await _signInManager.SignInAsync(employee, false);
-                    return RedirectToAction("Index", "Employees");
-                }
-
-                foreach (var error in result.Errors)
-                    ModelState.AddModelError(string.Empty, error.Description);
-            }
-
-            return View(model);
-        }
         
         [HttpGet]
         public IActionResult Login()
