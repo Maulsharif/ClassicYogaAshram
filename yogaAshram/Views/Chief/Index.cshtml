@@ -2,6 +2,61 @@
 @{
     ViewBag.Title = "Личный кабинет";
 }
+<!-- Modal -->
+<div class="modal fade" id="emplCreateModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Новый работник</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Почта нового работника<span class="text-danger">*</span></label>
+                    <input id="emplEmail" type="text" class="form-control">
+                    <p id="invalidEmail" class="text-danger"></p>
+                </div>
+                <div class="form-group">
+                    <label>Имя и фамилия<span class="text-danger">*</span></label>
+                    <input id="emplNameSurname" type="text" class="form-control">
+                    <p id="invalidNameSurname" class="text-danger"></p>
+                </div>
+                <div class="form-group">
+                    <label>Логин<span class="text-danger">*</span></label>
+                    <input id="emplUserName" type="text" class="form-control">
+                    <p id="invalidLogin" class="text-danger"></p>
+                </div>
+                <div class="form-group">
+                    <label>Выберите должность<span class="text-danger">*</span></label>
+                    <select class="form-control" id="roleSelect">
+                        <option>...</option>
+                        @foreach (var item in ViewBag.Roles)
+                        {
+                            <option value="@item.Key">@item.Value</option>
+                        }
+                    </select>
+                    <p id="invalidRole" class="text-danger"></p>
+                </div>
+                <div class="form-group">
+                    <label>Пароль<span class="text-danger">*</span></label>
+                    <input id="emplPassword" type="password" class="form-control">
+                    <p id="invalidPassword" class="text-danger"></p>
+                </div>
+                <div class="form-group">
+                    <label>Подтвердите пароль<span class="text-danger">*</span></label>
+                    <input id="emplConfirmPassword" type="password" class="form-control">
+                    <p id="invalidConfirmPassword" class="text-danger"></p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+                <button id="submitCreateEmpl" type="button" class="btn btn-primary">Добавить</button>
+            </div>
+        </div>
+    </div>
+</div>
 <div class="card">
     <div class="row no-gutters">
         <div class="col-md-6 border-right">
@@ -13,14 +68,18 @@
                     <li id="nameSurname" class="list-group-item">Имя фамилия - @Model.NameSurname</li>
                 </ul>
                 <div class="form-row mt-3">
-                    <div id="modal-placeholder"></div>
                     <button type="button" class="btn btn-danger">
                         Редактировать имя и фамилию
                     </button>
                 </div>
                 <div class="form-row mt-3">
-                    <button type="button" class="btn btn-danger" >
+                    <button type="button" class="btn btn-danger">
                         Редактировать пароль
+                    </button>
+                </div>
+                <div class="form-row mt-3">
+                    <button id="emplCreateBtn" type="button" class="btn btn-danger">
+                        Добавить работника
                     </button>
                 </div>
             </div>
@@ -31,9 +90,129 @@
                     Все филиалы
                 </h5>
                 <div>
-                    
+
                 </div>
             </div>
         </div>
     </div>
 </div>
+@section Scripts{
+    <script>
+        function checkRequired(text) {
+            if (text.length == 0) {
+                return false;
+            }
+            return true;
+        };
+        $('#emplCreateBtn').on('click', function () {
+            $('#emplCreateModal').modal('show');
+            $('#submitCreateEmpl').on('click', function () {
+                var email = $('#emplEmail');
+                var truth = true;
+                if (!checkRequired(email.val())) {
+                    $('#invalidEmail').html('Введите почту');
+                    truth = false;
+                }
+                else {
+                    $.get('@Url.Action("CheckEmailCreate", "Validation")/?email=' + $(email).val(), function (data) {
+                        if (data) {
+                            $('#invalidEmail').html('');
+                        }
+                        else {
+                            $('#invalidEmail').html('Такая почта уже существует');
+                        truth = false;
+                        }
+                    });
+                    
+                }
+
+                var userName = $('#emplUserName');
+                if (!checkRequired($(userName).val())) {
+                    $('#invalidLogin').html('Введите логин');
+                    truth = false;
+                }
+                else {
+                    $.get('@Url.Action("CheckUserNameCreate", "Validation")/?userName=' + $(userName).val(), function (data) {
+                        if (data) {
+                            $('#invalidLogin').html('');
+                        }
+                        else {
+                            $('#invalidLogin').html('Такой логин уже существует');
+                            truth = false;
+                        }
+                    });
+                }
+
+                var nameSurname = $('#emplNameSurname');
+                if (!checkRequired($(nameSurname).val())) {
+                    $('#invalidNameSurname').html('Введите имя и фамилию');
+                    truth = false;
+                }
+                else {
+                    $('#invalidNameSurname').html('');
+                }
+                var role = $('#roleSelect');
+                if ($(role).val() == '...') {
+                    $('#invalidRole').html('Выберите роль');
+                    truth = false;
+                }
+                else {
+                    $.get('@Url.Action("CheckRoleExistence", "Validation")/?role=' + $(role).val(), function (data) {
+                        if (data) {
+                            $('#invalidRole').html('');
+                        }
+                        else {
+                            $('#invalidRole').html('Выберите роль');
+                    truth = false;
+                        }
+                    });
+                    
+                }
+
+                var psw = $('#emplPassword');
+                if (!checkRequired($(psw).val())) {
+                    $('#invalidPassword').html('Введите пароль');
+                    truth = false;
+                }
+                else {
+                    $('#invalidPassword').html('');
+                }
+                var pswConfirm = $('#emplConfirmPassword');
+                if (truth) {
+                    if ($(psw).val() != $(pswConfirm).val()) {
+                        $('#invalidConfirmPassword').html('');
+                        $('#invalidConfirmPassword').html('Пароли не совпадают');
+                        truth = false;
+                    }
+                }
+                if (truth) {
+                    $.ajax({
+                        url: '@Url.Action("CreateEmployee", "Chief")',
+                        type: 'POST',
+                        data: {
+                            "nameSurname": $(nameSurname).val(),
+                            "userName": $(userName).val(),
+                            "email": $(email).val(),
+                            "password": $(psw).val(),
+                            "confirmPassword": $(pswConfirm).val()
+                        },
+                        success: function (data){
+                            if (data != 'true') {
+                                $('#invalidConfirmPassword').html(data);
+                            }
+                            else {
+                                console.log(data);
+                                $('#emplCreateModal').modal('hide');
+                                email.val('');
+                                userName.val('');
+                                nameSurname.val('');
+                                psw.val('');
+                                pswConfirm.val('');
+                            }
+                        }
+                    })
+                }
+            })
+        });
+    </script>
+}
