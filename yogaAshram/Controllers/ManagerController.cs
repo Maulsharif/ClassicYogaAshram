@@ -30,7 +30,7 @@ namespace yogaAshram.Controllers
         
         [Authorize]
         // GET
-        public IActionResult Index(string? employeeId)
+        public IActionResult Index(string employeeId)
         {
             if (employeeId == null)
                 employeeId = _userManager.GetUserId(User);
