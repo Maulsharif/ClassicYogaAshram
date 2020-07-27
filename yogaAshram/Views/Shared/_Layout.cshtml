@@ -33,7 +33,7 @@
                     @if (User.IsInRole("manager"))
                     {
                         <li class="nav-item">
-                            <a asp-action="Register" asp-controller="Account" class="btn btn-dark">Регистрировать</a>
+                            <a asp-action="CreateEmployee" asp-controller="Manager" class="btn btn-dark">Создать пользователя</a>
                         </li>
                     }
                 </ul>
