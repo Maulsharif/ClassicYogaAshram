@@ -13,7 +13,9 @@ namespace yogaAshram.Models.ModelViews
         public string NameSurname { get; set; }
         [Remote(action: "CheckUserNameCreate", controller: "Validation", ErrorMessage = "Такой логин уже существует")]
         [Required(ErrorMessage = "Введите логин")]
+        [Display(Name = "Логин для пользователя")]
         public string UserName { get; set; }
+        
         [Remote(action: "CheckEmailCreate", controller: "Validation", ErrorMessage = "Такая почта уже существует")]
         public string Email { get; set; }
         
@@ -21,9 +23,11 @@ namespace yogaAshram.Models.ModelViews
         public string Role { get; set; } 
         
         [Required(ErrorMessage = "Введите пароль")]
+        [Display(Name = "Пароль")]
         public string Password { get; set; }
         [Required(ErrorMessage = "Подтвердите пароль")]
         [Compare("Password", ErrorMessage = "Пароли не совпадают")]
+        [Display(Name = "Подтвердить пароль")]
         public string ConfirmPassword { get; set; }
     }
 }
