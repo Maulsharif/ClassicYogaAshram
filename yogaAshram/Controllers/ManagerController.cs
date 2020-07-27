@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -28,9 +29,13 @@ namespace yogaAshram.Controllers
         }
         
         // GET
-        public IActionResult Index()
+        public IActionResult Index(string? employeeId)
         {
-            return View();
+            if (employeeId == null)
+                employeeId = _userManager.GetUserId(User);
+            
+            Employee employee = _db.Users.FirstOrDefault(u => u.Id == employeeId);
+            return View(employee);
         }
         
         [HttpGet]
