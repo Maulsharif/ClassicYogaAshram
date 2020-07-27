@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using yogaAshram.Models;
@@ -6,6 +7,7 @@ using yogaAshram.Models.ModelViews;
 
 namespace yogaAshram.Controllers
 {
+    [Authorize(Roles = "manager")]
     public class ManagerController : Controller
     {
         private readonly UserManager<Employee> _userManager;
@@ -24,7 +26,7 @@ namespace yogaAshram.Controllers
             _db = db;
             _roleManager = roleManager;
         }
-
+        
         // GET
         public IActionResult Index()
         {
@@ -60,7 +62,6 @@ namespace yogaAshram.Controllers
                 foreach (var error in result.Errors)
                     ModelState.AddModelError(string.Empty, error.Description);
             }
-            
             return View(model);
         }
     }
