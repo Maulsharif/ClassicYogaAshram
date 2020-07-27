@@ -28,6 +28,7 @@ namespace yogaAshram.Controllers
             _roleManager = roleManager;
         }
         
+        [Authorize]
         // GET
         public IActionResult Index(string? employeeId)
         {
@@ -39,12 +40,14 @@ namespace yogaAshram.Controllers
         }
         
         [HttpGet]
+        [Authorize]
         public IActionResult CreateEmployee()
         {
             return View();
         }
         
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> CreateEmployee(AccountCreateModelView model)
         {
             if (ModelState.IsValid)
@@ -66,6 +69,44 @@ namespace yogaAshram.Controllers
 
                 foreach (var error in result.Errors)
                     ModelState.AddModelError(string.Empty, error.Description);
+            }
+            return View(model);
+        }
+        
+        [Authorize]
+        public IActionResult EditManager(string id = null)
+        {
+            Employee manager = null;
+            manager = id == null ? _userManager.GetUserAsync(User).Result : _userManager.FindByIdAsync(id).Result;
+            EditModelView model = new EditModelView()
+            {
+                Email = manager.Email,
+                UserName = manager.UserName,
+                NameSurname = manager.NameSurname,
+                Id = manager.Id,
+            };
+            return View(model);
+        }
+
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> EditManager(EditModelView model)
+        {
+            if (ModelState.IsValid)
+            {
+                Employee manager = await _userManager.FindByIdAsync(model.Id);
+                if (manager != null)
+                {
+                    manager.NameSurname = model.NameSurname;
+                    manager.UserName = model.UserName;
+                    manager.Email = model.Email;
+
+                    var result = await _userManager.UpdateAsync(manager);
+                    if (result.Succeeded)
+                        return RedirectToAction("Index");
+                    foreach (var error in result.Errors)
+                        ModelState.AddModelError("", error.Description);
+                }
             }
             return View(model);
         }
