@@ -14,7 +14,7 @@ namespace yogaAshram.Services
             string psw = "";
             for (int i = 0; i < size; i++)
             {
-                if (rndm.Next(4) == 0)
+                if (rndm.Next(3) == 0)
                 {
                     psw += rndm.Next(10);
                 }
