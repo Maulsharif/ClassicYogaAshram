@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using yogaAshram.Models;
 using yogaAshram.Models.ModelViews;
+using yogaAshram.Services;
 
 namespace yogaAshram.Controllers
 {
@@ -61,6 +62,11 @@ namespace yogaAshram.Controllers
                 var result = await _userManager.CreateAsync(employee, model.Password);
                 if (result.Succeeded)
                 {
+                    EmailService emailService = new EmailService();
+                    await emailService.SendMessageAsync(employee.Email,
+                        "Уведомление от центра Yoga Ashram",
+                        $"<b>Ваш emal : </b>{employee.Email} \n <b>" +
+                                 $"<b>Ваш пароль : </b>{employee.PasswordHash}<b>");
                     IdentityRole role = await _roleManager.FindByNameAsync(model.Role);
                     await _userManager.AddToRoleAsync(employee, role.Name);
                     await _signInManager.SignInAsync(employee, false);
