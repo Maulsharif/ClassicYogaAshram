@@ -11,6 +11,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using yogaAshram.Models;
+using yogaAshram.Services;
 
 namespace yogaAshram
 {
@@ -39,6 +40,7 @@ namespace yogaAshram
                     options.User.AllowedUserNameCharacters = null;
                 })
                 .AddEntityFrameworkStores<YogaAshramContext>();
+            services.AddTransient<EmailService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
