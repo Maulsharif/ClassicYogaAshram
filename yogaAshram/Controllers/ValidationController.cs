@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using yogaAshram.Models;
 
@@ -10,10 +12,17 @@ namespace yogaAshram.Controllers
     public class ValidationController : Controller
     {
         private YogaAshramContext _db;
-
-        public ValidationController(YogaAshramContext db)
+        private readonly UserManager<Employee> _userManager;
+        public ValidationController(YogaAshramContext db, UserManager<Employee> userManager)
         {
             _db = db;
+            _userManager = userManager;
+        }
+        [Authorize]
+        public async Task<bool> CheckPassword(string currentPassword)
+        { 
+            Employee empl = await _userManager.GetUserAsync(User);           
+            return await _userManager.CheckPasswordAsync(empl, currentPassword);
         }
         public bool CheckRoleExistence(string role)
         {

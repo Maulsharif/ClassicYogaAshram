@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using yogaAshram.Models;
 using yogaAshram.Models.ModelViews;
+using yogaAshram.Services;
 
 namespace yogaAshram.Controllers
 {
@@ -39,6 +40,19 @@ namespace yogaAshram.Controllers
             }
             return null;
         }
+        [HttpPost]
+        public async Task<bool> ResetPasswordAjax()
+        {
+            Employee employee = await _userManager.GetUserAsync(User);
+            string psw = PasswordGenerator.Generate();
+            string code = await _userManager.GeneratePasswordResetTokenAsync(employee);
+            var result = await _userManager.ResetPasswordAsync(employee, code, psw);
+            await EmailService.SendPassword(employee.Email, psw, Url.Action());
+            employee.OnTimePassword = true;
+            _db.Entry(employee).State = EntityState.Modified;
+            await _db.SaveChangesAsync();
+            return result.Succeeded;
+        }
         public async Task<IActionResult> Index()
         {
             Employee empl = await _userManager.GetUserAsync(User);
@@ -47,35 +61,55 @@ namespace yogaAshram.Controllers
             foreach (var item in roles)
                 rolesDic.Add(item.Name, GetRuRoleName(item.Name));
             ViewBag.Roles = rolesDic;
-            return View(empl);
+            return View(new ChiefIndexModelView() { Employee = empl });
         }
         [HttpPost]    
-        public async Task<IActionResult> CreateEmployee(string nameSurname, string userName, string email, string password, string confirmPassword)
+        public async Task<IActionResult> CreateEmployee(string nameSurname, string userName, string email)
         {
-            AccountCreateModelView model = new AccountCreateModelView()
+            if (String.IsNullOrEmpty(nameSurname))
+                return BadRequest();
+            Employee employee = new Employee()
             {
-                NameSurname = nameSurname,
                 UserName = userName,
                 Email = email,
-                Password = password,
-                ConfirmPassword = confirmPassword
+                NameSurname = nameSurname
             };
-                Employee employee = new Employee()
-                {
-                    UserName = model.UserName,
-                    Email = model.Email,
-                    NameSurname = model.NameSurname
-                };
-                var result = await _userManager.CreateAsync(employee, model.Password);
+            string newPsw = PasswordGenerator.Generate();
+            var result = await _userManager.CreateAsync(employee, newPsw);
+            if (result.Succeeded)
+            {
+                await EmailService.SendPassword(email, newPsw, Url.Action());
+                return Json("true");
+            }
+            string errors = "";
+            foreach (var error in result.Errors)
+                errors += error.Description;
+            return Json(errors);
+        }
+        [HttpPost]
+        public async Task<IActionResult> ChangePassword(ChangePasswordModelView model)
+        {
+            Employee employee = await _userManager.GetUserAsync(User);
+            if (ModelState.IsValid)
+            {
+                if (!employee.OnTimePassword)
+                    return BadRequest();
+                var result = await _userManager.ChangePasswordAsync(employee, model.CurrentPassword, model.NewPassword);
                 if (result.Succeeded)
                 {
-                    await _signInManager.SignInAsync(employee, false);
-                    return Json("true");
-                }
-                string errors = "";
-                foreach (var error in result.Errors)
-                    errors += error.Description;
-                return Json(errors);
+                    employee.OnTimePassword = false;
+                    employee.PasswordState = PasswordStates.Normal;
+                    _db.Entry(employee).State = EntityState.Modified;
+                    await _db.SaveChangesAsync();
+                    return RedirectToAction("Index");
+                }               
+            }
+            Dictionary<string, string> rolesDic = new Dictionary<string, string>();
+            var roles = await _db.Roles.ToArrayAsync();
+            foreach (var item in roles)
+                rolesDic.Add(item.Name, GetRuRoleName(item.Name));
+            ViewBag.Roles = rolesDic;
+            return View("../Chief/Index", new ChiefIndexModelView() { Employee = employee, Model = model, IsModalInvalid = true }) ;
         }
     }
 }
