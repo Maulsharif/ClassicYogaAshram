@@ -2,9 +2,16 @@
 
 namespace yogaAshram.Models
 {
+    public enum PasswordStates
+    {
+        Normal,
+        DisposableNew,
+        DisposableUsed
+    }
     public class Employee : IdentityUser
     {
         public string NameSurname { get; set; }
-        public bool OnTimePassword { get; set; }
+        public bool OnTimePassword { get; set; } = true;
+        public PasswordStates PasswordState { get; set; } = PasswordStates.DisposableNew;
     }
 }
