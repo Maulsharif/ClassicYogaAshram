@@ -12,7 +12,7 @@ namespace yogaAshram.Services
         
             emailMessage.From.Add(new MailboxAddress(
                 "Администратор сайта",
-                "doskalii@yandex.ru"
+                "Dosgalii@yandex.ru"
             ));
         
             emailMessage.To.Add(new MailboxAddress("", email));
@@ -26,7 +26,7 @@ namespace yogaAshram.Services
             
             using var client = new SmtpClient();
             await client.ConnectAsync("smtp.yandex.ru", 25, false);
-            await client.AuthenticateAsync("doskalii@yandex.ru", "mamapapa+18");
+            await client.AuthenticateAsync("Dosgalii@yandex.ru", "mamapapa+18");
             await client.SendAsync(emailMessage);
             await client.DisconnectAsync(true);
         }
