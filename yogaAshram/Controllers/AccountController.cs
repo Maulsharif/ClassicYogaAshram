@@ -65,6 +65,7 @@ namespace yogaAshram.Controllers
                 if (result.Succeeded)
                 {
                     return RedirectToAction("Index", "Employees");
+                    
                 }
                 ModelState.AddModelError("", "Не корректный пароль и(или) аутентификатор");
             }
