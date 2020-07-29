@@ -8,7 +8,7 @@ namespace yogaAshram.Models
         DisposableNew,
         DisposableUsed
     }
-    public class Employee : IdentityUser
+    public class Employee : IdentityUser<long>
     {
         public string NameSurname { get; set; }
         public bool OnTimePassword { get; set; } = true;

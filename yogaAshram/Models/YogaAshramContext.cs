@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace yogaAshram.Models
 {
-    public class YogaAshramContext : IdentityDbContext<Employee>
+    public class YogaAshramContext : IdentityDbContext<Employee, Role, long>
     {
         public DbSet<Employee> Employees { get; set; }
 
