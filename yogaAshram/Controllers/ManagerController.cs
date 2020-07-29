@@ -33,13 +33,11 @@ namespace yogaAshram.Controllers
         
         [Authorize]
         // GET
-        public IActionResult Index(string employeeId)
+        public async Task<IActionResult> Index()
         {
-            if (employeeId == null)
-                employeeId = _userManager.GetUserId(User);
-            
-            Employee employee = _db.Users.FirstOrDefault(u => u.Id == employeeId);
-            return View(employee);
+            Employee empl = await _userManager.GetUserAsync(User);
+            await SetViewBagRoles();
+            return View(new ManagerIndexModelView() { Employee = empl });
         }
         
         [HttpGet]
@@ -138,7 +136,8 @@ namespace yogaAshram.Controllers
                 rolesDic.Add(item.Name, GetRuRoleName(item.Name));
             ViewBag.Roles = rolesDic;
         }
-
+        
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> ChangePassword(ChangePasswordModelView model)
         {
@@ -158,7 +157,7 @@ namespace yogaAshram.Controllers
                 }               
             }
             await SetViewBagRoles();
-            return View(new ChiefIndexModelView() { Employee = employee, Model = model, IsModalInvalid = true }) ;
+            return View("Index", new ManagerIndexModelView() { Employee = employee, Model = model, IsModalInvalid = true }) ;
         }
     }
 }
