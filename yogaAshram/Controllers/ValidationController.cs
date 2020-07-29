@@ -19,6 +19,28 @@ namespace yogaAshram.Controllers
             _userManager = userManager;
         }
         [Authorize]
+        public async Task<bool> CheckEditUserName(string userName)
+        {
+            if (_db.Employees.Any(p => p.UserName == userName))
+            {
+                Employee employee = await _userManager.GetUserAsync(User);
+                if (employee.UserName != userName)
+                    return false;
+            }
+            return true;
+        }
+        [Authorize]
+        public async Task<bool> CheckEditEmail(string email)
+        {
+            if (_db.Employees.Any(p => p.Email == email))
+            {
+                Employee employee = await _userManager.GetUserAsync(User);
+                if (employee.Email != email)
+                    return false;
+            }
+            return true;
+        }
+        [Authorize]
         public async Task<bool> CheckPassword(string currentPassword)
         { 
             Employee empl = await _userManager.GetUserAsync(User);           

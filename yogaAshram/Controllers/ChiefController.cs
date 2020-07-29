@@ -40,20 +40,24 @@ namespace yogaAshram.Controllers
             }
             return null;
         }
-        public async Task<IActionResult> Index()
+        private async Task SetViewBagRoles()
         {
-            Employee empl = await _userManager.GetUserAsync(User);
             Dictionary<string, string> rolesDic = new Dictionary<string, string>();
-            var roles = await _db.Roles.ToArrayAsync();
+            var roles = await _db.Roles.Where(p => p.Name != "chief").ToArrayAsync();
             foreach (var item in roles)
                 rolesDic.Add(item.Name, GetRuRoleName(item.Name));
             ViewBag.Roles = rolesDic;
+        }
+        public async Task<IActionResult> Index()
+        {
+            Employee empl = await _userManager.GetUserAsync(User);
+            await SetViewBagRoles();
             return View(new ChiefIndexModelView() { Employee = empl });
         }
         [HttpPost]    
         public async Task<IActionResult> CreateEmployee(string nameSurname, string userName, string email, string role)
         {
-            if (String.IsNullOrEmpty(nameSurname) || !_db.Roles.Any(p => p.Name == role))
+            if (String.IsNullOrEmpty(nameSurname) || !_db.Roles.Any(p => p.Name == role) || role == "chief")
                 return BadRequest();
             Employee employee = new Employee()
             {
@@ -74,30 +78,50 @@ namespace yogaAshram.Controllers
                 errors += error.Description;
             return Json(errors);
         }
+        public async Task<IActionResult> GetEditModalAjax()
+        {
+            Employee employee = await _userManager.GetUserAsync(User);
+            return PartialView("PartialViews/ChiefAccountEditPartial", new ChiefEditModelView { 
+                Email = employee.Email,
+                NameSurname = employee.NameSurname,
+                UserName = employee.UserName
+            });
+        }
+        [HttpPost]
+        public async Task<IActionResult> Edit(ChiefEditModelView model)
+        {
+            Employee employee = await _userManager.GetUserAsync(User);
+            if (ModelState.IsValid)
+            {             
+                employee.UserName = model.UserName;
+                employee.Email = model.Email;
+                employee.NameSurname = model.NameSurname;
+                _db.Entry(employee).State = EntityState.Modified;
+                await _db.SaveChangesAsync();
+                return RedirectToAction("Index");
+            }
+            await SetViewBagRoles();
+            return View("Chief/Index", new ChiefIndexModelView() { EditModel = model, IsEditInvalid = true, Employee = employee });
+        }
         [HttpPost]
         public async Task<IActionResult> ChangePassword(ChangePasswordModelView model)
         {
             Employee employee = await _userManager.GetUserAsync(User);
             if (ModelState.IsValid)
             {
+                if (!employee.OnTimePassword)
+                    return BadRequest();
                 var result = await _userManager.ChangePasswordAsync(employee, model.CurrentPassword, model.NewPassword);
                 if (result.Succeeded)
                 {
-                    if (employee.OnTimePassword)
-                    {
-                        employee.OnTimePassword = false;
-                        employee.PasswordState = PasswordStates.Normal;
-                        _db.Entry(employee).State = EntityState.Modified;
-                        await _db.SaveChangesAsync();
-                    }
+                    employee.OnTimePassword = false;
+                    employee.PasswordState = PasswordStates.Normal;
+                    _db.Entry(employee).State = EntityState.Modified;
+                    await _db.SaveChangesAsync();
                     return RedirectToAction("Index");
                 }               
             }
-            Dictionary<string, string> rolesDic = new Dictionary<string, string>();
-            var roles = await _db.Roles.ToArrayAsync();
-            foreach (var item in roles)
-                rolesDic.Add(item.Name, GetRuRoleName(item.Name));
-            ViewBag.Roles = rolesDic;
+            await SetViewBagRoles();
             return View("../Chief/Index", new ChiefIndexModelView() { Employee = employee, Model = model, IsModalInvalid = true }) ;
         }
     }
