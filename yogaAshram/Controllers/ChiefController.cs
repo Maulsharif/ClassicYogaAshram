@@ -47,7 +47,7 @@ namespace yogaAshram.Controllers
             string psw = PasswordGenerator.Generate();
             string code = await _userManager.GeneratePasswordResetTokenAsync(employee);
             var result = await _userManager.ResetPasswordAsync(employee, code, psw);
-            await EmailService.SendPassword(employee.Email, psw, Url.Action());
+ //           await EmailService.SendPassword(employee.Email, psw, Url.Action());
             employee.OnTimePassword = true;
             _db.Entry(employee).State = EntityState.Modified;
             await _db.SaveChangesAsync();
@@ -78,7 +78,7 @@ namespace yogaAshram.Controllers
             var result = await _userManager.CreateAsync(employee, newPsw);
             if (result.Succeeded)
             {
-                await EmailService.SendPassword(email, newPsw, Url.Action());
+                await EmailService.SendPassword(email, newPsw, Url.Action("Login", "Account", null, Request.Scheme));
                 return Json("true");
             }
             string errors = "";
