@@ -101,7 +101,7 @@ namespace yogaAshram.Controllers
                 return RedirectToAction("Index");
             }
             await SetViewBagRoles();
-            return View("Chief/Index", new ChiefIndexModelView() { EditModel = model, IsEditInvalid = true, Employee = employee });
+            return View("Index", new ChiefIndexModelView() { EditModel = model, IsEditInvalid = true, Employee = employee });
         }
         [HttpPost]
         public async Task<IActionResult> ChangePassword(ChangePasswordModelView model)
