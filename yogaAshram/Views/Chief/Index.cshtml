@@ -3,8 +3,12 @@
     ViewBag.Title = "Личный кабинет";
 }
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.8/css/all.css" />
+@if (Model.IsEditInvalid)
+{
+    await Html.RenderPartialAsync("PartialViews/ChiefAccountEditPartial", Model.EditModel);
+}
 <!-- Modal -->
-<div class="modal fade" id="exelent-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="exellent-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -14,31 +18,11 @@
                 </button>
             </div>
             <div class="modal-body text-center">
-                <h5>Новый пароль отправлен на вашу почту</h5>
-                <i class="fa fa-check" style="margin-auto"></i>
+                <h5>Новый работник успешно создан. Его пароль отправлен ему на почту</h5>
+                <i class="fa fa-check" style="margin:auto"></i>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- Modal -->
-<div class="modal fade" id="resetPasswordModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Подтвердите свои действия</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body text-center">
-                <h5>Вы точно хотите сбросить пароль?</h5>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
-                <button type="button" id="submitResetPsw" class="btn btn-primary">Отправить</button>
             </div>
         </div>
     </div>
@@ -88,7 +72,7 @@
         </div>
     </div>
 </div>
-<div class="card">
+<div class="card" style="width: 800px; margin: auto">
     <div class="row no-gutters">
         <div class="col-md-6 border-right">
             <div class="card-body">
@@ -98,33 +82,20 @@
                     <li id="email" class="list-group-item">Почта - @Model.Employee.Email</li>
                     <li id="nameSurname" class="list-group-item">Имя фамилия - @Model.Employee.NameSurname</li>
                 </ul>
-                <div class="form-row mt-3">
-                    <button type="button" class="btn btn-danger">
-                        Редактировать имя и фамилию
+                <div class="btn-group">
+                    <button type="button" class="btn btn-outline-info dropdown-toggle mt-3 ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Действия
                     </button>
-                </div>
-                <div class="form-row mt-3">
-                    <button type="button" class="btn btn-danger">
-                        Редактировать пароль
-                    </button>
-                </div>
-                <div class="form-row mt-3">
-                    <button id="emplCreateBtn" type="button" class="btn btn-danger">
-                        Добавить работника
-                    </button>
-                </div>
-                @if (Model.Employee.OnTimePassword)
-                {
-                    <div class="form-row mt-3">
-                        @{
-                            await Html.RenderPartialAsync("PartialViews/PasswordChangePartial", Model.Model);
-                        }
+                    <div class="dropdown-menu">
+                        <div id="editProfileBtn" class="dropdown-item cursor-p">Редактировать профиль</div>
+                        <div id="emplCreateBtn" class="dropdown-item cursor-p" href="#">Добавить работника</div>
+                        <div id="changePasswordBtn" class="dropdown-item cursor-p">Изменить пароль</div>
                     </div>
-                }
+                </div>
                 <div class="form-row mt-3">
-                    <button id="resetPasswordBtn" type="button" class="btn btn-danger">
-                        Сбросить пароль
-                    </button>
+                    @{
+                        await Html.RenderPartialAsync("PartialViews/PasswordChangePartial", Model.Model);
+                    }
                 </div>
             </div>
         </div>
@@ -140,6 +111,7 @@
         </div>
     </div>
 </div>
+<div id="modal-place"></div>
 @section Scripts{
     @if (Model.IsModalInvalid)
     {
@@ -147,7 +119,29 @@
             $('#changePasswordModal').modal('show');
         </script>
     }
+    @if (Model.IsEditInvalid)
+    {
+        <script>
+            $('#editPrifilePartial').modal('show');
+        </script>
+    }
     <script>
+        $("#editProfileBtn").on('click', function () {
+            if (document.getElementById('editPrifileModal')) {
+                $('#editPrifileModal').modal('show');
+            }
+            else {
+                $.get('@Url.Action("GetEditModalAjax", "Chief")', function (data) {
+                    $("#modal-place").html(data);
+                    $(document.getElementById('editPrifileModal')).modal('show');
+                });
+            }
+        })
+    </script>
+    <script>
+        $("#changePasswordBtn").on("click", function () {
+            $("#changePasswordModal").modal('show');
+        })
         function checkRequired(text) {
             if (text.length == 0) {
                 return false;
@@ -226,7 +220,8 @@
                         data: {
                             "nameSurname": $(nameSurname).val(),
                             "userName": $(userName).val(),
-                            "email": $(email).val()
+                            "email": $(email).val(),
+                            "role": $(role).val()
                         },
                         success: function (data){
                             if (data != 'true') {
@@ -238,32 +233,13 @@
                                 email.val('');
                                 userName.val('');
                                 nameSurname.val('');
+                                role.val('...');
+                                $('#exellent-modal').modal('show');
                             }
                         }
                     })
                 }
             })
         });
-    </script>
-    <script>
-        $('#resetPasswordBtn').on('click', function () {
-        $('#resetPasswordModal').modal('show');
-        $('#submitResetPsw').on('click', function () {
-            $.ajax({
-                url: '@Url.Action("ResetPasswordAjax", "Account")',
-                type: 'POST',               
-                success: function (check) {
-                     if (check) {
-                          $('#exellent-modal').modal('show');
-                          $(auth).val('');
-                          $('#invalidAuth').html('');
-                     }
-                     else {
-                         console.log("что то не так");
-                     }
-                }
-            });
-        })
-    })
     </script>
 }
