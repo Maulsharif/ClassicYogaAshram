@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Hosting;
 using yogaAshram.Models;
+using yogaAshram.Services;
 
 namespace yogaAshram.Controllers
 {
@@ -25,10 +26,10 @@ namespace yogaAshram.Controllers
         }
         
         // GET
-        public IActionResult Index(string? employeeId)
+        public IActionResult Index(long? employeeId)
         {
             if (employeeId == null)
-                employeeId = _userManager.GetUserId(User);
+                employeeId = GetUserId.GetCurrentUserId(this.HttpContext);
             
             Employee employee = _db.Users.FirstOrDefault(u => u.Id == employeeId);
             return View(employee);

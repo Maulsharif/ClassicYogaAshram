@@ -129,11 +129,11 @@ namespace yogaAshram.Controllers
             if (string.IsNullOrEmpty(search))
             {
                 ViewBag.Error = "Введите имя сотрудника для поиска";
-                return PartialView("PartialView", _db.Employees.Where(e => e.Id != _userManager.GetUserId(User)).ToList());
+                return PartialView("PartialView", _db.Employees.Where(e => e.Id != GetUserId.GetCurrentUserId(this.HttpContext)).ToList());
             }
             search = search.ToUpper();
                 List<Employee> employees = _db.Employees
-                    .Where(e => e.Id != _userManager.GetUserId(User))
+                    .Where(e => e.Id != GetUserId.GetCurrentUserId(this.HttpContext))
                     .Where(p => p.UserName.ToUpper().Contains(search)
                                 || p.NameSurname.ToUpper().Contains(search))
                     .ToList();

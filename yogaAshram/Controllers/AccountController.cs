@@ -19,9 +19,9 @@ namespace yogaAshram.Controllers
         private readonly UserManager<Employee> _userManager;
         private readonly SignInManager<Employee> _signInManager;
         private YogaAshramContext _db;
-        private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly RoleManager<Role> _roleManager;
 
-        public AccountController(UserManager<Employee> userManager, SignInManager<Employee> signInManager, YogaAshramContext db, RoleManager<IdentityRole> roleManager)
+        public AccountController(UserManager<Employee> userManager, SignInManager<Employee> signInManager, YogaAshramContext db, RoleManager<Role> roleManager)
         {
             _userManager = userManager;
             _signInManager = signInManager;

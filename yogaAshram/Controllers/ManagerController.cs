@@ -17,13 +17,13 @@ namespace yogaAshram.Controllers
         private readonly UserManager<Employee> _userManager;
         private readonly SignInManager<Employee> _signInManager;
         private YogaAshramContext _db;
-        private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly RoleManager<Role> _roleManager;
 
         public ManagerController(
             UserManager<Employee> userManager,
             SignInManager<Employee> signInManager,
             YogaAshramContext db, 
-            RoleManager<IdentityRole> roleManager)
+            RoleManager<Role> roleManager)
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -63,7 +63,7 @@ namespace yogaAshram.Controllers
                 var result = await _userManager.CreateAsync(employee, newPsw);
                 if (result.Succeeded)
                 {
-                    IdentityRole role = await _roleManager.FindByNameAsync(model.Role);
+                    Role role = await _roleManager.FindByNameAsync(model.Role);
                     await _userManager.AddToRoleAsync(employee, role.Name);
                     await EmailService.SendMessageAsync(employee.Email,
                             "Уведомление от центра Yoga Ashram",
