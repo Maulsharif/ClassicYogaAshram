@@ -10,7 +10,7 @@
 
 @if (User.IsInRole("chief"))
 {
-    <a asp-action="" asp-controller="" class="btn btn-primary">Личный кабинет</a>
+    <a asp-action="Index" asp-controller="Chief" class="btn btn-primary">Личный кабинет</a>
 }
 else if (User.IsInRole("manager"))
 {

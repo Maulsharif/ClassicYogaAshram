@@ -64,8 +64,7 @@ namespace yogaAshram.Controllers
                 {
                     IdentityRole role = await _roleManager.FindByNameAsync(model.Role);
                     await _userManager.AddToRoleAsync(employee, role.Name);
-                    EmailService emailService = new EmailService();
-                    await emailService.SendMessageAsync(employee.Email,
+                    await EmailService.SendMessageAsync(employee.Email,
                             "Уведомление от центра Yoga Ashram",
                             $"<b>Ваш emal : </b>{employee.Email} \n <b>" + 
                             $"<b>Ваш пароль : </b> Пока пусто <b>");
