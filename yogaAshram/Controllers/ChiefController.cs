@@ -124,5 +124,25 @@ namespace yogaAshram.Controllers
             await SetViewBagRoles();
             return View("../Chief/Index", new ChiefIndexModelView() { Employee = employee, Model = model, IsModalInvalid = true }) ;
         }
+        public IActionResult Search(string search)
+        {
+            if (string.IsNullOrEmpty(search))
+            {
+                ViewBag.Error = "Введите имя сотрудника для поиска";
+                return PartialView("PartialView", _db.Employees.Where(e => e.Id != _userManager.GetUserId(User)).ToList());
+            }
+            search = search.ToUpper();
+                List<Employee> employees = _db.Employees
+                    .Where(e => e.Id != _userManager.GetUserId(User))
+                    .Where(p => p.UserName.ToUpper().Contains(search)
+                                || p.NameSurname.ToUpper().Contains(search))
+                    .ToList();
+                if (employees.Count == 0)
+                {
+                    ViewBag.Error = "Совпадений не найдено";
+                }
+                return PartialView("PartialView", employees);
+                
+        }
     }
 }
