@@ -15,5 +15,6 @@ namespace yogaAshram.Models.ModelViews
         [Required(ErrorMessage = "Введите пароль")]
         [DataType(DataType.Password)]
         public string Password { get; set; }
+        public string ReturnUrl { get; set; }
     }
 }

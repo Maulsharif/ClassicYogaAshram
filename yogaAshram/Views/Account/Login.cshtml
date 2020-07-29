@@ -8,7 +8,7 @@
             Аутентификация
         </div>
         <div class="card-body">
-            <form asp-action="Login" method="post" asp-antiforgery="true" style="position:relative;">
+            <form asp-action="Login" method="post" asp-antiforgery="true" style="position:relative;" asp-route-returnUrl="@Model.ReturnUrl">
                 <div asp-validation-summary="ModelOnly"></div>
                 <div class="form-group">
                     <label>Введите эл. почту или логин<span class="text-danger">*</span></label>

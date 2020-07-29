@@ -29,9 +29,9 @@ namespace yogaAshram.Controllers
             _roleManager = roleManager;
         }        
         [HttpGet]
-        public IActionResult Login()
+        public IActionResult Login(string returnUrl = null)
         {
-            return View();
+            return View(new AccountLoginModelView() { ReturnUrl = returnUrl });
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -64,30 +64,25 @@ namespace yogaAshram.Controllers
                     );
                 if (result.Succeeded)
                 {
+                    if (!string.IsNullOrEmpty(model.ReturnUrl) && Url.IsLocalUrl(model.ReturnUrl))
+                    {
+                        return Redirect(model.ReturnUrl);
+                    }
+                    var roles = _userManager.GetRolesAsync(employee);
+                    foreach (var role in roles.Result)
+                    {
+                        if (role == "manager")
+                            return RedirectToAction("Index", "Manager");
+                        else if(role == "chief")
+                            return RedirectToAction("Index", "Chief");
+                    }
                     return RedirectToAction("Index", "Employees");
-                    
                 }
                 ModelState.AddModelError("", "Не корректный пароль и(или) аутентификатор");
             }
             return View(model);
         }
-        [HttpPost]
-        public async Task<bool> ResetPasswordAjax(string authentificator)
-        {
-            Employee employee = await _userManager.FindByEmailAsync(authentificator);
-            if (employee is null)
-                employee = await _userManager.FindByNameAsync(authentificator);
-            if (employee is null)
-                return false;
-            string psw = PasswordGenerator.Generate();
-            string code = await _userManager.GeneratePasswordResetTokenAsync(employee);
-            var result = await _userManager.ResetPasswordAsync(employee, code, psw);
-            await EmailService.SendPassword(employee.Email, psw, Url.Action("Login", "Account"));
-            employee.OnTimePassword = true;
-            _db.Entry(employee).State = EntityState.Modified;
-            await _db.SaveChangesAsync();
-            return result.Succeeded;
-        }
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Logout()
