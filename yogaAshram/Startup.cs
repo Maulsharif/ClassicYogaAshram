@@ -39,7 +39,8 @@ namespace yogaAshram
                     options.Password.RequireDigit = false; // требуются ли цифры
                     options.User.AllowedUserNameCharacters = null;
                 })
-                .AddEntityFrameworkStores<YogaAshramContext>();
+                .AddEntityFrameworkStores<YogaAshramContext>()
+                .AddDefaultTokenProviders();
             services.AddTransient<EmailService>();
         }
 
