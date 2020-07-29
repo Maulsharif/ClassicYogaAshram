@@ -1,8 +1,10 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using yogaAshram.Models;
 using yogaAshram.Models.ModelViews;
 using yogaAshram.Services;
@@ -31,13 +33,11 @@ namespace yogaAshram.Controllers
         
         [Authorize]
         // GET
-        public IActionResult Index(string employeeId)
+        public async Task<IActionResult> Index()
         {
-            if (employeeId == null)
-                employeeId = _userManager.GetUserId(User);
-            
-            Employee employee = _db.Users.FirstOrDefault(u => u.Id == employeeId);
-            return View(employee);
+            Employee empl = await _userManager.GetUserAsync(User);
+            await SetViewBagRoles();
+            return View(new ManagerIndexModelView() { Employee = empl });
         }
         
         [HttpGet]
@@ -114,6 +114,50 @@ namespace yogaAshram.Controllers
                 }
             }
             return View(model);
+        }
+        string GetRuRoleName(string role)
+        {
+            switch (role)
+            {
+                case "seller":
+                    return "Менеджер по продажам";
+                case "marketer":
+                    return "Маркетолог";
+                case "admin":
+                    return "Системный администратор";
+            }
+            return null;
+        }
+        private async Task SetViewBagRoles()
+        {
+            Dictionary<string, string> rolesDic = new Dictionary<string, string>();
+            var roles = await _db.Roles.Where(p => p.Name != "manager").ToArrayAsync();
+            foreach (var item in roles)
+                rolesDic.Add(item.Name, GetRuRoleName(item.Name));
+            ViewBag.Roles = rolesDic;
+        }
+        
+        [Authorize]
+        [HttpPost]
+        public async Task<IActionResult> ChangePassword(ChangePasswordModelView model)
+        {
+            Employee employee = await _userManager.GetUserAsync(User);
+            if (ModelState.IsValid)
+            {
+                if (!employee.OnTimePassword)
+                    return BadRequest();
+                var result = await _userManager.ChangePasswordAsync(employee, model.CurrentPassword, model.NewPassword);
+                if (result.Succeeded)
+                {
+                    employee.OnTimePassword = false;
+                    employee.PasswordState = PasswordStates.Normal;
+                    _db.Entry(employee).State = EntityState.Modified;
+                    await _db.SaveChangesAsync();
+                    return RedirectToAction("Index");
+                }               
+            }
+            await SetViewBagRoles();
+            return View("Index", new ManagerIndexModelView() { Employee = employee, Model = model, IsModalInvalid = true }) ;
         }
     }
 }
