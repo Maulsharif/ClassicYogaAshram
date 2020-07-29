@@ -1,14 +1,18 @@
-﻿﻿using Microsoft.AspNetCore.Mvc;
+﻿﻿using System.ComponentModel.DataAnnotations;
+ using Microsoft.AspNetCore.Mvc;
 
  namespace yogaAshram.Models.ModelViews
 {
     public class EditModelView
     {
         public string Id { get; set; }
-        [Remote(action: "CheckUserNameCreate", controller: "Validation", ErrorMessage = "Такой логин уже существует")]
+        [Required(ErrorMessage = "Введите логин")]
+        [Remote(action: "CheckEditUserName", controller: "Vaidation", ErrorMessage = "Аккаунт с таким логином уже зарегистрирован")]
         public string UserName { get; set; }
-        [Remote(action: "CheckEmailCreate", controller: "Validation", ErrorMessage = "Такая почта уже существует")]
+        [Required(ErrorMessage = "Введите почту")]
+        [Remote(action: "CheckEditEmail", controller: "Vaidation", ErrorMessage = "Аккаунт с такой почтой уже зарегистрирован")]
         public string Email { get; set; }
+        [Required(ErrorMessage = "Введите имя и фамилию")]
         public string NameSurname { get; set; }
     }
 }
