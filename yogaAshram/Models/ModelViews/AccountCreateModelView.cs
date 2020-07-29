@@ -20,14 +20,6 @@ namespace yogaAshram.Models.ModelViews
         public string Email { get; set; }
         
         [Required(ErrorMessage = "Это обязательное поле :")]
-        public string Role { get; set; } 
-        
-        [Required(ErrorMessage = "Введите пароль")]
-        [Display(Name = "Пароль")]
-        public string Password { get; set; }
-        [Required(ErrorMessage = "Подтвердите пароль")]
-        [Compare("Password", ErrorMessage = "Пароли не совпадают")]
-        [Display(Name = "Подтвердить пароль")]
-        public string ConfirmPassword { get; set; }
+        public string Role { get; set; }
     }
 }
