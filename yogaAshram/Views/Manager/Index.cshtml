@@ -16,8 +16,15 @@
 
     <div class="col-6">
         <a asp-action="CreateEmployee" asp-controller="Manager" class="btn btn-dark">Создать пользователя</a>
-        <div id="editProfileBtn" class="dropdown-item cursor-p">Редактировать профиль</div>
-        <div id="changePasswordBtn" class="dropdown-item cursor-p">Изменить пароль</div>
+        <div class="btn-group">
+            <button type="button" class="btn btn-outline-info dropdown-toggle mt-3 ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Действия
+            </button>
+            <div class="dropdown-menu">
+                <div id="editProfileBtn" class="dropdown-item cursor-p">Редактировать профиль</div>
+                <div id="changePasswordBtn" class="dropdown-item cursor-p">Изменить пароль</div>
+            </div>
+        </div>
     </div>
     <div class="form-row mt-3">
         @{
