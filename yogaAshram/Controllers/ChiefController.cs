@@ -40,19 +40,6 @@ namespace yogaAshram.Controllers
             }
             return null;
         }
-        [HttpPost]
-        public async Task<bool> ResetPasswordAjax()
-        {
-            Employee employee = await _userManager.GetUserAsync(User);
-            string psw = PasswordGenerator.Generate();
-            string code = await _userManager.GeneratePasswordResetTokenAsync(employee);
-            var result = await _userManager.ResetPasswordAsync(employee, code, psw);
- //           await EmailService.SendPassword(employee.Email, psw, Url.Action());
-            employee.OnTimePassword = true;
-            _db.Entry(employee).State = EntityState.Modified;
-            await _db.SaveChangesAsync();
-            return result.Succeeded;
-        }
         public async Task<IActionResult> Index()
         {
             Employee empl = await _userManager.GetUserAsync(User);
@@ -64,9 +51,9 @@ namespace yogaAshram.Controllers
             return View(new ChiefIndexModelView() { Employee = empl });
         }
         [HttpPost]    
-        public async Task<IActionResult> CreateEmployee(string nameSurname, string userName, string email)
+        public async Task<IActionResult> CreateEmployee(string nameSurname, string userName, string email, string role)
         {
-            if (String.IsNullOrEmpty(nameSurname))
+            if (String.IsNullOrEmpty(nameSurname) || !_db.Roles.Any(p => p.Name == role))
                 return BadRequest();
             Employee employee = new Employee()
             {
@@ -78,6 +65,7 @@ namespace yogaAshram.Controllers
             var result = await _userManager.CreateAsync(employee, newPsw);
             if (result.Succeeded)
             {
+                await _userManager.AddToRoleAsync(employee, role);
                 await EmailService.SendPassword(email, newPsw, Url.Action("Login", "Account", null, Request.Scheme));
                 return Json("true");
             }
@@ -92,15 +80,16 @@ namespace yogaAshram.Controllers
             Employee employee = await _userManager.GetUserAsync(User);
             if (ModelState.IsValid)
             {
-                if (!employee.OnTimePassword)
-                    return BadRequest();
                 var result = await _userManager.ChangePasswordAsync(employee, model.CurrentPassword, model.NewPassword);
                 if (result.Succeeded)
                 {
-                    employee.OnTimePassword = false;
-                    employee.PasswordState = PasswordStates.Normal;
-                    _db.Entry(employee).State = EntityState.Modified;
-                    await _db.SaveChangesAsync();
+                    if (employee.OnTimePassword)
+                    {
+                        employee.OnTimePassword = false;
+                        employee.PasswordState = PasswordStates.Normal;
+                        _db.Entry(employee).State = EntityState.Modified;
+                        await _db.SaveChangesAsync();
+                    }
                     return RedirectToAction("Index");
                 }               
             }
