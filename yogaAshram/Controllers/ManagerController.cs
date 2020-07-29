@@ -59,7 +59,8 @@ namespace yogaAshram.Controllers
                     UserName = model.UserName,
                     NameSurname = model.NameSurname
                 };
-                var result = await _userManager.CreateAsync(employee, model.Password);
+                string newPsw = PasswordGenerator.Generate();
+                var result = await _userManager.CreateAsync(employee, newPsw);
                 if (result.Succeeded)
                 {
                     IdentityRole role = await _roleManager.FindByNameAsync(model.Role);
@@ -67,11 +68,11 @@ namespace yogaAshram.Controllers
                     await EmailService.SendMessageAsync(employee.Email,
                             "Уведомление от центра Yoga Ashram",
                             $"<b>Ваш emal : </b>{employee.Email} \n <b>" + 
-                            $"<b>Ваш пароль : </b> Пока пусто <b>");
+                            $"<b>Ваш пароль : </b> {newPsw} <b>");
                     await _signInManager.SignInAsync(employee, false);
-                    return RedirectToAction("Index", "Employees");
+                    return Json("true");
                 }
-
+                
                 foreach (var error in result.Errors)
                     ModelState.AddModelError(string.Empty, error.Description);
             }
