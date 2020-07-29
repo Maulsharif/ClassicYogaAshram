@@ -14,31 +14,11 @@
                 </button>
             </div>
             <div class="modal-body text-center">
-                <h5>Новый пароль отправлен на вашу почту</h5>
+                <h5>Новый пользователь создан, его пароль отправлен ему на почту</h5>
                 <i class="fa fa-check" style="margin-auto"></i>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- Modal -->
-<div class="modal fade" id="resetPasswordModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Подтвердите свои действия</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body text-center">
-                <h5>Вы точно хотите сбросить пароль?</h5>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
-                <button type="button" id="submitResetPsw" class="btn btn-primary">Отправить</button>
             </div>
         </div>
     </div>
@@ -113,19 +93,11 @@
                         Добавить работника
                     </button>
                 </div>
-                @if (Model.Employee.OnTimePassword)
-                {
                     <div class="form-row mt-3">
                         @{
                             await Html.RenderPartialAsync("PartialViews/PasswordChangePartial", Model.Model);
                         }
                     </div>
-                }
-                <div class="form-row mt-3">
-                    <button id="resetPasswordBtn" type="button" class="btn btn-danger">
-                        Сбросить пароль
-                    </button>
-                </div>
             </div>
         </div>
         <div class="col-md-6 border-right">
@@ -226,7 +198,8 @@
                         data: {
                             "nameSurname": $(nameSurname).val(),
                             "userName": $(userName).val(),
-                            "email": $(email).val()
+                            "email": $(email).val(),
+                            "role": $(role).val()
                         },
                         success: function (data){
                             if (data != 'true') {
@@ -238,32 +211,12 @@
                                 email.val('');
                                 userName.val('');
                                 nameSurname.val('');
+                                $('#exelent-modal').modal('show');
                             }
                         }
                     })
                 }
             })
         });
-    </script>
-    <script>
-        $('#resetPasswordBtn').on('click', function () {
-        $('#resetPasswordModal').modal('show');
-        $('#submitResetPsw').on('click', function () {
-            $.ajax({
-                url: '@Url.Action("ResetPasswordAjax", "Account")',
-                type: 'POST',               
-                success: function (check) {
-                     if (check) {
-                          $('#exellent-modal').modal('show');
-                          $(auth).val('');
-                          $('#invalidAuth').html('');
-                     }
-                     else {
-                         console.log("что то не так");
-                     }
-                }
-            });
-        })
-    })
     </script>
 }
