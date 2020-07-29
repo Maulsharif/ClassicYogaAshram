@@ -78,21 +78,6 @@ namespace yogaAshram.Controllers
             return View(model);
         }
         
-        // [Authorize]
-        // public IActionResult EditManager(string id = null)
-        // {
-        //     Employee manager = null;
-        //     manager = id == null ? _userManager.GetUserAsync(User).Result : _userManager.FindByIdAsync(id).Result;
-        //     ManagerEditModelView model = new ManagerEditModelView()
-        //     {
-        //         Email = manager.Email,
-        //         UserName = manager.UserName,
-        //         NameSurname = manager.NameSurname,
-        //         Id = manager.Id,
-        //     };
-        //     return View(model);
-        // }
-        
         public async Task<IActionResult> GetEditModalAjax()
         {
             Employee employee = await _userManager.GetUserAsync(User);
