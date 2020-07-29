@@ -2,51 +2,6 @@
 @{
     ViewBag.Title = "Аутентификация";
 }
-<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.8/css/all.css" />
-<!-- Modal -->
-<div class="modal fade" id="exelent-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Успешно!</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body text-center">
-                <h5>Новый пароль отправлен на вашу почту</h5>
-                <i class="fa fa-check" style="margin-auto"></i>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- Modal -->
-<div class="modal fade" id="resetPasswordModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Восстановление пароля</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-                <div class="modal-body">
-                    <div class="form-group">
-                        <label>Введите вашу почту или логин<span class="text-danger">*</span></label>
-                        <input class="form-control" id="authentificatorInput">
-                        <p class="text-danger" id="invalidAuth"></p>
-                    </div>                 
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
-                    <button type="button" id="submitResetPsw" class="btn btn-primary">Отправить</button>
-                </div>
-        </div>
-    </div>
-</div>
 <div class="container">
     <div class="card" style="width:800px;margin:auto;">
         <div class="card-header text-center">
@@ -69,7 +24,6 @@
             </form>
         </div>
         <div class="card-footer text-muted">
-            <button type="button" id="resetPassword" class="btn btn-light">Забыли пароль?</button>
              <a asp-controller="Account" asp-action="ForgotPassword" class="btn btn-light">Забыли пароль?</a>
         </div>
     </div>
@@ -79,45 +33,4 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
-<script>
-    $('#resetPassword').on('click', function () {
-        $('#resetPasswordModal').modal('show');
-        $('#submitResetPsw').on('click', function () {
-            var auth = $('#authentificatorInput');
-            if ($(auth).val().length != 0) {
-                $.ajax({
-                    url: '@Url.Action("CheckAuthValid", "Validation")',
-                    type: 'GET',
-                    data: { 'authentificator': $(auth).val() },
-                    success: function (data) {
-                        if (data) {
-                            $.ajax({
-                                url: '@Url.Action("ResetPasswordAjax", "Account")',
-                                type: 'POST',
-                                data: { 'authentificator': $(auth).val() },
-                                success: function (check) {
-                                    if (check) {
-                                        $('#resetPasswordModal').modal('hide');
-                                        $('#exellent-modal').modal('show');
-                                        $(auth).val('');
-                                        $('#invalidAuth').html('');                                      
-                                    }
-                                    else {
-                                        $('#invalidAuth').html('Введите хоть что-то');
-                                    }
-                                }
-                            });
-                        }
-                        else {
-                            $('#invalidAuth').html('Неверная почта или логин');
-                        }
-                    }
-                })                
-            }
-            else {
-                $('#invalidAuth').html('Введите хоть что-то');
-            }
-        })
-    })
-</script>
 }
