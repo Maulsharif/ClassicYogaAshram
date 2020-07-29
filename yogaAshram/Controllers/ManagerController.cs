@@ -83,7 +83,7 @@ namespace yogaAshram.Controllers
         {
             Employee manager = null;
             manager = id == null ? _userManager.GetUserAsync(User).Result : _userManager.FindByIdAsync(id).Result;
-            EditModelView model = new EditModelView()
+            ManagerEditModelView model = new ManagerEditModelView()
             {
                 Email = manager.Email,
                 UserName = manager.UserName,
@@ -95,7 +95,7 @@ namespace yogaAshram.Controllers
 
         [HttpPost]
         [Authorize]
-        public async Task<IActionResult> EditManager(EditModelView model)
+        public async Task<IActionResult> EditManager(ManagerEditModelView model)
         {
             if (ModelState.IsValid)
             {

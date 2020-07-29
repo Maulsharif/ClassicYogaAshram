@@ -3,7 +3,7 @@
 
  namespace yogaAshram.Models.ModelViews
 {
-    public class EditModelView
+    public class ManagerEditModelView
     {
         public string Id { get; set; }
         [Required(ErrorMessage = "Введите логин")]
