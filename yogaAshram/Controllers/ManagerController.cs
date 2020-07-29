@@ -78,42 +78,47 @@ namespace yogaAshram.Controllers
             return View(model);
         }
         
-        [Authorize]
-        public IActionResult EditManager(string id = null)
+        // [Authorize]
+        // public IActionResult EditManager(string id = null)
+        // {
+        //     Employee manager = null;
+        //     manager = id == null ? _userManager.GetUserAsync(User).Result : _userManager.FindByIdAsync(id).Result;
+        //     ManagerEditModelView model = new ManagerEditModelView()
+        //     {
+        //         Email = manager.Email,
+        //         UserName = manager.UserName,
+        //         NameSurname = manager.NameSurname,
+        //         Id = manager.Id,
+        //     };
+        //     return View(model);
+        // }
+        
+        public async Task<IActionResult> GetEditModalAjax()
         {
-            Employee manager = null;
-            manager = id == null ? _userManager.GetUserAsync(User).Result : _userManager.FindByIdAsync(id).Result;
-            ManagerEditModelView model = new ManagerEditModelView()
-            {
-                Email = manager.Email,
-                UserName = manager.UserName,
-                NameSurname = manager.NameSurname,
-                Id = manager.Id,
-            };
-            return View(model);
+            Employee employee = await _userManager.GetUserAsync(User);
+            return PartialView("PartialViews/ManagerAccountEditPartial", new ManagerEditModelView() { 
+                Email = employee.Email,
+                NameSurname = employee.NameSurname,
+                UserName = employee.UserName
+            });
         }
 
         [HttpPost]
         [Authorize]
         public async Task<IActionResult> EditManager(ManagerEditModelView model)
         {
+            Employee employee = await _userManager.GetUserAsync(User);
             if (ModelState.IsValid)
-            {
-                Employee manager = await _userManager.FindByIdAsync(model.Id);
-                if (manager != null)
-                {
-                    manager.NameSurname = model.NameSurname;
-                    manager.UserName = model.UserName;
-                    manager.Email = model.Email;
-
-                    var result = await _userManager.UpdateAsync(manager);
-                    if (result.Succeeded)
-                        return RedirectToAction("Index");
-                    foreach (var error in result.Errors)
-                        ModelState.AddModelError("", error.Description);
-                }
+            {             
+                employee.UserName = model.UserName;
+                employee.Email = model.Email;
+                employee.NameSurname = model.NameSurname;
+                _db.Entry(employee).State = EntityState.Modified;
+                await _db.SaveChangesAsync();
+                return RedirectToAction("Index");
             }
-            return View(model);
+            await SetViewBagRoles();
+            return View("Index", new ManagerIndexModelView() { ManagerEditModel = model, IsEditInvalid = true, Employee = employee });
         }
         string GetRuRoleName(string role)
         {
