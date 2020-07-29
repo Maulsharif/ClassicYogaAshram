@@ -15,7 +15,7 @@ namespace yogaAshram
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var host = CreateHostBuilder(args).Build();
             using var scope = host.Services.CreateScope();
@@ -23,8 +23,8 @@ namespace yogaAshram
             try
             {
                 var userManager = services.GetRequiredService<UserManager<Employee>>();
-                var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
-                _ = RoleInitializer.Initialize(roleManager, userManager);
+                var roleManager = services.GetRequiredService<RoleManager<Role>>();
+                await RoleInitializer.Initialize(roleManager, userManager);
             }
             catch (Exception e)
             {

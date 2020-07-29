@@ -9,7 +9,7 @@ namespace yogaAshram.Services
 {
     public static class RoleInitializer
     {
-        public static async Task Initialize(RoleManager<IdentityRole> roleManager,
+        public static async Task Initialize(RoleManager<Role> roleManager,
             UserManager<Employee> userManager)
         {
             string dirEmail = "dir@gmail.com";
@@ -21,7 +21,7 @@ namespace yogaAshram.Services
             foreach (var role in roles)
             {
                 if (await roleManager.FindByNameAsync(role) is null)
-                    await roleManager.CreateAsync(new IdentityRole(role));
+                    await roleManager.CreateAsync(new Role(role));
             }
             
             if (await userManager.FindByEmailAsync(dirEmail) is null)
