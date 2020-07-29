@@ -133,6 +133,8 @@ namespace yogaAshram.Controllers
             }
             return null;
         }
+        
+        [Authorize]
         private async Task SetViewBagRoles()
         {
             Dictionary<string, string> rolesDic = new Dictionary<string, string>();
