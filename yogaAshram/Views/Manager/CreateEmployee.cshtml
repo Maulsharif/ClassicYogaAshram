@@ -15,7 +15,7 @@
                 <option></option>
                 <option value="marketer">маркетолог</option>
                 <option value="seller">продавец</option>
-                <option value="coach">администратор</option>
+                <option value="admin">администратор</option>
             </select>
             <div>
                 <span asp-validation-for="Email"></span>
@@ -70,7 +70,7 @@
         	else if (z === "seller"){
         	     document.getElementById("nameSurname").innerHTML = "ФИО   " + "продавца" ;
         	}
-        	else if (z === "coach"){
+        	else if (z === "admin"){
         	     document.getElementById("nameSurname").innerHTML = "ФИО   " + "администратора" ;
         	 }	
         }
