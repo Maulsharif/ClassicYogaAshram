@@ -81,7 +81,7 @@ namespace yogaAshram.Controllers
             string psw = PasswordGenerator.Generate();
             string code = await _userManager.GeneratePasswordResetTokenAsync(employee);
             var result = await _userManager.ResetPasswordAsync(employee, code, psw);
-            await EmailService.SendPassword(employee.Email, psw, Url.Action());
+            await EmailService.SendPassword(employee.Email, psw, Url.Action("Login", "Account"));
             employee.OnTimePassword = true;
             _db.Entry(employee).State = EntityState.Modified;
             await _db.SaveChangesAsync();
@@ -93,6 +93,72 @@ namespace yogaAshram.Controllers
         {
             await _signInManager.SignOutAsync();
             return RedirectToAction("Index", "Home");
+        }
+        [HttpGet]
+        [AllowAnonymous]
+        public IActionResult ForgotPassword()
+        {
+            return View();
+        }
+        [HttpPost]
+        public async Task<IActionResult> ForgotPassword(ForgotPasswordViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = await _userManager.FindByEmailAsync(model.Email);
+                if (user != null)
+                {
+                    var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+                    var passwordResetLink = Url.Action("ResetPassword", "Account",
+                        new {email = model.Email, token = token}, Request.Scheme);
+                    string message = $"<p>Здравствуйте!</p><p>Вы запросили восстановление пароля.</p>" +
+                                     $"<p>Пожалуйста, перейдите по этой</p>" +
+                                     $" <a href=" + '"' + passwordResetLink  +'"' + ">ссылке</a>," +
+                                     " придумайте и введите ваш новый пароль.</p>";
+                    await EmailService.SendMessageAsync(model.Email, "Восстановление пароля", message);
+                    return View("ForgotPasswordConfirmation");
+                }
+                return View("ForgotPasswordConfirmation");
+            }
+            return View();
+        }
+        [HttpGet]
+        [AllowAnonymous]
+        public IActionResult ResetPassword(string token, string email)
+        {
+            if(token is null || email is null)
+                ModelState.AddModelError("", "Невалидный токен");
+            return View();
+        }
+        [HttpPost]
+        [AllowAnonymous]
+        public async Task<IActionResult> ResetPassword(ResetPasswordViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = await _userManager.FindByEmailAsync(model.Email);
+                if (user != null)
+                {
+                    var result = await _userManager.ResetPasswordAsync(user, model.Token, model.Password);
+                    if (result.Succeeded)
+                    {
+                        user.OnTimePassword = false;
+                        user.PasswordState = PasswordStates.Normal;
+                        _db.Entry(user).State = EntityState.Modified;
+                        await _db.SaveChangesAsync();
+                        return View("ResetPasswordConfirmation");
+                    }
+
+                    foreach (var error in result.Errors)
+                    {
+                        ModelState.AddModelError("", error.Description);
+                    }
+
+                    return View(model);
+                }
+                return View("ResetPasswordConfirmation");
+            }
+            return View(model);
         }
     }
 }
