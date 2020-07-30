@@ -89,6 +89,7 @@ body {
 .popup-overlay {
     visibility: hidden;
     position: absolute;
+    z-index: 10;
     background: #ffffff;
     border: 2px solid #666666;
     width: 300px;
@@ -96,7 +97,6 @@ body {
     left: 50%;
     transform: translate(-50%, -1%);
     top: 85%;
-
 }
 .popup-overlay.active {
     visibility: visible;
@@ -131,23 +131,24 @@ body {
     background-color: #000000;
     border: 2px solid #555555;
 }
-.scrollbar-3
-{
+.scrollbar-3 {
     float: left;
     height: 100%;
     width: 100%;
     background: #ffffff;
     overflow-y: scroll;
     overflow-x: hidden;
-    position:absolute;
-    top:0;
-    right:0;
+    z-index: 10;
+    position: absolute;
+    top: 0;
+    right: 0;
 }
 .search-form {
     width: 300px;
     background: #fafafa;
     overflow: hidden;
     position: absolute;
+    z-index: 10;
     left: 50%;
     transform: translate(-50%, -1%);
 }
@@ -185,5 +186,5 @@ input[type=search]:focus.search-input {
     right:2px;
 }
 .marginFromInput{
-    margin-top: 150px;
+    
 }
