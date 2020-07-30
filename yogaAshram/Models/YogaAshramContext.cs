@@ -8,7 +8,7 @@ namespace yogaAshram.Models
     {
         public DbSet<Employee> Employees { get; set; }
         public DbSet<ManagerEmployee> ManagerEmployees { get; set; }
-
+        public DbSet<Branch> Branches { get; set; }
         public YogaAshramContext(DbContextOptions options) : base(options) 
         {
         }
