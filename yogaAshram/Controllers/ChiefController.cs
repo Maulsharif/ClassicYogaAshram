@@ -124,25 +124,34 @@ namespace yogaAshram.Controllers
             await SetViewBagRoles();
             return View("../Chief/Index", new ChiefIndexModelView() { Employee = employee, Model = model, IsModalInvalid = true }) ;
         }
-        public IActionResult Search(string search)
+        [HttpGet]
+        public async Task<IActionResult> EditEmployee(long emplId)
         {
-            if (string.IsNullOrEmpty(search))
-            {
-                ViewBag.Error = "Введите имя сотрудника для поиска";
-                return PartialView("PartialView", _db.Employees.Where(e => e.Id != GetUserId.GetCurrentUserId(this.HttpContext)).ToList());
-            }
-            search = search.ToUpper();
-                List<Employee> employees = _db.Employees
-                    .Where(e => e.Id != GetUserId.GetCurrentUserId(this.HttpContext))
-                    .Where(p => p.UserName.ToUpper().Contains(search)
-                                || p.NameSurname.ToUpper().Contains(search))
-                    .ToList();
-                if (employees.Count == 0)
-                {
-                    ViewBag.Error = "Совпадений не найдено";
-                }
-                return PartialView("PartialView", employees);
-                
+            Employee employee = await _db.Employees.FirstOrDefaultAsync(p => p.Id == emplId);
+            if (employee is null)
+                return NotFound();
+            return View(new ChiefEditEmployeeModelView() { 
+                UserName = employee.UserName, 
+                Email = employee.Email,
+                NameSurname = employee.NameSurname,
+                Id = employee.Id
+            });
+        }
+        [HttpPost]
+        public async Task<IActionResult> EditEmployee(ChiefEditEmployeeModelView model)
+        {
+            Employee employee = await _db.Employees.FirstOrDefaultAsync(p => p.Id == model.Id);
+            if (employee is null)
+                return BadRequest();
+            if (_db.Employees.Any(p => (p.Id != model.Id) && (p.UserName == model.UserName || p.Email == model.Email)) 
+                || String.IsNullOrEmpty(model.NameSurname))
+                return BadRequest();
+            employee.NameSurname = model.NameSurname;
+            employee.UserName = model.UserName;
+            employee.Email = model.Email;
+            _db.Entry(employee).State = EntityState.Modified;
+            await _db.SaveChangesAsync();
+            return RedirectToAction("Index");
         }
     }
 }

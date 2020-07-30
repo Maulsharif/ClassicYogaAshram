@@ -65,6 +65,13 @@ namespace yogaAshram.Controllers
                 {
                     Role role = await _roleManager.FindByNameAsync(model.Role);
                     await _userManager.AddToRoleAsync(employee, role.Name);
+                    ManagerEmployee managerEmployee = new ManagerEmployee()
+                    {
+                        Manager = _db.Employees.FirstOrDefault(e => e.Id == GetUserId.GetCurrentUserId(this.HttpContext)),
+                        Employee = employee
+                    };
+                    _db.Entry(managerEmployee).State = EntityState.Added;
+                    await _db.SaveChangesAsync();
                     await EmailService.SendMessageAsync(employee.Email,
                             "Уведомление от центра Yoga Ashram",
                             $"<b>Ваш emal : </b>{employee.Email} \n <b>" + 
@@ -152,5 +159,31 @@ namespace yogaAshram.Controllers
             await SetViewBagRoles();
             return View("Index", new ManagerIndexModelView() { Employee = employee, Model = model, IsModalInvalid = true }) ;
         }
+        [Authorize]
+        public IActionResult EditEmployee(long? id)
+        {
+            Employee employee = _db.Employees.FirstOrDefault(e => e.Id == id);
+            return View(employee);
+        }
+        [Authorize]
+        [HttpPost]
+        public async Task<IActionResult> EditEmployee(ManagerEditModelView model)
+        {
+            if (ModelState.IsValid)
+            {
+                Employee employee = await _db.Employees.FirstOrDefaultAsync(e => e.Id == model.Id);
+                if (employee != null)
+                {
+                    employee.UserName = model.UserName;
+                    employee.Email = model.Email;
+                    employee.NameSurname = model.NameSurname;
+                    _db.Entry(employee).State = EntityState.Modified;
+                    await _db.SaveChangesAsync();
+
+                }
+            }
+            return RedirectToAction("EditEmployee", "Manager", new {id = model.Id});
+        }
+        
     }
 }

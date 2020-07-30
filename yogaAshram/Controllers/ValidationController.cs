@@ -19,6 +19,16 @@ namespace yogaAshram.Controllers
             _userManager = userManager;
         }
         [Authorize]
+        public bool CheckEditEmplUserName(string userName, long emplId)
+        {
+            return !_db.Employees.Any(p => p.UserName == userName && p.Id != emplId);
+        }
+        [Authorize]
+        public bool CheckEditEmplEmail(string email, long emplId)
+        {
+            return !_db.Employees.Any(p => p.Email == email && p.Id != emplId);
+        }
+        [Authorize]
         public async Task<bool> CheckEditUserName(string userName)
         {
             if (_db.Employees.Any(p => p.UserName == userName))

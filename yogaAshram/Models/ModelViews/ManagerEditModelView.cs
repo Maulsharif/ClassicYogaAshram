@@ -5,7 +5,7 @@
 {
     public class ManagerEditModelView
     {
-        public string Id { get; set; }
+        public long Id { get; set; }
         [Required(ErrorMessage = "Введите логин")]
         [Remote(action: "CheckEditUserName", controller: "Vaidation", ErrorMessage = "Аккаунт с таким логином уже зарегистрирован")]
         public string UserName { get; set; }
