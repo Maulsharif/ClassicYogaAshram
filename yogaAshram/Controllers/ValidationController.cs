@@ -50,6 +50,17 @@ namespace yogaAshram.Controllers
             }
             return true;
         }
+        public bool CheckEmailForEditing(string Email, long Id)
+        {
+            List<Employee> usersList = _db.Users.Where(u => u.Id != Id).ToList();
+            return usersList.All(u => u.Email != Email);
+        }
+        
+        public bool CheckUserNameForEditing(string UserName, long Id)
+        {
+            List<Employee> usersList = _db.Users.Where(u => u.Id != Id).ToList();
+            return usersList.All(u => u.UserName != UserName);
+        }
         [Authorize]
         public async Task<bool> CheckPassword(string currentPassword)
         { 
