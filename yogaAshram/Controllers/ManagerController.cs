@@ -160,10 +160,20 @@ namespace yogaAshram.Controllers
             return View("Index", new ManagerIndexModelView() { Employee = employee, Model = model, IsModalInvalid = true }) ;
         }
         [Authorize]
-        public IActionResult EditEmployee(long? id)
+        public IActionResult EditEmployee(long id)
         {
             Employee employee = _db.Employees.FirstOrDefault(e => e.Id == id);
-            return View(employee);
+            
+                ManagerEditModelView model = new ManagerEditModelView()
+                {
+                    Id = id,
+                    UserName = employee.UserName,
+                    Email = employee.Email,
+                    NameSurname = employee.NameSurname
+                };
+            
+
+            return View(model);
         }
         [Authorize]
         [HttpPost]
