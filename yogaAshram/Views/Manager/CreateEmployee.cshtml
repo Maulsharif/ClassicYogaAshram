@@ -1,16 +1,16 @@
 ﻿@model AccountCreateModelView
 
 @{
-    ViewBag.Title = "Регистрация ";
+    ViewBag.Title = "Добавить нового пользователя";
     Layout = "_Layout";
 }
 <div class="row d-flex justify-content-center">
     <div class="col-md-6">
-        <h2>Регистрация нового пользователя</h2>
+        <h2>Добавить нового пользователя</h2>
         <form method="post" asp-controller="Manager" asp-action="CreateEmployee">
             <div asp-validation-summary="ModelOnly"></div>
 
-            <label asp-for="Role">В качестве кого регистрируетесь?</label>
+            <label asp-for="Role">Должность</label>
             <select id="list" class="form-control mb-4" asp-for="Role" onchange="change()">
                 <option></option>
                 <option value="marketer">маркетолог</option>

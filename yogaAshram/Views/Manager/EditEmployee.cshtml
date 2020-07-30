@@ -7,18 +7,7 @@
 <div class="container">
     <div class="card text-center">
     <div class="card-header">
-      @if (User.IsInRole("seller"))
-      {
-          <p>Должность: Продавец</p>
-      }
-      else if (User.IsInRole("admin"))
-      {
-                <p>Должность: Администратор</p>
-      }
-      else if (User.IsInRole("marketer"))
-      {
-          <p>Должность: Маркетолог</p>
-      }
+      
     </div>
     <div class="card-body">
         <p class="card-text">Имя пользователя: @Model.UserName</p>
