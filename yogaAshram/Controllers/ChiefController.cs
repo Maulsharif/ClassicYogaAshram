@@ -51,6 +51,7 @@ namespace yogaAshram.Controllers
         public async Task<IActionResult> Index()
         {
             Employee empl = await _userManager.GetUserAsync(User);
+            ViewBag.Branches = _db.Branches.ToList();
             await SetViewBagRoles();
             return View(new ChiefIndexModelView() { Employee = empl });
         }
