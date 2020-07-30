@@ -124,6 +124,35 @@ namespace yogaAshram.Controllers
             await SetViewBagRoles();
             return View("../Chief/Index", new ChiefIndexModelView() { Employee = employee, Model = model, IsModalInvalid = true }) ;
         }
+        [HttpGet]
+        public async Task<IActionResult> EditEmployee(long emplId)
+        {
+            Employee employee = await _db.Employees.FirstOrDefaultAsync(p => p.Id == emplId);
+            if (employee is null)
+                return NotFound();
+            return View(new ChiefEditEmployeeModelView() { 
+                UserName = employee.UserName, 
+                Email = employee.Email,
+                NameSurname = employee.NameSurname,
+                Id = employee.Id
+            });
+        }
+        [HttpPost]
+        public async Task<IActionResult> EditEmployee(ChiefEditEmployeeModelView model)
+        {
+            Employee employee = await _db.Employees.FirstOrDefaultAsync(p => p.Id == model.Id);
+            if (employee is null)
+                return BadRequest();
+            if (_db.Employees.Any(p => (p.Id != model.Id) && (p.UserName == model.UserName || p.Email == model.Email)) 
+                || String.IsNullOrEmpty(model.NameSurname))
+                return BadRequest();
+            employee.NameSurname = model.NameSurname;
+            employee.UserName = model.UserName;
+            employee.Email = model.Email;
+            _db.Entry(employee).State = EntityState.Modified;
+            await _db.SaveChangesAsync();
+            return RedirectToAction("Index");
+        }
         public IActionResult Search(string search)
         {
             if (string.IsNullOrEmpty(search))
