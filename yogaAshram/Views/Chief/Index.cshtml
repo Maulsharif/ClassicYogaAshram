@@ -1,4 +1,5 @@
-﻿@model ChiefIndexModelView
+﻿@using System.Collections
+@model ChiefIndexModelView
 @{
     ViewBag.Title = "Личный кабинет";
 }
@@ -72,6 +73,30 @@
         </div>
     </div>
 </div>
+<!-- Modal -->
+<div class="modal fade" id="addBranch" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Добавить центр йоги</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+          <form asp-action="CreateBranch" asp-controller="Branch">
+              <input name="name" type="text" class="form-control mb-2" placeholder="Название" required>
+              <input name="info" type="text" class="form-control mb-2" placeholder="Информация о центре">
+              <input name="address" type="text" class="form-control mb-2" placeholder="Адрес">
+               <input type="submit" class="btn btn-secondary" value="Добавить">
+          </form>
+      </div>
+      <div class="modal-footer">
+       <button type="button" class="btn btn-outline-dark" data-dismiss="modal">Закрыть</button>
+      </div>
+    </div>
+  </div>
+</div>
 <div class="container marginFromInput">
 <div class="card" style="width: 800px; margin: auto">
     <div class="row no-gutters">
@@ -91,6 +116,7 @@
                         <div id="editProfileBtn" class="dropdown-item cursor-p">Редактировать профиль</div>
                         <div id="emplCreateBtn" class="dropdown-item cursor-p" href="#">Добавить работника</div>
                         <div id="changePasswordBtn" class="dropdown-item cursor-p">Изменить пароль</div>
+                        <div class="dropdown-item cursor-p" data-toggle="modal" data-target="#addBranch">Добавить центр йоги</div>
                     </div>
                 </div>
                 <div class="form-row mt-3">
@@ -103,10 +129,13 @@
         <div class="col-md-6 border-right">
             <div class="card-body">
                 <h5 class="card-title text-center border-bottom" style="padding-bottom:13px;">
-                    Все филиалы
+                    Все центры
                 </h5>
                 <div>
-
+                    @foreach (Branch branch in (IEnumerable) @ViewBag.Branches)
+                    {
+                        <p class="text-center">Центр йоги "@branch.Name"</p>
+                    }
                 </div>
             </div>
         </div>
