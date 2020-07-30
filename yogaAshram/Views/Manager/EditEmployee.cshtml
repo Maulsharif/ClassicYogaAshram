@@ -1,10 +1,92 @@
-﻿@model Employee
+﻿@model ManagerEditModelView
 
 @{
     ViewBag.Title = "Редактирование полей сотрудника";
     Layout = "_Layout";
 }
 <div class="container">
-    <h2 class="text-center">Редактирование полей сотрудника</h2>
-    
+    <div class="card text-center">
+    <div class="card-header">
+      @if (User.IsInRole("seller"))
+      {
+          <p>Должность: Продавец</p>
+      }
+      else if (User.IsInRole("admin"))
+      {
+                <p>Должность: Администратор</p>
+      }
+      else if (User.IsInRole("marketer"))
+      {
+          <p>Должность: Маркетолог</p>
+      }
+    </div>
+    <div class="card-body">
+        <p class="card-text">Имя пользователя: @Model.UserName</p>
+        <p class="card-text">Email: @Model.Email</p>
+        <p class="card-text">ФИО: @Model.NameSurname</p>
+        @if (User.IsInRole("manager"))
+        {
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#EditUser">
+                Изменить данные пользователя
+            </button>
+        }
+     
+    </div>
+    <div class="card-footer text-muted">
+    </div>
+  </div>
 </div>
+<div class="modal fade" id="EditUser" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Изменение данных пользователя</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form asp-action="EditEmployee" asp-controller="Manager" method="post" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <label for="">
+                            Имя пользователя
+                        </label>
+                        <input asp-for="UserName" type="text" class="form-control">
+                        <div>
+                            <span asp-validation-for="UserName"></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>
+                            Электронная почта
+                        </label>
+                        <input asp-for="Email" type="text" class="form-control">
+                        <div>
+                            <span asp-validation-for="Email"></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>
+                            ФИО
+                        </label>
+                        <input asp-for="NameSurname" type="text" class="form-control">
+                        <div>
+                           <span asp-validation-for="NameSurname"></span>
+                        </div>
+                    </div>
+                    <input type="hidden" asp-for="Id" value="@Model.Id">
+                    <button type="submit" class="btn btn-outline-dark">Изменить</button>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts
+{
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
