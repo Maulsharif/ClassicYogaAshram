@@ -185,6 +185,6 @@ input[type=search]:focus.search-input {
     position:relative;
     right:2px;
 }
-.marginFromInput{
-    
+.branchDetails{
+    display: none;
 }

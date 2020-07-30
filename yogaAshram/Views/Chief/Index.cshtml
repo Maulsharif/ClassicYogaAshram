@@ -134,7 +134,12 @@
                 <div>
                     @foreach (Branch branch in (IEnumerable) @ViewBag.Branches)
                     {
-                        <p class="text-center">Центр йоги "@branch.Name"</p>
+                        <p class="text-center">Центр йоги "@branch.Name" <a href="#" id="branchButton-@branch.Id" onclick="openBranch('@branch.Id')"> Открыть</a>
+                            <a href="#" id="delete-@branch.Id"> Удалить</a></p>
+                        <div id="branchDetails-@branch.Id" class="branchDetails">
+                            <p class="text-center">Адрес: @branch.Address</p>
+                            <p class="text-center">Информация о центре: @branch.Info</p>
+                        </div>
                     }
                 </div>
             </div>
@@ -156,6 +161,18 @@
             $('#editPrifilePartial').modal('show');
         </script>
     }
+    <script>
+      function openBranch(branchId) {
+        $('#branchDetails-' + branchId).toggle('slow', function() {
+          if ($('#branchDetails-' + branchId).css('display') !== 'none'){                                 
+                     $('#branchButton-' + branchId).text("Скрыть");
+                   }
+                  else if ($('#branchDetails-' + branchId).css('display') !== 'block'){                      
+                      $('#branchButton-' + branchId).text("Открыть");
+                  }
+           });
+         }
+    </script>
     <script>
         $("#editProfileBtn").on('click', function () {
             if (document.getElementById('editPrifileModal')) {
