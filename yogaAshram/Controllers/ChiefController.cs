@@ -153,25 +153,5 @@ namespace yogaAshram.Controllers
             await _db.SaveChangesAsync();
             return RedirectToAction("Index");
         }
-        public IActionResult Search(string search)
-        {
-            if (string.IsNullOrEmpty(search))
-            {
-                ViewBag.Error = "Введите имя сотрудника для поиска";
-                return PartialView("PartialView", _db.Employees.Where(e => e.Id != GetUserId.GetCurrentUserId(this.HttpContext)).ToList());
-            }
-            search = search.ToUpper();
-                List<Employee> employees = _db.Employees
-                    .Where(e => e.Id != GetUserId.GetCurrentUserId(this.HttpContext))
-                    .Where(p => p.UserName.ToUpper().Contains(search)
-                                || p.NameSurname.ToUpper().Contains(search))
-                    .ToList();
-                if (employees.Count == 0)
-                {
-                    ViewBag.Error = "Совпадений не найдено";
-                }
-                return PartialView("PartialView", employees);
-                
-        }
     }
 }
