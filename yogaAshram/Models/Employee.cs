@@ -13,5 +13,6 @@ namespace yogaAshram.Models
         public string NameSurname { get; set; }
         public bool OnTimePassword { get; set; } = true;
         public PasswordStates PasswordState { get; set; } = PasswordStates.DisposableNew;
+        public string Role { get; set; }
     }
 }
