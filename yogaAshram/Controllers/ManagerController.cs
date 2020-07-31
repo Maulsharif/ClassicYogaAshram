@@ -57,7 +57,8 @@ namespace yogaAshram.Controllers
                 {
                     Email = model.Email,
                     UserName = model.UserName,
-                    NameSurname = model.NameSurname
+                    NameSurname = model.NameSurname,
+                    Role = model.Role
                 };
                 string newPsw = PasswordGenerator.Generate();
                 var result = await _userManager.CreateAsync(employee, newPsw);
@@ -74,10 +75,12 @@ namespace yogaAshram.Controllers
                     await _db.SaveChangesAsync();
                     await EmailService.SendMessageAsync(employee.Email,
                             "Уведомление от центра Yoga Ashram",
-                            $"<b>Ваш emal : </b>{employee.Email} \n <b>" + 
-                            $"<b>Ваш пароль : </b> {newPsw} <b>");
+                            $"Здравствуйте, {employee.UserName}!" +
+                            $"<b>Ваш email : </b>{employee.Email} \n <b>" + 
+                            $"<b>Ваш пароль : </b> {newPsw} <b>" +
+                            "$<b>Используйте их для входа на наш сайт<b>");
                     await _signInManager.SignInAsync(employee, false);
-                    return Json("true");
+                    return RedirectToAction("Index", "Manager");
                 }
                 
                 foreach (var error in result.Errors)

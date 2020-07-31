@@ -51,7 +51,10 @@ namespace yogaAshram.Controllers
         public async Task<IActionResult> Index()
         {
             Employee empl = await _userManager.GetUserAsync(User);
-            ViewBag.Branches = _db.Branches.ToList();
+            ViewBag.Branches = _db.Branches.Include(b => b.Marketer)
+                .Include(b => b.Seller).ToList();
+            ViewBag.Marketer = _db.Employees.Where(e => e.Role == "marketer").ToList();
+            ViewBag.Seller = _db.Employees.Where(e => e.Role == "seller").ToList();
             await SetViewBagRoles();
             return View(new ChiefIndexModelView() { Employee = empl });
         }
@@ -64,7 +67,8 @@ namespace yogaAshram.Controllers
             {
                 UserName = userName,
                 Email = email,
-                NameSurname = nameSurname
+                NameSurname = nameSurname,
+                Role = role
             };
             string newPsw = PasswordGenerator.Generate();
             var result = await _userManager.CreateAsync(employee, newPsw);
