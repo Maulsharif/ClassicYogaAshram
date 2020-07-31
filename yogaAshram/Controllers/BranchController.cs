@@ -68,5 +68,13 @@ namespace yogaAshram.Controllers
             }
             return RedirectToAction("Index", "Chief");
         }
+        [HttpPost]
+        public async Task<IActionResult> Delete(long id)
+        {
+            Branch branch = _db.Branches.FirstOrDefault(p => p.Id == id);
+            _db.Entry(branch).State = EntityState.Deleted;
+            await _db.SaveChangesAsync();
+            return RedirectToAction("Index", "Chief");
+        }
     }
 }
