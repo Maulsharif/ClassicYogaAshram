@@ -188,3 +188,21 @@ input[type=search]:focus.search-input {
 .branchDetails{
     display: none;
 }
+.editIcon{
+    width: 20px;
+}
+.inputName{
+    display: none;
+}
+.inputAddress{
+    display: none;
+}
+.inputInfo{
+    display: none;
+}
+.inputMarketer{
+    display: none;
+}
+.inputSeller{
+    display: none;
+}
