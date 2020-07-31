@@ -73,6 +73,7 @@
         </div>
     </div>
 </div>
+
 <!-- Modal -->
 <div class="modal fade" id="addBranch" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" role="document">
@@ -169,7 +170,32 @@
                      @foreach (Branch branch in (IEnumerable) @ViewBag.Branches)
                      {
                          <p>Центр йоги "@branch.Name" <a href="#" id="branchButton-@branch.Id" onclick="openBranch('@branch.Id')"> Открыть</a>
-                             <a href="#" id="delete-@branch.Id"> Удалить</a></p>
+                             <a href="#" data-toggle="modal" data-target="#deleteBranch-@branch.Id"> Удалить</a></p>
+                         <!-- Modal -->
+                         <div class="modal fade" id="deleteBranch-@branch.Id" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                             <div class="modal-dialog" role="document">
+                                 <div class="modal-content">
+                                     <div class="modal-header">
+                                         <h5 class="modal-title" id="exampleModalLabel"></h5>
+                                         <button type="button" class="close" data-dismiss="modal" aria-label="Нет">
+                                             <span aria-hidden="true">&times;</span>
+                                         </button>
+                                     </div>
+                                     <div class="modal-body">
+                                          <p class="text-center">Вы уверены что хотите удалить "@branch.Name"?</p>
+                                     </div>
+                                     <div class="modal-footer">
+                                         <form method="post" asp-action="Delete" asp-controller="Branch">
+                                             <input type="hidden" name="id" value="@branch.Id">
+                                         <button type="submit" class="btn btn-primary">Да</button>
+                                         </form>
+                                          <button type="button" class="btn btn-secondary" data-dismiss="modal">Нет</button>
+                                     </div>
+                                 </div>
+                             </div>
+                         </div>
+                             
+                             
                          <div id="branchDetails-@branch.Id" class="branchDetails">
                              <div id="nameReload-@branch.Id">
                                  <p>Название: <span id="nameValue-@branch.Id"> @branch.Name</span> <a href="#" onclick="openName('@branch.Id');return false;" title="Редактировать">
