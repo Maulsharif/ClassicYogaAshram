@@ -29,7 +29,7 @@ namespace yogaAshram
         {
             services.AddControllersWithViews();
             string connection = Configuration.GetConnectionString("DefaultConnection");
-            services.AddDbContext<YogaAshramContext>(options => options.UseNpgsql(connection))
+            services.AddDbContext<YogaAshramContext>(options => options.UseLazyLoadingProxies().UseNpgsql(connection))
                 .AddIdentity<Employee, Role>(options =>
                 {
                     options.Password.RequiredLength = 6; // минимальная длина

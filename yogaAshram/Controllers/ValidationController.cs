@@ -85,7 +85,7 @@ namespace yogaAshram.Controllers
         }
         public bool CheckAuthValid(string authentificator)
         {
-            if (_db.Employees.Any(p => p.UserName == authentificator))
+            if (_db.Employees.Any(p => p.UserName== authentificator))
                 return true;
             return _db.Employees.Any(p => p.Email == authentificator);
         }

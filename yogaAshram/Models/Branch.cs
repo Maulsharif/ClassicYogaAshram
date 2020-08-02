@@ -11,6 +11,6 @@ namespace yogaAshram.Models
         public long? MarketerId { get; set; }
         public virtual Employee Marketer { get; set; }
         public long? SellerId { get; set; }
-        public Employee Seller { get; set; }
+        public virtual Employee Seller { get; set; }
     }
 }
