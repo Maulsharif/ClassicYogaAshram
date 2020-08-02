@@ -15,7 +15,7 @@ namespace yogaAshram.Models
         public int FromMinutes { get; set; }
         public int ToHours { get; set; }
         public int ToMinutes { get; set; }
-        public int IdGroup { get; set; }
+        public long GroupId { get; set; }
         public virtual Group Group{ get; set; }
         public virtual List<Group> Groups { get; set; }
     }
