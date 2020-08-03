@@ -1,8 +1,9 @@
-﻿@model Employee
-
+﻿@inject UserManager<Employee> UserManager
+@using Microsoft.AspNetCore.Identity
+@model Employee
 @{
-    ViewBag.Title = "title";
+    ViewBag.Title = "Главная";
     Layout = "_Layout";
 }
+<h2>Админ</h2>
 
-<h2>title</h2>
