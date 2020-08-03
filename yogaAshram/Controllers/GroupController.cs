@@ -24,7 +24,7 @@ namespace yogaAshram.Controllers
         }
         
         [Authorize]
-        public IActionResult CreateGroup(int userId)
+        public IActionResult CreateGroup()
         {
             ViewBag.Branches = _db.Branches.ToList();
             return View();
