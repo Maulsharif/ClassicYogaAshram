@@ -148,6 +148,7 @@
                         <div class="dropdown-item cursor-p" data-toggle="modal" data-target="#addBranch">Добавить центр йоги</div>
                     </div>
                 </div>
+                <a asp-action="CreateGroup" asp-controller="Group" class="btn btn-dark" style="margin-top: 15px;">Создать группу</a>
                 <div class="form-row mt-3">
                     @{
                         await Html.RenderPartialAsync("PartialViews/PasswordChangePartial", Model.Model);
