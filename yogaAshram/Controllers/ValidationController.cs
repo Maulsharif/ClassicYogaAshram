@@ -89,5 +89,9 @@ namespace yogaAshram.Controllers
                 return true;
             return _db.Employees.Any(p => p.Email == authentificator);
         }
+        public bool CheckCreate(string name)
+        {
+            return _db.Branches.Any(p => p.Name != name);
+        }
     }
 }

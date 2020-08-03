@@ -10,8 +10,8 @@ using yogaAshram.Models;
 namespace yogaAshram.Migrations
 {
     [DbContext(typeof(YogaAshramContext))]
-    [Migration("20200730180114_initial")]
-    partial class initial
+    [Migration("20200803131905_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -135,10 +135,20 @@ namespace yogaAshram.Migrations
                     b.Property<string>("Info")
                         .HasColumnType("text");
 
+                    b.Property<long?>("MarketerId")
+                        .HasColumnType("bigint");
+
                     b.Property<string>("Name")
                         .HasColumnType("text");
 
+                    b.Property<long?>("SellerId")
+                        .HasColumnType("bigint");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("MarketerId");
+
+                    b.HasIndex("SellerId");
 
                     b.ToTable("Branches");
                 });
@@ -196,6 +206,9 @@ namespace yogaAshram.Migrations
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("boolean");
 
+                    b.Property<string>("Role")
+                        .HasColumnType("text");
+
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("text");
 
@@ -216,6 +229,45 @@ namespace yogaAshram.Migrations
                         .HasName("UserNameIndex");
 
                     b.ToTable("AspNetUsers");
+                });
+
+            modelBuilder.Entity("yogaAshram.Models.Group", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<long>("BranchId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("CoachName")
+                        .HasColumnType("text");
+
+                    b.Property<long>("CreatorId")
+                        .HasColumnType("bigint");
+
+                    b.Property<int>("MaxCapacity")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("MinCapacity")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("text");
+
+                    b.Property<long?>("ScheduleId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BranchId");
+
+                    b.HasIndex("CreatorId");
+
+                    b.HasIndex("ScheduleId");
+
+                    b.ToTable("Groups");
                 });
 
             modelBuilder.Entity("yogaAshram.Models.ManagerEmployee", b =>
@@ -266,6 +318,38 @@ namespace yogaAshram.Migrations
                         .HasName("RoleNameIndex");
 
                     b.ToTable("AspNetRoles");
+                });
+
+            modelBuilder.Entity("yogaAshram.Models.Schedule", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<int>("DayOfWeek")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("FromHours")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("FromMinutes")
+                        .HasColumnType("integer");
+
+                    b.Property<long>("GroupId")
+                        .HasColumnType("bigint");
+
+                    b.Property<int>("ToHours")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("ToMinutes")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("GroupId");
+
+                    b.ToTable("Schedules");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<long>", b =>
@@ -319,6 +403,36 @@ namespace yogaAshram.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("yogaAshram.Models.Branch", b =>
+                {
+                    b.HasOne("yogaAshram.Models.Employee", "Marketer")
+                        .WithMany()
+                        .HasForeignKey("MarketerId");
+
+                    b.HasOne("yogaAshram.Models.Employee", "Seller")
+                        .WithMany()
+                        .HasForeignKey("SellerId");
+                });
+
+            modelBuilder.Entity("yogaAshram.Models.Group", b =>
+                {
+                    b.HasOne("yogaAshram.Models.Branch", "Branch")
+                        .WithMany()
+                        .HasForeignKey("BranchId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("yogaAshram.Models.Employee", "Creator")
+                        .WithMany()
+                        .HasForeignKey("CreatorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("yogaAshram.Models.Schedule", null)
+                        .WithMany("Groups")
+                        .HasForeignKey("ScheduleId");
+                });
+
             modelBuilder.Entity("yogaAshram.Models.ManagerEmployee", b =>
                 {
                     b.HasOne("yogaAshram.Models.Employee", "Employee")
@@ -330,6 +444,15 @@ namespace yogaAshram.Migrations
                     b.HasOne("yogaAshram.Models.Employee", "Manager")
                         .WithMany()
                         .HasForeignKey("ManagerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("yogaAshram.Models.Schedule", b =>
+                {
+                    b.HasOne("yogaAshram.Models.Group", "Group")
+                        .WithMany()
+                        .HasForeignKey("GroupId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

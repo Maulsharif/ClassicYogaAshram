@@ -236,14 +236,14 @@ namespace yogaAshram.Migrations
                         .HasColumnType("bigint")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
-                    b.Property<long?>("BranchId")
+                    b.Property<long>("BranchId")
                         .HasColumnType("bigint");
 
                     b.Property<string>("CoachName")
                         .HasColumnType("text");
 
-                    b.Property<int>("IdBranch")
-                        .HasColumnType("integer");
+                    b.Property<long>("CreatorId")
+                        .HasColumnType("bigint");
 
                     b.Property<int>("MaxCapacity")
                         .HasColumnType("integer");
@@ -260,6 +260,8 @@ namespace yogaAshram.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("BranchId");
+
+                    b.HasIndex("CreatorId");
 
                     b.HasIndex("ScheduleId");
 
@@ -332,11 +334,8 @@ namespace yogaAshram.Migrations
                     b.Property<int>("FromMinutes")
                         .HasColumnType("integer");
 
-                    b.Property<long?>("GroupId")
+                    b.Property<long>("GroupId")
                         .HasColumnType("bigint");
-
-                    b.Property<int>("IdGroup")
-                        .HasColumnType("integer");
 
                     b.Property<int>("ToHours")
                         .HasColumnType("integer");
@@ -417,7 +416,15 @@ namespace yogaAshram.Migrations
                 {
                     b.HasOne("yogaAshram.Models.Branch", "Branch")
                         .WithMany()
-                        .HasForeignKey("BranchId");
+                        .HasForeignKey("BranchId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("yogaAshram.Models.Employee", "Creator")
+                        .WithMany()
+                        .HasForeignKey("CreatorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("yogaAshram.Models.Schedule", null)
                         .WithMany("Groups")
@@ -443,7 +450,9 @@ namespace yogaAshram.Migrations
                 {
                     b.HasOne("yogaAshram.Models.Group", "Group")
                         .WithMany()
-                        .HasForeignKey("GroupId");
+                        .HasForeignKey("GroupId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }
