@@ -36,16 +36,19 @@ namespace yogaAshram.Controllers
         {
             Group group = new Group
             {
-                Name =  model.Name,
+                Name = model.Name,
                 CoachName = model.CoachName,
                 BranchId = model.BranchId,
                 CreatorId = GetUserId.GetCurrentUserId(this.HttpContext)
             };
-            
+
             _db.Entry(group).State = EntityState.Added;
             await _db.SaveChangesAsync();
             
-            return View();
+            if (User.IsInRole("chief"))
+                return RedirectToAction("Index", "Chief");
+           
+            return RedirectToAction("Index", "Manager");
         }
     }
 }
