@@ -24,11 +24,11 @@ namespace yogaAshram.Controllers
         }
         
         [Authorize]
-        public IActionResult CreateGroup()
+        public IActionResult CreateGroup(int userId)
         {
+            ViewBag.Branches = _db.Branches.ToList();
             return View();
         }
-        
         
         [HttpPost]
         [Authorize]
@@ -36,19 +36,16 @@ namespace yogaAshram.Controllers
         {
             Group group = new Group
             {
-                Id = model.Id,
                 Name =  model.Name,
                 CoachName = model.CoachName,
-                Branch = model.Branch,
                 BranchId = model.BranchId,
-                CreatorId = model.CreatorId,
-                Employee = model.Employee
+                CreatorId = GetUserId.GetCurrentUserId(this.HttpContext)
             };
             
             _db.Entry(group).State = EntityState.Added;
             await _db.SaveChangesAsync();
             
-            return View(model);
+            return View();
         }
     }
 }
