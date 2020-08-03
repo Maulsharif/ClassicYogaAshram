@@ -1,8 +1,12 @@
-﻿using System.Threading.Tasks;
+﻿using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using yogaAshram.Models;
+using yogaAshram.Models.ModelViews;
+using yogaAshram.Services;
 
 namespace yogaAshram.Controllers
 {
@@ -19,21 +23,32 @@ namespace yogaAshram.Controllers
             _db = db;
         }
         
+        [Authorize]
+        public IActionResult CreateGroup()
+        {
+            return View();
+        }
+        
         
         [HttpPost]
-        public async Task<IActionResult> CreateBranch(string name, string info, string address, long? marketerId, long? sellerId)
+        [Authorize]
+        public async Task<IActionResult> CreateGroup(CreateGroupModelView model)
         {
-            Branch branch = new Branch()
+            Group group = new Group
             {
-                Name = name,
-                Info = info,
-                Address = address,
-                MarketerId = marketerId,
-                SellerId = sellerId
+                Id = model.Id,
+                Name =  model.Name,
+                CoachName = model.CoachName,
+                Branch = model.Branch,
+                BranchId = model.BranchId,
+                CreatorId = model.CreatorId,
+                Employee = model.Employee
             };
-            _db.Entry(branch).State = EntityState.Added;
+            
+            _db.Entry(group).State = EntityState.Added;
             await _db.SaveChangesAsync();
-            return RedirectToAction("Index", "Chief");
+            
+            return View(model);
         }
     }
 }
