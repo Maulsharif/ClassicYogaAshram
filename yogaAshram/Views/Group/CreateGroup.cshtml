@@ -1,8 +1,36 @@
-﻿@model object
+@using System.Collections
+@model CreateGroupModelView
 
 @{
-    ViewBag.Title = "title";
+    ViewBag.Title = "Добавить новую группу";
     Layout = "_Layout";
 }
 
-<h2>title</h2>
+<div class="row d-flex justify-content-center">
+    <div class="col-md-6">
+        <h2>Добавить новую группу</h2>
+        <form method="post" asp-controller="Group" asp-action="CreateGroup">
+            <label >Филиал</label>
+            <select id="list" class="form-control mb-4" asp-for="BranchId">
+                @foreach (Branch branch in (IEnumerable) @ViewBag.Branches)
+                {
+                    <option value="@branch.Id">@branch.Name</option>
+                }
+            </select>
+            <div>
+                <span asp-validation-for="Name"></span>
+                <label >Название группы</label><br/>
+                <input class="form-control mb-4" asp-for="Name"/>
+            </div>
+            <div>
+                <span asp-validation-for="CoachName"></span>
+                <label>Имя тренера</label><br/>
+                <input class="form-control mb-4" asp-for="CoachName"/>
+            </div>
+            <div>
+                <br/>
+                <input class="btn btn-info btn-block my-4" type="submit" value="Регистрация"/>
+            </div>
+        </form>
+    </div>
+</div>
