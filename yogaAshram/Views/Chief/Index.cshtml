@@ -171,7 +171,7 @@
                      @foreach (Branch branch in (IEnumerable) @ViewBag.Branches)
                      {
                          <p>Центр йоги "@branch.Name" <a href="#" id="branchButton-@branch.Id" onclick="openBranch('@branch.Id')"> Открыть</a>
-                             <a href="#" data-toggle="modal" data-target="#deleteBranch-@branch.Id"> Удалить</a></p>
+                             <a href="#" data-toggle="modal" data-target="#deleteBranch-@branch.Id">Удалить</a></p>
                          <!-- Modal -->
                          <div class="modal fade" id="deleteBranch-@branch.Id" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                              <div class="modal-dialog" role="document">
@@ -183,14 +183,19 @@
                                          </button>
                                      </div>
                                      <div class="modal-body">
-                                          <p class="text-center">Вы уверены что хотите удалить "@branch.Name"?</p>
+                                         <p class="text-center">Вы уверены что хотите удалить "@branch.Name"?</p>
+                                         <form method="post" asp-action="Delete" asp-controller="Branch">
+                                             <div class="form-group">
+                                                 @{
+                                                     await Html.RenderPartialAsync("PartialViews/CheckPasswordPartial", Model.CheckPassword);
+                                                 }
+                                             </div>
+                                             <input type="hidden" name="id" value="@branch.Id">
+                                             <button type="submit" class="btn btn-primary">Удалить</button>
+                                         </form>
                                      </div>
                                      <div class="modal-footer">
-                                         <form method="post" asp-action="Delete" asp-controller="Branch">
-                                             <input type="hidden" name="id" value="@branch.Id">
-                                         <button type="submit" class="btn btn-primary">Да</button>
-                                         </form>
-                                          <button type="button" class="btn btn-secondary" data-dismiss="modal">Нет</button>
+                                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
                                      </div>
                                  </div>
                              </div>
@@ -552,4 +557,8 @@
             })
         });
     </script>
+    
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }
