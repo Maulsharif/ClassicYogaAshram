@@ -89,35 +89,21 @@
               <input name="name" type="text" class="form-control mb-2" placeholder="Название" required>
               <input name="info" type="text" class="form-control mb-2" placeholder="Информация о центре">
               <input name="address" type="text" class="form-control mb-2" placeholder="Адрес">
-              @if (Enumerable.Count(ViewBag.Marketer) == 0)
+              @if (Enumerable.Count(ViewBag.Admin) == 0)
               {
-                  <p>Не найдено ни одного маркетолога.</p> 
+                  <p>Не найдено ни одного администратора .</p> 
               }
               else
               {
-                  <label for="">Выберете маркетолога:</label>
-                  <select class="form-control mb-2" name="marketerId">
-                      @foreach (Employee marketer in (IEnumerable) @ViewBag.Marketer)
+                  <label for="">Выберете администратора:</label>
+                  <select class="form-control mb-2" name="adminId">
+                      @foreach (Employee admin in (IEnumerable) @ViewBag.Admin)
                       {
-                          <option value="@marketer.Id">@marketer.UserName</option>
+                          <option value="@admin.Id">@admin.UserName</option>
                       }
                   </select>
               }
-              @if (Enumerable.Count(ViewBag.Seller) == 0)
-              {
-                  <p>Не найдено ни одного продавца</p> 
-              }
-              else
-              {
-              <label for="">Выберете продавца:</label>
-              <select class="form-control mb-2" name="sellerId">
-                  @foreach (Employee seller in (IEnumerable) @ViewBag.Seller)
-                  {
-                      <option value="@seller.Id">@seller.UserName</option>
-                  }
-              </select>
-              }
-               <input type="submit" class="btn btn-secondary" value="Добавить">
+              <input type="submit" class="btn btn-secondary" value="Добавить">
           </form>
       </div>
       <div class="modal-footer">
@@ -171,7 +157,7 @@
                      @foreach (Branch branch in (IEnumerable) @ViewBag.Branches)
                      {
                          <p>Центр йоги "@branch.Name" <a href="#" id="branchButton-@branch.Id" onclick="openBranch('@branch.Id')"> Открыть</a>
-                             <a href="#" data-toggle="modal" data-target="#deleteBranch-@branch.Id"> Удалить</a></p>
+                             <a href="#" data-toggle="modal" data-target="#deleteBranch-@branch.Id">Удалить</a></p>
                          <!-- Modal -->
                          <div class="modal fade" id="deleteBranch-@branch.Id" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                              <div class="modal-dialog" role="document">
@@ -183,14 +169,19 @@
                                          </button>
                                      </div>
                                      <div class="modal-body">
-                                          <p class="text-center">Вы уверены что хотите удалить "@branch.Name"?</p>
+                                         <p class="text-center">Вы уверены что хотите удалить "@branch.Name"?</p>
+                                         <form method="post" asp-action="Delete" asp-controller="Branch">
+                                             <div class="form-group">
+                                                 @{
+                                                     await Html.RenderPartialAsync("PartialViews/CheckPasswordPartial", Model.CheckPassword);
+                                                 }
+                                             </div>
+                                             <input type="hidden" name="id" value="@branch.Id">
+                                             <button type="submit" class="btn btn-primary">Удалить</button>
+                                         </form>
                                      </div>
                                      <div class="modal-footer">
-                                         <form method="post" asp-action="Delete" asp-controller="Branch">
-                                             <input type="hidden" name="id" value="@branch.Id">
-                                         <button type="submit" class="btn btn-primary">Да</button>
-                                         </form>
-                                          <button type="button" class="btn btn-secondary" data-dismiss="modal">Нет</button>
+                                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
                                      </div>
                                  </div>
                              </div>
@@ -232,47 +223,21 @@
                                      </div>
                                  </div>
                              </div>
-                             @if (@branch.Marketer != null)
+                             @if (@branch.Admin != null)
                              {
-                                 <div id="marketerReload-@branch.Id">
-                                     <p>Маркетолог: <span id="marketerValue-@branch.Id"> @branch.Marketer.UserName</span> 
-                                         <span class="text-hide" id="marketerIdValue-@branch.Id">@branch.MarketerId</span>
-                                         <a href="#" onclick="openMarketer('@branch.Id');return false;" title="Редактировать">
-                                             <img src="/Images/SiteImages/edit.png" class="editIcon" alt="edit">
-                                         </a>
-                                     </p>
-                                     <div id="divMarketer-@branch.Id" class="inputMarketer">
-                                         <div class="row m-1">
-                         
-                                             <select id="marketerId-@branch.Id" name="marketerId" class="form-control w-50">
-                                                 @foreach (Employee marketer in (IEnumerable) @ViewBag.Marketer)
-                                                 {
-                                                     <option value="@marketer.Id">@marketer.UserName</option>
-                                                 }
-                                             </select>
-                                             <button class="ml-2 btn btn-outline-dark" onclick="editMarketer('@branch.Id')">Выбрать</button>
-                                         </div>
-                                     </div>
-                                 </div>
-                                 
-                             }
-                             @if (@branch.Seller != null)
-                             {
-                                
-                                 <div id="sellerReload-@branch.Id">
-                                     <p>Продавец: <span id="sellerValue-@branch.Id"> @branch.Seller.UserName</span> 
-                                         <span class="text-hide" id="sellerIdValue-@branch.Id">@branch.SellerId</span>
+                                 <div id="adminReload-@branch.Id">
+                                     <p>Администратор: <span id="adminValue-@branch.Id"> @branch.Admin.UserName</span> 
+                                         <span class="text-hide" id="adminIdValue-@branch.Id">@branch.AdminId</span>
                                          <a href="#" onclick="openSeller('@branch.Id');return false;" title="Редактировать">
                                              <img src="/Images/SiteImages/edit.png" class="editIcon" alt="edit">
                                          </a>
                                      </p>
-                                     <div id="divSeller-@branch.Id" class="inputSeller">
+                                     <div id="divAdmin-@branch.Id" class="inputAdmin">
                                          <div class="row m-1">
-                         
-                                             <select id="sellerId-@branch.Id" name="sellerId" class="form-control w-50">
-                                                 @foreach (Employee seller in (IEnumerable) @ViewBag.Seller)
+                                             <select id="adminId-@branch.Id" name="adminId" class="form-control w-50">
+                                                 @foreach (Employee admin in (IEnumerable) @ViewBag.Admin)
                                                  {
-                                                     <option value="@seller.Id">@seller.UserName</option>
+                                                     <option value="@admin.Id">@admin.UserName</option>
                                                  }
                                              </select>
                                              <button class="ml-2 btn btn-outline-dark" onclick="editSeller('@branch.Id')">Выбрать</button>
@@ -283,7 +248,6 @@
                          </div>
                      }
                  }
-                    
                 </div>
             </div>
         </div>
@@ -386,34 +350,12 @@
                })
               }         
         </script>
+    
     <script>
-        function openMarketer(branchId) {
-            $('#divMarketer-' + branchId).toggle('slow', function() {
-              var marketerId = $('#marketerIdValue-' + branchId).text();
-                $('#marketerId-' + branchId).val(marketerId).change();
-             });
-          }
-    </script>   
-<script>	
-    function editMarketer(postId) {           
-      $.ajax({
-        url : '@Url.Action("Edit", "Branch")',
-        type : 'POST',
-        data : {              
-        'id' : postId,
-        'marketerId' : $("#marketerId-" + postId).val()              
-               },
-        success: setTimeout(function(){
-        $("#marketerReload-" + postId).load(" #marketerReload-" + postId); 
-            }, 900)             
-          })
-       }         
-</script>
-<script>
         function openSeller(branchId) {
-            $('#divSeller-' + branchId).toggle('slow', function() {
-              var sellerId = $('#sellerIdValue-' + branchId).text();
-                $('#sellerId-' + branchId).val(sellerId).change();
+            $('#divAdmin-' + branchId).toggle('slow', function() {
+              var adminId = $('#adminIdValue-' + branchId).text();
+                $('#adminId-' + branchId).val(adminId).change();
              });
           }
     </script>   
@@ -424,10 +366,10 @@
         type : 'POST',
         data : {              
         'id' : postId,
-        'sellerId' : $("#sellerId-" + postId).val()              
+        'adminId' : $("#adminId-" + postId).val()              
                },
         success: setTimeout(function(){
-        $("#sellerReload-" + postId).load(" #sellerReload-" + postId); 
+        $("#adminReload-" + postId).load(" #adminReload-" + postId); 
             }, 900)             
           })
        }         
@@ -552,4 +494,8 @@
             })
         });
     </script>
+    
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }
