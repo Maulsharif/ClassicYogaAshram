@@ -15,5 +15,9 @@ namespace yogaAshram.Models
         public long GroupId { get; set; }
         
         public virtual Group Group { get; set; }
+        
+        public long  CreatorId { get; set; }
+        
+        public virtual Employee Creator { get; set; }
     }
 }
