@@ -100,5 +100,11 @@ namespace yogaAshram.Controllers
             Employee empl = await _userManager.GetUserAsync(User);           
             return await _userManager.CheckPasswordAsync(empl, password);
         }
+        
+        public bool ClientPhoneNumber(string phoneNumber)
+        {
+            return !_db.Clients.Any(p => p.PhoneNumber == phoneNumber);
+        }
+        
     }
 }
