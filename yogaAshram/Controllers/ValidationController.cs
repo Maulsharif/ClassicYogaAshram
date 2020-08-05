@@ -93,5 +93,12 @@ namespace yogaAshram.Controllers
         {
             return _db.Branches.Any(p => p.Name != name);
         }
+        
+        [Authorize]
+        public async Task<bool> CheckPasswordDelete(string password)
+        {
+            Employee empl = await _userManager.GetUserAsync(User);           
+            return await _userManager.CheckPasswordAsync(empl, password);
+        }
     }
 }

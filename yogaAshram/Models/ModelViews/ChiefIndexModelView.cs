@@ -12,5 +12,6 @@ namespace yogaAshram.Models.ModelViews
         public bool IsEditInvalid { get; set; } = false;
         public ChiefEditModelView EditModel { get; set; } = new ChiefEditModelView();
         public ChangePasswordModelView Model { get; set; } = new ChangePasswordModelView();
+        public CheckPasswordModelView CheckPassword { get; set; } = new CheckPasswordModelView();
     }
 }

@@ -1,10 +1,13 @@
-﻿using System.Linq;
+﻿using System.Diagnostics;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using yogaAshram.Models;
+using yogaAshram.Models.ModelViews;
 
 namespace yogaAshram.Controllers
 {
@@ -23,15 +26,14 @@ namespace yogaAshram.Controllers
         }
         
         [HttpPost]
-        public async Task<IActionResult> CreateBranch(string name, string info, string address, long? marketerId, long? sellerId)
+        public async Task<IActionResult> CreateBranch(string name, string info, string address, long? adminId)
         {
             Branch branch = new Branch()
             {
                 Name = name,
                 Info = info,
                 Address = address,
-                MarketerId = marketerId,
-                SellerId = sellerId
+                AdminId = adminId,
             };
             _db.Entry(branch).State = EntityState.Added;
             await _db.SaveChangesAsync();
@@ -42,8 +44,7 @@ namespace yogaAshram.Controllers
             string name, 
             string address,
             string info,
-            long? sellerId,
-            long? marketerId)
+            long? adminId)
         {
             Branch branch = _db.Branches.FirstOrDefault(p => p.Id == id);
             if (branch != null)
@@ -57,11 +58,8 @@ namespace yogaAshram.Controllers
                 else if(info != null)
                     branch.Info = info;
                 
-                else if(sellerId != null)
-                    branch.SellerId = sellerId;
-                
-                else if(marketerId != null)
-                    branch.MarketerId = marketerId;
+                else if(adminId != null)
+                    branch.AdminId = adminId;
 
                 _db.Entry(branch).State = EntityState.Modified;
                 await _db.SaveChangesAsync();
@@ -69,11 +67,16 @@ namespace yogaAshram.Controllers
             return RedirectToAction("Index", "Chief");
         }
         [HttpPost]
-        public async Task<IActionResult> Delete(long id)
+        public async Task<IActionResult> Delete(long id, CheckPasswordModelView model)
         {
+            Employee empl = await _userManager.GetUserAsync(User);
             Branch branch = _db.Branches.FirstOrDefault(p => p.Id == id);
-            _db.Entry(branch).State = EntityState.Deleted;
-            await _db.SaveChangesAsync();
+            var result = await _userManager.CheckPasswordAsync(empl, model.Password);;
+            if (result == true)
+            {
+                _db.Entry(branch).State = EntityState.Deleted;
+                await _db.SaveChangesAsync();
+            }
             return RedirectToAction("Index", "Chief");
         }
     }
