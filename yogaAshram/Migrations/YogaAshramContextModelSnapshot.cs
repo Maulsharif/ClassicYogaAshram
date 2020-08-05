@@ -146,6 +146,37 @@ namespace yogaAshram.Migrations
                     b.ToTable("Branches");
                 });
 
+            modelBuilder.Entity("yogaAshram.Models.Client", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<int>("ClientType")
+                        .HasColumnType("integer");
+
+                    b.Property<long>("CreatorId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("GroupId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("NameSurname")
+                        .HasColumnType("text");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatorId");
+
+                    b.HasIndex("GroupId");
+
+                    b.ToTable("Clients");
+                });
+
             modelBuilder.Entity("yogaAshram.Models.Employee", b =>
                 {
                     b.Property<long>("Id")
@@ -401,6 +432,21 @@ namespace yogaAshram.Migrations
                     b.HasOne("yogaAshram.Models.Employee", "Admin")
                         .WithMany()
                         .HasForeignKey("AdminId");
+                });
+
+            modelBuilder.Entity("yogaAshram.Models.Client", b =>
+                {
+                    b.HasOne("yogaAshram.Models.Employee", "Creator")
+                        .WithMany()
+                        .HasForeignKey("CreatorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("yogaAshram.Models.Group", "Group")
+                        .WithMany()
+                        .HasForeignKey("GroupId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("yogaAshram.Models.Group", b =>
