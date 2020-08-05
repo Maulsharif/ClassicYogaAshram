@@ -11,9 +11,15 @@ namespace yogaAshram.Models
     {
         public long Id { get; set; }
         public DayOfWeek DayOfWeek { get; set; } = DayOfWeek.monday;
+        [Required(ErrorMessage = "Введите значение")]
+        
         public int FromHours { get; set; }
+        [Required(ErrorMessage = "Введите значение")]
         public int FromMinutes { get; set; }
+        [Required(ErrorMessage = "Введите значение")]
+       
         public int ToHours { get; set; }
+        [Required(ErrorMessage = "Введите значение")]
         public int ToMinutes { get; set; }
         public long GroupId { get; set; }
         public virtual Group Group{ get; set; }

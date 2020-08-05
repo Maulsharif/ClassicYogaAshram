@@ -1,0 +1,28 @@
+﻿@model List<Schedule>
+
+@{
+    ViewBag.Title = "title";
+    Layout = "_Layout";
+}
+<a asp-action="CreateGroup" asp-controller="Group" class="btn btn-success" style="margin-top: 15px;">Создать группу </a>
+<a asp-action="CreateScheduele" asp-controller="Group" class="btn btn-primary" style="margin-top: 15px;">Создать расписание </a>
+<h2>Список групп</h2>
+<table class="table">
+    <tr>
+        <th>Группа</th>
+        <th>Раписание</th>
+        <th>Тренер</th>
+        <th>Филиал</th>
+        
+    </tr>
+    @foreach (var gr in @Model)
+    {
+        <tr>
+            <th>@gr.Group.Name</th>
+            <th>@gr.DayOfWeek @gr.FromHours:@gr.ToHours</th>
+            <th>@gr.Group.CoachName</th>
+            <th>@gr.Group.Branch.Name</th>
+        
+        </tr>
+    }
+</table>

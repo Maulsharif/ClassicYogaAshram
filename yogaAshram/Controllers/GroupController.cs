@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -22,6 +24,13 @@ namespace yogaAshram.Controllers
             _signInManager = signInManager;
             _db = db;
         }
+       
+        public IActionResult Index()
+        {
+            List<Schedule> schedules = _db.Schedules.ToList();
+            return View(schedules);
+        }
+        
         
         [Authorize]
         public IActionResult CreateGroup()
@@ -50,5 +59,35 @@ namespace yogaAshram.Controllers
            
             return RedirectToAction("Index", "Manager");
         }
+        [HttpGet]
+        public IActionResult CreateScheduele()
+        {
+            ViewBag.Groups = _db.Groups.ToList();
+            return View();
+        }
+        [HttpPost]
+        public async Task<IActionResult> CreateScheduele(Schedule model)
+        {  ViewBag.Groups = _db.Groups.ToList();
+            List<Schedule> sch = _db.Schedules.ToList();
+            if (sch.Any(p => p.FromHours == model.FromHours && p.DayOfWeek == model.DayOfWeek))
+            {
+                ModelState.AddModelError(nameof(model.DayOfWeek), "Время уже занято!");
+                return View(model);
+            }
+            if (ModelState.IsValid)
+            {
+                _db.Entry(model).State = EntityState.Added;
+                await _db.SaveChangesAsync();
+                          
+                return RedirectToAction("Index");
+            }
+            return View(model);
+         
+        }
+
+
+
+
+        
     }
 }

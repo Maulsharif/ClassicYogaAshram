@@ -135,6 +135,7 @@
                     </div>
                 </div>
                 <a asp-action="CreateGroup" asp-controller="Group" class="btn btn-dark" style="margin-top: 15px;">Создать группу </a>
+                 <a asp-action="Index" asp-controller="Group" class="btn btn-dark" style="margin-top: 15px;">Группы </a>
                 <div class="form-row mt-3">
                     @{
                         await Html.RenderPartialAsync("PartialViews/PasswordChangePartial", Model.Model);
