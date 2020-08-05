@@ -10,13 +10,6 @@ using yogaAshram.Services;
 
 namespace yogaAshram.Controllers
 {
-    public enum ClientType
-    {
-        Probe,
-        AreEngaged,
-        NotEngaged
-    }
-    
     public class ClientsController : Controller
     {
         private readonly UserManager<Employee> _userManager;
@@ -56,7 +49,7 @@ namespace yogaAshram.Controllers
             if (User.IsInRole("chief"))
                 return RedirectToAction("Index", "Chief");
            
-            return RedirectToAction("Index", "Manager");
+            return RedirectToAction("Index", "Admin");
         }
     }
 }
