@@ -26,15 +26,14 @@ namespace yogaAshram.Controllers
         }
         
         [HttpPost]
-        public async Task<IActionResult> CreateBranch(string name, string info, string address, long? marketerId, long? sellerId)
+        public async Task<IActionResult> CreateBranch(string name, string info, string address, long? adminId)
         {
             Branch branch = new Branch()
             {
                 Name = name,
                 Info = info,
                 Address = address,
-                MarketerId = marketerId,
-                SellerId = sellerId
+                AdminId = adminId,
             };
             _db.Entry(branch).State = EntityState.Added;
             await _db.SaveChangesAsync();
@@ -45,8 +44,7 @@ namespace yogaAshram.Controllers
             string name, 
             string address,
             string info,
-            long? sellerId,
-            long? marketerId)
+            long? adminId)
         {
             Branch branch = _db.Branches.FirstOrDefault(p => p.Id == id);
             if (branch != null)
@@ -60,11 +58,8 @@ namespace yogaAshram.Controllers
                 else if(info != null)
                     branch.Info = info;
                 
-                else if(sellerId != null)
-                    branch.SellerId = sellerId;
-                
-                else if(marketerId != null)
-                    branch.MarketerId = marketerId;
+                else if(adminId != null)
+                    branch.AdminId = adminId;
 
                 _db.Entry(branch).State = EntityState.Modified;
                 await _db.SaveChangesAsync();
