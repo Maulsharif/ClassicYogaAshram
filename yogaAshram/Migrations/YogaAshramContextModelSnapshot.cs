@@ -130,23 +130,18 @@ namespace yogaAshram.Migrations
                     b.Property<string>("Address")
                         .HasColumnType("text");
 
+                    b.Property<long?>("AdminId")
+                        .HasColumnType("bigint");
+
                     b.Property<string>("Info")
                         .HasColumnType("text");
-
-                    b.Property<long?>("MarketerId")
-                        .HasColumnType("bigint");
 
                     b.Property<string>("Name")
                         .HasColumnType("text");
 
-                    b.Property<long?>("SellerId")
-                        .HasColumnType("bigint");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("MarketerId");
-
-                    b.HasIndex("SellerId");
+                    b.HasIndex("AdminId");
 
                     b.ToTable("Branches");
                 });
@@ -403,13 +398,9 @@ namespace yogaAshram.Migrations
 
             modelBuilder.Entity("yogaAshram.Models.Branch", b =>
                 {
-                    b.HasOne("yogaAshram.Models.Employee", "Marketer")
+                    b.HasOne("yogaAshram.Models.Employee", "Admin")
                         .WithMany()
-                        .HasForeignKey("MarketerId");
-
-                    b.HasOne("yogaAshram.Models.Employee", "Seller")
-                        .WithMany()
-                        .HasForeignKey("SellerId");
+                        .HasForeignKey("AdminId");
                 });
 
             modelBuilder.Entity("yogaAshram.Models.Group", b =>
