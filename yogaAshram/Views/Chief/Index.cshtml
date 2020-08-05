@@ -96,7 +96,7 @@
               else
               {
                   <label for="">Выберете администратора:</label>
-                  <select class="form-control mb-2" name="marketerId">
+                  <select class="form-control mb-2" name="adminId">
                       @foreach (Employee admin in (IEnumerable) @ViewBag.Admin)
                       {
                           <option value="@admin.Id">@admin.UserName</option>
@@ -225,16 +225,16 @@
                              </div>
                              @if (@branch.Admin != null)
                              {
-                                 <div id="sellerReload-@branch.Id">
-                                     <p>Администратор: <span id="sellerValue-@branch.Id"> @branch.Admin.UserName</span> 
-                                         <span class="text-hide" id="sellerIdValue-@branch.Id">@branch.AdminId</span>
+                                 <div id="adminReload-@branch.Id">
+                                     <p>Администратор: <span id="adminValue-@branch.Id"> @branch.Admin.UserName</span> 
+                                         <span class="text-hide" id="adminIdValue-@branch.Id">@branch.AdminId</span>
                                          <a href="#" onclick="openSeller('@branch.Id');return false;" title="Редактировать">
                                              <img src="/Images/SiteImages/edit.png" class="editIcon" alt="edit">
                                          </a>
                                      </p>
-                                     <div id="divSeller-@branch.Id" class="inputSeller">
+                                     <div id="divAdmin-@branch.Id" class="inputAdmin">
                                          <div class="row m-1">
-                                             <select id="sellerId-@branch.Id" name="sellerId" class="form-control w-50">
+                                             <select id="adminId-@branch.Id" name="adminId" class="form-control w-50">
                                                  @foreach (Employee admin in (IEnumerable) @ViewBag.Admin)
                                                  {
                                                      <option value="@admin.Id">@admin.UserName</option>
@@ -353,9 +353,9 @@
     
     <script>
         function openSeller(branchId) {
-            $('#divSeller-' + branchId).toggle('slow', function() {
-              var sellerId = $('#sellerIdValue-' + branchId).text();
-                $('#sellerId-' + branchId).val(sellerId).change();
+            $('#divAdmin-' + branchId).toggle('slow', function() {
+              var adminId = $('#adminIdValue-' + branchId).text();
+                $('#adminId-' + branchId).val(adminId).change();
              });
           }
     </script>   
@@ -366,10 +366,10 @@
         type : 'POST',
         data : {              
         'id' : postId,
-        'sellerId' : $("#sellerId-" + postId).val()              
+        'adminId' : $("#adminId-" + postId).val()              
                },
         success: setTimeout(function(){
-        $("#sellerReload-" + postId).load(" #sellerReload-" + postId); 
+        $("#adminReload-" + postId).load(" #adminReload-" + postId); 
             }, 900)             
           })
        }         
