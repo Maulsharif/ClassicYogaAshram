@@ -8,9 +8,8 @@ namespace yogaAshram.Models
         public string Name { get; set; }
         public string Address { get; set; }
         public string Info { get; set; }
-        public long? MarketerId { get; set; }
-        public virtual Employee Marketer { get; set; }
-        public long? SellerId { get; set; }
-        public virtual Employee Seller { get; set; }
+        
+        public long? AdminId { get; set; }
+        public virtual Employee Admin { get; set; }
     }
 }
