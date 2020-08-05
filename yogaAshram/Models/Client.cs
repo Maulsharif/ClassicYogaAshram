@@ -1,14 +1,16 @@
-﻿namespace yogaAshram.Models
+﻿using yogaAshram.Controllers;
+
+namespace yogaAshram.Models
 {
     public class Client
     {
         public long Id { get; set; }
         
-        public string Name { get; set; }
-        
+        public string NameSurname { get; set; }
+
         public string PhoneNumber { get; set; }
-        
-        public string ClientType { get; set; }
+
+        public ClientType ClientType { get; set; } = ClientType.Probe;
 
         public long GroupId { get; set; }
         
