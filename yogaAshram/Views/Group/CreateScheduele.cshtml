@@ -57,16 +57,7 @@
 </div>
 @section Scripts
 {
-    <script>
-    document.getElementById("firstTimeId").onchange = function () {
-        var time=   parseInt(document.getElementById("firstTimeId").value)+1;
-         document.getElementById("secondTimeId").value=time;
-           document.getElementById("secondTimeId").disabled = true;
-        
-        }
-        
-    </script>
-    
+
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }

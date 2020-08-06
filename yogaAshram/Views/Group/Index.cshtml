@@ -15,12 +15,12 @@
         <input type="submit" value="Фильтр" class="btn btn-default" />
     </div>
 </form>
-<h2>Список групп</h2>
+<h2>График занятии на @ViewData["Day"]</h2>
 <table class="table">
     <tr>
         <th>Время</th>
         <th>Группа</th>
-       
+        <th></th>
         
     </tr>
     @foreach (var gr in @Model)
@@ -28,7 +28,7 @@
         <tr>
             <td> @gr.FromHours:@gr.FromMinutes-@gr.ToHours:@gr.ToMinutes </td>
             <td>@gr.Group.Name<span></span></td>
-            
+            <td><a asp-action="" asp-controller="" class="btn btn-primary" >Добавить в группу </a></td>
         </tr>
     }
 </table>

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -28,10 +29,10 @@ namespace yogaAshram.Controllers
        
         public IActionResult Index(DateTime selectday)
         {
-     
-            Enum selectDay = selectday.DayOfWeek;
-         
-            IEnumerable<Schedule> schedules = _db.Schedules.ToList().Where(p=>p.DayOfWeek==(DayOfWeek) selectDay);  
+          Schedule schedule=new Schedule();
+          schedule.DayOfWeek = (DayOfWeek) selectday.DayOfWeek;
+            ViewData["Day"] = schedule.GetEnumValue();
+            IEnumerable<Schedule> schedules = _db.Schedules.ToList().Where(p=>p.DayOfWeek==(DayOfWeek)  schedule.DayOfWeek );  
             var groups = from s in schedules select s ;
             groups = groups.OrderBy(s => s.FromHours);
             return View(groups);
@@ -41,6 +42,7 @@ namespace yogaAshram.Controllers
         [Authorize]
         public IActionResult CreateGroup()
         {
+            
             ViewBag.Branches = _db.Branches.ToList();
             return View();
         }
