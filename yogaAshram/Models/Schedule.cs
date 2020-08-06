@@ -16,8 +16,6 @@ namespace yogaAshram.Models
         public int FromHours { get; set; }
         [Required(ErrorMessage = "Введите значение")]
         public int FromMinutes { get; set; }
-        [Required(ErrorMessage = "Введите значение")]
-       
         public int ToHours { get; set; }
         [Required(ErrorMessage = "Введите значение")]
         public int ToMinutes { get; set; }

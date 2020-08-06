@@ -1,28 +1,34 @@
-﻿@model List<Schedule>
+﻿@model IEnumerable<Schedule>
 
 @{
     ViewBag.Title = "title";
     Layout = "_Layout";
 }
 <a asp-action="CreateGroup" asp-controller="Group" class="btn btn-success" style="margin-top: 15px;">Создать группу </a>
-<a asp-action="CreateScheduele" asp-controller="Group" class="btn btn-primary" style="margin-top: 15px;">Создать расписание </a>
+<a asp-action="CreateScheduele" asp-controller="Group" class="btn btn-primary" style="margin-top: 15px;">Создать расписание </a><br/>
+<form method="get">
+    <div class="form-inline form-group">
+        
+        <label class="control-label">Выбрать  дату: </label>
+        <input name="selectday" type="date"/>
+ 
+        <input type="submit" value="Фильтр" class="btn btn-default" />
+    </div>
+</form>
 <h2>Список групп</h2>
 <table class="table">
     <tr>
+        <th>Время</th>
         <th>Группа</th>
-        <th>Раписание</th>
-        <th>Тренер</th>
-        <th>Филиал</th>
+       
         
     </tr>
     @foreach (var gr in @Model)
     {
         <tr>
-            <th>@gr.Group.Name</th>
-            <th>@gr.DayOfWeek @gr.FromHours:@gr.ToHours</th>
-            <th>@gr.Group.CoachName</th>
-            <th>@gr.Group.Branch.Name</th>
-        
+            <td> @gr.FromHours:@gr.FromMinutes-@gr.ToHours:@gr.ToMinutes </td>
+            <td>@gr.Group.Name<span></span></td>
+            
         </tr>
     }
 </table>
