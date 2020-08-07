@@ -1,0 +1,34 @@
+﻿@model IEnumerable<Schedule>
+
+@{
+    ViewBag.Title = "title";
+    Layout = "_Layout";
+}
+<a asp-action="CreateGroup" asp-controller="Group" class="btn btn-success" style="margin-top: 15px;">Создать группу </a>
+<a asp-action="CreateScheduele" asp-controller="Group" class="btn btn-primary" style="margin-top: 15px;">Создать расписание </a><br/>
+<form method="get">
+    <div class="form-inline form-group">
+        
+        <label class="control-label">Выбрать  дату: </label>
+        <input name="selectday" type="date"/>
+ 
+        <input type="submit" value="Фильтр" class="btn btn-default" />
+    </div>
+</form>
+<h2>График занятии на @ViewData["Day"]</h2>
+<table class="table">
+    <tr>
+        <th>Время</th>
+        <th>Группа</th>
+        <th></th>
+        
+    </tr>
+    @foreach (var gr in @Model)
+    {
+        <tr>
+            <td> @gr.FromHours:@gr.FromMinutes-@gr.ToHours:@gr.ToMinutes </td>
+            <td>@gr.Group.Name<span></span></td>
+            <td><a asp-action="" asp-controller="" class="btn btn-primary" >Добавить в группу </a></td>
+        </tr>
+    }
+</table>
