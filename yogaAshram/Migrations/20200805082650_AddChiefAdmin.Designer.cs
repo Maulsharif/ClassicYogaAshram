@@ -13,7 +13,7 @@ namespace yogaAshram.Migrations
     [Migration("20200805082650_AddChiefAdmin")]
     partial class AddChiefAdmin
     {
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
