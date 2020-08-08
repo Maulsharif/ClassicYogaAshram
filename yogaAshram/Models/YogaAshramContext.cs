@@ -15,6 +15,7 @@ namespace yogaAshram.Models
         public DbSet<Schedule> Schedules { get; set; }
         
         public DbSet<Client> Clients { get; set; }
+        public DbSet<CalendarEvent> CalendarEvents { get; set; }
 
         public YogaAshramContext(DbContextOptions options) : base(options) 
         {

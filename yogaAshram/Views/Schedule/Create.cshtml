@@ -1,0 +1,81 @@
+﻿@using Microsoft.EntityFrameworkCore.Storage
+@using System.Globalization
+@model DateTime
+
+@{
+    ViewBag.Title = "Создание расписания";
+    Layout = "_Layout";
+}
+
+<h3>Создание расписания</h3>
+
+<div class="container">
+	<form method="post" asp-action="Create" asp-controller="Schedule">
+		
+		@if (@Enumerable.Count(ViewBag.Groups) == 0)
+		{
+			<p>Список групп пуст. Необходимо создать группу</p>
+		}
+		else
+		{
+			<label>Выберите группу из списка:</label>
+			<select name="groupId" class="form-control mb-2 w-50" id="selectInput">
+				@foreach (var group in @ViewBag.Groups)
+				{
+					<option value="@group.Id"> @group.Name</option>
+				}
+				</select>
+		}
+		<label>Выберите цвет:</label>
+		<select name="color" class="form-control mb-2 w-25" id="selectGroup" required>
+			<option value="primary" class="bg-primary">Синий</option>
+			<option value="success" class="bg-success">Зеленый</option>
+			<option value="danger" class="bg-danger">Красный</option>
+			<option value="warning" class="bg-warning">Желтый</option>
+			<option value="info" class="bg-info">Голубой</option>
+			<option value="dark" class="bg-dark text-light">Черный</option>
+		</select>
+		<label class="mt-2">Время начала занятия:</label>
+		<input type="time" id="timeInputStart" name="scheduleTime" class="form-control w-25">
+		<label class="mt-2">Время конца занятия:</label>
+		<input type="time" id="timeInputFinish" name="scheduleFinishTime" class="form-control w-25">
+		
+		
+		<div class="mt-3 mb-2">
+			
+			<label class="mt-2 mb-2">Выберите дни:</label>
+			<div class="mt-2">
+			<div id="weekdays"> </div> 
+			</div>
+			<div class="areaDates">
+				<textarea name="dayOfWeeks" id="dayOfWeekInput" cols="30" rows="10"></textarea>
+			</div>
+			
+		</div>
+		<button class="btn btn-outline-dark mt-4" type="submit" id="submitBtn">Добавить</button>
+		<a asp-action="Index" asp-controller="Schedule" class="btn btn-outline-dark mt-4">Назад</a>
+	</form>
+</div>
+<p id="groupIdArray" class="text-hide">@ViewBag.GroupIdArray</p>
+@section Scripts{
+	<script >
+	$("#weekdays").weekLine({
+            mousedownSel: false,            
+            dayLabels: ["Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота", "Воскресенье"], 
+            onChange: function () {
+                   $("#dayOfWeekInput").val(
+                           $(this).weekLine('getSelected')
+                   );
+            }
+     });
+	</script>
+    <script>      
+       var groupsIds =  $('#groupIdArray').text();            
+       $.each(groupsIds.split(' '), function(index, value) {
+         $('select > option').filter(function () {
+         	return $(this).val() == value
+         }).prop('disabled', true)
+       });      
+    </script>
+  
+}

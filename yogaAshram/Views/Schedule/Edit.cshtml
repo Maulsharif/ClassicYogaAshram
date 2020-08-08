@@ -1,0 +1,97 @@
+﻿@using System.Globalization
+@model Schedule
+
+@{
+    ViewBag.Title = "Изменить расписание";
+    Layout = "_Layout";
+}
+
+<h2>Изменить расписание</h2>
+
+    <p>Группа - @Model.Group.Name</p>
+<div class="container">
+	<form method="post" asp-action="Edit" asp-controller="Schedule">
+    		
+		<input type="hidden" asp-for="GroupId" value="@Model.GroupId">
+		
+		<label class="mt-2">Измените время:</label>
+			<input type="time" id="timeInput" name="scheduleTime" class="form-control w-25">
+	    <label>Выберите цвет:</label>
+                    <select name="color" class="form-control mb-2 w-25">
+    					<option value="primary" class="bg-primary">Синий</option>
+    	                <option value="success" class="bg-success">Зеленый</option>
+    					<option value="danger" class="bg-danger">Красный</option>
+    	                <option value="warning" class="bg-warning">Желтый</option>
+    	                <option value="info" class="bg-info">Голубой</option>
+    	                <option value="dark" class="bg-dark text-white">Черный</option>
+                    </select>
+    		
+		<div class="mt-3 mb-2">
+			
+			<label class="mt-2">Измените даты:</label>
+    			
+			<div id="date_range"></div>
+    			
+			<div class="areaDates">
+				<textarea name="multipleDates" id="dates" ></textarea>
+			</div>
+    
+		</div>
+		<button class="btn btn-outline-dark mt-2" type="submit">Изменить</button>
+		<a asp-action="Group" asp-controller="Schedule" asp-route-groupId="@Model.GroupId" class="btn btn-outline-dark mt-2">Назад</a>
+	</form>
+</div>
+<p class="text-hide" id="datesForEdit">@ViewBag.DateArray</p>
+<p class="text-hide" id="timeForEdit">@ViewBag.Time</p>
+    @section Scripts{
+        <script >
+       
+        </script>
+        <script >
+        $.datepicker.regional['ru'] = {
+        	closeText: 'Закрыть',
+        	prevText: 'Предыдущий',
+        	nextText: 'Следующий',
+        	currentText: 'Сегодня',
+        	monthNames: ['Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'],
+        	monthNamesShort: ['Янв','Фев','Мар','Апр','Май','Июн','Июл','Авг','Сен','Окт','Ноя','Дек'],
+        	dayNames: ['воскресенье','понедельник','вторник','среда','четверг','пятница','суббота'],
+        	dayNamesShort: ['вск','пнд','втр','срд','чтв','птн','сбт'],
+        	dayNamesMin: ['Вс','Пн','Вт','Ср','Чт','Пт','Сб'],
+        	weekHeader: 'Не',
+        	dateFormat: 'dd.mm.yy',
+        	firstDay: 1,
+        	isRTL: false,
+        	showMonthAfterYear: false,
+        	yearSuffix: ''
+        };
+        $.datepicker.setDefaults($.datepicker.regional['ru']);
+        
+        $(function() {
+          $('#date_range').datepicker({
+            range: 'multiple', // режим - выбор нескольких дат 
+            range_multiple_max: '50', // макимальное число выбираемых дат
+            onSelect: function(dateText, inst, extensionRange) {
+              // extensionRange - объект расширения
+              $('[name=multipleDates]').val(extensionRange.datesText.join('\n'));
+            }
+          });
+         var dates =  $('#datesForEdit').text();
+         var array = dates.split(" ");
+          $('#date_range').datepicker('setDate', array);
+        
+          // объект расширения (хранит состояние календаря)
+          var extensionRange = $('#date_range').datepicker('widget').data('datepickerExtensionRange');
+          if (extensionRange.datesText) $('[name=multipleDates]').val(extensionRange.datesText.join('\n'));
+        });
+    
+        </script>
+        <script >
+        $(function(){
+        	var time = $('#timeForEdit').text();
+        	$('#timeInput').val(time);
+        });
+        </script>
+        
+    }
+
