@@ -1,0 +1,15 @@
+﻿@using System.Collections
+@using System.Globalization
+@model Schedule
+
+@{
+    ViewBag.Title = "Расписание группы";
+    Layout = "_Layout";
+}
+<h2 class="text-center">Расписание группы "@Model.Group.Name"</h2>
+<p><strong>Тренер</strong> - @Model.Group.CoachName</p>
+<hr>
+
+<a asp-action="Edit" asp-controller="Schedule" asp-route-id="@Model.Id" class="btn btn-outline-dark">Изменить расписание</a>
+<a asp-action="Index" asp-controller="Schedule" class="btn btn-outline-dark">Назад</a>
+

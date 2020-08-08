@@ -1,0 +1,13 @@
+﻿@using System.Collections
+@model DateTime
+
+@{
+    ViewBag.Title = "Месяц и расписание";
+    Layout = "_Layout";
+}
+<div class="container">
+<a class="btn btn-outline-dark mt-1" asp-action="Index" asp-route-month="@Model.AddMonths(-1).Month">Назад</a>
+<a class="btn btn-dark mt-1" asp-action="Create">Добавить расписание</a>
+<a class="btn btn-outline-dark mt-1" asp-action="Index" asp-route-month="@Model.AddMonths(1).Month">Вперед</a>
+<calendar month="@Model.Month" year="@Model.Year" events="@ViewBag.Events"/>
+</div>
