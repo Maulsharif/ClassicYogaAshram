@@ -93,7 +93,7 @@
             }
      });
 	</script>
-    <script>      
+	<script>      
        var groupsIds =  $('#groupIdArray').text();            
        $.each(groupsIds.split(' '), function(index, value) {
          $('select > option').filter(function () {
@@ -167,7 +167,10 @@
              setTimeout(function(){  
              if(data === "errorTime"){
              $('#error').text('В это время уже есть занятие').show().delay(1500).fadeOut();        
-             }             
+             }  
+             if(data === "errorGroup"){
+             $('#error').text('Не найдено ни одной группы').show().delay(1500).fadeOut();        
+             } 
              else if (data === "success"){
               location.reload();              
               }                                                                                                                
@@ -185,3 +188,4 @@
         });
       });
 	</script>
+}
