@@ -1,4 +1,4 @@
-﻿﻿using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -12,14 +12,7 @@ namespace yogaAshram.TagHelpers
     [HtmlTargetElement("calendar", TagStructure = TagStructure.NormalOrSelfClosing)]
     public class CalendarTagHelper : TagHelper
     {
-        private YogaAshramContext _db;
-
-        public CalendarTagHelper(YogaAshramContext db)
-        {
-            _db = db;
-        }
-
-        public int Month { get; set; }
+        public int Month { get; set; } 
 
         public int Year { get; set; }
         
@@ -38,7 +31,7 @@ namespace yogaAshram.TagHelpers
         {
             
             var monthStart = new DateTime(Year, Month, 1);
-            var events = Events?.GroupBy(e => e.DayOfWeek);
+            var events = Events?.OrderBy(e=>e.TimeStart).GroupBy(e => e.DayOfWeek);
             List<string> dayOfWeek = new List<string>(){"Понедельник","Вторник","Среда","Четверг","Пятница","Суббота","Воскресенье"}; 
             var html = new XDocument(
                 new XElement("div",
@@ -141,13 +134,12 @@ namespace yogaAshram.TagHelpers
                         new XAttribute("class",
                             $"event d-block p-1 pl-2 pr-2 mb-1 rounded text-truncate small bg-{e.Type} text-light {(d.Month != monthStart.Month ? hideLink : null)}"),
                         new XAttribute("href", e.Action),
-                        e.Group
+                        $"{e.Group} ({e.TimeStart.ToString("hh\\:mm")}-{e.TimeFinish.ToString("hh\\:mm")}) {e.NumberClients}"
                     )
                 ) ?? new[]
                 {
                     new XElement("p",
                         new XAttribute("class", $"d-lg-none {(d.Month != monthStart.Month ? hideLink : null)}"),
-                  //      new XAttribute($"href", $"/Schedule/Create/?day={d.Day}&year={d.Year}&month={d.Month}"),
                         "Нет занятий в этот день"
                     )
                 };
