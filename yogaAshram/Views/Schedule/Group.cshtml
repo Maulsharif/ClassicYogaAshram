@@ -7,9 +7,185 @@
     Layout = "_Layout";
 }
 <h2 class="text-center">Расписание группы "@Model.Group.Name"</h2>
+
 <p><strong>Тренер</strong> - @Model.Group.CoachName</p>
 <hr>
+<div id="reloadSchedule">
+	@foreach (var day in @Model.DayOfWeeksString)
+	{
+		<p>@day</p>
+	}
 
-<a asp-action="Edit" asp-controller="Schedule" asp-route-id="@Model.Id" class="btn btn-outline-dark">Изменить расписание</a>
-<a asp-action="Index" asp-controller="Schedule" class="btn btn-outline-dark">Назад</a>
+	<p>Начало - @Model.StartTime</p>
+	<p>Окончание - @Model.FinishTime</p>
+	<button data-toggle="modal" data-target="#scheduleCreate" class="btn btn-outline-dark">Изменить расписание</button>
+	<a asp-action="Index" asp-controller="Schedule" asp-route-branchId="@Model.BranchId" class="btn btn-outline-dark">Назад</a>
+
+	<p class="text-hide" id="datesForEdit">@ViewBag.DaysArray</p>
+	<p class="text-hide" id="timeForEditStart">@Model.StartTime</p>
+	<p class="text-hide" id="timeForEditFinish">@Model.FinishTime</p>
+</div>
+
+
+
+<div class="modal fade w-100" id="scheduleCreate" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="exampleModalLongTitle">Изменить расписание</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<form id="editSchedule">
+					<input type="hidden" asp-for="GroupId" value="@Model.GroupId" id="groupIdInput">
+					<label>Выберите цвет:</label>
+					<select name="color" class="form-control mb-2 w-25" id="selectColor">
+						<option value="primary" class="bg-primary">Синий</option>
+						<option value="success" class="bg-success">Зеленый</option>
+						<option value="danger" class="bg-danger">Красный</option>
+						<option value="warning" class="bg-warning">Желтый</option>
+						<option value="info" class="bg-info">Голубой</option>
+						<option value="dark" class="bg-dark text-light">Черный</option>
+					</select>
+					<label class="mt-2">Время начала занятия:</label>
+					<input type="time" id="timeInputStart" name="scheduleTime" class="form-control w-25" onchange="validateSalaryFrom()">
+					<label class="mt-2">Время окончания занятия:</label>
+					<input type="time" id="timeInputFinish" name="scheduleFinishTime" class="form-control w-25" onchange="validateSalaryTo()">
+               		
+               		
+					<div class="mb-2 mt-2">
+						<label class="">Выберите дни:</label>
+						<input name="dayOfWeeks" id="dayOfWeekInput" class="form-control w-50 mb-4" readonly>
+						<div class="mt-2 mb-2">
+							<div id="weekdays"> </div> 
+						</div>	
+					</div>
+					<button class="btn btn-outline-dark mt-4" type="submit" id="submitBtn">Изменить</button>
+					<div class="mt-2 text-danger" id="error"></div>
+				</form>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+@section Scripts{
+	<script >
+	$("#weekdays").weekLine({
+            mousedownSel: false,            
+            dayLabels: ["Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота", "Воскресенье"], 
+            onChange: function () {
+                   $("#dayOfWeekInput").val(
+                           $(this).weekLine('getSelected')
+              );
+            }
+     });
+	</script>
+    <script>      
+       var groupsIds =  $('#groupIdArray').text();            
+       $.each(groupsIds.split(' '), function(index, value) {
+         $('select > option').filter(function () {
+         	return $(this).val() == value
+         }).prop('disabled', true)
+       });      
+    </script>
+	<script >
+  function validateSalaryTo(){
+         var timeFrom = parseInt($("#timeInputStart").val());
+    var timeTo = parseInt($("#timeInputFinish").val());     
+           if (timeTo < timeFrom) {
+           	 $('#error').text('Время начала занятия не может больше времени окончания').show().delay(1500).fadeOut();
+              $('#submitBtn').prop('disabled', true);
+            } 
+          else {
+              $('#submitBtn').prop('disabled', false);             
+            }
+          };
+  function validateSalaryFrom(){
+           var timeFrom = parseInt($("#timeInputStart").val());
+      var timeTo = parseInt($("#timeInputFinish").val());     
+             if (timeTo < timeFrom) {
+                $('#submitBtn').prop('disabled', true);
+                 $('#error').text('Время начала занятия не может больше времени окончания').show().delay(1500).fadeOut();
+              } 
+            else {
+                $('#submitBtn').prop('disabled', false);            
+              }
+            };
+</script>
+	<script >
+	function validateForm() {
+   
+        var timeStart = $('#timeInputStart').val();
+        var timeFinish = $('#timeInputFinish').val();
+        var week = $('#dayOfWeekInput').val();
+       
+            if (week === "") {
+            $('#error').text('Необходимо выбрать день').show().delay(1500).fadeOut();
+            return false;
+            }
+            else if (timeStart === ""){
+            $('#error').text('Необходимо выбрать время начала занятия').show().delay(1500).fadeOut();
+                return false;
+            }
+            else if (timeFinish === ""){
+            $('#error').text('Необходимо выбрать время окончания занятия').show().delay(1500).fadeOut();
+                return false;
+            }
+            else {
+            	
+            	$.ajax({
+                url : '@Url.Action("Edit", "Schedule")',
+                type : 'POST',
+                data : {              
+                'groupId' : $("#groupIdInput").val(),
+                'color': $("#selectColor").val(),
+                'scheduleTime': timeStart,
+                'scheduleFinishTime': timeFinish, 
+                'dayOfWeeks': week,      
+             },                                                         
+            success: function (data) {
+             console.log(data);
+                                                
+             setTimeout(function(){  
+             if(data === "errorTime"){
+             $('#error').text('В это время уже есть занятие').show().delay(1500).fadeOut();        
+             }             
+             else if (data === "success"){
+              $("#reloadCalendar").load(" #reloadCalendar");   
+              $("#createSchedule").load(" #createSchedule");
+              $("#reloadSchedule").load(" #reloadSchedule");
+              $("#scheduleCreate").modal("toggle");
+              }                                                                                                                
+              }, 700)                            
+          },
+        })
+      }          
+   }
+	</script>
+	<script >
+	$(function () {   
+        $('#editSchedule').on('submit', function (e) {
+          e.preventDefault();    
+          validateForm();
+        });
+      });
+	</script>
+	
+	<script >
+            $(function(){
+            	var timeStart = $('#timeForEditStart').text();
+            	$('#timeInputStart').val(timeStart);
+            	var timeFinish = $('#timeForEditFinish').text();
+                $('#timeInputFinish').val(timeFinish);
+                var days =  $('#datesForEdit').text();
+                $('#dayOfWeekInput').val(days);
+            });
+            </script>
+
+}
 
