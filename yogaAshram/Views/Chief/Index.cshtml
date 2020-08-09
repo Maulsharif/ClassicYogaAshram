@@ -135,7 +135,7 @@
                     </div>
                 </div>
                 <a asp-action="CreateGroup" asp-controller="Group" class="btn btn-dark" style="margin-top: 15px;">Создать группу </a>
-
+                
                  <a asp-action="Index" asp-controller="Group" class="btn btn-dark" style="margin-top: 15px;">Группы </a>
 
                 <a asp-action="CreateClients" asp-controller="Clients" class="btn btn-dark" style="margin-top: 15px; margin-left: 15px;">Добавить клиента</a>
@@ -162,7 +162,8 @@
                      @foreach (Branch branch in (IEnumerable) @ViewBag.Branches)
                      {
                          <p>Центр йоги "@branch.Name" <a href="#" id="branchButton-@branch.Id" onclick="openBranch('@branch.Id')"> Открыть</a>
-                             <a href="#" data-toggle="modal" data-target="#deleteBranch-@branch.Id">Удалить</a></p>
+                             <a href="#" data-toggle="modal" data-target="#deleteBranch-@branch.Id">Удалить</a>
+                             <a asp-action="Index" asp-controller="Schedule" asp-route-branchId="@branch.Id">Календарь</a></p>
                          <!-- Modal -->
                          <div class="modal fade" id="deleteBranch-@branch.Id" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                              <div class="modal-dialog" role="document">

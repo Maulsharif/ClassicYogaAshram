@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
@@ -11,6 +12,7 @@ using yogaAshram.Models.ModelViews;
 
 namespace yogaAshram.Controllers
 {
+    [Authorize]
     public class ScheduleController : Controller
     {
         private YogaAshramContext _db;
@@ -113,7 +115,7 @@ namespace yogaAshram.Controllers
                 }
             }
             else
-                return NotFound();
+                return Content("errorGroup");
             
             await _db.SaveChangesAsync();
 
