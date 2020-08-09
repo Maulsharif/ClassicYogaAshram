@@ -82,6 +82,7 @@ namespace yogaAshram.Controllers
         public bool CheckEmailExist(string email)
         {
             return _db.Employees.Any(p => p.Email == email);
+            
         }
         public bool CheckAuthValid(string authentificator)
         {

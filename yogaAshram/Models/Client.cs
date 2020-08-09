@@ -1,4 +1,5 @@
-﻿using yogaAshram.Controllers;
+﻿using System;
+using yogaAshram.Controllers;
 
 namespace yogaAshram.Models
 {
@@ -25,5 +26,6 @@ namespace yogaAshram.Models
         public long  CreatorId { get; set; }
         
         public virtual Employee Creator { get; set; }
+        
     }
 }

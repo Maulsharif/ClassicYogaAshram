@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Identity;
 
 namespace yogaAshram.Models
 {
@@ -10,6 +11,7 @@ namespace yogaAshram.Models
     }
     public class Employee : IdentityUser<long>
     {
+       
         public string NameSurname { get; set; }
         public bool OnTimePassword { get; set; } = true;
         public PasswordStates PasswordState { get; set; } = PasswordStates.DisposableNew;
