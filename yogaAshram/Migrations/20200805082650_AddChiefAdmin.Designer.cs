@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using yogaAshram.Models;
@@ -9,9 +10,10 @@ using yogaAshram.Models;
 namespace yogaAshram.Migrations
 {
     [DbContext(typeof(YogaAshramContext))]
-    partial class YogaAshramContextModelSnapshot : ModelSnapshot
+    [Migration("20200805082650_AddChiefAdmin")]
+    partial class AddChiefAdmin
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -144,37 +146,6 @@ namespace yogaAshram.Migrations
                     b.HasIndex("AdminId");
 
                     b.ToTable("Branches");
-                });
-
-            modelBuilder.Entity("yogaAshram.Models.Client", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
-
-                    b.Property<int>("ClientType")
-                        .HasColumnType("integer");
-
-                    b.Property<long>("CreatorId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("GroupId")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("NameSurname")
-                        .HasColumnType("text");
-
-                    b.Property<string>("PhoneNumber")
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CreatorId");
-
-                    b.HasIndex("GroupId");
-
-                    b.ToTable("Clients");
                 });
 
             modelBuilder.Entity("yogaAshram.Models.Employee", b =>
@@ -432,21 +403,6 @@ namespace yogaAshram.Migrations
                     b.HasOne("yogaAshram.Models.Employee", "Admin")
                         .WithMany()
                         .HasForeignKey("AdminId");
-                });
-
-            modelBuilder.Entity("yogaAshram.Models.Client", b =>
-                {
-                    b.HasOne("yogaAshram.Models.Employee", "Creator")
-                        .WithMany()
-                        .HasForeignKey("CreatorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("yogaAshram.Models.Group", "Group")
-                        .WithMany()
-                        .HasForeignKey("GroupId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("yogaAshram.Models.Group", b =>

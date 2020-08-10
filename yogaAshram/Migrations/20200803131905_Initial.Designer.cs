@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using yogaAshram.Models;
@@ -9,9 +10,10 @@ using yogaAshram.Models;
 namespace yogaAshram.Migrations
 {
     [DbContext(typeof(YogaAshramContext))]
-    partial class YogaAshramContextModelSnapshot : ModelSnapshot
+    [Migration("20200803131905_Initial")]
+    partial class Initial
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -130,51 +132,25 @@ namespace yogaAshram.Migrations
                     b.Property<string>("Address")
                         .HasColumnType("text");
 
-                    b.Property<long?>("AdminId")
-                        .HasColumnType("bigint");
-
                     b.Property<string>("Info")
                         .HasColumnType("text");
+
+                    b.Property<long?>("MarketerId")
+                        .HasColumnType("bigint");
 
                     b.Property<string>("Name")
                         .HasColumnType("text");
 
+                    b.Property<long?>("SellerId")
+                        .HasColumnType("bigint");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("AdminId");
+                    b.HasIndex("MarketerId");
+
+                    b.HasIndex("SellerId");
 
                     b.ToTable("Branches");
-                });
-
-            modelBuilder.Entity("yogaAshram.Models.Client", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
-
-                    b.Property<int>("ClientType")
-                        .HasColumnType("integer");
-
-                    b.Property<long>("CreatorId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("GroupId")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("NameSurname")
-                        .HasColumnType("text");
-
-                    b.Property<string>("PhoneNumber")
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CreatorId");
-
-                    b.HasIndex("GroupId");
-
-                    b.ToTable("Clients");
                 });
 
             modelBuilder.Entity("yogaAshram.Models.Employee", b =>
@@ -429,24 +405,13 @@ namespace yogaAshram.Migrations
 
             modelBuilder.Entity("yogaAshram.Models.Branch", b =>
                 {
-                    b.HasOne("yogaAshram.Models.Employee", "Admin")
+                    b.HasOne("yogaAshram.Models.Employee", "Marketer")
                         .WithMany()
-                        .HasForeignKey("AdminId");
-                });
+                        .HasForeignKey("MarketerId");
 
-            modelBuilder.Entity("yogaAshram.Models.Client", b =>
-                {
-                    b.HasOne("yogaAshram.Models.Employee", "Creator")
+                    b.HasOne("yogaAshram.Models.Employee", "Seller")
                         .WithMany()
-                        .HasForeignKey("CreatorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("yogaAshram.Models.Group", "Group")
-                        .WithMany()
-                        .HasForeignKey("GroupId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("SellerId");
                 });
 
             modelBuilder.Entity("yogaAshram.Models.Group", b =>

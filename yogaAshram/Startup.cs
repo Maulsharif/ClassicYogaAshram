@@ -11,6 +11,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using yogaAshram.Models;
+using yogaAshram.Services;
 
 namespace yogaAshram
 {
@@ -28,8 +29,8 @@ namespace yogaAshram
         {
             services.AddControllersWithViews();
             string connection = Configuration.GetConnectionString("DefaultConnection");
-            services.AddDbContext<YogaAshramContext>(options => options.UseNpgsql(connection))
-                .AddIdentity<Employee, IdentityRole>(options =>
+            services.AddDbContext<YogaAshramContext>(options => options.UseLazyLoadingProxies().UseNpgsql(connection))
+                .AddIdentity<Employee, Role>(options =>
                 {
                     options.Password.RequiredLength = 6; // минимальная длина
                     options.Password.RequireNonAlphanumeric = false;   // требуются ли не алфавитно-цифровые символы
@@ -38,7 +39,9 @@ namespace yogaAshram
                     options.Password.RequireDigit = false; // требуются ли цифры
                     options.User.AllowedUserNameCharacters = null;
                 })
-                .AddEntityFrameworkStores<YogaAshramContext>();
+                .AddEntityFrameworkStores<YogaAshramContext>()
+                .AddDefaultTokenProviders();
+            services.AddTransient<EmailService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

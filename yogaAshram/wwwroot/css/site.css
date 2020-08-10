@@ -69,3 +69,191 @@ body {
   white-space: nowrap;
   line-height: 60px; /* Vertically center the text there */
 }
+.field-validation-error {
+    padding: 3px 4px 3px 4px;
+    background-color: #e61c1c;
+    opacity: 0.8;
+    position: absolute;
+    border-radius: 3px;
+    margin-top: 3px;
+    color: white;
+    text-align: left;
+}
+
+.cursor-p {
+    cursor: pointer;
+}
+.profile-icons{
+    width: 23px;
+}
+.popup-overlay {
+    visibility: hidden;
+    position: absolute;
+    z-index: 10;
+    background: #ffffff;
+    border: 2px solid #666666;
+    width: 300px;
+    height: 160px;
+    left: 50%;
+    transform: translate(-50%, -1%);
+    top: 85%;
+}
+.popup-overlay.active {
+    visibility: visible;
+    text-align: center;
+}
+.popup-content {
+    visibility: hidden;
+
+}
+.popup-content.active {
+    visibility: visible;
+}
+.force-overflow-2
+{
+    min-height: 100px
+}
+
+#style-4::-webkit-scrollbar-track
+{
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+    background-color: #ffffff;
+}
+
+#style-4::-webkit-scrollbar
+{
+    width: 5px;
+    background-color: #ffffff;
+}
+
+#style-4::-webkit-scrollbar-thumb
+{
+    background-color: #000000;
+    border: 2px solid #555555;
+}
+.scrollbar-3 {
+    float: left;
+    height: 100%;
+    width: 100%;
+    background: #ffffff;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    z-index: 10;
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+.search-form {
+    width: 300px;
+    background: #fafafa;
+    overflow: hidden;
+    position: absolute;
+    z-index: 10;
+    left: 50%;
+    transform: translate(-50%, -1%);
+}
+.search-input {
+    width: 300px;
+    font-size: 15px;
+    font-weight:300;
+    letter-spacing: .5px;
+    height:30px;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    -khtml-border-radius: 5px;
+    border-radius: 5px;
+    text-align: center;
+    border: 1px solid #edeeee;
+    background: #fafafa;
+}
+input[type=search]:focus.search-input {
+    text-align: left;
+    padding-left: 30px;
+    background: #fafafa;
+    color: #000;
+}
+.search-input:not(:placeholder-shown) ~ .search-button {
+    font-size: 15px;
+    font-weight:300;
+    letter-spacing: .5px;
+    text-align: center;
+    border: none;
+    background: #fafafa;
+    outline:none;
+}
+.search-input::-webkit-search-cancel-button{
+    position:relative;
+    right:2px;
+}
+.branchDetails{
+    display: none;
+}
+.editIcon{
+    width: 20px;
+}
+.inputName{
+    display: none;
+}
+.inputAddress{
+    display: none;
+}
+.inputInfo{
+    display: none;
+}
+.inputMarketer{
+    display: none;
+}
+.inputSeller{
+    display: none;
+}
+.calendar .display-4 {
+    font-size: 1.5rem;
+}
+
+@media (max-width:991px) {
+    .calendar .day h5 {
+        background-color: #f8f9fa;
+        padding: 3px 5px 5px;
+        margin: -8px -8px 8px -8px;
+    }
+
+    .calendar .date {
+        padding-left: 4px;
+    }
+}
+
+@media (min-width: 992px) {
+    .calendar h5 {
+        font-size: 0.9rem;
+    }
+
+    .calendar .day {
+        min-height: 7vw;
+    }
+
+    .calendar .event {
+        font-size: 0.67rem;
+    }
+}
+
+@media (min-width: 1440px) {
+    .calendar .day {
+        min-height: 6vw;
+    }
+}
+
+@media (min-width: 1920px) {
+    .calendar .day {
+        min-height: 5vw;
+    }
+}
+.areaDates{
+    display: none;
+}
+.bg-calendar{
+    background-color: #417582;
+}
+option[disabled] {
+    color: #ccc;
+    cursor: not-allowed
+}
