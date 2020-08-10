@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace yogaAshram.Models
 {
@@ -15,5 +16,7 @@ namespace yogaAshram.Models
         public long  CreatorId { get; set; }
         
         public virtual Employee Creator { get; set; }
+
+        public virtual List<Client> Clients { get; set; }
     }
 }
