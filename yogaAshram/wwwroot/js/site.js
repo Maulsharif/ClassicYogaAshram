@@ -24,10 +24,11 @@ jQueryAjaxPost = form => {
             processData: false,
             success: function (res) {
                 if (res.isValid) {
-                    $('#seller_info').html(res.html)
+                 
                     $('#form-modal .modal-body').html('');
                     $('#form-modal .modal-title').html('');
                     $('#form-modal').modal('hide');
+                    setInterval('location.reload()', 100);
                 }
                 else
                     $('#form-modal .modal-body').html(res.html);

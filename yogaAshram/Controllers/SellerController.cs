@@ -64,7 +64,7 @@ namespace yogaAshram.Controllers
                 employee.NameSurname = model.NameSurname;
                  _db.Entry(employee).State = EntityState.Modified;
                  await _db.SaveChangesAsync();
-                 return Json(new { isValid = true });
+                 return Json(new { isValid = true, model });
              }
 
              return Json(new
