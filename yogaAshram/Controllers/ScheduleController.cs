@@ -88,7 +88,6 @@ namespace yogaAshram.Controllers
                     CalendarEvent calendarEvent = new CalendarEvent()
                     {
                         DayOfWeek = day,
-                        Group = group.Name,
                         TimeStart = scheduleTime,
                         TimeFinish = scheduleFinishTime,
                         Type = SelectBootstrapColor(color),
@@ -155,7 +154,6 @@ namespace yogaAshram.Controllers
                         DayOfWeek = day,
                         TimeStart = scheduleTime,
                         TimeFinish = scheduleFinishTime,
-                        Group = schedule.Group.Name,
                         GroupId = schedule.GroupId,
                         BranchId = schedule.BranchId,
                         Type = SelectBootstrapColor(color),
