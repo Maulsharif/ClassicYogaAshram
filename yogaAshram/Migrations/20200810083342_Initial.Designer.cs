@@ -11,7 +11,7 @@ using yogaAshram.Models;
 namespace yogaAshram.Migrations
 {
     [DbContext(typeof(YogaAshramContext))]
-    [Migration("20200809080717_Initial")]
+    [Migration("20200810083342_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -165,9 +165,6 @@ namespace yogaAshram.Migrations
                     b.Property<int>("DayOfWeek")
                         .HasColumnType("integer");
 
-                    b.Property<string>("Group")
-                        .HasColumnType("text");
-
                     b.Property<long>("GroupId")
                         .HasColumnType("bigint");
 
@@ -186,6 +183,8 @@ namespace yogaAshram.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("BranchId");
+
+                    b.HasIndex("GroupId");
 
                     b.ToTable("CalendarEvents");
                 });
@@ -482,6 +481,12 @@ namespace yogaAshram.Migrations
                     b.HasOne("yogaAshram.Models.Branch", "Branch")
                         .WithMany()
                         .HasForeignKey("BranchId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("yogaAshram.Models.Group", "Group")
+                        .WithMany()
+                        .HasForeignKey("GroupId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

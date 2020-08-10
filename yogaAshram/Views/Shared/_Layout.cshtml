@@ -70,6 +70,12 @@
                                 <a class="nav-link text-dark" asp-controller="Manager" asp-action="Index"><img class="profile-icons" src="/Images/SiteImages/profile.png" alt="profile"></a>
                             </li>
                         }
+                        else if (User.IsInRole("admin"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="Admin" asp-action="Index"><img class="profile-icons" src="/Images/SiteImages/profile.png" alt="profile"></a>
+                            </li>
+                        }
                         <li class="nav-item">
                         <form method="post" asp-controller="Account" asp-action="Logout" id="my_form">
                             <a class="nav-link" href="javascript:{}" onclick="document.getElementById('my_form').submit(); return false;"><img class="profile-icons" src="/Images/SiteImages/out.jpg" alt="out"></a>

@@ -209,33 +209,6 @@ namespace yogaAshram.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "CalendarEvents",
-                columns: table => new
-                {
-                    Id = table.Column<long>(nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Group = table.Column<string>(nullable: true),
-                    GroupId = table.Column<long>(nullable: false),
-                    NumberClients = table.Column<int>(nullable: false),
-                    BranchId = table.Column<long>(nullable: false),
-                    DayOfWeek = table.Column<int>(nullable: false),
-                    TimeStart = table.Column<TimeSpan>(nullable: false),
-                    TimeFinish = table.Column<TimeSpan>(nullable: false),
-                    Type = table.Column<string>(nullable: true),
-                    Action = table.Column<string>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_CalendarEvents", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_CalendarEvents_Branches_BranchId",
-                        column: x => x.BranchId,
-                        principalTable: "Branches",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Clients",
                 columns: table => new
                 {
@@ -285,6 +258,38 @@ namespace yogaAshram.Migrations
                         name: "FK_Groups_AspNetUsers_CreatorId",
                         column: x => x.CreatorId,
                         principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "CalendarEvents",
+                columns: table => new
+                {
+                    Id = table.Column<long>(nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    GroupId = table.Column<long>(nullable: false),
+                    NumberClients = table.Column<int>(nullable: false),
+                    BranchId = table.Column<long>(nullable: false),
+                    DayOfWeek = table.Column<int>(nullable: false),
+                    TimeStart = table.Column<TimeSpan>(nullable: false),
+                    TimeFinish = table.Column<TimeSpan>(nullable: false),
+                    Type = table.Column<string>(nullable: true),
+                    Action = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CalendarEvents", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_CalendarEvents_Branches_BranchId",
+                        column: x => x.BranchId,
+                        principalTable: "Branches",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_CalendarEvents_Groups_GroupId",
+                        column: x => x.GroupId,
+                        principalTable: "Groups",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -364,6 +369,11 @@ namespace yogaAshram.Migrations
                 name: "IX_CalendarEvents_BranchId",
                 table: "CalendarEvents",
                 column: "BranchId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CalendarEvents_GroupId",
+                table: "CalendarEvents",
+                column: "GroupId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Clients_CreatorId",
