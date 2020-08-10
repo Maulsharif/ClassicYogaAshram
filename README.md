@@ -7,6 +7,7 @@
 *	PostgreSQL
 *	Lazy-loading proxies
 *	Identity
+* MailKit
 ## Использование библиотек:
 *	jquery
 *	bootstrap
@@ -14,7 +15,7 @@
 ## Быстрый запуск:
 ```
 # склонируйте репозиторий 
-$ git clone https://github.com/CSharpGroup3/ClassicYogaAshram 
+$ git clone git@github.com:CSharpGroup3/ClassicYogaAshram.git
 
 # зайдите в папку
 $ cd yogaAshram

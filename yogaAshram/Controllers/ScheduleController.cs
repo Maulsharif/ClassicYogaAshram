@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
@@ -11,6 +12,7 @@ using yogaAshram.Models.ModelViews;
 
 namespace yogaAshram.Controllers
 {
+    [Authorize]
     public class ScheduleController : Controller
     {
         private YogaAshramContext _db;
@@ -21,9 +23,23 @@ namespace yogaAshram.Controllers
         }
 
         // GET
-        public IActionResult Index(int? month)
+        public IActionResult Index(int? month, long? branchId)
         {
-            if (_db.CalendarEvents != null) ViewBag.Events = _db.CalendarEvents.ToList();
+            if (_db.CalendarEvents != null || branchId != null) 
+                ViewBag.Events = _db.CalendarEvents
+                .Where(c => c.BranchId == branchId)
+                .ToList();
+            ViewBag.Groups = _db.Groups.Where(g => g.BranchId == branchId).ToList();
+            List<Schedule> schedules = _db.Schedules.Where(s => s.BranchId == branchId).ToList();
+            long[] groupIdArray = new long[schedules.Count];
+            for (int i = 0; i < schedules.Count; i++)
+            {
+                groupIdArray[i] = schedules[i].GroupId;
+            }
+
+            ViewBag.BranchId = branchId;
+            ViewBag.GroupIdArray = String.Join(" ", groupIdArray);
+            
             DateTime dateTime = DateTime.Today;
             if (month != null)
                 dateTime = new DateTime(dateTime.Year, Convert.ToInt32(month), 1);
@@ -34,24 +50,12 @@ namespace yogaAshram.Controllers
         {
             Schedule schedule = _db.Schedules.FirstOrDefault(g => g.GroupId == groupId);
             if (schedule != null)
-                return View(schedule);
-
-            return NotFound();
-        }
-
-        public IActionResult Create()
-        {
-            DateTime dateTime = DateTime.Today;
-            ViewBag.Groups = _db.Groups.ToList();
-            List<Schedule> schedules = _db.Schedules.ToList();
-            long[] groupIdArray = new long[schedules.Count];
-            for (int i = 0; i < schedules.Count; i++)
             {
-                groupIdArray[i] = schedules[i].GroupId;
+                ViewBag.DaysArray =  string.Join(",", schedule.DayOfWeeksString);
+                
+                 return View(schedule);
             }
-
-            ViewBag.GroupIdArray = String.Join(" ", groupIdArray);
-            return View(dateTime);
+            return NotFound();
         }
 
         [HttpPost]
@@ -64,7 +68,7 @@ namespace yogaAshram.Controllers
             {
                 days[i] = DayOfWeekEn(dayOfWeekFromString[i]);
             }
-            
+         
             Group group = _db.Groups.FirstOrDefault(g => g.Id == groupId);
 
             if (group != null)
@@ -77,13 +81,13 @@ namespace yogaAshram.Controllers
                     FinishTime = scheduleFinishTime,
                     DayOfWeeksString = dayOfWeekFromString
                 };
+
                 _db.Entry(schedule).State = EntityState.Added;
                 foreach (var day in days)
                 {
                     CalendarEvent calendarEvent = new CalendarEvent()
                     {
                         DayOfWeek = day,
-                        Group = group.Name,
                         TimeStart = scheduleTime,
                         TimeFinish = scheduleFinishTime,
                         Type = SelectBootstrapColor(color),
@@ -91,86 +95,93 @@ namespace yogaAshram.Controllers
                         GroupId = group.Id,
                         Action = $"/Schedule/Group/?groupId={group.Id}"
                     };
+                    List<CalendarEvent> events = _db.CalendarEvents.ToList();
+                    foreach (var t in events)
+                    {
+                        if(t.BranchId == calendarEvent.BranchId && 
+                           t.GroupId != calendarEvent.GroupId && 
+                           t.DayOfWeek == calendarEvent.DayOfWeek)
+                        {
+                            if (t.TimeStart < calendarEvent.TimeStart && calendarEvent.TimeStart < t.TimeFinish ||
+                                t.TimeStart < calendarEvent.TimeFinish && calendarEvent.TimeFinish < t.TimeFinish)
+                            {
+                                
+                                return Content("errorTime");
+                            }
+                        }
+                    }
                     _db.Entry(calendarEvent).State = EntityState.Added;
                 }
             }
             else
-                return NotFound();
+                return Content("errorGroup");
             
             await _db.SaveChangesAsync();
 
-            return RedirectToAction("Index");
+            return Content("success");
         }
-
-        public IActionResult Edit(long? id)
+        
+        [HttpPost]
+        public async Task<IActionResult> Edit(TimeSpan scheduleTime, TimeSpan scheduleFinishTime, long groupId,
+            string color, string dayOfWeeks)
         {
-            Schedule schedule = _db.Schedules.FirstOrDefault(s => s.Id == id);
+            List<string> dayOfWeekFromString = dayOfWeeks.Split(',').ToList();
+            DayOfWeek[] days = new DayOfWeek[dayOfWeekFromString.Count];
+            for (int i = 0; i < dayOfWeekFromString.Count; i++)
+            {
+                days[i] = DayOfWeekEn(dayOfWeekFromString[i]);
+            }
+            
+            Schedule schedule = _db.Schedules.FirstOrDefault(s => s.GroupId == groupId);
             if (schedule != null)
             {
-                DateTime[] dateArray;
-
-                /*dateArray = schedule.FromDate.OrderBy(d => d.Date).ToArray();
-                string[] stringDates = new string[dateArray.Length];
-                for (int i = 0; i < dateArray.Length; i++)
+                schedule.DayOfWeeksString.Clear();
+                schedule.DayOfWeeksString.AddRange(dayOfWeekFromString);
+                schedule.StartTime = scheduleTime;
+                schedule.FinishTime = scheduleFinishTime;
+                
+                _db.Entry(schedule).State = EntityState.Modified;
+                
+                foreach (var calendar in _db.CalendarEvents.Where(c => c.GroupId == schedule.GroupId))
                 {
-                    var s = dateArray[i].Date.ToString("dd.MM.yyyy");
-                    stringDates[i] = s;
+                    _db.Entry(calendar).State = EntityState.Deleted;
                 }
 
-                ViewBag.DateArray = String.Join(" ", stringDates);
-
-                TimeSpan time = dateArray[0].TimeOfDay;
-                ViewBag.Time = time;*/
-            }
-
-            return View(schedule);
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> Edit(long? groupId, TimeSpan scheduleTime, string multipleDates, string color)
-        {
-            int hour = scheduleTime.Hours;
-            int minute = scheduleTime.Minutes;
-            CultureInfo provider = CultureInfo.InvariantCulture;
-            List<DateTime> datesFromString = new List<DateTime>();
-            if (multipleDates != null)
-            {
-                List<string> datesString = multipleDates.Split("\r\n").ToList();
-                datesFromString = datesString.Select(date => DateTime.ParseExact(date, "dd.MM.yyyy", provider))
-                    .ToList();
-                for (int i = 0; i < datesFromString.Count; i++)
+                foreach (var day in days)
                 {
-                    datesFromString[i] = new DateTime(datesFromString[i].Year, datesFromString[i].Month,
-                        datesFromString[i].Day, hour, minute, 0);
+                    CalendarEvent calendarEvent = new CalendarEvent()
+                    {
+                        DayOfWeek = day,
+                        TimeStart = scheduleTime,
+                        TimeFinish = scheduleFinishTime,
+                        GroupId = schedule.GroupId,
+                        BranchId = schedule.BranchId,
+                        Type = SelectBootstrapColor(color),
+                        Action = $"/Schedule/Group/?groupId={schedule.GroupId}"
+                    };
+                    List<CalendarEvent> events = _db.CalendarEvents.ToList();
+                    foreach (var t in events)
+                    {
+                        if(t.BranchId == calendarEvent.BranchId && 
+                           t.GroupId != calendarEvent.GroupId && 
+                           t.DayOfWeek == calendarEvent.DayOfWeek)
+                        {
+                            if (t.TimeStart < calendarEvent.TimeStart && calendarEvent.TimeStart < t.TimeFinish ||
+                                t.TimeStart < calendarEvent.TimeFinish && calendarEvent.TimeFinish < t.TimeFinish)
+                            {
+                                return Content("errorTime");
+                            }
+                        }
+                    }
+                    _db.Entry(calendarEvent).State = EntityState.Added;
                 }
+
+                await _db.SaveChangesAsync();
+                return Content("success");
             }
 
-            Schedule schedule = _db.Schedules.FirstOrDefault(s => s.GroupId == groupId);
- //           schedule.FromDate.Clear();
-  //          schedule.ToDate.Clear();
- //           schedule.FromDate.AddRange(datesFromString);
+            return NotFound();
 
-            _db.Entry(schedule).State = EntityState.Modified;
-            // добавить поле groupId в CalendarEvent!!! 
-            foreach (var calendar in _db.CalendarEvents.Where(c => c.Group == schedule.Group.Name))
-            {
-                _db.Entry(calendar).State = EntityState.Deleted;
-            }
-
-            foreach (var date in datesFromString)
-            {
-                CalendarEvent calendarEvent = new CalendarEvent()
-                {
-              //      DayOfWeek = DayOfWeek.Friday,
-                    Group = schedule.Group.Name,
-                    Type = SelectBootstrapColor(color),
-                    Action = $"/Schedule/Group/?groupId={schedule.GroupId}"
-                };
-                _db.Entry(calendarEvent).State = EntityState.Added;
-            }
-
-            await _db.SaveChangesAsync();
-            return RedirectToAction("Group", "Schedule", new {groupId = schedule.GroupId});
         }
 
         public string SelectBootstrapColor(string colorBootstrap)
