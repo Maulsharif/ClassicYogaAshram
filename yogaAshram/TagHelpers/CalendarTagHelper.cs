@@ -133,8 +133,12 @@ namespace yogaAshram.TagHelpers
                     new XElement("a",
                         new XAttribute("class",
                             $"event d-block p-1 pl-2 pr-2 mb-1 rounded text-truncate small bg-{e.Type} text-light {(d.Month != monthStart.Month ? hideLink : null)}"),
+                        new XAttribute("data-toggle",
+                            $"tooltip"),
+                        new XAttribute("title",
+                            $"{e.Group.Name}({e.Group.CoachName}). Время:{e.TimeStart.ToString("hh\\:mm")}-{e.TimeFinish.ToString("hh\\:mm")} {e.NumberClients}"),
                         new XAttribute("href", e.Action),
-                        $"{e.Group} ({e.TimeStart.ToString("hh\\:mm")}-{e.TimeFinish.ToString("hh\\:mm")}) {e.NumberClients}"
+                        $"{e.Group.Name} ({e.TimeStart.ToString("hh\\:mm")}-{e.TimeFinish.ToString("hh\\:mm")}) {e.NumberClients}"
                     )
                 ) ?? new[]
                 {
