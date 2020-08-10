@@ -6,7 +6,7 @@ namespace yogaAshram.Models
     public class CalendarEvent
     {
         public long Id { get; set; } 
-        public string Group { get; set; }
+        public virtual Group Group { get; set; }
         public long GroupId { get; set; }
         public int NumberClients { get; set; }
         public long BranchId { get; set; }
