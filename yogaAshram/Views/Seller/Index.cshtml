@@ -1,35 +1,33 @@
 ﻿@inject UserManager<Employee> UserManager
 @using Microsoft.AspNetCore.Identity
-@model AdminIndexModel
+@model SellerIndexModel
 
 @{
     ViewBag.Title = "Главная";
     Layout = "_Layout";
 }
-<h2>Админ</h2>
+<h2>Продавец</h2>
 
-<div class="container" >
+<div class="container">
 
-    <div class="row" >
+    <div class="row">
         <div class="col-sm-4">
             <ul class="list-group ">
-
-
-                <div id="info">
-                    <h6 id="name">ФИО : @Model.Employee.NameSurname </h6>
-                    <h6 id="email">Email : @Model.Employee.Email</h6>
-                    <h6 id="login">Логин : @Model.Employee.UserName</h6>
-                </div>
-                   
-             
                 <li class="list-group-item">
-                    <a onclick="showInPopup('@Url.Action("Edit","Admin",new {id=@Model.Employee.Id},Context.Request.Scheme)')" class="btn btn-info text-white"> Редактировать профиль</a>
+                    
+                    <div id="info"></div>
+                    <h6>ФИО : @Model.Employee.NameSurname </h6>
+                    <h6>Email : @Model.Employee.Email</h6>
+                    <h6>Логин : @Model.Employee.UserName</h6>
+                </li>
+                <li class="list-group-item">
+                    <a onclick="showInPopup('@Url.Action("Edit","Seller",new {id=@Model.Employee.Id},Context.Request.Scheme)')" class="btn btn-info text-white"> Редактировать профиль</a>
                 </li>
                 <li class="list-group-item">
                     <button id="changePasswordBtn" class=" btn  form-control btn-info text-white" >Изменить пароль</button>
                 </li>
                 
-                <li class="list-group-item">Добавить клиента</li>
+                <li class="list-group-item">Добавить пробник</li>
                 <li class="list-group-item">Посещаемость</li>
           
             </ul>
@@ -55,6 +53,13 @@
                $('#changePasswordModal').modal('show');
            </script>
        }
+       @if (Model.IsEditInvalid)
+       {
+           <script>
+               $('#editPrifilePartial').modal('show');
+           </script>
+       }
+    
     <script>
         $("#changePasswordBtn").on("click", function () {
             $("#changePasswordModal").modal('show');

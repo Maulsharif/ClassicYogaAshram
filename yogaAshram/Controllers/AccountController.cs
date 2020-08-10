@@ -75,6 +75,10 @@ namespace yogaAshram.Controllers
                             return RedirectToAction("Index", "Manager");
                         else if(role == "chief")
                             return RedirectToAction("Index", "Chief");
+                        else if(role == "admin")
+                            return RedirectToAction("Index", "Admin");
+                        else if(role == "seller")
+                            return RedirectToAction("Index", "Seller");
                     }
                     return RedirectToAction("Index", "Employees");
                 }

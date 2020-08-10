@@ -5,35 +5,33 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Internal;
 using yogaAshram.Models;
 using yogaAshram.Models.ModelViews;
 using yogaAshram.Services;
 
 namespace yogaAshram.Controllers
-{
-    [Authorize(Roles = "admin,chief")]
-    public class AdminController : Controller
+{ 
+    [Authorize(Roles = "seller")]
+    public class SellerController : Controller
     {
         private readonly UserManager<Employee> _userManager;
-        private readonly SignInManager<Employee> _signInManager;
         private readonly YogaAshramContext _db;
-
-        public AdminController(SignInManager<Employee> signInManager, YogaAshramContext db,
-            UserManager<Employee> userManager)
+        private readonly SignInManager<Employee> _signInManager;
+        private readonly RoleManager<Role> _roleManager;
+        public SellerController(UserManager<Employee> userManager, YogaAshramContext db, SignInManager<Employee> signInManager, RoleManager<Role> roleManager)
         {
-            _signInManager = signInManager;
-            _db = db;
             _userManager = userManager;
+            _db = db;
+            _signInManager = signInManager;
+            _roleManager = roleManager;
         }
 
-        [Authorize ]
-
-          public async Task<IActionResult> Index()
+        // GET
+        public async Task<IActionResult> Index()
         {
             Employee empl = await _userManager.GetUserAsync(User);
 
-            return View(new AdminIndexModel()
+            return View(new SellerIndexModel()
             {
                 Employee = empl,
                 Groups = _db.Groups.ToList()
@@ -66,7 +64,7 @@ namespace yogaAshram.Controllers
                 employee.NameSurname = model.NameSurname;
                  _db.Entry(employee).State = EntityState.Modified;
                  await _db.SaveChangesAsync();
-                 return Json(new { isValid = true });
+                 return Json(new { isValid = true, model });
              }
 
              return Json(new
@@ -92,7 +90,7 @@ namespace yogaAshram.Controllers
          private async Task SetViewBagRoles()
          {
              Dictionary<string, string> rolesDic = new Dictionary<string, string>();
-             var roles = await _db.Roles.Where(p => p.Name != "admin").ToArrayAsync();
+             var roles = await _db.Roles.Where(p => p.Name != "seller").ToArrayAsync();
              foreach (var item in roles)
                  rolesDic.Add(item.Name, GetRuRoleName(item.Name));
              ViewBag.Roles = rolesDic;
@@ -118,11 +116,18 @@ namespace yogaAshram.Controllers
                  }               
              }
              await SetViewBagRoles();
-             return View("Index", new AdminIndexModel() { Employee = employee, Model = model, IsModalInvalid = true }) ;
+             return View("Index", new SellerIndexModel() { Employee = employee, Model = model, IsModalInvalid = true }) ;
          }
          
          
-      
-        
+         
+         
+         
+         
+         
+         
+
+
     }
+
 }

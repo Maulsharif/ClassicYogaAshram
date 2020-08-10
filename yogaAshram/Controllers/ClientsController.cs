@@ -24,9 +24,10 @@ namespace yogaAshram.Controllers
         }
         
         [Authorize]
-        public IActionResult CreateClients()
+        public IActionResult CreateClients(long branchId)
         {
-            ViewBag.Groups = _db.Groups.ToList();
+            
+            ViewBag.Groups = _db.Groups.ToList().Where(b=>b.BranchId==branchId);
             return View();
         }
         

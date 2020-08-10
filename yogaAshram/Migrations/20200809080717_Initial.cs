@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -168,21 +169,14 @@ namespace yogaAshram.Migrations
                     Name = table.Column<string>(nullable: true),
                     Address = table.Column<string>(nullable: true),
                     Info = table.Column<string>(nullable: true),
-                    MarketerId = table.Column<long>(nullable: true),
-                    SellerId = table.Column<long>(nullable: true)
+                    AdminId = table.Column<long>(nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Branches", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Branches_AspNetUsers_MarketerId",
-                        column: x => x.MarketerId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Branches_AspNetUsers_SellerId",
-                        column: x => x.SellerId,
+                        name: "FK_Branches_AspNetUsers_AdminId",
+                        column: x => x.AdminId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
@@ -209,6 +203,56 @@ namespace yogaAshram.Migrations
                     table.ForeignKey(
                         name: "FK_ManagerEmployees_AspNetUsers_ManagerId",
                         column: x => x.ManagerId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "CalendarEvents",
+                columns: table => new
+                {
+                    Id = table.Column<long>(nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Group = table.Column<string>(nullable: true),
+                    GroupId = table.Column<long>(nullable: false),
+                    NumberClients = table.Column<int>(nullable: false),
+                    BranchId = table.Column<long>(nullable: false),
+                    DayOfWeek = table.Column<int>(nullable: false),
+                    TimeStart = table.Column<TimeSpan>(nullable: false),
+                    TimeFinish = table.Column<TimeSpan>(nullable: false),
+                    Type = table.Column<string>(nullable: true),
+                    Action = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CalendarEvents", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_CalendarEvents_Branches_BranchId",
+                        column: x => x.BranchId,
+                        principalTable: "Branches",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Clients",
+                columns: table => new
+                {
+                    Id = table.Column<long>(nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    NameSurname = table.Column<string>(nullable: true),
+                    PhoneNumber = table.Column<string>(nullable: true),
+                    ClientType = table.Column<int>(nullable: false),
+                    GroupId = table.Column<long>(nullable: false),
+                    CreatorId = table.Column<long>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Clients", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Clients_AspNetUsers_CreatorId",
+                        column: x => x.CreatorId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -251,16 +295,21 @@ namespace yogaAshram.Migrations
                 {
                     Id = table.Column<long>(nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    DayOfWeek = table.Column<int>(nullable: false),
-                    FromHours = table.Column<int>(nullable: false),
-                    FromMinutes = table.Column<int>(nullable: false),
-                    ToHours = table.Column<int>(nullable: false),
-                    ToMinutes = table.Column<int>(nullable: false),
+                    BranchId = table.Column<long>(nullable: false),
+                    DayOfWeeksString = table.Column<List<string>>(nullable: true),
+                    StartTime = table.Column<TimeSpan>(nullable: false),
+                    FinishTime = table.Column<TimeSpan>(nullable: false),
                     GroupId = table.Column<long>(nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Schedules", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Schedules_Branches_BranchId",
+                        column: x => x.BranchId,
+                        principalTable: "Branches",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Schedules_Groups_GroupId",
                         column: x => x.GroupId,
@@ -307,14 +356,24 @@ namespace yogaAshram.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Branches_MarketerId",
+                name: "IX_Branches_AdminId",
                 table: "Branches",
-                column: "MarketerId");
+                column: "AdminId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Branches_SellerId",
-                table: "Branches",
-                column: "SellerId");
+                name: "IX_CalendarEvents_BranchId",
+                table: "CalendarEvents",
+                column: "BranchId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Clients_CreatorId",
+                table: "Clients",
+                column: "CreatorId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Clients_GroupId",
+                table: "Clients",
+                column: "GroupId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Groups_BranchId",
@@ -342,9 +401,22 @@ namespace yogaAshram.Migrations
                 column: "ManagerId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Schedules_BranchId",
+                table: "Schedules",
+                column: "BranchId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Schedules_GroupId",
                 table: "Schedules",
                 column: "GroupId");
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_Clients_Groups_GroupId",
+                table: "Clients",
+                column: "GroupId",
+                principalTable: "Groups",
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Cascade);
 
             migrationBuilder.AddForeignKey(
                 name: "FK_Groups_Schedules_ScheduleId",
@@ -358,11 +430,7 @@ namespace yogaAshram.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropForeignKey(
-                name: "FK_Branches_AspNetUsers_MarketerId",
-                table: "Branches");
-
-            migrationBuilder.DropForeignKey(
-                name: "FK_Branches_AspNetUsers_SellerId",
+                name: "FK_Branches_AspNetUsers_AdminId",
                 table: "Branches");
 
             migrationBuilder.DropForeignKey(
@@ -374,8 +442,12 @@ namespace yogaAshram.Migrations
                 table: "Groups");
 
             migrationBuilder.DropForeignKey(
-                name: "FK_Groups_Schedules_ScheduleId",
-                table: "Groups");
+                name: "FK_Schedules_Branches_BranchId",
+                table: "Schedules");
+
+            migrationBuilder.DropForeignKey(
+                name: "FK_Schedules_Groups_GroupId",
+                table: "Schedules");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoleClaims");
@@ -393,6 +465,12 @@ namespace yogaAshram.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "CalendarEvents");
+
+            migrationBuilder.DropTable(
+                name: "Clients");
+
+            migrationBuilder.DropTable(
                 name: "ManagerEmployees");
 
             migrationBuilder.DropTable(
@@ -405,10 +483,10 @@ namespace yogaAshram.Migrations
                 name: "Branches");
 
             migrationBuilder.DropTable(
-                name: "Schedules");
+                name: "Groups");
 
             migrationBuilder.DropTable(
-                name: "Groups");
+                name: "Schedules");
         }
     }
 }

@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using yogaAshram.Models;
 using yogaAshram.Models.ModelViews;
 using yogaAshram.Services;
-using DayOfWeek = yogaAshram.Models.DayOfWeek;
+
 
 namespace yogaAshram.Controllers
 {
@@ -27,16 +27,7 @@ namespace yogaAshram.Controllers
             _db = db;
         }
        
-        public IActionResult Index(DateTime selectday)
-        {
-          Schedule schedule=new Schedule();
-          schedule.DayOfWeek = (DayOfWeek) selectday.DayOfWeek;
-            ViewData["Day"] = schedule.GetEnumValue();
-            IEnumerable<Schedule> schedules = _db.Schedules.ToList().Where(p=>p.DayOfWeek==(DayOfWeek)  schedule.DayOfWeek );  
-            var groups = from s in schedules select s ;
-            groups = groups.OrderBy(s => s.FromHours);
-            return View(groups);
-        }
+    
         
         
         [Authorize]
@@ -67,35 +58,7 @@ namespace yogaAshram.Controllers
            
             return RedirectToAction("Index", "Manager");
         }
-        [HttpGet]
-        public IActionResult CreateScheduele()
-        {
-           
-            ViewBag.Groups = _db.Groups.ToList();
-            return View();
-        }
-        [HttpPost]
-        public async Task<IActionResult> CreateScheduele(Schedule model)
-        {  
-            ViewBag.Groups = _db.Groups.ToList();
-            List<Schedule> sch = _db.Schedules.ToList();
-            if (sch.Any(p => p.FromHours == model.FromHours && p.DayOfWeek == model.DayOfWeek))
-            {
-                ModelState.AddModelError(nameof(model.DayOfWeek), "Время уже занято!");
-                return View(model);
-            }
-            if (ModelState.IsValid)
-            {
-                model.ToHours = model.FromHours + 1;
-                model.ToMinutes = model.FromMinutes;
-                _db.Entry(model).State = EntityState.Added;
-                await _db.SaveChangesAsync();
-                          
-                return RedirectToAction("Index");
-            }
-            return View(model);
-         
-        }
+     
 
 
 

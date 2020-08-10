@@ -36,7 +36,7 @@ namespace yogaAshram.Controllers
                 case "marketer":
                     return "Маркетолог";
                 case "admin":
-                    return "Системный администратор";
+                    return "Администратор";
             }
             return null;
         }
@@ -69,6 +69,7 @@ namespace yogaAshram.Controllers
                 Role = role
             };
             string newPsw = PasswordGenerator.Generate();
+            Console.WriteLine(newPsw);
             var result = await _userManager.CreateAsync(employee, newPsw);
             if (result.Succeeded)
             {
