@@ -113,8 +113,6 @@ namespace yogaAshram.Controllers
             Employee employee = await _userManager.GetUserAsync(User);
             if (ModelState.IsValid)
             {
-                if (!employee.OnTimePassword)
-                    return BadRequest();
                 var result = await _userManager.ChangePasswordAsync(employee, model.CurrentPassword, model.NewPassword);
                 if (result.Succeeded)
                 {
