@@ -136,8 +136,8 @@ namespace yogaAshram.TagHelpers
                         new XAttribute("data-toggle",
                             $"tooltip"),
                         new XAttribute("title",
-                            $"{e.Group.Name}({e.Group.CoachName}). Время:{e.TimeStart.ToString("hh\\:mm")}-{e.TimeFinish.ToString("hh\\:mm")} {e.NumberClients}"),
-                        new XAttribute("href", e.Action),
+                            $"Группа: {e.Group.Name}({e.Group.CoachName}) Время: {e.TimeStart.ToString("hh\\:mm")}-{e.TimeFinish.ToString("hh\\:mm")} Клиенты: {e.NumberClients}"),
+                        new XAttribute("href", $"{e.Action}&date={d.Date}"),
                         $"{e.Group.Name} ({e.TimeStart.ToString("hh\\:mm")}-{e.TimeFinish.ToString("hh\\:mm")}) {e.NumberClients}"
                     )
                 ) ?? new[]

@@ -46,13 +46,15 @@ namespace yogaAshram.Controllers
             return View(dateTime);
         }
 
-        public IActionResult Group(long groupId)
+        public IActionResult Group(long groupId, DateTime? date)
         {
             Schedule schedule = _db.Schedules.FirstOrDefault(g => g.GroupId == groupId);
             if (schedule != null)
             {
-                ViewBag.DaysArray =  string.Join(",", schedule.DayOfWeeksString);
+                if(date != null) ViewBag.Date = date;
                 
+                ViewBag.DaysArray =  string.Join(",", schedule.DayOfWeeksString);
+                ViewBag.Clients = _db.Clients.Where(c => c.GroupId == groupId).ToList();
                  return View(schedule);
             }
             return NotFound();
