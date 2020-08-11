@@ -26,6 +26,51 @@
 	<p class="text-hide" id="timeForEditFinish">@Model.FinishTime</p>
 </div>
 
+<h3>Посещаемость клиентов за @ViewBag.Date</h3>
+@if (Enumerable.Count(@ViewBag.Clients) == 0)
+{
+	<p>Не найдено ни одного клиента</p>
+}
+else
+{
+	<label>Отметить всех</label>
+	<div class="attendance">
+		<input type="checkbox" id="checkAll"/>
+		<span></span>
+	</div>
+	<table class="table">
+		<thead>
+		<tr>
+			<th scope="col">Id клиента</th>
+			<th scope="col">Имя клиента</th>
+			<th scope="col">Статус</th>
+			<th scope="col">Пришел<th>
+			<th scope="col">Комментарий</th>
+		</tr>
+		</thead>
+	
+		<tbody>
+		@foreach (Client client in (IEnumerable) @ViewBag.Clients)
+		{    
+			<tr>
+				<td>@client.Id</td>
+				<td>@client.NameSurname</td>
+				<td>@client.ClientType</td>
+				<td><div class="attendance">
+						<input type="checkbox" />
+						<span></span>
+					</div>
+				</td>
+			<td><textarea type="text" class="form-control" rows="1"></textarea></td>
+			</tr>
+		}
+		
+		</tbody>
+	</table>
+<button class="btn btn-outline-dark" id="submitAttendance">Отправить данные на сервер</button>
+}
+
+
 
 
 <div class="modal fade w-100" id="scheduleCreate" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
@@ -186,6 +231,10 @@
                 $('#dayOfWeekInput').val(days);
             });
             </script>
-
+<script>
+$("#checkAll").change(function () {
+    $("input:checkbox").prop('checked', $(this).prop("checked"));
+});
+</script>
 }
 
