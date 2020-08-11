@@ -29,7 +29,7 @@
                     <button id="changePasswordBtn" class=" btn  form-control btn-info text-white" >Изменить пароль</button>
                 </li>
                 
-                <li class="list-group-item">Добавить клиента</li>
+                <li class="list-group-item"><a asp-action="CreateClients" asp-controller="Clients" asp-route-branchId="@Model.Branch.Id">Добавить клиента</a></li>
                 <li class="list-group-item">Посещаемость</li>
           
             </ul>

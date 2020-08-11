@@ -1,0 +1,26 @@
+﻿@model System.Collections.Generic.List<yogaAshram.Models.TrialUsers>
+
+@{
+    ViewBag.Title = "title";
+    Layout = "_Layout";
+}
+
+<h2>Пробники</h2>
+<table class="table">
+    <tr>
+        <th>Клиент</th>
+        <th>Группа</th>
+        <th>Дата урока</th>
+        <th>Состояние</th>
+    </tr>
+    @foreach (var client in @Model)
+    { <tr>
+          <td>@client.Client.NameSurname</td>
+          <td>@client.Group.Name</td>
+          <td>@client.LessonTime.ToShortDateString()</td>
+          <td>@client.State</td>
+      </tr>
+        
+    }
+</table>
+
