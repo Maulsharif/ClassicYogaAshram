@@ -20,7 +20,25 @@ namespace yogaAshram.Models
         public State State { get; set; } = State.willAttend;
         public string Color { get; set; } = "grey";
 
-        
+        public string GetValueOfState()
+        {
+            string res = "";
+            switch (State)
+            {
+                case State.willAttend:
+                    res= "придет";
+                    break;
+      
+                case State.notattended:
+                    res= "не пришел";
+                    break;
+                case State.attended:
+                    res= "пришел";
+                    break;
+            }
+
+            return res;
+        }
 
     }
 }

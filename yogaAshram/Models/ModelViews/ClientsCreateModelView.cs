@@ -22,6 +22,8 @@ namespace yogaAshram.Models.ModelViews
         public int LessonNumbers  { get; set; }
         public string Color { get; set; }
         [Required(ErrorMessage = "Поле обязательно для заполнения")]
+
+        [Remote(action: "CheckDate", controller: "Validation", ErrorMessage = "Некоректная дата")]
         public DateTime StartDate { get; set; }
         public string Comment { get; set; }
         

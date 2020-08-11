@@ -106,6 +106,10 @@ namespace yogaAshram.Controllers
         {
             return !_db.Clients.Any(p => p.PhoneNumber == phoneNumber);
         }
-        
+        public bool CheckDate(DateTime startDate)
+        {
+            return (startDate >= DateTime.Today);
+        }
+
     }
 }
