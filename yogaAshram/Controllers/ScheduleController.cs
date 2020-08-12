@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
+using Castle.Components.DictionaryAdapter;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -47,14 +48,17 @@ namespace yogaAshram.Controllers
             return View(dateTime);
         }
 
-        public IActionResult Group(long groupId, DateTime? date)
+        public IActionResult Group(long? groupId, DateTime date)
         {
+            
             Schedule schedule = _db.Schedules.FirstOrDefault(g => g.GroupId == groupId);
             if (schedule != null)
             {
-                if(date != null) ViewBag.Date = date;
-                
+                date = new DateTime(date.Year, date.Day, date.Month);
+                ViewBag.Date = date;
+
                 ViewBag.DaysArray =  string.Join(",", schedule.DayOfWeeksString);
+                
                 ViewBag.Clients = _db.Clients.Where(c => c.GroupId == groupId).ToList();
                  return View(schedule);
             }
@@ -105,12 +109,12 @@ namespace yogaAshram.Controllers
                            t.GroupId != calendarEvent.GroupId && 
                            t.DayOfWeek == calendarEvent.DayOfWeek)
                         {
-                            if (t.TimeStart < calendarEvent.TimeStart && calendarEvent.TimeStart < t.TimeFinish ||
-                                t.TimeStart < calendarEvent.TimeFinish && calendarEvent.TimeFinish < t.TimeFinish)
-                            {
-                                
+                             if ((t.TimeStart > calendarEvent.TimeStart && calendarEvent.TimeStart > t.TimeFinish) ||
+                                     (t.TimeStart > calendarEvent.TimeFinish && calendarEvent.TimeFinish > t.TimeFinish))
                                 return Content("errorTime");
-                            }
+                             else if ((t.TimeStart > calendarEvent.TimeStart && calendarEvent.TimeFinish > t.TimeStart)||
+                                      (t.TimeFinish > calendarEvent.TimeStart && calendarEvent.TimeFinish > t.TimeFinish))
+                                 return Content("errorTime");
                         }
                     }
                     _db.Entry(calendarEvent).State = EntityState.Added;
@@ -169,11 +173,12 @@ namespace yogaAshram.Controllers
                            t.GroupId != calendarEvent.GroupId && 
                            t.DayOfWeek == calendarEvent.DayOfWeek)
                         {
-                            if (t.TimeStart < calendarEvent.TimeStart && calendarEvent.TimeStart < t.TimeFinish ||
-                                t.TimeStart < calendarEvent.TimeFinish && calendarEvent.TimeFinish < t.TimeFinish)
-                            {
+                            if ((t.TimeStart > calendarEvent.TimeStart && calendarEvent.TimeStart > t.TimeFinish) ||
+                                (t.TimeStart > calendarEvent.TimeFinish && calendarEvent.TimeFinish > t.TimeFinish))
                                 return Content("errorTime");
-                            }
+                            else if ((t.TimeStart > calendarEvent.TimeStart && calendarEvent.TimeFinish > t.TimeStart)||
+                                     (t.TimeFinish > calendarEvent.TimeStart && calendarEvent.TimeFinish > t.TimeFinish))
+                                return Content("errorTime");
                         }
                     }
                     _db.Entry(calendarEvent).State = EntityState.Added;
