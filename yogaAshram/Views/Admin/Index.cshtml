@@ -6,7 +6,7 @@
     ViewBag.Title = "Главная";
     Layout = "_Layout";
 }
-<h2>Админ</h2>
+<h2>Админ @Model.Branch.Name</h2>
 
 <div class="container" >
 
@@ -20,56 +20,30 @@
                     <h6 id="email">Email : @Model.Employee.Email</h6>
                     <h6 id="login">Логин : @Model.Employee.UserName</h6>
                 </div>
-                   
-             
                 <li class="list-group-item">
-                    <a onclick="showInPopup('@Url.Action("Edit","Admin",new {id=@Model.Employee.Id},Context.Request.Scheme)')" class="btn btn-info text-white"> Редактировать профиль</a>
+                    <a data-target="editProfileModal" id="@Url.Action("GetEditModalAjax", "Employees")" class="getModal dropdown-item cursor-p">
+                        Редактировать профиль
+                    </a>
                 </li>
                 <li class="list-group-item">
-                    <button id="changePasswordBtn" class=" btn  form-control btn-info text-white" >Изменить пароль</button>
+                    <a data-target="changePasswordModal" id="@Url.Action("GetChangePasswordModalAjax", "Employees")" class="getModal dropdown-item cursor-p">
+                        Изменить пароль
+                    </a>
                 </li>
-                
-                <li class="list-group-item"><a asp-action="CreateClients" asp-controller="Clients" asp-route-branchId="@Model.Branch.Id">Добавить клиента</a></li>
-                <li class="list-group-item">    <a asp-action="Scheduele" asp-controller="Admin" asp-route-branchId="@Model.Branch.Id">Календарь</a></li>
-                <li class="list-group-item">    <a asp-action="Trials" asp-controller="Clients" asp-route-branchId="@Model.Branch.Id">Пробники</a></li>
-                <li class="list-group-item">    <a asp-action="Trials" asp-controller="Clients" asp-route-branchId="@Model.Branch.Id">Клиенты</a></li>
+                <li class="list-group-item"><a asp-action="CreateClients" asp-controller="Clients" asp-route-branchId="@Model.Branch.Id" class="dropdown-item cursor-p">Добавить клиента</a></li>
+                <li class="list-group-item">    <a asp-action="Scheduele" asp-controller="Admin" asp-route-branchId="@Model.Branch.Id" class="dropdown-item cursor-p" >Календарь</a></li>
+                <li class="list-group-item">    <a asp-action="Trials" asp-controller="Clients" asp-route-branchId="@Model.Branch.Id" class="dropdown-item cursor-p">Пробники</a></li>
+                <li class="list-group-item">    <a asp-action="" asp-controller="Clients" asp-route-branchId="@Model.Branch.Id" class="dropdown-item cursor-p">Клиенты</a></li>
             </ul>
         </div>
-        <div class="col-sm-8">
-            <div class="form-row mt-3">
-                @{
-                    await Html.RenderPartialAsync("../Employees/PartialViews/ChangePasswordPartial.cshtml", Model.Model);
-                }
-            </div>
-                       
-
-        </div>
+      
 
     </div>
 </div>
 
 
 @section Scripts{
-    @if (Model.IsModalInvalid)
-       {
-           <script>
-               $('#changePasswordModal').modal('show');
-           </script>
-       }
-    <script>
-        $("#changePasswordBtn").on("click", function () {
-            $("#changePasswordModal").modal('show');
-        })
-        function checkRequired(text) {
-            if (text.length == 0) {
-                return false;
-            }
-            return true;
-        };
-      
-    </script>
-   
     @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+        await Html.RenderPartialAsync("../Employees/PartialViews/GetModalScripts");
     }
 }

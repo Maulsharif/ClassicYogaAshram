@@ -20,6 +20,6 @@ namespace yogaAshram.Models
         public DateTime Date { get; set; }
         public AttendanceState AttendanceState { get; set; } = Models.AttendanceState.notcheked;
         public bool IsChecked { get; set; } = false;
-
+        
     }
 }
