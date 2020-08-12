@@ -34,91 +34,17 @@ namespace yogaAshram.Controllers
             return View(new SellerIndexModel()
             {
                 Employee = empl,
-                Groups = _db.Groups.ToList()
+                Branches = _db.Branches.ToList(),
+                Clients = _db.Clients.ToList()
             });
         }
 
-        [HttpGet]
-        public async Task<IActionResult> Edit()
-        {
-            Employee model = await _userManager.GetUserAsync(User);
-                if (model == null)
-                {
-                    return NotFound();
-                }
-                return View(new EmployeeEditModelView { 
-                    Email = model.Email,
-                    NameSurname = model.NameSurname,
-                    UserName = model.UserName});
-            
-        }
+    
+         
+    
+        
        
-         [HttpPost]
-        [ValidateAntiForgeryToken]
-         public async Task<IActionResult> Edit( EmployeeEditModelView model)
-         {
-             Employee employee = await _userManager.GetUserAsync(User);
-             if (ModelState.IsValid)
-             { employee.UserName = model.UserName;
-                employee.Email = model.Email;
-                employee.NameSurname = model.NameSurname;
-                 _db.Entry(employee).State = EntityState.Modified;
-                 await _db.SaveChangesAsync();
-                 return Json(new { isValid = true, model });
-             }
-
-             return Json(new
-                 {isValid = false, html = RenderFromString.RenderRazorViewToString(this, "Edit", model)});
-         }
-         
-         
-         string GetRuRoleName(string role)
-         {
-             switch (role)
-             {
-                 case "seller":
-                     return "Менеджер по продажам";
-                 case "marketer":
-                     return "Маркетолог";
-                 case "admin":
-                     return "Системный администратор";
-             }
-             return null;
-         }
         
-         [Authorize]
-         private async Task SetViewBagRoles()
-         {
-             Dictionary<string, string> rolesDic = new Dictionary<string, string>();
-             var roles = await _db.Roles.Where(p => p.Name != "seller").ToArrayAsync();
-             foreach (var item in roles)
-                 rolesDic.Add(item.Name, GetRuRoleName(item.Name));
-             ViewBag.Roles = rolesDic;
-         }
-        
-         [Authorize]
-         [HttpPost]
-         public async Task<IActionResult> ChangePassword(ChangePasswordModelView model)
-         {
-             Employee employee = await _userManager.GetUserAsync(User);
-             if (ModelState.IsValid)
-             {
-                 if (!employee.OnTimePassword)
-                     return BadRequest();
-                 var result = await _userManager.ChangePasswordAsync(employee, model.CurrentPassword, model.NewPassword);
-                 if (result.Succeeded)
-                 {
-                     employee.OnTimePassword = false;
-                     employee.PasswordState = PasswordStates.Normal;
-                     _db.Entry(employee).State = EntityState.Modified;
-                     await _db.SaveChangesAsync();
-                     return RedirectToAction("Index");
-                 }               
-             }
-             await SetViewBagRoles();
-             return View("Index", new SellerIndexModel() { Employee = employee, Model = model, IsModalInvalid = true }) ;
-         }
-         
          
          
          

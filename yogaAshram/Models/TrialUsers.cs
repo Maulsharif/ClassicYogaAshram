@@ -8,7 +8,7 @@ namespace yogaAshram.Models
         attended,
         notattended
     }
-
+   
     public class TrialUsers
     {
         public long Id { get; set; }

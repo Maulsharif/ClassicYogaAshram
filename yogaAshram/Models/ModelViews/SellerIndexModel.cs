@@ -4,12 +4,11 @@ namespace yogaAshram.Models.ModelViews
 {
     public class SellerIndexModel
     {
-        public List<Group> Groups { get; set; }
-        public bool IsModalInvalid { get; set; } = false;
+        public List<Branch> Branches { get; set; }
+        public List<Client> Clients { get; set; }
         public Employee Employee { get; set; }
-        public bool IsEditInvalid { get; set; } = false;
-        public EmployeeEditModelView ManagerEditModel { get; set; } = new EmployeeEditModelView();
-        public ChangePasswordModelView Model { get; set; } = new ChangePasswordModelView();
+      
+       
       
         
         

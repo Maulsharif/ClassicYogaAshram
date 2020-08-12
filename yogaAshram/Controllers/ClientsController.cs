@@ -40,6 +40,7 @@ namespace yogaAshram.Controllers
         [Authorize]
         public async Task<IActionResult> CreateClients(ClientsCreateModelView model)
         {
+            
             Client client = new Client
             {
                 NameSurname = model.NameSurname,
@@ -49,25 +50,32 @@ namespace yogaAshram.Controllers
                 LessonNumbers = model.LessonNumbers,
                 Comment = model.Comment,
                 CreatorId = GetUserId.GetCurrentUserId(this.HttpContext)
-            };
-            
+            }; 
             _db.Entry(client).State = EntityState.Added;
-            await _db.SaveChangesAsync();
+            await _db.SaveChangesAsync();  
             long ClientId = client.Id;
-            TrialUsers trialUsers = new TrialUsers
+            if (model.LessonNumbers == 3)
             {
-                GroupId = model.GroupId,
-                ClientId = ClientId,
-                State = State.willAttend,
-                Color = "grey",
-                LessonTime = model.StartDate
+                //метод для 
+            }
+            else
+            {  
+                TrialUsers trialUsers = new TrialUsers
+                         {
+                             GroupId = model.GroupId,
+                             ClientId = ClientId,
+                             State = State.willAttend,
+                             Color = "grey",
+                             LessonTime = model.StartDate
+                         };
+                         _db.Entry(trialUsers).State = EntityState.Added;
+                
+            }
 
-            };
-            _db.Entry(trialUsers).State = EntityState.Added;
+         
+          
             await _db.SaveChangesAsync();
-            
-                return RedirectToAction("Trials", "Clients");
-           
+            return RedirectToAction("Trials", "Clients");
             
         }
 
@@ -93,7 +101,7 @@ namespace yogaAshram.Controllers
             return View(clients);
         }
         
-       
+        //Отметка пробников
         [HttpPost]
         public async Task<IActionResult> CheckAttendanceTrial(long[] arrayOfCustomerID, int []arrayOfState ) 
         {
@@ -122,6 +130,12 @@ namespace yogaAshram.Controllers
             
             return RedirectToAction("Trials", "Clients");
         }
+
+        //метод возвращающий две даты 
+        // public DateTime[] DateTimes(string days)
+        // {
+        //     
+        // }
 
 
     }
