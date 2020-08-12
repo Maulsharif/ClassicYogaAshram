@@ -30,8 +30,9 @@
                 </li>
                 
                 <li class="list-group-item"><a asp-action="CreateClients" asp-controller="Clients" asp-route-branchId="@Model.Branch.Id">Добавить клиента</a></li>
-                <li class="list-group-item">Посещаемость</li>
-          
+                <li class="list-group-item">    <a asp-action="Scheduele" asp-controller="Admin" asp-route-branchId="@Model.Branch.Id">Календарь</a></li>
+                <li class="list-group-item">    <a asp-action="Trials" asp-controller="Clients" asp-route-branchId="@Model.Branch.Id">Пробники</a></li>
+                <li class="list-group-item">    <a asp-action="Trials" asp-controller="Clients" asp-route-branchId="@Model.Branch.Id">Клиенты</a></li>
             </ul>
         </div>
         <div class="col-sm-8">

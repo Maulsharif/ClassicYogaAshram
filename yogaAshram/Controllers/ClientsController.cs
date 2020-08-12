@@ -1,4 +1,8 @@
-﻿using System.Linq;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Channels;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -7,6 +11,7 @@ using Microsoft.EntityFrameworkCore;
 using yogaAshram.Models;
 using yogaAshram.Models.ModelViews;
 using yogaAshram.Services;
+using State = yogaAshram.Models.State;
 
 namespace yogaAshram.Controllers
 {
@@ -69,9 +74,55 @@ namespace yogaAshram.Controllers
 
         
 
-        public IActionResult Trials()
+        public IActionResult Trials(DateTime time)
         {
-            return View(_db.TrialUserses.ToList());
+            if(time<DateTime.Today)
+                time=DateTime.Today;
+            return View(_db.TrialUserses.Where(p=>p.LessonTime.Date==time.Date).ToList());
         }
+
+        [HttpGet]
+        public IActionResult CheckAttendanceTrial(long groupId, long clientId )
+        {
+            TrialUsers user = _db.TrialUserses.FirstOrDefault(u => u.ClientId == clientId);
+            
+            
+            List<TrialUsers> clients = _db.TrialUserses.Where(p => p.GroupId == groupId && p.LessonTime==user.LessonTime).ToList();
+             
+        
+            return View(clients);
+        }
+        
+       
+        [HttpPost]
+        public async Task<IActionResult> CheckAttendanceTrial(long[] arrayOfCustomerID, int []arrayOfState ) 
+        {
+            
+            List<TrialCheckModel> models=new List<TrialCheckModel>();
+            for (int i = 0; i < arrayOfCustomerID.Length; i++)
+            {
+                models.Add(new TrialCheckModel(arrayOfCustomerID[i],arrayOfState[i]));
+            }
+
+            List<TrialUsers> users = _db.TrialUserses.ToList();
+            for (int i = 0; i < users.Count; i++)
+            {
+                for (int j = 0; j < models.Count; j++)
+                {
+                    if (users[i].Id == models[j].Id)
+                    {
+                        users[i].State = (State) models[j].State;
+                    }
+                }
+
+                _db.Entry(users[i]).State = EntityState.Modified;
+            }
+           
+            await _db.SaveChangesAsync();
+            
+            return RedirectToAction("Trials", "Clients");
+        }
+
+
     }
 }
