@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace yogaAshram.Models.ModelViews
 {
-    public class AccountCreateModelView
+    public class EmployeeCreateModelView
     {
         [Required(ErrorMessage = "Введите ваши имя и фамилию")]
         public string NameSurname { get; set; }

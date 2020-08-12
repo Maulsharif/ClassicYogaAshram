@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace yogaAshram.Models.ModelViews
 {
-    public class ChiefEditEmployeeModelView
+    public class EditOtherEmployeeModelView
     {
         public string UserName { get; set; }
         public string Email { get; set; }

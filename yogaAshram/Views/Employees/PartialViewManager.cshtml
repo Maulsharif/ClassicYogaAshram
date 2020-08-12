@@ -6,7 +6,7 @@
         @foreach (ManagerEmployee employee in @Model)
             {
                 <p class="text-center">@employee.Employee.UserName
-                    <a asp-action="EditEmployee" asp-controller="Manager" asp-route-id="@employee.EmployeeId">Изменить</a></p>
+                    <a asp-action="Edit" asp-controller="Employees" asp-route-id="@employee.EmployeeId">Изменить</a></p>
             }
     }
     else

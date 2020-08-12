@@ -1,10 +1,14 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
 using yogaAshram.Models;
+using yogaAshram.Models.ModelViews;
 using yogaAshram.Services;
 
 namespace yogaAshram.Controllers
@@ -36,7 +40,152 @@ namespace yogaAshram.Controllers
             Employee employee = _db.Users.FirstOrDefault(u => u.Id == employeeId);
             return View(employee);
         }
-         public IActionResult Search(string search)
+        string GetRuRoleName(string role)
+        {
+            switch (role)
+            {
+                case "manager":
+                    return "Старший менеджнер";
+                case "seller":
+                    return "Менеджер по продажам";
+                case "marketer":
+                    return "Маркетолог";
+                case "admin":
+                    return "Администратор";
+            }
+            return null;
+        }
+        private async Task SetViewBagRoles()
+        {
+            Dictionary<string, string> rolesDic = new Dictionary<string, string>();
+            var roles = await _db.Roles.Where(p => p.Name != "chief").ToArrayAsync();
+            foreach (var item in roles)
+                rolesDic.Add(item.Name, GetRuRoleName(item.Name));
+            ViewBag.Roles = rolesDic;
+        }
+        [Authorize]
+        public IActionResult GetChangePasswordModalAjax()
+        {
+            return PartialView("PartialViews/ChangePasswordPartial", new ChangePasswordModelView());
+        }
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> ChangePasswordAjax(ChangePasswordModelView model)
+        {
+            Employee employee = await _userManager.GetUserAsync(User);
+            if (ModelState.IsValid)
+            {
+                var result = await _userManager.ChangePasswordAsync(employee, model.CurrentPassword, model.NewPassword);
+                if (result.Succeeded)
+                {
+                    employee.OnTimePassword = false;
+                    employee.PasswordState = PasswordStates.Normal;
+                    _db.Entry(employee).State = EntityState.Modified;
+                    await _db.SaveChangesAsync();
+                    return Json(true);
+                }
+            }
+            return BadRequest();
+        }
+        [Authorize(Roles = "chief, manager")]
+        public async Task<IActionResult> GetCreateEmplModalAjax()
+        {
+            Employee employee = await _userManager.GetUserAsync(User);
+            await SetViewBagRoles();
+            return PartialView("PartialViews/CreatePartial", new EmployeeCreateModelView
+            {
+                Email = employee.Email,
+                NameSurname = employee.NameSurname,
+                UserName = employee.UserName
+            });
+        }
+        [HttpPost]
+        [Authorize(Roles = "chief, manager")]
+        public async Task<IActionResult> CreateAjax(EmployeeCreateModelView model)
+        {
+            if (ModelState.IsValid)
+            {
+                if (model.Role == "chief")
+                    return BadRequest();
+                Employee employee = new Employee()
+                {
+                    UserName = model.UserName,
+                    Email = model.Email,
+                    NameSurname = model.NameSurname,
+                    Role = model.Role
+                };
+                string newPsw = PasswordGenerator.Generate();
+                Console.WriteLine(newPsw);
+                var result = await _userManager.CreateAsync(employee, newPsw);
+                if (result.Succeeded)
+                {
+                    await _userManager.AddToRoleAsync(employee, model.Role);
+                    await EmailService.SendPassword(model.Email, newPsw, Url.Action("Login", "Account", null, Request.Scheme));
+                    return Json("true");
+                }              
+            }
+            return Json(false);
+        }
+        [HttpGet]
+        [Authorize(Roles = "chief, manager")]
+        public async Task<IActionResult> Edit(long emplId)
+        {
+            Employee employee = await _db.Employees.FirstOrDefaultAsync(p => p.Id == emplId);
+            if (employee is null)
+                return NotFound();
+            return View(new EditOtherEmployeeModelView()
+            {
+                UserName = employee.UserName,
+                Email = employee.Email,
+                NameSurname = employee.NameSurname,
+                Id = employee.Id
+            });
+        }
+        [HttpPost]
+        [Authorize(Roles = "chief, manager")]
+        public async Task<IActionResult> Edit(EditOtherEmployeeModelView model)
+        {
+            Employee employee = await _db.Employees.FirstOrDefaultAsync(p => p.Id == model.Id);
+            if (employee is null)
+                return BadRequest();
+            if (_db.Employees.Any(p => (p.Id != model.Id) && (p.UserName == model.UserName || p.Email == model.Email))
+                || String.IsNullOrEmpty(model.NameSurname))
+                return BadRequest();
+            employee.NameSurname = model.NameSurname;
+            employee.UserName = model.UserName;
+            employee.Email = model.Email;
+            _db.Entry(employee).State = EntityState.Modified;
+            await _db.SaveChangesAsync();
+            return RedirectToAction("Index", new { employeeId = employee.Id });
+        }
+        [Authorize]
+        public async Task<IActionResult> GetEditModalAjax()
+        {
+            Employee employee = await _userManager.GetUserAsync(User);
+            return PartialView("PartialViews/EmployeeEditPartial", new EmployeeEditModelView
+            {
+                Email = employee.Email,
+                NameSurname = employee.NameSurname,
+                UserName = employee.UserName
+            });
+        }
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> EditAjax(EmployeeEditModelView model)
+        {
+            Employee employee = await _userManager.GetUserAsync(User);
+            if (ModelState.IsValid)
+            {
+                employee.UserName = model.UserName;
+                employee.Email = model.Email;
+                employee.NameSurname = model.NameSurname;
+                _db.Entry(employee).State = EntityState.Modified;
+                await _db.SaveChangesAsync();
+                return Json("true");
+            }
+            return BadRequest();
+        }
+        public IActionResult Search(string search)
                 {
                     if (User.IsInRole("chief"))
                     {
@@ -80,5 +229,30 @@ namespace yogaAshram.Controllers
                     return PartialView("PartialViewManager", managerEmployees);
 
                 }
+        [HttpGet]
+        [Authorize(Roles = "chief")]
+        public async Task<IActionResult> Delete(long emplId)
+        {
+            Employee employee = await _db.Employees.FirstOrDefaultAsync(p => p.Id == emplId);
+            if (employee is null)
+                return NotFound();
+            if (employee.UserName == User.Identity.Name)
+                return BadRequest();
+            return View(employee);
+        }
+        [HttpPost]
+        [ActionName("Delete")]
+        [Authorize(Roles = "chief")]
+        public async Task<IActionResult> DeleteEmpl(long emplId)
+        {
+            Employee employee = await _db.Employees.FirstOrDefaultAsync(p => p.Id == emplId);
+            if (employee is null)
+                return NotFound();
+            if (employee.UserName == User.Identity.Name)
+                return BadRequest();
+            _db.Entry(employee).State = EntityState.Deleted;
+            await _db.SaveChangesAsync();
+            return RedirectToAction("Index", "Chief");
+        }
     }
 }

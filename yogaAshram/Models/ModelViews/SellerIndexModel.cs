@@ -8,7 +8,7 @@ namespace yogaAshram.Models.ModelViews
         public bool IsModalInvalid { get; set; } = false;
         public Employee Employee { get; set; }
         public bool IsEditInvalid { get; set; } = false;
-        public ManagerEditModelView ManagerEditModel { get; set; } = new ManagerEditModelView();
+        public EmployeeEditModelView ManagerEditModel { get; set; } = new EmployeeEditModelView();
         public ChangePasswordModelView Model { get; set; } = new ChangePasswordModelView();
       
         
