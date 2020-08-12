@@ -4,500 +4,316 @@
     ViewBag.Title = "Личный кабинет";
 }
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.8/css/all.css" />
-@if (Model.IsEditInvalid)
-{
-    await Html.RenderPartialAsync("PartialViews/ChiefAccountEditPartial", Model.EditModel);
-}
 <!-- Modal -->
-<div class="modal fade" id="exellent-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
+<div class="modal fade" id="addBranch" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Успешно!</h5>
+                <h5 class="modal-title" id="exampleModalLongTitle">Добавить центр йоги</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <div class="modal-body text-center">
-                <h5>Новый работник успешно создан. Его пароль отправлен ему на почту</h5>
-                <i class="fa fa-check" style="margin:auto"></i>
+            <div class="modal-body" id="addBranchReload">
+                <form asp-action="CreateBranch" asp-controller="Branch">
+                    <input name="name" type="text" class="form-control mb-2" placeholder="Название" required>
+                    <input name="info" type="text" class="form-control mb-2" placeholder="Информация о центре">
+                    <input name="address" type="text" class="form-control mb-2" placeholder="Адрес">
+                    @if (Enumerable.Count(ViewBag.Admin) == 0)
+              {
+                    <p>Не найдено ни одного администратора .</p>
+              }
+              else
+              {
+                    <label for="">Выберете администратора:</label>
+                    <select class="form-control mb-2" name="adminId">
+                        @foreach (Employee admin in (IEnumerable) @ViewBag.Admin)
+                      {
+                        <option value="@admin.Id">@admin.UserName</option>
+                      }
+                    </select>
+              }
+                    <input type="submit" class="btn btn-secondary" value="Добавить">
+                </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+                <button type="button" class="btn btn-outline-dark" data-dismiss="modal">Закрыть</button>
             </div>
         </div>
     </div>
 </div>
-<!-- Modal -->
-<div class="modal fade" id="emplCreateModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Новый работник</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <div class="form-group">
-                    <label>Почта нового работника<span class="text-danger">*</span></label>
-                    <input id="emplEmail" type="text" class="form-control">
-                    <p id="invalidEmail" class="text-danger"></p>
-                </div>
-                <div class="form-group">
-                    <label>Имя и фамилия<span class="text-danger">*</span></label>
-                    <input id="emplNameSurname" type="text" class="form-control">
-                    <p id="invalidNameSurname" class="text-danger"></p>
-                </div>
-                <div class="form-group">
-                    <label>Логин<span class="text-danger">*</span></label>
-                    <input id="emplUserName" type="text" class="form-control">
-                    <p id="invalidLogin" class="text-danger"></p>
-                </div>
-                <div class="form-group">
-                    <label>Выберите должность<span class="text-danger">*</span></label>
-                    <select class="form-control" id="roleSelect">
-                        <option>...</option>
-                        @foreach (var item in ViewBag.Roles)
-                        {
-                            <option value="@item.Key">@item.Value</option>
-                        }
-                    </select>
-                    <p id="invalidRole" class="text-danger"></p>
+<div class="container marginFromInput">
+    <div class="card" style="width: 800px; margin: auto">
+        <div class="row no-gutters">
+            <div class="col-md-6 border-right">
+                <div class="card-body">
+                    <h5 class="card-title">Подробно</h5>
+                    <ul class="list-group list-group-flush">
+                        <li id="username" class="list-group-item">Логин - @Model.Employee.UserName</li>
+                        <li id="email" class="list-group-item">Почта - @Model.Employee.Email</li>
+                        <li id="nameSurname" class="list-group-item">Имя фамилия - @Model.Employee.NameSurname</li>
+                    </ul>
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-outline-info dropdown-toggle mt-3 ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Действия
+                        </button>
+                        <div class="dropdown-menu">
+                            <div data-target="editProfileModal" id="@Url.Action("GetEditModalAjax", "Employees")" class="getModal dropdown-item cursor-p">
+                                Редактировать профиль
+                            </div>
+                            <div data-target="emplCreateModal" id="@Url.Action("GetCreateEmplModalAjax", "Employees")" class="getModal dropdown-item cursor-p" href="#">
+                                Добавить работника
+                            </div>
+                            <div data-target="changePasswordModal" id="@Url.Action("GetChangePasswordModalAjax", "Employees")" class="getModal dropdown-item cursor-p">
+                                Изменить пароль
+                            </div>
+                            <div class="dropdown-item cursor-p" data-toggle="modal" data-target="#addBranch">Добавить центр йоги</div>
+                        </div>
+                    </div>
+                    <a asp-action="CreateGroup" asp-controller="Group" class="btn btn-dark" style="margin-top: 15px;">Создать группу </a>
+                    <a asp-action="CreateClients" asp-controller="Clients" class="btn btn-dark" style="margin-top: 15px; margin-left: 15px;">Добавить клиента</a>
                 </div>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
-                <button id="submitCreateEmpl" type="button" class="btn btn-primary">Добавить</button>
+            <div class="col-md-6 border-right">
+                <div class="card-body">
+                    <h5 class="card-title text-center border-bottom" style="padding-bottom:13px;">
+                        Все центры
+                    </h5>
+                    <div>
+                        @if (Enumerable.Count(ViewBag.Branches) == 0)
+                 {
+                        <p class="text-center">Список центров пуст</p>
+                 }
+                 else
+                 {
+                        @foreach (Branch branch in (IEnumerable) @ViewBag.Branches)
+                     {
+                        <p>
+                            Центр йоги "@branch.Name" <a href="#" id="branchButton-@branch.Id" onclick="openBranch('@branch.Id')"> Открыть</a>
+                            <a href="#" data-toggle="modal" data-target="#deleteBranch-@branch.Id">Удалить</a>
+                            <a asp-action="Index" asp-controller="Schedule" asp-route-branchId="@branch.Id">Календарь</a>
+                        </p>
+ <!-- Modal -->
+                        <div class="modal fade" id="deleteBranch-@branch.Id" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalLabel"></h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Нет">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p class="text-center">Вы уверены что хотите удалить "@branch.Name"?</p>
+                                        <form method="post" asp-action="Delete" asp-controller="Branch">
+                                            <div class="form-group">
+                                                @{
+                                                     await Html.RenderPartialAsync("PartialViews/CheckPasswordPartial", Model.CheckPassword);
+                                                }
+                                            </div>
+                                            <input type="hidden" name="id" value="@branch.Id">
+                                            <button type="submit" class="btn btn-primary">Удалить</button>
+                                        </form>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div id="branchDetails-@branch.Id" class="branchDetails">
+                            <div id="nameReload-@branch.Id">
+                                <p>
+                                    Название: <span id="nameValue-@branch.Id"> @branch.Name</span> <a href="#" onclick="openName('@branch.Id');return false;" title="Редактировать">
+                                        <img src="/Images/SiteImages/edit.png" class="editIcon" alt="edit">
+                                    </a>
+                                </p>
+                                <div id="divName-@branch.Id" class="inputName">
+                                    <div class="row">
+                                        <input type="text" class="form-control w-50 mr-2 ml-2" id="nameInput-@branch.Id">
+                                        <button class="btn btn-outline-dark" onclick="editName('@branch.Id')">Изменить</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="addressReload-@branch.Id">
+                                <p>
+                                    Адрес: <span id="addressValue-@branch.Id"> @branch.Address</span> <a href="#" onclick="openAddress('@branch.Id');return false;" title="Редактировать">
+                                        <img src="/Images/SiteImages/edit.png" class="editIcon" alt="edit">
+                                    </a>
+                                </p>
+                                <div id="divAddress-@branch.Id" class="inputAddress">
+                                    <div class="row">
+                                        <input type="text" class="form-control w-50 mr-2 ml-2" id="addressInput-@branch.Id">
+                                        <button class="btn btn-outline-dark" onclick="editAddress('@branch.Id')">Изменить</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div id="infoReload-@branch.Id">
+                                <p>
+                                    Информация о центре: <span id="infoValue-@branch.Id"> @branch.Info</span> <a href="#" onclick="openInfo('@branch.Id');return false;" title="Редактировать">
+                                        <img src="/Images/SiteImages/edit.png" class="editIcon" alt="edit">
+                                    </a>
+                                </p>
+                                <div id="divInfo-@branch.Id" class="inputInfo">
+                                    <div class="row">
+                                        <input type="text" class="form-control w-50 mr-2 ml-2" id="infoInput-@branch.Id">
+                                        <button class="btn btn-outline-dark" onclick="editInfo('@branch.Id')">Изменить</button>
+                                    </div>
+                                </div>
+                            </div>
+                            @if (@branch.Admin != null)
+                             {
+                            <div id="adminReload-@branch.Id">
+                                <p>
+                                    Администратор: <span id="adminValue-@branch.Id"> @branch.Admin.UserName</span>
+                                    <span class="text-hide" id="adminIdValue-@branch.Id">@branch.AdminId</span>
+                                    <a href="#" onclick="openSeller('@branch.Id');return false;" title="Редактировать">
+                                        <img src="/Images/SiteImages/edit.png" class="editIcon" alt="edit">
+                                    </a>
+                                </p>
+                                <div id="divAdmin-@branch.Id" class="inputAdmin">
+                                    <div class="row m-1">
+                                        <select id="adminId-@branch.Id" name="adminId" class="form-control w-50">
+                                            @foreach (Employee admin in (IEnumerable) @ViewBag.Admin)
+                                                 {
+                                            <option value="@admin.Id">@admin.UserName</option>
+                                                 }
+                                        </select>
+                                        <button class="ml-2 btn btn-outline-dark" onclick="editSeller('@branch.Id')">Выбрать</button>
+                                    </div>
+                                </div>
+                            </div>
+                             }
+                        </div>
+                     }
+                 }
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Modal -->
-<div class="modal fade" id="addBranch" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLongTitle">Добавить центр йоги</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body" id="addBranchReload">
-          <form asp-action="CreateBranch" asp-controller="Branch">
-              <input name="name" type="text" class="form-control mb-2" placeholder="Название" required>
-              <input name="info" type="text" class="form-control mb-2" placeholder="Информация о центре">
-              <input name="address" type="text" class="form-control mb-2" placeholder="Адрес">
-              @if (Enumerable.Count(ViewBag.Admin) == 0)
-              {
-                  <p>Не найдено ни одного администратора .</p> 
-              }
-              else
-              {
-                  <label for="">Выберете администратора:</label>
-                  <select class="form-control mb-2" name="adminId">
-                      @foreach (Employee admin in (IEnumerable) @ViewBag.Admin)
-                      {
-                          <option value="@admin.Id">@admin.UserName</option>
-                      }
-                  </select>
-              }
-              <input type="submit" class="btn btn-secondary" value="Добавить">
-          </form>
-      </div>
-      <div class="modal-footer">
-       <button type="button" class="btn btn-outline-dark" data-dismiss="modal">Закрыть</button>
-      </div>
-    </div>
-  </div>
-</div>
-<div class="container marginFromInput">
-<div class="card" style="width: 800px; margin: auto">
-    <div class="row no-gutters">
-        <div class="col-md-6 border-right">
-            <div class="card-body">
-                <h5 class="card-title">Подробно</h5>
-                <ul class="list-group list-group-flush">
-                    <li id="username" class="list-group-item">Логин - @Model.Employee.UserName</li>
-                    <li id="email" class="list-group-item">Почта - @Model.Employee.Email</li>
-                    <li id="nameSurname" class="list-group-item">Имя фамилия - @Model.Employee.NameSurname</li>
-                </ul>
-                <div class="btn-group">
-                    <button type="button" class="btn btn-outline-info dropdown-toggle mt-3 ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Действия
-                    </button>
-                    <div class="dropdown-menu">
-                        <div id="editProfileBtn" class="dropdown-item cursor-p">Редактировать профиль</div>
-                        <div id="emplCreateBtn" class="dropdown-item cursor-p" href="#">Добавить работника</div>
-                        <div id="changePasswordBtn" class="dropdown-item cursor-p">Изменить пароль</div>
-                        <div class="dropdown-item cursor-p" data-toggle="modal" data-target="#addBranch">Добавить центр йоги</div>
-                    </div>
-                </div>
-                <a asp-action="CreateGroup" asp-controller="Group" class="btn btn-dark" style="margin-top: 15px;">Создать группу </a>
-                <a asp-action="CreateClients" asp-controller="Clients" class="btn btn-dark" style="margin-top: 15px; margin-left: 15px;">Добавить клиента</a>
-                <div class="form-row mt-3">
-                    @{
-                        await Html.RenderPartialAsync("PartialViews/PasswordChangePartial", Model.Model);
-                    }
-                </div>
-            </div>
-        </div>
-        <div class="col-md-6 border-right">
-            <div class="card-body">
-                <h5 class="card-title text-center border-bottom" style="padding-bottom:13px;">
-                    Все центры
-                </h5>
-                <div>
-                 @if (Enumerable.Count(ViewBag.Branches) == 0)
-                 {
-                     <p class="text-center">Список центров пуст</p> 
-                 }
-                 else
-                 {
-                     @foreach (Branch branch in (IEnumerable) @ViewBag.Branches)
-                     {
-                         <p>Центр йоги "@branch.Name" <a href="#" id="branchButton-@branch.Id" onclick="openBranch('@branch.Id')"> Открыть</a>
-                             <a href="#" data-toggle="modal" data-target="#deleteBranch-@branch.Id">Удалить</a>
-                             <a asp-action="Index" asp-controller="Schedule" asp-route-branchId="@branch.Id">Календарь</a></p>
-                         <!-- Modal -->
-                         <div class="modal fade" id="deleteBranch-@branch.Id" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                             <div class="modal-dialog" role="document">
-                                 <div class="modal-content">
-                                     <div class="modal-header">
-                                         <h5 class="modal-title" id="exampleModalLabel"></h5>
-                                         <button type="button" class="close" data-dismiss="modal" aria-label="Нет">
-                                             <span aria-hidden="true">&times;</span>
-                                         </button>
-                                     </div>
-                                     <div class="modal-body">
-                                         <p class="text-center">Вы уверены что хотите удалить "@branch.Name"?</p>
-                                         <form method="post" asp-action="Delete" asp-controller="Branch">
-                                             <div class="form-group">
-                                                 @{
-                                                     await Html.RenderPartialAsync("PartialViews/CheckPasswordPartial", Model.CheckPassword);
-                                                 }
-                                             </div>
-                                             <input type="hidden" name="id" value="@branch.Id">
-                                             <button type="submit" class="btn btn-primary">Удалить</button>
-                                         </form>
-                                     </div>
-                                     <div class="modal-footer">
-                                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
-                                     </div>
-                                 </div>
-                             </div>
-                         </div>
-                             
-                             
-                         <div id="branchDetails-@branch.Id" class="branchDetails">
-                             <div id="nameReload-@branch.Id">
-                                 <p>Название: <span id="nameValue-@branch.Id"> @branch.Name</span> <a href="#" onclick="openName('@branch.Id');return false;" title="Редактировать">
-                                     <img src="/Images/SiteImages/edit.png" class="editIcon" alt="edit">
-                                 </a></p>
-                                 <div id="divName-@branch.Id" class="inputName">
-                                     <div class="row">
-                                         <input type="text" class="form-control w-50 mr-2 ml-2" id="nameInput-@branch.Id">
-                                         <button class="btn btn-outline-dark" onclick="editName('@branch.Id')">Изменить</button>
-                                     </div>
-                                 </div>
-                             </div>
-                             <div id="addressReload-@branch.Id">
-                                 <p>Адрес: <span id="addressValue-@branch.Id"> @branch.Address</span> <a href="#" onclick="openAddress('@branch.Id');return false;" title="Редактировать">
-                                     <img src="/Images/SiteImages/edit.png" class="editIcon" alt="edit">
-                                 </a></p>
-                                 <div id="divAddress-@branch.Id" class="inputAddress">
-                                     <div class="row">
-                                         <input type="text" class="form-control w-50 mr-2 ml-2" id="addressInput-@branch.Id">
-                                         <button class="btn btn-outline-dark" onclick="editAddress('@branch.Id')">Изменить</button>
-                                     </div>
-                                 </div>
-                             </div>
-                             
-                             <div id="infoReload-@branch.Id">
-                                 <p>Информация о центре: <span id="infoValue-@branch.Id"> @branch.Info</span> <a href="#" onclick="openInfo('@branch.Id');return false;" title="Редактировать">
-                                     <img src="/Images/SiteImages/edit.png" class="editIcon" alt="edit">
-                                 </a></p>
-                                 <div id="divInfo-@branch.Id" class="inputInfo">
-                                     <div class="row">
-                                         <input type="text" class="form-control w-50 mr-2 ml-2" id="infoInput-@branch.Id">
-                                         <button class="btn btn-outline-dark" onclick="editInfo('@branch.Id')">Изменить</button>
-                                     </div>
-                                 </div>
-                             </div>
-                             @if (@branch.Admin != null)
-                             {
-                                 <div id="adminReload-@branch.Id">
-                                     <p>Администратор: <span id="adminValue-@branch.Id"> @branch.Admin.UserName</span> 
-                                         <span class="text-hide" id="adminIdValue-@branch.Id">@branch.AdminId</span>
-                                         <a href="#" onclick="openSeller('@branch.Id');return false;" title="Редактировать">
-                                             <img src="/Images/SiteImages/edit.png" class="editIcon" alt="edit">
-                                         </a>
-                                     </p>
-                                     <div id="divAdmin-@branch.Id" class="inputAdmin">
-                                         <div class="row m-1">
-                                             <select id="adminId-@branch.Id" name="adminId" class="form-control w-50">
-                                                 @foreach (Employee admin in (IEnumerable) @ViewBag.Admin)
-                                                 {
-                                                     <option value="@admin.Id">@admin.UserName</option>
-                                                 }
-                                             </select>
-                                             <button class="ml-2 btn btn-outline-dark" onclick="editSeller('@branch.Id')">Выбрать</button>
-                                         </div>
-                                     </div>
-                                 </div>                                 
-                             }                            
-                         </div>
-                     }
-                 }
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-</div>
-<div id="modal-place"></div>
 @section Scripts{
-    @if (Model.IsModalInvalid)
-    {
-        <script>
-            $('#changePasswordModal').modal('show');
-        </script>
-    }
-    @if (Model.IsEditInvalid)
-    {
-        <script>
-            $('#editPrifilePartial').modal('show');
-        </script>
+    @{
+        await Html.RenderPartialAsync("../Employees/PartialViews/GetModalScripts");
     }
     <script>
-      function openBranch(branchId) {
-        $('#branchDetails-' + branchId).toggle('slow', function() {
-          if ($('#branchDetails-' + branchId).css('display') !== 'none'){                                 
-                     $('#branchButton-' + branchId).text("Скрыть");
-                   }
-                  else if ($('#branchDetails-' + branchId).css('display') !== 'block'){                      
-                      $('#branchButton-' + branchId).text("Открыть");
-                  }
-           });
-         }
+        function openBranch(branchId) {
+            $('#branchDetails-' + branchId).toggle('slow', function () {
+                if ($('#branchDetails-' + branchId).css('display') !== 'none') {
+                    $('#branchButton-' + branchId).text("Скрыть");
+                }
+                else if ($('#branchDetails-' + branchId).css('display') !== 'block') {
+                    $('#branchButton-' + branchId).text("Открыть");
+                }
+            });
+        }
     </script>
     <script>
-      function openName(positionId) {
-           $('#divName-' + positionId).toggle('slow', function() {
-             var name = $('#nameValue-' + positionId).text();
-             $('#nameInput-' + positionId).val(name);
-           });
-         }
+        function openName(positionId) {
+            $('#divName-' + positionId).toggle('slow', function () {
+                var name = $('#nameValue-' + positionId).text();
+                $('#nameInput-' + positionId).val(name);
+            });
+        }
     </script>
-    <script>	
-        function editName(postId) {         
+    <script>
+
+        function editName(postId) {
            $.ajax({
               url : '@Url.Action("Edit", "Branch")',
               type : 'POST',
-              data : {              
+              data : {
                 'id' : postId,
-             'name' : $("#nameInput-" + postId).val()              
+             'name' : $("#nameInput-" + postId).val()
                   },
             success: setTimeout(function(){
-                $("#nameReload-" + postId).load(" #nameReload-" + postId); 
-                $("#namePosition-" + postId).load(" #namePosition-" + postId);              
-               }, 900)             
+                $("#nameReload-" + postId).load(" #nameReload-" + postId);
+                $("#namePosition-" + postId).load(" #namePosition-" + postId);
+               }, 900)
                })
-           }         
-        </script>
+           }
+    </script>
     <script>
         function openAddress(positionId) {
-             $('#divAddress-' + positionId).toggle('slow', function() {
-               var address = $('#addressValue-' + positionId).text();
-               $('#addressInput-' + positionId).val(address);
-             });
-           }
-     </script>
- <script>	
-      function editAddress(postId) {           
+            $('#divAddress-' + positionId).toggle('slow', function () {
+                var address = $('#addressValue-' + positionId).text();
+                $('#addressInput-' + positionId).val(address);
+            });
+        }
+    </script>
+    <script>
+
+      function editAddress(postId) {
                $.ajax({
                   url : '@Url.Action("Edit", "Branch")',
                   type : 'POST',
-                  data : {              
+                  data : {
                     'id' : postId,
-                 'address' : $("#addressInput-" + postId).val()              
+                 'address' : $("#addressInput-" + postId).val()
                       },
                 success: setTimeout(function(){
-                    $("#addressReload-" + postId).load(" #addressReload-" + postId);                     
-                   }, 900)             
+                    $("#addressReload-" + postId).load(" #addressReload-" + postId);
+                   }, 900)
                    })
-               }         
-        </script>
-        <script>
-           function openInfo(positionId) {
-            $('#divInfo-' + positionId).toggle('slow', function() {
-                  var info = $('#infoValue-' + positionId).text();
-                  $('#infoInput-' + positionId).val(info);
-                  });
                }
-            </script>
-    <script>	
-         function editInfo(postId) {           
+    </script>
+    <script>
+        function openInfo(positionId) {
+            $('#divInfo-' + positionId).toggle('slow', function () {
+                var info = $('#infoValue-' + positionId).text();
+                $('#infoInput-' + positionId).val(info);
+            });
+        }
+    </script>
+    <script>
+
+         function editInfo(postId) {
              $.ajax({
               url : '@Url.Action("Edit", "Branch")',
               type : 'POST',
-              data : {              
+              data : {
               'id' : postId,
-              'info' : $("#infoInput-" + postId).val()              
+              'info' : $("#infoInput-" + postId).val()
                },
                success: setTimeout(function(){
-               $("#infoReload-" + postId).load(" #infoReload-" + postId);     
-               }, 900)             
+               $("#infoReload-" + postId).load(" #infoReload-" + postId);
+               }, 900)
                })
-              }         
-        </script>
-    
+              }
+    </script>
+
     <script>
         function openSeller(branchId) {
-            $('#divAdmin-' + branchId).toggle('slow', function() {
-              var adminId = $('#adminIdValue-' + branchId).text();
+            $('#divAdmin-' + branchId).toggle('slow', function () {
+                var adminId = $('#adminIdValue-' + branchId).text();
                 $('#adminId-' + branchId).val(adminId).change();
-             });
-          }
-    </script>   
-<script>	
-    function editSeller(postId) {           
+            });
+        }
+    </script>
+    <script>
+
+    function editSeller(postId) {
       $.ajax({
         url : '@Url.Action("Edit", "Branch")',
         type : 'POST',
-        data : {              
+        data : {
         'id' : postId,
-        'adminId' : $("#adminId-" + postId).val()              
+        'adminId' : $("#adminId-" + postId).val()
                },
         success: setTimeout(function(){
-        $("#adminReload-" + postId).load(" #adminReload-" + postId); 
-            }, 900)             
+        $("#adminReload-" + postId).load(" #adminReload-" + postId);
+            }, 900)
           })
-       }         
-</script>       
-    <script>
-        $("#editProfileBtn").on('click', function () {
-            if (document.getElementById('editPrifileModal')) {
-                $('#editPrifileModal').modal('show');
-            }
-            else {
-                $.get('@Url.Action("GetEditModalAjax", "Chief")', function (data) {
-                    $("#modal-place").html(data);
-                    $(document.getElementById('editPrifileModal')).modal('show');
-                });
-            }
-        })
+       }
     </script>
     <script>
         $("#changePasswordBtn").on("click", function () {
             $("#changePasswordModal").modal('show');
         })
-        function checkRequired(text) {
-            if (text.length == 0) {
-                return false;
-            }
-            return true;
-        };
-        $('#emplCreateBtn').on('click', function () {
-            $('#emplCreateModal').modal('show');
-            $('#submitCreateEmpl').on('click', function () {
-                var email = $('#emplEmail');
-                var truth = true;
-                if (!checkRequired(email.val())) {
-                    $('#invalidEmail').html('Введите почту');
-                    truth = false;
-                }
-                else {
-                    $.get('@Url.Action("CheckEmailCreate", "Validation")/?email=' + $(email).val(), function (data) {
-                        if (data) {
-                            $('#invalidEmail').html('');
-                        }
-                        else {
-                            $('#invalidEmail').html('Такая почта уже существует');
-                        truth = false;
-                        }
-                    });
-
-                }
-
-                var userName = $('#emplUserName');
-                if (!checkRequired($(userName).val())) {
-                    $('#invalidLogin').html('Введите логин');
-                    truth = false;
-                }
-                else {
-                    $.get('@Url.Action("CheckUserNameCreate", "Validation")/?userName=' + $(userName).val(), function (data) {
-                        if (data) {
-                            $('#invalidLogin').html('');
-                        }
-                        else {
-                            $('#invalidLogin').html('Такой логин уже существует');
-                            truth = false;
-                        }
-                    });
-                }
-
-                var nameSurname = $('#emplNameSurname');
-                if (!checkRequired($(nameSurname).val())) {
-                    $('#invalidNameSurname').html('Введите имя и фамилию');
-                    truth = false;
-                }
-                else {
-                    $('#invalidNameSurname').html('');
-                }
-                var role = $('#roleSelect');
-                if ($(role).val() == '...') {
-                    $('#invalidRole').html('Выберите роль');
-                    truth = false;
-                }
-                else {
-                    $.get('@Url.Action("CheckRoleExistence", "Validation")/?role=' + $(role).val(), function (data) {
-                        if (data) {
-                            $('#invalidRole').html('');
-                        }
-                        else {
-                            $('#invalidRole').html('Выберите роль');
-                    truth = false;
-                        }
-                    });
-
-                }
-
-                if (truth) {
-                    $.ajax({
-                        url: '@Url.Action("CreateEmployee", "Chief")',
-                        type: 'POST',
-                        data: {
-                            "nameSurname": $(nameSurname).val(),
-                            "userName": $(userName).val(),
-                            "email": $(email).val(),
-                            "role": $(role).val()
-                        },
-                        success: function (data){
-                            if (data != 'true') {
-                                $('#invalidConfirmPassword').html(data);                                
-                            }
-                            else {
-                                console.log(data);
-                                $('#emplCreateModal').modal('hide');
-                                email.val('');
-                                userName.val('');
-                                nameSurname.val('');
-                                role.val('...');
-                                $('#exellent-modal').modal('show');
-                                setTimeout(function(){
-                                   $("#addBranchReload").load(" #addBranchReload");
-                                }, 900) 
-                            }
-                        }
-                    })
-                }
-            })
-        });
     </script>
-    
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
 }
