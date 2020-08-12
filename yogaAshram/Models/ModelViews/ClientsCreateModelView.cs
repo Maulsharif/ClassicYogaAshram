@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -17,5 +18,14 @@ namespace yogaAshram.Models.ModelViews
         public long GroupId { get; set; }
         public virtual Group Group { get; set; }
         public ClientType ClientType { get; set; }
+        [Required(ErrorMessage = "Поле обязательно для заполнения")]
+        public int LessonNumbers  { get; set; }
+        public string Color { get; set; }
+        [Required(ErrorMessage = "Поле обязательно для заполнения")]
+
+        [Remote(action: "CheckDate", controller: "Validation", ErrorMessage = "Некоректная дата")]
+        public DateTime StartDate { get; set; }
+        public string Comment { get; set; }
+        
     }
 }

@@ -22,10 +22,10 @@
             </div>
             <div>
                 <label>Группы</label>
-                <select class="form-control mb-4" asp-for="Group">
+                <select class="form-control mb-4" asp-for="GroupId">
                     @if (Enumerable.Count(@ViewBag.Groups) == 0)
                     {
-                        <p>Не найдено ни одного группы</p>
+                        <p>Не найдено ни одной группы</p>
                     }
                     else
                     {
@@ -40,13 +40,31 @@
                 <label>
                     Статус клиента
                     <select asp-for="ClientType">
-                        <option value="1">Пробник</option>
-                        <option value="2">Старый клиент</option>
-                        <option value="3">Уже не заниметься</option>
+                        <option value="0">Пробник</option>
                     </select>
                 </label>
             </div>
+              <div class="form_row">
+                            <label>
+                              Количество занятии
+                              <select asp-for="LessonNumbers">
+                                  <option value="1">1 пробное занятие</option>
+                                  <option value="3">3 пробных занятии</option>
+                              </select>
+                            </label>
+                        </div>
             <div>
+                <div>
+                    <span asp-validation-for="StartDate"></span>
+                    <label>Дата занятия</label><br/>
+                    <input class="form-control mb-4" asp-for="StartDate" type="date">
+                </div>
+                <div>
+                    <span asp-validation-for="Comment"></span>
+                    <label>Коментарии</label><br/>
+                    <input class="form-control mb-4" asp-for="Comment" >
+                </div>
+                
                 <br/>
                 <input class="btn btn-info btn-block my-4" type="submit" value="Добавить"/>
             </div>

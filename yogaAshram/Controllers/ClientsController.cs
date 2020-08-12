@@ -41,16 +41,37 @@ namespace yogaAshram.Controllers
                 PhoneNumber = model.PhoneNumber,
                 ClientType = model.ClientType,
                 GroupId = model.GroupId,
+                LessonNumbers = model.LessonNumbers,
+                Comment = model.Comment,
                 CreatorId = GetUserId.GetCurrentUserId(this.HttpContext)
             };
             
             _db.Entry(client).State = EntityState.Added;
             await _db.SaveChangesAsync();
+            long ClientId = client.Id;
+            TrialUsers trialUsers = new TrialUsers
+            {
+                GroupId = model.GroupId,
+                ClientId = ClientId,
+                State = State.willAttend,
+                Color = "grey",
+                LessonTime = model.StartDate
+
+            };
+            _db.Entry(trialUsers).State = EntityState.Added;
+            await _db.SaveChangesAsync();
             
-            if (User.IsInRole("chief"))
-                return RedirectToAction("Index", "Chief");
+                return RedirectToAction("Trials", "Clients");
            
-            return RedirectToAction("Index", "Admin");
+            
+        }
+
+
+        
+
+        public IActionResult Trials()
+        {
+            return View(_db.TrialUserses.ToList());
         }
     }
 }

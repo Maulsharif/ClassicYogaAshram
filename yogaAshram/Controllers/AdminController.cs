@@ -32,11 +32,17 @@ namespace yogaAshram.Controllers
           public async Task<IActionResult> Index()
         {
             Employee empl = await _userManager.GetUserAsync(User);
+            Branch branch = _db.Branches.FirstOrDefault(b => b.AdminId == empl.Id);
+            List<Group> groups;
+            if (branch != null) groups = _db.Groups.Where(p => p.BranchId == branch.Id).ToList();
+            else groups = null;
+            
 
             return View(new AdminIndexModel()
             {
                 Employee = empl,
-                Groups = _db.Groups.ToList()
+                Branch = branch,
+                Groups = groups
             });
         }
 

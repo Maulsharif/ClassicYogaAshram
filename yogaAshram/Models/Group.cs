@@ -17,6 +17,6 @@ namespace yogaAshram.Models
         
         public virtual Employee Creator { get; set; }
 
-        public virtual List<Client> Clients { get; set; }
+       // public virtual List<Client> Clients { get; set; }
     }
 }
