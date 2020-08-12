@@ -17,7 +17,7 @@ namespace yogaAshram.Models
         public DbSet<Client> Clients { get; set; }
         public DbSet<CalendarEvent> CalendarEvents { get; set; }
         public DbSet<TrialUsers> TrialUserses { get; set; }
-
+        public DbSet<Attendance> Attendances { get; set; }
         public YogaAshramContext(DbContextOptions options) : base(options) 
         {
         }

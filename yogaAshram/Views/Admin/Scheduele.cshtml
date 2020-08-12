@@ -8,7 +8,7 @@
 }
 <div class="container">
     <a class="btn btn-outline-dark mt-1" asp-action="Index" asp-route-month="@Model.AddMonths(-1).Month" asp-route-branchId="@ViewBag.BranchId">Назад</a>
-    <button class="btn btn-dark mt-1" data-toggle="modal" data-target="#scheduleCreate">Добавить расписание</button>
+  
     <a class="btn btn-outline-dark mt-1" asp-action="Index" asp-route-month="@Model.AddMonths(1).Month" asp-route-branchId="@ViewBag.BranchId">Вперед</a>
    
 	    <calendar month="@Model.Month" year="@Model.Year" events="@ViewBag.Events"/>
