@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using yogaAshram.Models.ModelViews;
 
 
-    namespace yogaAshram.Models
+namespace yogaAshram.Models
     {
         public class Schedule
         {
@@ -16,6 +18,10 @@ using System.ComponentModel.DataAnnotations;
             public long GroupId { get; set; }
             public virtual Group Group{ get; set; }
             public virtual List<Group> Groups { get; set; }
+            [NotMapped]
+            public virtual ClientsCreateModelView ClientsCreateModelView { get; set; } 
+            [NotMapped] 
+            public DateTime ChosenDate { get; set; }
         }
     }
 

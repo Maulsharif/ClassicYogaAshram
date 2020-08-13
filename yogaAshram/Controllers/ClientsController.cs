@@ -38,39 +38,39 @@ namespace yogaAshram.Controllers
         
         [HttpPost]
         [Authorize]
-        public async Task<IActionResult> CreateClients(ClientsCreateModelView model)
+        public async Task<IActionResult> CreateClients(Schedule schedule)
         {
             
             Client client = new Client
-            {
-                NameSurname = model.NameSurname,
-                PhoneNumber = model.PhoneNumber,
-                ClientType = model.ClientType,
-                GroupId = model.GroupId,
-                LessonNumbers = model.LessonNumbers,
-                Comment = model.Comment,
-                CreatorId = GetUserId.GetCurrentUserId(this.HttpContext)
-            }; 
-            _db.Entry(client).State = EntityState.Added;
-            await _db.SaveChangesAsync();  
-            long ClientId = client.Id;
-            if (model.LessonNumbers == 3)
-            {
-                //метод для 
-            }
-            else
-            {  
-                TrialUsers trialUsers = new TrialUsers
+             {
+                 NameSurname = schedule.ClientsCreateModelView.NameSurname,
+                 PhoneNumber = schedule.ClientsCreateModelView.PhoneNumber,
+                ClientType = schedule.ClientsCreateModelView.ClientType,
+                 GroupId = schedule.ClientsCreateModelView.GroupId,
+                 LessonNumbers =schedule.ClientsCreateModelView.LessonNumbers,
+                 Comment =schedule.ClientsCreateModelView.Comment,
+                 CreatorId = GetUserId.GetCurrentUserId(this.HttpContext)
+             }; 
+             _db.Entry(client).State = EntityState.Added;
+             await _db.SaveChangesAsync();  
+             long ClientId = client.Id;
+             if (schedule.ClientsCreateModelView.LessonNumbers == 3)
+             {
+                 //метод для 
+             }
+             else
+             {  
+                 TrialUsers trialUsers = new TrialUsers
                          {
-                             GroupId = model.GroupId,
+                             GroupId = schedule.ClientsCreateModelView.GroupId,
                              ClientId = ClientId,
                              State = State.willAttend,
-                             Color = "grey",
-                             LessonTime = model.StartDate
-                         };
+                            Color = "grey",
+                             LessonTime = schedule.ClientsCreateModelView.StartDate
+                        };
                          _db.Entry(trialUsers).State = EntityState.Added;
-                
-            }
+                 
+             }
 
          
           
