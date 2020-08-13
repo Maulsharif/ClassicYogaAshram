@@ -39,9 +39,9 @@ namespace yogaAshram.Controllers
         {
             if (ModelState.IsValid)
             {
-                Employee employee = await _userManager.FindByEmailAsync(model.Authentificator);
-                if (employee is null)
-                    employee = await _userManager.FindByNameAsync(model.Authentificator);
+                Employee employee = await _db.Employees.
+                    FirstOrDefaultAsync(p => p.Email == model.Authentificator ||
+                    p.UserName == model.Authentificator);
                 if(employee.OnTimePassword)
                 {
                     if (employee.PasswordState == PasswordStates.DisposableUsed)
