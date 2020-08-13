@@ -11,6 +11,7 @@
     <div class="form-inline form-group">
         <label class="control-label">Дата: </label>
         <input name="time"  type="date" class="form-control" />
+          <input name="branchId"  type="hidden" value="@ViewBag.BranchId" />
         <input type="submit" value="Фильтр" class="btn btn-default" />
     </div>
 </form>
@@ -26,11 +27,11 @@
     </tr>
     @foreach (var client in @Model)
     { <tr>
-          <td>@client.Client.NameSurname</td>
+          <td><a asp-action="ClientInfo" asp-controller="Clients" asp-route-Id="@client.ClientId">@client.Client.NameSurname</a></td>
           <td>@client.Group.Name</td>
           <td>@client.LessonTime.ToShortDateString()</td>
           <td style="background: @client.Color">@client.GetValueOfState()</td>
-          @if (User.IsInRole("admin,chief,manager"))
+          @if (User.IsInRole("admin"))
           {
                 <td><a asp-action="CheckAttendanceTrial" asp-route-groupId="@client.GroupId"  asp-route-clientId="@client.ClientId">Отметить</a></td>
           }
