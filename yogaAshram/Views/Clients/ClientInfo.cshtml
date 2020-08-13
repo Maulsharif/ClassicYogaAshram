@@ -1,0 +1,13 @@
+﻿@model TrialUsers
+
+@{
+    ViewBag.Title = "title";
+    Layout = "_Layout";
+}
+
+<h3>Информация о клиенте</h3>
+<p>Фио: @Model.Client.NameSurname</p>
+<p>Группа: @Model.Client.Group.Name</p>
+<p>Состояние: @Model.GetValueOfState()</p>
+<p>Дата пробного занятия: @Model.LessonTime</p>
+<p> Создал: @Model.Client.Creator.NameSurname</p>

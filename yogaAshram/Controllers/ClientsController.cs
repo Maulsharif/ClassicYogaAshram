@@ -28,19 +28,18 @@ namespace yogaAshram.Controllers
             _db = db;
         }
         
-        [Authorize]
-        public IActionResult CreateClients(long branchId)
-        {
-            
-            ViewBag.Groups = _db.Groups.ToList().Where(b=>b.BranchId==branchId);
-            return View();
-        }
+        // [Authorize]
+        // public IActionResult CreateClients(long branchId)
+        // {
+        //     
+        //     ViewBag.Groups = _db.Groups.ToList().Where(b=>b.BranchId==branchId);
+        //     return View();
+        // }
         
         [HttpPost]
         [Authorize]
         public async Task<IActionResult> CreateClients(Schedule schedule)
         {
-            
             Client client = new Client
              {
                  NameSurname = schedule.ClientsCreateModelView.NameSurname,
@@ -56,37 +55,59 @@ namespace yogaAshram.Controllers
              long ClientId = client.Id;
              if (schedule.ClientsCreateModelView.LessonNumbers == 3)
              {
-                 //метод для 
+                 TrialUsers trialUsers = new TrialUsers
+                 {
+                     GroupId = schedule.ClientsCreateModelView.GroupId,
+                     ClientId = ClientId,
+                     State = State.willAttend,
+                     Color = "grey",
+                     LessonTime = schedule.ClientsCreateModelView.StartDate
+                 };
+                 _db.Entry(trialUsers).State = EntityState.Added;
+                List<DateTime>dates=TwoTimesTrial(schedule.ClientsCreateModelView.GroupId, schedule.ClientsCreateModelView.StartDate);
+
+                for (int i = 0; i < 2; i++)
+                {
+                     trialUsers = new TrialUsers
+                    {
+                        GroupId = schedule.ClientsCreateModelView.GroupId,
+                        ClientId = ClientId,
+                        State = State.willAttend,
+                        Color = "grey",
+                        LessonTime = dates[i]
+                    };
+                     _db.Entry(trialUsers).State = EntityState.Added; 
+                }
              }
              else
-             {  
+             {
                  TrialUsers trialUsers = new TrialUsers
-                         {
-                             GroupId = schedule.ClientsCreateModelView.GroupId,
-                             ClientId = ClientId,
-                             State = State.willAttend,
-                            Color = "grey",
-                             LessonTime = schedule.ClientsCreateModelView.StartDate
-                        };
-                         _db.Entry(trialUsers).State = EntityState.Added;
-                 
+                 {
+                     GroupId = schedule.ClientsCreateModelView.GroupId,
+                     ClientId = ClientId,
+                     State = State.willAttend,
+                     Color = "grey",
+                     LessonTime = schedule.ClientsCreateModelView.StartDate
+                 };
+                 _db.Entry(trialUsers).State = EntityState.Added;
              }
-
-         
-          
-            await _db.SaveChangesAsync();
-            return RedirectToAction("Trials", "Clients");
             
+             await _db.SaveChangesAsync();
+            return RedirectToAction("Trials", "Clients");
         }
 
 
         
 
-        public IActionResult Trials(DateTime time)
+        public IActionResult Trials(DateTime time, long branchId)
         {
+            ViewBag.BranchId = branchId;
             if(time<DateTime.Today)
                 time=DateTime.Today;
-            return View(_db.TrialUserses.Where(p=>p.LessonTime.Date==time.Date).ToList());
+            List<TrialUsers> users= _db.TrialUserses.Where(p => p.LessonTime.Date == time.Date).ToList();
+             
+            
+            return View(users.Where(p => p.Group.BranchId == branchId).ToList());
         }
 
         [HttpGet]
@@ -120,9 +141,18 @@ namespace yogaAshram.Controllers
                     if (users[i].Id == models[j].Id)
                     {
                         users[i].State = (State) models[j].State;
+                        if (users[i].State == State.attended)
+                        {
+                            users[i].Color = "yellow";
+                        }
+                        else if (users[i].State==State.notattended)
+                        {
+                             users[i].Color = "red";
+                        }
+                        users[i].IsChecked = true;
                     }
                 }
-
+             
                 _db.Entry(users[i]).State = EntityState.Modified;
             }
            
@@ -132,11 +162,7 @@ namespace yogaAshram.Controllers
         }
 
         //метод возвращающий две даты 
-        // public DateTime[] DateTimes(string days)
-        // {
-        //     
-        // }
-
+        
         public List<DateTime> TwoTimesTrial(long? groupId, DateTime firstTime)
         {
             List<CalendarEvent> calendarEvents = _db.CalendarEvents.Where(c => c.GroupId == groupId).ToList();
@@ -158,6 +184,13 @@ namespace yogaAshram.Controllers
             dateTimes[1] = dates[2];
 
             return dateTimes.ToList();
+        }
+
+        public IActionResult ClientInfo(long Id)
+        {
+            TrialUsers client = _db.TrialUserses.FirstOrDefault(p => p.ClientId == Id);
+            return View(client);
+
         }
     }
 }
