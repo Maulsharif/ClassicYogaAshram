@@ -29,6 +29,15 @@ namespace yogaAshram.Controllers
         {
             Employee empl = await _userManager.GetUserAsync(User);
             ViewBag.Branches = _db.Branches.Include(b => b.Admin).ToList();
+            
+            List<Branch> branches = _db.Branches.Where(b => b.Admin.Role == "admin").ToList();
+            
+            long[] admins = new long[branches.Count];
+            for (int i = 0; i < branches.Count; i++)
+            {
+                admins[i] = Convert.ToInt64(branches[i].AdminId);
+            }
+            ViewBag.AdminIdArray = String.Join(" ",admins);
             ViewBag.Admin = _db.Employees.Where(e => e.Role == "admin").ToList();
             return View(new ChiefIndexModelView() { Employee = empl });
         }
