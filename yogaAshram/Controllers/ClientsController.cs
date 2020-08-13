@@ -55,10 +55,28 @@ namespace yogaAshram.Controllers
              long ClientId = client.Id;
              if (schedule.ClientsCreateModelView.LessonNumbers == 3)
              {
+                 TrialUsers trialUsers = new TrialUsers
+                 {
+                     GroupId = schedule.ClientsCreateModelView.GroupId,
+                     ClientId = ClientId,
+                     State = State.willAttend,
+                     Color = "grey",
+                     LessonTime = schedule.ClientsCreateModelView.StartDate
+                 };
+                 _db.Entry(trialUsers).State = EntityState.Added;
                 List<DateTime>dates=TwoTimesTrial(schedule.ClientsCreateModelView.GroupId, schedule.ClientsCreateModelView.StartDate);
-                foreach (var v in dates)
+
+                for (int i = 0; i < 2; i++)
                 {
-                    Console.WriteLine(v);
+                     trialUsers = new TrialUsers
+                    {
+                        GroupId = schedule.ClientsCreateModelView.GroupId,
+                        ClientId = ClientId,
+                        State = State.willAttend,
+                        Color = "grey",
+                        LessonTime = dates[i]
+                    };
+                     _db.Entry(trialUsers).State = EntityState.Added; 
                 }
              }
              else
