@@ -3,77 +3,77 @@
 @model Schedule
 
 @{
-    ViewBag.Title = "Расписание группы";
-    Layout = "_Layout";
-}
-<h2 class="text-center">Расписание группы "@Model.Group.Name"</h2>
-
-<p><strong>Тренер</strong> - @Model.Group.CoachName</p>
-<hr>
-<div id="reloadSchedule">
-	@foreach (var day in @Model.DayOfWeeksString)
-	{
-		<p>@day</p>
-	}
-
-	<p>Начало - @Model.StartTime</p>
-	<p>Окончание - @Model.FinishTime</p>
-	<button data-toggle="modal" data-target="#scheduleCreate" class="btn btn-outline-dark">Изменить расписание</button>
-	<a asp-action="Index" asp-controller="Schedule" asp-route-branchId="@Model.BranchId" class="btn btn-outline-dark">Назад</a>
-
-	<p class="text-hide" id="datesForEdit">@ViewBag.DaysArray</p>
-	<p class="text-hide" id="timeForEditStart">@Model.StartTime</p>
-	<p class="text-hide" id="timeForEditFinish">@Model.FinishTime</p>
-</div>
-
-<h3>Посещаемость клиентов за @ViewBag.Date</h3>
-@if (Enumerable.Count(@ViewBag.Clients) == 0)
-{
-	<p>Не найдено ни одного клиента</p>
-}
-else
-{
-	<label>Отметить всех</label>
-	<div class="attendance">
-		<input type="checkbox" id="checkAll"/>
-		<span></span>
-	</div>
-	<table class="table">
-		<thead>
-		<tr>
-			<th scope="col">Id клиента</th>
-			<th scope="col">Имя клиента</th>
-			<th scope="col">Статус</th>
-			<th scope="col">Пришел<th>
-			<th scope="col">Комментарий</th>
-		</tr>
-		</thead>
-	
-		<tbody>
-		@foreach (Client client in (IEnumerable) @ViewBag.Clients)
-		{    
-			<tr>
-				<td>@client.Id</td>
-				<td>@client.NameSurname</td>
-				<td>@client.ClientType</td>
-				<td><div class="attendance">
-						<input type="checkbox" />
-						<span></span>
-					</div>
-				</td>
-			<td><textarea type="text" class="form-control" rows="1"></textarea></td>
-			</tr>
-		}
-		
-		</tbody>
-	</table>
-<button class="btn btn-outline-dark" id="submitAttendance">Отправить данные на сервер</button>
+	ViewBag.Title = "Расписание группы";
+	Layout = "_Layout";
 }
 
 
+@if (User.IsInRole("chief")||User.IsInRole("manager") )
 
-
-<div class="modal fade w-100" id="scheduleCreate" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+	    {<h2 class="text-center">Расписание группы "@Model.Group.Name"</h2>
+ 
+ <p><strong>Тренер</strong> - @Model.Group.CoachName</p>
+ <hr>
+ <div id="reloadSchedule">
+ 	@foreach (var day in @Model.DayOfWeeksString)
+ 	{
+ 		<p>@day</p>
+ 	}
+ 
+ 	<p>Начало - @Model.StartTime</p>
+ 	<p>Окончание - @Model.FinishTime</p>
+ 	<button data-toggle="modal" data-target="#scheduleCreate" class="btn btn-outline-dark">Изменить расписание</button>
+ 	<a asp-action="Index" asp-controller="Schedule" asp-route-branchId="@Model.BranchId" class="btn btn-outline-dark">Назад</a>
+ 
+ 	<p class="text-hide" id="datesForEdit">@ViewBag.DaysArray</p>
+ 	<p class="text-hide" id="timeForEditStart">@Model.StartTime</p>
+ 	<p class="text-hide" id="timeForEditFinish">@Model.FinishTime</p>
+ </div>
+ 
+ <h3>Посещаемость клиентов за @ViewBag.Date</h3>
+ @if (Enumerable.Count(@ViewBag.Clients) == 0)
+ {
+ 	<p>Не найдено ни одного клиента</p>
+ }
+ else
+ {
+ 	<label>Отметить всех</label>
+ 	<div class="attendance">
+ 		<input type="checkbox" id="checkAll"/>
+ 		<span></span>
+ 	</div>
+ 	<table class="table">
+ 		<thead>
+ 		<tr>
+ 			<th scope="col">Id клиента</th>
+ 			<th scope="col">Имя клиента</th>
+ 			<th scope="col">Статус</th>
+ 			<th scope="col">Пришел<th>
+ 			<th scope="col">Комментарий</th>
+ 		</tr>
+ 		</thead>
+ 	
+ 		<tbody>
+ 		@foreach (Client client in (IEnumerable) @ViewBag.Clients)
+ 		{    
+ 			<tr>
+ 				<td>@client.Id</td>
+ 				<td>@client.NameSurname</td>
+ 				<td>@client.ClientType</td>
+ 				<td><div class="attendance">
+ 						<input type="checkbox" />
+ 						<span></span>
+ 					</div>
+ 				</td>
+ 			<td><textarea type="text" class="form-control" rows="1"></textarea></td>
+ 			</tr>
+ 		}
+ 		
+ 		</tbody>
+ 	</table>
+ <button class="btn btn-outline-dark" id="submitAttendance">Отправить данные на сервер</button>
+ }
+	<div class="modal fade w-100" id="scheduleCreate" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
 	<div class="modal-dialog modal-dialog-centered modal-lg" role="document">
 		<div class="modal-content">
 			<div class="modal-header">
@@ -118,7 +118,77 @@ else
 	</div>
 </div>
 
+}
+
+else if ( User.IsInRole("seller") ||User.IsInRole("admin") )
+{
+	<div class="row d-flex justify-content-center">
+    <div class="col-md-6">
+        <h2>Записать на пробный</h2>
+        <form method="post" asp-controller="Clients" asp-action="CreateClients">
+            <div>
+                <span asp-validation-for="@Model.ClientsCreateModelView.NameSurname"></span>
+                <label>Ф.И.О</label><br/>
+                <input class="form-control mb-4" asp-for="@Model.ClientsCreateModelView.NameSurname"/>
+            </div>
+            <div>
+                <span asp-validation-for="@Model.ClientsCreateModelView.PhoneNumber"></span>
+                <label>Номер телефона</label><br/>
+                <input class="form-control mb-4" asp-for="@Model.ClientsCreateModelView.PhoneNumber"/>
+            </div>
+            <div>
+	            <label class="form-control mb-4">Группа:@Model.Group.Name</label>
+	        
+                    <input class="form-control mb-4" asp-for="@Model.ClientsCreateModelView.GroupId" value="@Model.GroupId" type="hidden">
+            </div>
+            <div class="form_row">
+                <label>
+                    Статус клиента
+                    <select asp-for="@Model.ClientsCreateModelView.ClientType" class="form-control mb-4">
+                        <option value="0" class="form-control mb-4">Пробник</option >
+                    </select>
+                </label>
+            </div>
+              <div class="form_row">
+                            <label>
+                              Количество занятии
+                              <select asp-for="@Model.ClientsCreateModelView.LessonNumbers" class="form-control mb-4">
+                                  <option value="1" class="form-control mb-4">1 пробное занятие</option>
+                                  <option value="3" class="form-control mb-4">3 пробных занятии</option>
+                              </select>
+                            </label>
+                        </div>
+            <div>
+                <div>
+                 
+	                <label class="form-control mb-4">Дата занятия: @Model.ChosenDate</label><br/>
+	               
+                    <input class="form-control mb-4" asp-for="@Model.ClientsCreateModelView.StartDate" type="hidden" value="@Model.ChosenDate"  >
+                </div>
+                <div>
+                    <span asp-validation-for="@Model.ClientsCreateModelView.Comment"></span>
+                    <label>Коментарии</label><br/>
+                    <input class="form-control mb-4" asp-for="@Model.ClientsCreateModelView.Comment" >
+                </div>
+                
+                <br/>
+                <input class="btn btn-info btn-block my-4" type="submit" value="Добавить"/>
+            </div>
+        </form>
+    </div>
+</div>
+	
+}
+
+
+
 @section Scripts{
+	
+	 @{
+            await Html.RenderPartialAsync("_ValidationScriptsPartial");
+        }
+	
+	
 	<script >
 	$("#weekdays").weekLine({
             mousedownSel: false,            

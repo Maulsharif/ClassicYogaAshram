@@ -36,8 +36,7 @@
             @foreach (var branch in @Model.Branches)
             {
                 <p>Центр йоги @branch.Name</p> 
-                <a asp-action="Index" asp-controller="Schedule" asp-route-branchId="@branch.Id">Календарь</a>
-                <a asp-action="CreateClients" asp-controller="Clients" asp-route-branchId="@branch.Id" >Добавить пробника</a> 
+                <a asp-action="SchedulePage" asp-controller="Seller" asp-route-branchId="@branch.Id">Календарь</a>
                 <a asp-action="Trials" asp-controller="Clients" asp-route-branchId="@branch.Id">Пробники</a>
             }
         </div>
