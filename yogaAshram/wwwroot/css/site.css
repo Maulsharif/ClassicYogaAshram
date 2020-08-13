@@ -352,3 +352,6 @@ tr:last-child td{
     background-color: #4CAF50;
     color: white;
 }
+.inputAdmin{
+    display: none;
+}

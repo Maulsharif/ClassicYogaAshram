@@ -6,7 +6,9 @@
     ViewBag.Title = "Главная";
     Layout = "_Layout";
 }
-<h2>Админ @Model.Branch.Name</h2>
+@if (@Model.Branch != null)
+{
+    <h2>Админ @Model.Branch.Name</h2>
 
 <div class="container" >
 
@@ -40,8 +42,22 @@
     </div>
     
 </div>
-
-
+}
+else
+{
+    
+    <p class="text-center">Добро пожаловать, @Model.Employee.UserName!</p>
+    <p class="text-center">Не найдено ни одного центра, где вы являетесь администратором. Пожалуйста, обратитесь к директору</p> 
+    <p class="text-center">А пока вы можете только <a data-target="editProfileModal" id="@Url.Action("GetEditModalAjax", "Employees")" class="getModal cursor-p text-primary">
+            изменить свой профиль
+        </a> 
+        или
+        <a data-target="changePasswordModal" id="@Url.Action("GetChangePasswordModalAjax", "Employees")" class="getModal cursor-p text-primary">
+           поменять пароль
+        </a>
+    </p> 
+                                                   
+}
 @section Scripts{
     @{
         await Html.RenderPartialAsync("../Employees/PartialViews/GetModalScripts");

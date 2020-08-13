@@ -26,14 +26,16 @@
               else
               {
                     <label for="">Выберете администратора:</label>
-                    <select class="form-control mb-2" name="adminId">
+                    <select class="form-control mb-2" name="adminId" onchange="validateAdminIds()" id="adminId">
+                    <option selected value="no">Выберите администратора</option>
                         @foreach (Employee admin in (IEnumerable) @ViewBag.Admin)
                       {
                         <option value="@admin.Id">@admin.UserName</option>
                       }
                     </select>
-              }
-                    <input type="submit" class="btn btn-secondary" value="Добавить">
+              
+                    <input type="submit" class="btn btn-secondary" value="Добавить" id="send">
+               }     
                 </form>
             </div>
             <div class="modal-footer">
@@ -67,7 +69,7 @@
                             <div data-target="changePasswordModal" id="@Url.Action("GetChangePasswordModalAjax", "Employees")" class="getModal dropdown-item cursor-p">
                                 Изменить пароль
                             </div>
-                            <div class="dropdown-item cursor-p" data-toggle="modal" data-target="#addBranch">Добавить центр йоги</div>
+                            <div class="dropdown-item cursor-p" data-toggle="modal" data-target="#addBranch" onclick="validateAdminIds()">Добавить центр йоги</div>
                         </div>
                     </div>
                     <a asp-action="CreateGroup" asp-controller="Group" class="btn btn-dark" style="margin-top: 15px;">Создать группу </a>
@@ -92,6 +94,11 @@
                             Центр йоги "@branch.Name" <a href="#" id="branchButton-@branch.Id" onclick="openBranch('@branch.Id')"> Открыть</a>
                             <a href="#" data-toggle="modal" data-target="#deleteBranch-@branch.Id">Удалить</a>
                             <a asp-action="Index" asp-controller="Schedule" asp-route-branchId="@branch.Id">Календарь</a>
+                            @if (branch.Admin.UserName == "na")
+                            {
+                                <p class="text-danger">Необходимо добавить администратора! Для этого откройте центр и выберите администратора из выпадающего списка.</p>
+                            }
+                                <hr>
                         </p>
  <!-- Modal -->
                         <div class="modal fade" id="deleteBranch-@branch.Id" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -170,19 +177,20 @@
                                 <p>
                                     Администратор: <span id="adminValue-@branch.Id"> @branch.Admin.UserName</span>
                                     <span class="text-hide" id="adminIdValue-@branch.Id">@branch.AdminId</span>
-                                    <a href="#" onclick="openSeller('@branch.Id');return false;" title="Редактировать">
+                                    <a href="#" onclick="openAdmin('@branch.Id'); validateAdmin('@branch.Id')" title="Редактировать">
                                         <img src="/Images/SiteImages/edit.png" class="editIcon" alt="edit">
                                     </a>
                                 </p>
                                 <div id="divAdmin-@branch.Id" class="inputAdmin">
                                     <div class="row m-1">
-                                        <select id="adminId-@branch.Id" name="adminId" class="form-control w-50">
+                                        <select id="adminId-@branch.Id" name="adminId" class="form-control w-75 mb-1" onchange="validateAdmin('@branch.Id')">
+                                          <option value="no" selected="">Выберите администратора</option>
                                             @foreach (Employee admin in (IEnumerable) @ViewBag.Admin)
-                                                 {
-                                            <option value="@admin.Id">@admin.UserName</option>
-                                                 }
+                                            {
+                                                <option value="@admin.Id">@admin.UserName</option>
+                                            }
                                         </select>
-                                        <button class="ml-2 btn btn-outline-dark" onclick="editSeller('@branch.Id')">Выбрать</button>
+                                        <button class="ml-2 btn btn-outline-dark" onclick="editSeller('@branch.Id')" id="submitBtn-@branch.Id">Выбрать</button>
                                     </div>
                                 </div>
                             </div>
@@ -196,7 +204,7 @@
         </div>
     </div>
 </div>
-
+<p id="adminIdArray" class="text-hide">@ViewBag.AdminIdArray</p>
 @section Scripts{
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
@@ -291,12 +299,12 @@
     </script>
 
     <script>
-        function openSeller(branchId) {
-            $('#divAdmin-' + branchId).toggle('slow', function () {
-                var adminId = $('#adminIdValue-' + branchId).text();
-                $('#adminId-' + branchId).val(adminId).change();
-            });
-        }
+       
+        function openAdmin(branchId) {
+                   $('#divAdmin-' + branchId).toggle('slow', function() {
+                    
+                    });
+                 }
     </script>
     <script>
 
@@ -319,4 +327,43 @@
             $("#changePasswordModal").modal('show');
         })
     </script>
+    <script>      
+           var adminIds =  $('#adminIdArray').text();            
+           $.each(adminIds.split(' '), function(index, value) {
+             $('select > option').filter(function () {
+             	return $(this).val() == value
+             }).prop('disabled', true)
+           });      
+        </script>
+    <script >
+    function validateAdmin(adminId){
+        var e = document.getElementById("adminId-"  + adminId);
+        var value = e.options[e.selectedIndex].value;
+               
+                 if (value === "no") {
+                    $('#submitBtn-' + adminId).prop('disabled', true);
+                    
+                  } 
+                else {
+                    $('#submitBtn-'+ adminId).prop('disabled', false);            
+                  }
+                }
+                          
+</script>
+    <script >
+    function validateAdminIds(){
+            var e = document.getElementById("adminId");
+            var value = e.options[e.selectedIndex].value;
+                      console.log(value);             
+                     if (value === "no") {
+                        $('#send').prop('disabled', true);
+                        
+                      } 
+                    else {
+                        $('#send').prop('disabled', false);            
+                      }
+                    }
+   
+</script>
+        
 }

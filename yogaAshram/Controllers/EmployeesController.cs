@@ -246,10 +246,17 @@ namespace yogaAshram.Controllers
         public async Task<IActionResult> DeleteEmpl(long emplId)
         {
             Employee employee = await _db.Employees.FirstOrDefaultAsync(p => p.Id == emplId);
+            List<Branch> branches = _db.Branches.Where(b => b.AdminId == emplId).ToList();
+            foreach (var b in branches)
+            {
+                b.Admin = new Employee() {UserName = "na", Role = "na", Email = "na"};
+                _db.Entry(b).State = EntityState.Modified;
+            }
             if (employee is null)
                 return NotFound();
             if (employee.UserName == User.Identity.Name)
                 return BadRequest();
+            
             _db.Entry(employee).State = EntityState.Deleted;
             await _db.SaveChangesAsync();
             return RedirectToAction("Index", "Chief");
