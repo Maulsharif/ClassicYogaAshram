@@ -107,12 +107,12 @@ namespace yogaAshram.Controllers
                            t.GroupId != calendarEvent.GroupId && 
                            t.DayOfWeek == calendarEvent.DayOfWeek)
                         {
-                            if (t.TimeStart < calendarEvent.TimeStart && calendarEvent.TimeStart < t.TimeFinish ||
-                                t.TimeStart < calendarEvent.TimeFinish && calendarEvent.TimeFinish < t.TimeFinish)
-                            {
-                                
+                            if ((t.TimeStart < calendarEvent.TimeStart && calendarEvent.TimeStart < t.TimeFinish) ||
+                                (t.TimeStart < calendarEvent.TimeFinish && calendarEvent.TimeFinish < t.TimeFinish))
                                 return Content("errorTime");
-                            }
+                            else if ((t.TimeStart > calendarEvent.TimeStart && calendarEvent.TimeFinish > t.TimeStart) ||
+                                     (t.TimeFinish > calendarEvent.TimeStart && calendarEvent.TimeFinish > t.TimeFinish))
+                                return Content("errorTime");
                         }
                     }
                     _db.Entry(calendarEvent).State = EntityState.Added;
@@ -171,11 +171,12 @@ namespace yogaAshram.Controllers
                            t.GroupId != calendarEvent.GroupId && 
                            t.DayOfWeek == calendarEvent.DayOfWeek)
                         {
-                            if (t.TimeStart < calendarEvent.TimeStart && calendarEvent.TimeStart < t.TimeFinish ||
-                                t.TimeStart < calendarEvent.TimeFinish && calendarEvent.TimeFinish < t.TimeFinish)
-                            {
+                            if ((t.TimeStart < calendarEvent.TimeStart && calendarEvent.TimeStart < t.TimeFinish) ||
+                                (t.TimeStart < calendarEvent.TimeFinish && calendarEvent.TimeFinish < t.TimeFinish))
                                 return Content("errorTime");
-                            }
+                            else if ((t.TimeStart > calendarEvent.TimeStart && calendarEvent.TimeFinish > t.TimeStart) ||
+                                     (t.TimeFinish > calendarEvent.TimeStart && calendarEvent.TimeFinish > t.TimeFinish))
+                                return Content("errorTime");
                         }
                     }
                     _db.Entry(calendarEvent).State = EntityState.Added;
