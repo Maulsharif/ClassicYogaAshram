@@ -27,15 +27,7 @@ namespace yogaAshram.Controllers
             _signInManager = signInManager;
             _db = db;
         }
-        
-        // [Authorize]
-        // public IActionResult CreateClients(long branchId)
-        // {
-        //     
-        //     ViewBag.Groups = _db.Groups.ToList().Where(b=>b.BranchId==branchId);
-        //     return View();
-        // }
-        
+
         [HttpPost]
         [Authorize]
         public async Task<IActionResult> CreateClients(Schedule schedule)
@@ -91,9 +83,10 @@ namespace yogaAshram.Controllers
                  };
                  _db.Entry(trialUsers).State = EntityState.Added;
              }
-            
+
+     
              await _db.SaveChangesAsync();
-            return RedirectToAction("Trials", "Clients");
+                 return RedirectToAction("Trials", "Clients",new {branchId= schedule.BranchId});
         }
 
 
@@ -103,28 +96,28 @@ namespace yogaAshram.Controllers
         {
             ViewBag.BranchId = branchId;
             if(time<DateTime.Today)
-                time=DateTime.Today;
+                return View(_db.TrialUserses.Where(p => p.Group.BranchId == branchId).OrderBy(p=>p.LessonTime).ToList());
             List<TrialUsers> users= _db.TrialUserses.Where(p => p.LessonTime.Date == time.Date).ToList();
-             
             
             return View(users.Where(p => p.Group.BranchId == branchId).ToList());
         }
 
         [HttpGet]
-        public IActionResult CheckAttendanceTrial(long groupId, long clientId )
+        public IActionResult CheckAttendanceTrial(long groupId, long clientId, long branchId )
         {
+            
             TrialUsers user = _db.TrialUserses.FirstOrDefault(u => u.ClientId == clientId);
             
             
             List<TrialUsers> clients = _db.TrialUserses.Where(p => p.GroupId == groupId && p.LessonTime==user.LessonTime).ToList();
-             
-        
+
+            ViewBag.BranchIdHidden = branchId;
             return View(clients);
         }
         
         //Отметка пробников
         [HttpPost]
-        public async Task<IActionResult> CheckAttendanceTrial(long[] arrayOfCustomerID, int []arrayOfState ) 
+        public async Task<IActionResult> CheckAttendanceTrial(long[] arrayOfCustomerID, int []arrayOfState, long HbranchId ) 
         {
             
             List<TrialCheckModel> models=new List<TrialCheckModel>();
@@ -143,6 +136,7 @@ namespace yogaAshram.Controllers
                         users[i].State = (State) models[j].State;
                         if (users[i].State == State.attended)
                         {
+                           // users[i].Client.LessonNumbers -= 1;
                             users[i].Color = "yellow";
                         }
                         else if (users[i].State==State.notattended)
@@ -157,12 +151,12 @@ namespace yogaAshram.Controllers
             }
            
             await _db.SaveChangesAsync();
-            
-            return RedirectToAction("Trials", "Clients");
+        
+           return RedirectToAction("Trials", "Clients",new {branchId= HbranchId});
         }
 
-        //метод возвращающий две даты 
         
+        //метод возвращающий две даты 
         public List<DateTime> TwoTimesTrial(long? groupId, DateTime firstTime)
         {
             List<CalendarEvent> calendarEvents = _db.CalendarEvents.Where(c => c.GroupId == groupId).ToList();
@@ -188,6 +182,7 @@ namespace yogaAshram.Controllers
 
         public IActionResult ClientInfo(long Id)
         {
+            ViewBag.Lessons = _db.TrialUserses.Where(p => p.ClientId == Id);
             TrialUsers client = _db.TrialUserses.FirstOrDefault(p => p.ClientId == Id);
             return View(client);
 

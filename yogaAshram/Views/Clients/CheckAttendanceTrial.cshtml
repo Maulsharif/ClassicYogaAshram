@@ -5,35 +5,37 @@
     Layout = "_Layout";
 }
 <h2>Посещаемость</h2>
- <form method="post">
-     <table class="table">
-         <th>Id</th>
-         <th>Клиент</th>
-         <th>Группа</th>
-         <th>Дата урока</th>
-         <th>Состояние</th>
-   
-         @foreach (var client in @Model)
-         {
-             <tr>
-                 <td>@client.Id</td>
-                 <td>@client.Client.NameSurname</td>
-                 <td>@client.Group.Name</td>
-                 <td>@client.LessonTime.ToShortDateString()</td>
+<form method="post">
+    <input name="HbranchId" value="@ViewBag.BranchIdHidden" type="hidden"/>
+    <table class="table">
+        <th>Id</th>
+        <th>Клиент</th>
+        <th>Группа</th>
+        <th>Дата урока</th>
+        <th>Состояние</th>
 
-                 <td>
-                     <input name="arrayOfCustomerID" value="@client.Id" type="hidden">
-                     <select name="arrayOfState">
+        @foreach (var client in @Model)
+        {
 
-                         <option value="2">Пришел</option>
-                         <option value="3">Непришел</option>
-                     </select>
-                 </td>
-             </tr>}
-       
-     </table>
-      <input class="btn btn-info btn-block my-4" id="SendForm" type="submit" value="Сохранить"/>
-    </form>
+            <tr>
+                <td>@client.Id</td>
+                <td>@client.Client.NameSurname</td>
+                <td>@client.Group.Name</td>
+                <td>@client.LessonTime.ToShortDateString()</td>
+
+                <td>
+                    <input name="arrayOfCustomerID" value="@client.Id" type="hidden">
+                    <select name="arrayOfState">
+
+                        <option value="2">Пришел</option>
+                        <option value="3">Непришел</option>
+                    </select>
+                </td>
+            </tr>}
+
+    </table>
+    <input class="btn btn-info btn-block my-4" id="SendForm" type="submit" value="Сохранить"/>
+</form>
 
    
 @section Scripts
@@ -45,6 +47,7 @@
      
        const arrayOfCustomerID = [];
        const arrayOfState = [];
+       var HbranchId;
            $.ajax({
                url: @Url.Action("CheckAttendanceTrial","Clients"),
                type: "POST",
@@ -53,7 +56,8 @@
                data: {
                    
                   arrayOfCustomerID : arrayOfCustomerID,
-                  arrayOfState : arrayOfState
+                  arrayOfState : arrayOfState,
+                  HbranchId:HbranchId
                },
                success: function (data) {
                    alert("success");

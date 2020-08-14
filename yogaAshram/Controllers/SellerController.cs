@@ -12,7 +12,7 @@ using yogaAshram.Services;
 
 namespace yogaAshram.Controllers
 { 
-    [Authorize(Roles = "seller")]
+    
     public class SellerController : Controller
     {
         private readonly UserManager<Employee> _userManager;
@@ -39,8 +39,7 @@ namespace yogaAshram.Controllers
                 Clients = _db.Clients.ToList()
             });
         }
-
-    
+        
         public IActionResult SchedulePage(int? month, long? branchId)
         {
             if (_db.CalendarEvents != null || branchId != null) 
@@ -54,7 +53,6 @@ namespace yogaAshram.Controllers
             {
                 groupIdArray[i] = schedules[i].GroupId;
             }
-
             ViewBag.BranchId = branchId;
             ViewBag.GroupIdArray = String.Join(" ", groupIdArray);
             
@@ -63,17 +61,39 @@ namespace yogaAshram.Controllers
                 dateTime = new DateTime(dateTime.Year, Convert.ToInt32(month), 1);
             return View(dateTime);
         }
-    
+
         
-       
+        [HttpPost]
+        public async Task<IActionResult> WriteComment(long clientId, string SellerComment)
+        {
+             TrialUsers user = null;
+            if (clientId != null)
+            {
+                 user = await _db.TrialUserses.FirstOrDefaultAsync(p => p.Id == clientId);
+              
+                user.Commentdate = DateTime.Now;
+                user.SellerComment = SellerComment;
+                _db.Entry(user).State = EntityState.Modified;
+                await _db.SaveChangesAsync();
+            }
+            else return BadRequest("Клиент не найден");
+
+            Console.WriteLine(user.ClientId);
+            
+          return  RedirectToAction("ClientInfo", "Clients" ,new {id= user.ClientId });
+
+        }
         
-         
-         
-         
-         
-         
-         
-         
+
+
+
+
+
+
+
+
+
+
 
 
     }

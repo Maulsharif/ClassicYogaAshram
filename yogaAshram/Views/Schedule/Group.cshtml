@@ -8,9 +8,8 @@
 }
 
 
-@if (User.IsInRole("chief")||User.IsInRole("manager") )
-
-	    {<h2 class="text-center">Расписание группы "@Model.Group.Name"</h2>
+@if (User.IsInRole("chief") )
+{<h2 class="text-center">Расписание группы "@Model.Group.Name"</h2>
  
  <p><strong>Тренер</strong> - @Model.Group.CoachName</p>
  <hr>
@@ -125,56 +124,57 @@ else if ( User.IsInRole("seller") ||User.IsInRole("admin") )
 	<div class="row d-flex justify-content-center">
     <div class="col-md-6">
         <h2>Записать на пробный</h2>
-        <form method="post" asp-controller="Clients" asp-action="CreateClients">
-            <div>
-                <span asp-validation-for="@Model.ClientsCreateModelView.NameSurname"></span>
-                <label>Ф.И.О</label><br/>
-                <input class="form-control mb-4" asp-for="@Model.ClientsCreateModelView.NameSurname"/>
-            </div>
-            <div>
-                <span asp-validation-for="@Model.ClientsCreateModelView.PhoneNumber"></span>
-                <label>Номер телефона</label><br/>
-                <input class="form-control mb-4" asp-for="@Model.ClientsCreateModelView.PhoneNumber"/>
-            </div>
-            <div>
-	            <label class="form-control mb-4">Группа:@Model.Group.Name</label>
-	        
-                    <input class="form-control mb-4" asp-for="@Model.ClientsCreateModelView.GroupId" value="@Model.GroupId" type="hidden">
-            </div>
-            <div class="form_row">
-                <label>
-                    Статус клиента
-                    <select asp-for="@Model.ClientsCreateModelView.ClientType" class="form-control mb-4">
-                        <option value="0" class="form-control mb-4">Пробник</option >
-                    </select>
-                </label>
-            </div>
-              <div class="form_row">
-                            <label>
-                              Количество занятии
-                              <select asp-for="@Model.ClientsCreateModelView.LessonNumbers" class="form-control mb-4">
-                                  <option value="1" class="form-control mb-4">1 пробное занятие</option>
-                                  <option value="3" class="form-control mb-4">3 пробных занятии</option>
-                              </select>
-                            </label>
-                        </div>
-            <div>
-                <div>
-                 
-	                <label class="form-control mb-4">Дата занятия: @Model.ChosenDate</label><br/>
-	               
-                    <input class="form-control mb-4" asp-for="@Model.ClientsCreateModelView.StartDate" type="hidden" value="@Model.ChosenDate"  >
-                </div>
-                <div>
-                    <span asp-validation-for="@Model.ClientsCreateModelView.Comment"></span>
-                    <label>Коментарии</label><br/>
-                    <input class="form-control mb-4" asp-for="@Model.ClientsCreateModelView.Comment" >
-                </div>
-                
-                <br/>
-                <input class="btn btn-info btn-block my-4" type="submit" value="Добавить"/>
-            </div>
-        </form>
+	    <form method="post" asp-controller="Clients" asp-action="CreateClients">
+		    <input asp-for="BranchId" value="@Model.BranchId" type="hidden">
+		    <div>
+			    <span asp-validation-for="@Model.ClientsCreateModelView.NameSurname"></span>
+			    <label>Ф.И.О</label><br/>
+			    <input class="form-control mb-4" asp-for="@Model.ClientsCreateModelView.NameSurname"/>
+		    </div>
+		    <div>
+			    <span asp-validation-for="@Model.ClientsCreateModelView.PhoneNumber"></span>
+			    <label>Номер телефона</label><br/>
+			    <input class="form-control mb-4" asp-for="@Model.ClientsCreateModelView.PhoneNumber"/>
+		    </div>
+		    <div>
+			    <label class="form-control mb-4">Группа:@Model.Group.Name</label>
+
+			    <input class="form-control mb-4" asp-for="@Model.ClientsCreateModelView.GroupId" value="@Model.GroupId" type="hidden">
+		    </div>
+		    <div class="form_row">
+			    <label>
+				    Статус клиента
+				    <select asp-for="@Model.ClientsCreateModelView.ClientType" class="form-control mb-4">
+					    <option value="0" class="form-control mb-4">Пробник</option >
+				    </select>
+			    </label>
+		    </div>
+		    <div class="form_row">
+			    <label>
+				    Количество занятии
+				    <select asp-for="@Model.ClientsCreateModelView.LessonNumbers" class="form-control mb-4">
+					    <option value="1" class="form-control mb-4">1 пробное занятие</option>
+					    <option value="3" class="form-control mb-4">3 пробных занятии</option>
+				    </select>
+			    </label>
+		    </div>
+		    <div>
+			    <div>
+
+				    <label class="form-control mb-4">Дата занятия: @Model.ChosenDate</label><br/>
+
+				    <input class="form-control mb-4" asp-for="@Model.ClientsCreateModelView.StartDate" type="hidden" value="@Model.ChosenDate">
+			    </div>
+			    <div>
+				    <span asp-validation-for="@Model.ClientsCreateModelView.Comment"></span>
+				    <label>Коментарии</label><br/>
+				    <input class="form-control mb-4" asp-for="@Model.ClientsCreateModelView.Comment">
+			    </div>
+
+			    <br/>
+			    <input class="btn btn-info btn-block my-4" type="submit" value="Добавить"/>
+		    </div>
+	    </form>
     </div>
 </div>
 	
