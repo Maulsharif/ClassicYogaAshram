@@ -5,7 +5,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace yogaAshram.Migrations
 {
-    public partial class NewMigrationsInitial : Migration
+    public partial class initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -52,6 +52,19 @@ namespace yogaAshram.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Categories",
+                columns: table => new
+                {
+                    Id = table.Column<long>(nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Name = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Categories", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -209,6 +222,27 @@ namespace yogaAshram.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Memberships",
+                columns: table => new
+                {
+                    Id = table.Column<long>(nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Name = table.Column<string>(nullable: true),
+                    AttendanceDays = table.Column<int>(nullable: false),
+                    CategoryId = table.Column<long>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Memberships", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Memberships_Categories_CategoryId",
+                        column: x => x.CategoryId,
+                        principalTable: "Categories",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Clients",
                 columns: table => new
                 {
@@ -221,7 +255,9 @@ namespace yogaAshram.Migrations
                     Color = table.Column<string>(nullable: true),
                     GroupId = table.Column<long>(nullable: false),
                     CreatorId = table.Column<long>(nullable: false),
-                    Comment = table.Column<string>(nullable: true)
+                    Comment = table.Column<string>(nullable: true),
+                    Paid = table.Column<bool>(nullable: false),
+                    MembershipId = table.Column<long>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -230,6 +266,12 @@ namespace yogaAshram.Migrations
                         name: "FK_Clients_AspNetUsers_CreatorId",
                         column: x => x.CreatorId,
                         principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Clients_Memberships_MembershipId",
+                        column: x => x.MembershipId,
+                        principalTable: "Memberships",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -261,6 +303,35 @@ namespace yogaAshram.Migrations
                         name: "FK_Groups_AspNetUsers_CreatorId",
                         column: x => x.CreatorId,
                         principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Attendances",
+                columns: table => new
+                {
+                    Id = table.Column<long>(nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    ClientId = table.Column<long>(nullable: false),
+                    GroupId = table.Column<long>(nullable: false),
+                    Date = table.Column<DateTime>(nullable: false),
+                    AttendanceState = table.Column<int>(nullable: false),
+                    IsChecked = table.Column<bool>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Attendances", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Attendances_Clients_ClientId",
+                        column: x => x.ClientId,
+                        principalTable: "Clients",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Attendances_Groups_GroupId",
+                        column: x => x.GroupId,
+                        principalTable: "Groups",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -336,7 +407,11 @@ namespace yogaAshram.Migrations
                     GroupId = table.Column<long>(nullable: false),
                     LessonTime = table.Column<DateTime>(nullable: false),
                     State = table.Column<int>(nullable: false),
-                    Color = table.Column<string>(nullable: true)
+                    Color = table.Column<string>(nullable: true),
+                    IsChecked = table.Column<bool>(nullable: false),
+                    SellerComment = table.Column<string>(nullable: true),
+                    Commentdate = table.Column<DateTime>(nullable: false),
+                    FreeLessons = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -353,6 +428,28 @@ namespace yogaAshram.Migrations
                         principalTable: "Groups",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.InsertData(
+                table: "Categories",
+                columns: new[] { "Id", "Name" },
+                values: new object[,]
+                {
+                    { 1L, "Пенсионеры" },
+                    { 2L, "Студенты" },
+                    { 3L, "Школьники" },
+                    { 4L, "Корпоратив" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Memberships",
+                columns: new[] { "Id", "AttendanceDays", "CategoryId", "Name" },
+                values: new object[,]
+                {
+                    { 1L, 12, 1L, "12 разовый абонемент" },
+                    { 2L, 8, 2L, "8 разовый абонемент" },
+                    { 3L, 8, 3L, "8 разовый абонемент" },
+                    { 4L, 12, 4L, "12 разовый абонемент" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -393,6 +490,16 @@ namespace yogaAshram.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_Attendances_ClientId",
+                table: "Attendances",
+                column: "ClientId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Attendances_GroupId",
+                table: "Attendances",
+                column: "GroupId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Branches_AdminId",
                 table: "Branches",
                 column: "AdminId");
@@ -418,6 +525,11 @@ namespace yogaAshram.Migrations
                 column: "GroupId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Clients_MembershipId",
+                table: "Clients",
+                column: "MembershipId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Groups_BranchId",
                 table: "Groups",
                 column: "BranchId");
@@ -441,6 +553,11 @@ namespace yogaAshram.Migrations
                 name: "IX_ManagerEmployees_ManagerId",
                 table: "ManagerEmployees",
                 column: "ManagerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Memberships_CategoryId",
+                table: "Memberships",
+                column: "CategoryId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Schedules_BranchId",
@@ -490,14 +607,6 @@ namespace yogaAshram.Migrations
                 table: "Groups");
 
             migrationBuilder.DropForeignKey(
-                name: "FK_Groups_Branches_BranchId",
-                table: "Groups");
-
-            migrationBuilder.DropForeignKey(
-                name: "FK_Schedules_Branches_BranchId",
-                table: "Schedules");
-
-            migrationBuilder.DropForeignKey(
                 name: "FK_Schedules_Groups_GroupId",
                 table: "Schedules");
 
@@ -517,6 +626,9 @@ namespace yogaAshram.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "Attendances");
+
+            migrationBuilder.DropTable(
                 name: "CalendarEvents");
 
             migrationBuilder.DropTable(
@@ -532,16 +644,22 @@ namespace yogaAshram.Migrations
                 name: "Clients");
 
             migrationBuilder.DropTable(
-                name: "AspNetUsers");
+                name: "Memberships");
 
             migrationBuilder.DropTable(
-                name: "Branches");
+                name: "Categories");
+
+            migrationBuilder.DropTable(
+                name: "AspNetUsers");
 
             migrationBuilder.DropTable(
                 name: "Groups");
 
             migrationBuilder.DropTable(
                 name: "Schedules");
+
+            migrationBuilder.DropTable(
+                name: "Branches");
         }
     }
 }
