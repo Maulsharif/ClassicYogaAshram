@@ -102,9 +102,10 @@ namespace yogaAshram.TagHelpers
                     }
                     
                     var mutedClasses = "d-none d-lg-inline-block bg-light text-muted";
+                    var currentDay = "currentDay";
                     yield return new XElement("div",
                         new XAttribute("class",
-                            $"day col-lg p-2 border border-left-0 border-top-0 text-truncate bg-calendar text-white {(d.Month != monthStart.Month ? mutedClasses : null)}"),
+                            $"day col-lg p-2 border border-left-0 border-top-0 text-truncate bg-calendar text-white {(d.Month != monthStart.Month ? mutedClasses : null)} {(d.Date == DateTime.Today ? currentDay : null)}"),
                         new XElement("h5",
                             new XAttribute("class", "row align-items-center"),
                             new XElement("span",
