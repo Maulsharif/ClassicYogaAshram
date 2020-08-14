@@ -1,4 +1,5 @@
 ﻿@using System.Net
+@using State = yogaAshram.Models.State
 @model System.Collections.Generic.List<yogaAshram.Models.TrialUsers>
 
 @{
@@ -6,12 +7,14 @@
     Layout = "_Layout";
 }
 
-<h2>Пробники</h2>
+<h2>Пробники </h2>
 <form method="get">
     <div class="form-inline form-group">
         <label class="control-label">Дата: </label>
-        <input name="time"  type="date" class="form-control" />
-          <input name="branchId"  type="hidden" value="@ViewBag.BranchId" />
+        <input type="date" id="start"  name="time">
+      
+        <input name="branchId"  type="hidden" value="@ViewBag.BranchId" /> 
+        
         <input type="submit" value="Фильтр" class="btn btn-default" />
     </div>
 </form>
@@ -21,8 +24,12 @@
         <th>Группа</th>
         <th>Дата урока</th>
         <th>Состояние</th>
-         <th></th>
-        <th>Коментарии</th>
+         @if (User.IsInRole("admin"))
+         {
+             <th>Отметить</th>
+         }
+         <th>Коментарии</th>
+       
         
     </tr>
     @foreach (var client in @Model)
@@ -33,10 +40,21 @@
           <td style="background: @client.Color">@client.GetValueOfState()</td>
           @if (User.IsInRole("admin"))
           {
-                <td><a asp-action="CheckAttendanceTrial" asp-route-groupId="@client.GroupId"  asp-route-clientId="@client.ClientId">Отметить</a></td>
+              @if(@client.IsChecked==false || @client.State==State.willAttend)
+              {<td>
+                                 <a asp-action="CheckAttendanceTrial" asp-route-groupId="@client.GroupId" asp-route-clientId="@client.ClientId" asp-route-branchId="@client.Group.Branch.Id">Отметить</a>
+                             </td>
+                  
+              }
+              else
+              {
+                  <td>Отмечено</td>
+              }
+                  
+              
           }
         
-          <td>@client.Client.Comment</td>
+          <td>@client.SellerComment</td>
       </tr>
         
     }
