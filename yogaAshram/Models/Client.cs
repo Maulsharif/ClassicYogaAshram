@@ -30,6 +30,11 @@ namespace yogaAshram.Models
         public virtual Employee Creator { get; set; }
         public string Comment{ get; set; }
         
+        public bool Paid { get; set; }
+        
+        public long MembershipId { get; set; }
+        public virtual Membership Membership { get; set; }
+        
       
     }
 }

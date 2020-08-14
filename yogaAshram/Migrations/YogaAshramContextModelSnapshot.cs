@@ -243,8 +243,14 @@ namespace yogaAshram.Migrations
                     b.Property<int>("LessonNumbers")
                         .HasColumnType("integer");
 
+                    b.Property<long>("MembershipId")
+                        .HasColumnType("bigint");
+
                     b.Property<string>("NameSurname")
                         .HasColumnType("text");
+
+                    b.Property<bool>("Paid")
+                        .HasColumnType("boolean");
 
                     b.Property<string>("PhoneNumber")
                         .HasColumnType("text");
@@ -255,7 +261,46 @@ namespace yogaAshram.Migrations
 
                     b.HasIndex("GroupId");
 
+                    b.HasIndex("MembershipId");
+
                     b.ToTable("Clients");
+                });
+
+            modelBuilder.Entity("yogaAshram.Models.ClientCategory", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<string>("Name")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Categories");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1L,
+                            Name = "Пенсионеры"
+                        },
+                        new
+                        {
+                            Id = 2L,
+                            Name = "Студенты"
+                        },
+                        new
+                        {
+                            Id = 3L,
+                            Name = "Школьники"
+                        },
+                        new
+                        {
+                            Id = 4L,
+                            Name = "Корпоратив"
+                        });
                 });
 
             modelBuilder.Entity("yogaAshram.Models.Employee", b =>
@@ -395,6 +440,59 @@ namespace yogaAshram.Migrations
                     b.HasIndex("ManagerId");
 
                     b.ToTable("ManagerEmployees");
+                });
+
+            modelBuilder.Entity("yogaAshram.Models.Membership", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<int>("AttendanceDays")
+                        .HasColumnType("integer");
+
+                    b.Property<long>("CategoryId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CategoryId");
+
+                    b.ToTable("Memberships");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1L,
+                            AttendanceDays = 12,
+                            CategoryId = 1L,
+                            Name = "12 разовый абонемент"
+                        },
+                        new
+                        {
+                            Id = 2L,
+                            AttendanceDays = 8,
+                            CategoryId = 2L,
+                            Name = "8 разовый абонемент"
+                        },
+                        new
+                        {
+                            Id = 3L,
+                            AttendanceDays = 8,
+                            CategoryId = 3L,
+                            Name = "8 разовый абонемент"
+                        },
+                        new
+                        {
+                            Id = 4L,
+                            AttendanceDays = 12,
+                            CategoryId = 4L,
+                            Name = "12 разовый абонемент"
+                        });
                 });
 
             modelBuilder.Entity("yogaAshram.Models.Role", b =>
@@ -600,6 +698,12 @@ namespace yogaAshram.Migrations
                         .HasForeignKey("GroupId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("yogaAshram.Models.Membership", "Membership")
+                        .WithMany()
+                        .HasForeignKey("MembershipId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("yogaAshram.Models.Group", b =>
@@ -632,6 +736,15 @@ namespace yogaAshram.Migrations
                     b.HasOne("yogaAshram.Models.Employee", "Manager")
                         .WithMany()
                         .HasForeignKey("ManagerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("yogaAshram.Models.Membership", b =>
+                {
+                    b.HasOne("yogaAshram.Models.ClientCategory", "Category")
+                        .WithMany()
+                        .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

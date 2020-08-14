@@ -355,3 +355,6 @@ tr:last-child td{
 .inputAdmin{
     display: none;
 }
+.currentDay{
+    background-color: #5c808e;
+}
