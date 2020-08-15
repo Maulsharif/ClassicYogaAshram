@@ -11,7 +11,7 @@ using yogaAshram.Models;
 namespace yogaAshram.Migrations
 {
     [DbContext(typeof(YogaAshramContext))]
-    [Migration("20200814175624_initial")]
+    [Migration("20200815052601_initial")]
     partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -302,6 +302,11 @@ namespace yogaAshram.Migrations
                         {
                             Id = 4L,
                             Name = "Корпоратив"
+                        },
+                        new
+                        {
+                            Id = 5L,
+                            Name = "Без скидок"
                         });
                 });
 
@@ -460,6 +465,9 @@ namespace yogaAshram.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("text");
 
+                    b.Property<int>("Price")
+                        .HasColumnType("integer");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CategoryId");
@@ -472,28 +480,32 @@ namespace yogaAshram.Migrations
                             Id = 1L,
                             AttendanceDays = 12,
                             CategoryId = 1L,
-                            Name = "12 разовый абонемент"
+                            Name = "12 разовый абонемент",
+                            Price = 11000
                         },
                         new
                         {
                             Id = 2L,
                             AttendanceDays = 8,
                             CategoryId = 2L,
-                            Name = "8 разовый абонемент"
+                            Name = "8 разовый абонемент",
+                            Price = 7000
                         },
                         new
                         {
                             Id = 3L,
                             AttendanceDays = 8,
                             CategoryId = 3L,
-                            Name = "8 разовый абонемент"
+                            Name = "8 разовый абонемент",
+                            Price = 7000
                         },
                         new
                         {
                             Id = 4L,
                             AttendanceDays = 12,
-                            CategoryId = 4L,
-                            Name = "12 разовый абонемент"
+                            CategoryId = 5L,
+                            Name = "12 разовый абонемент",
+                            Price = 12000
                         });
                 });
 

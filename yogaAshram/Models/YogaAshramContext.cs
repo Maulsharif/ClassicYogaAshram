@@ -31,13 +31,14 @@ namespace yogaAshram.Models
                  new {Id=Convert.ToInt64(1), Name = "Пенсионеры"},
                  new {Id=Convert.ToInt64(2), Name = "Студенты"},
                  new {Id=Convert.ToInt64(3), Name = "Школьники"},
-                 new {Id=Convert.ToInt64(4), Name = "Корпоратив"}
+                 new {Id=Convert.ToInt64(4), Name = "Корпоратив"},
+                 new {Id=Convert.ToInt64(5), Name = "Без скидок"}
              );
              modelBuilder.Entity<Membership>().HasData( 
-                 new {Id=Convert.ToInt64(1), Name = "12 разовый абонемент", AttendanceDays = 12, CategoryId = Convert.ToInt64(1)},
-                 new {Id=Convert.ToInt64(2), Name = "8 разовый абонемент", AttendanceDays = 8, CategoryId = Convert.ToInt64(2)},
-                 new {Id=Convert.ToInt64(3), Name = "8 разовый абонемент", AttendanceDays = 8, CategoryId = Convert.ToInt64(3)},
-                 new {Id=Convert.ToInt64(4), Name = "12 разовый абонемент", AttendanceDays = 12, CategoryId = Convert.ToInt64(4)}
+                 new {Id=Convert.ToInt64(1), Name = "12 разовый абонемент", Price = 11000, AttendanceDays = 12, CategoryId = Convert.ToInt64(1)},
+                 new {Id=Convert.ToInt64(2), Name = "8 разовый абонемент", Price = 7000, AttendanceDays = 8, CategoryId = Convert.ToInt64(2)},
+                 new {Id=Convert.ToInt64(3), Name = "8 разовый абонемент", Price = 7000, AttendanceDays = 8, CategoryId = Convert.ToInt64(3)},
+                 new {Id=Convert.ToInt64(4), Name = "12 разовый абонемент", Price = 12000, AttendanceDays = 12, CategoryId = Convert.ToInt64(5)}
              );
          }
 
