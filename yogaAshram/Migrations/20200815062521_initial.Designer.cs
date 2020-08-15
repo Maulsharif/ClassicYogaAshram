@@ -11,7 +11,7 @@ using yogaAshram.Models;
 namespace yogaAshram.Migrations
 {
     [DbContext(typeof(YogaAshramContext))]
-    [Migration("20200815052601_initial")]
+    [Migration("20200815062521_initial")]
     partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -480,32 +480,128 @@ namespace yogaAshram.Migrations
                             Id = 1L,
                             AttendanceDays = 12,
                             CategoryId = 1L,
-                            Name = "12 разовый абонемент",
-                            Price = 11000
+                            Name = "12 разовый абонемент в группу для пенсионеров (40% скидка)",
+                            Price = 10000
                         },
                         new
                         {
                             Id = 2L,
                             AttendanceDays = 8,
-                            CategoryId = 2L,
-                            Name = "8 разовый абонемент",
-                            Price = 7000
+                            CategoryId = 1L,
+                            Name = "8 разовый абонемент в группу для пенсионеров (40% скидка)",
+                            Price = 8000
                         },
                         new
                         {
                             Id = 3L,
-                            AttendanceDays = 8,
-                            CategoryId = 3L,
-                            Name = "8 разовый абонемент",
-                            Price = 7000
+                            AttendanceDays = 12,
+                            CategoryId = 1L,
+                            Name = "12 разовый абонемент с 15% скидкой для пенсионеров",
+                            Price = 14000
                         },
                         new
                         {
                             Id = 4L,
+                            AttendanceDays = 8,
+                            CategoryId = 1L,
+                            Name = "8 разовый абонемент с 15% скидкой для пенсионеров",
+                            Price = 11000
+                        },
+                        new
+                        {
+                            Id = 5L,
+                            AttendanceDays = 12,
+                            CategoryId = 3L,
+                            Name = "12 разовый абонемент с 15% скидкой для школьников",
+                            Price = 14000
+                        },
+                        new
+                        {
+                            Id = 6L,
+                            AttendanceDays = 8,
+                            CategoryId = 3L,
+                            Name = "8 разовый абонемент с 15% скидкой для школьников",
+                            Price = 11000
+                        },
+                        new
+                        {
+                            Id = 7L,
+                            AttendanceDays = 12,
+                            CategoryId = 2L,
+                            Name = "12 разовый абонемент с 15% скидкой для студентов",
+                            Price = 14000
+                        },
+                        new
+                        {
+                            Id = 8L,
+                            AttendanceDays = 8,
+                            CategoryId = 2L,
+                            Name = "8 разовый абонемент с 15% скидкой для студентов",
+                            Price = 11000
+                        },
+                        new
+                        {
+                            Id = 9L,
+                            AttendanceDays = 12,
+                            CategoryId = 4L,
+                            Name = "12 разовый абонемент с 15% скидкой для корпоративных клиентов",
+                            Price = 14000
+                        },
+                        new
+                        {
+                            Id = 10L,
+                            AttendanceDays = 8,
+                            CategoryId = 4L,
+                            Name = "8 разовый абонемент с 15% скидкой для корпоративных клиентов",
+                            Price = 11000
+                        },
+                        new
+                        {
+                            Id = 11L,
+                            AttendanceDays = 12,
+                            CategoryId = 3L,
+                            Name = "12 разовый абонемент в детскую группу (20% скидка)",
+                            Price = 13000
+                        },
+                        new
+                        {
+                            Id = 12L,
+                            AttendanceDays = 8,
+                            CategoryId = 3L,
+                            Name = "8 разовый абонемент в детскую группу (20% скидка)",
+                            Price = 10500
+                        },
+                        new
+                        {
+                            Id = 13L,
                             AttendanceDays = 12,
                             CategoryId = 5L,
-                            Name = "12 разовый абонемент",
-                            Price = 12000
+                            Name = "12 разовый абонемент обычный",
+                            Price = 16000
+                        },
+                        new
+                        {
+                            Id = 14L,
+                            AttendanceDays = 8,
+                            CategoryId = 5L,
+                            Name = "8 разовый абонемент обычный",
+                            Price = 13000
+                        },
+                        new
+                        {
+                            Id = 15L,
+                            AttendanceDays = 4,
+                            CategoryId = 5L,
+                            Name = "4 разовый абонемент",
+                            Price = 8000
+                        },
+                        new
+                        {
+                            Id = 16L,
+                            AttendanceDays = 1,
+                            CategoryId = 5L,
+                            Name = "1 разовый абонемент",
+                            Price = 2500
                         });
                 });
 
