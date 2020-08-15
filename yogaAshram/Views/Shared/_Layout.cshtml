@@ -58,6 +58,19 @@
                     }
                     @if (User.Identity.IsAuthenticated)
                     {
+                        <div class="btn-group">
+                            <button class="btn dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Настройки
+                            </button>
+                            <div class="dropdown-menu">
+                                <div data-target="editProfileModal" id="@Url.Action("GetEditModalAjax", "Employees")" class="getModal dropdown-item cursor-p">
+                                    Редактировать профиль
+                                </div>
+                                <div data-target="changePasswordModal" id="@Url.Action("GetChangePasswordModalAjax", "Employees")" class="getModal dropdown-item cursor-p">
+                                    Изменить пароль
+                                </div>
+                            </div>
+                        </div>
                         if (User.IsInRole("chief"))
                         {
                             <li class="nav-item">
@@ -83,9 +96,9 @@
                             </li>
                         }
                         <li class="nav-item">
-                        <form method="post" asp-controller="Account" asp-action="Logout" id="my_form">
-                            <a class="nav-link" href="javascript:{}" onclick="document.getElementById('my_form').submit(); return false;"><img class="profile-icons" src="/Images/SiteImages/out.jpg" alt="out"></a>
-                        </form>
+                            <form method="post" asp-controller="Account" asp-action="Logout" id="my_form">
+                                <a class="nav-link" href="javascript:{}" onclick="document.getElementById('my_form').submit(); return false;"><img class="profile-icons" src="/Images/SiteImages/out.jpg" alt="out"></a>
+                            </form>
                         </li>
                     }
                     
