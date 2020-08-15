@@ -3,6 +3,11 @@
 @{
     ViewBag.Title = "Личный кабинет";
 }
+
+@{
+    await Html.RenderPartialAsync("PartialView/WebsiteBar");
+}
+
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.8/css/all.css" />
 <!-- Modal -->
 <div class="modal fade" id="addBranch" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
@@ -20,22 +25,22 @@
                     <input name="info" type="text" class="form-control mb-2" placeholder="Информация о центре">
                     <input name="address" type="text" class="form-control mb-2" placeholder="Адрес">
                     @if (Enumerable.Count(ViewBag.Admin) == 0)
-              {
-                    <p>Не найдено ни одного администратора .</p>
-              }
-              else
-              {
-                    <label for="">Выберете администратора:</label>
-                    <select class="form-control mb-2" name="adminId" onchange="validateAdminIds()" id="adminId">
-                    <option selected value="no">Выберите администратора</option>
-                        @foreach (Employee admin in (IEnumerable) @ViewBag.Admin)
-                      {
-                        <option value="@admin.Id">@admin.UserName</option>
-                      }
-                    </select>
+                    {
+                        <p>Не найдено ни одного администратора .</p>
+                    }
+                    else
+                    {
+                        <label for="">Выберете администратора:</label>
+                        <select class="form-control mb-2" name="adminId" onchange="validateAdminIds()" id="adminId">
+                            <option selected value="no">Выберите администратора</option>
+                            @foreach (Employee admin in (IEnumerable) @ViewBag.Admin)
+                            {
+                                <option value="@admin.Id">@admin.UserName</option>
+                            }
+                        </select>
               
-                    <input type="submit" class="btn btn-secondary" value="Добавить" id="send">
-               }     
+                        <input type="submit" class="btn btn-secondary" value="Добавить" id="send">
+                    }     
                 </form>
             </div>
             <div class="modal-footer">
@@ -44,8 +49,9 @@
         </div>
     </div>
 </div>
+<h2 class="ml-4 mb-3">Директор</h2>
 <div class="container marginFromInput">
-    <div class="card" style="width: 800px; margin: auto">
+    <div class="card" style="width: 800px;">
         <div class="row no-gutters">
             <div class="col-md-6 border-right">
                 <div class="card-body">
@@ -55,23 +61,7 @@
                         <li id="email" class="list-group-item">Почта - @Model.Employee.Email</li>
                         <li id="nameSurname" class="list-group-item">Имя фамилия - @Model.Employee.NameSurname</li>
                     </ul>
-                    <div class="btn-group">
-                        <button type="button" class="btn btn-outline-info dropdown-toggle mt-3 ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            Действия
-                        </button>
-                        <div class="dropdown-menu">
-                            <div data-target="editProfileModal" id="@Url.Action("GetEditModalAjax", "Employees")" class="getModal dropdown-item cursor-p">
-                                Редактировать профиль
-                            </div>
-                            <div data-target="emplCreateModal" id="@Url.Action("GetCreateEmplModalAjax", "Employees")" class="getModal dropdown-item cursor-p" href="#">
-                                Добавить работника
-                            </div>
-                            <div data-target="changePasswordModal" id="@Url.Action("GetChangePasswordModalAjax", "Employees")" class="getModal dropdown-item cursor-p">
-                                Изменить пароль
-                            </div>
-                            <div class="dropdown-item cursor-p" data-toggle="modal" data-target="#addBranch" onclick="validateAdminIds()">Добавить центр йоги</div>
-                        </div>
-                    </div>
+                    
                     <a asp-action="CreateGroup" asp-controller="Group" class="btn btn-dark" style="margin-top: 15px;">Создать группу </a>
                     <a asp-action="CreateClients" asp-controller="Clients" class="btn btn-dark" style="margin-top: 15px; margin-left: 15px;">Добавить клиента</a>
                 </div>

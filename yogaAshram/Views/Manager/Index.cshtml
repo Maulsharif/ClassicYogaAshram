@@ -5,36 +5,32 @@
     ViewBag.Title = "Личный кабинет менеджера";
     Layout = "_Layout";
 }
-<h2>Старший менеджер</h2>
+<div class="container">
+    
+@{
+    await Html.RenderPartialAsync("PartialView/WebsiteBar");
+}
 
-<div class="row">
-    <div class="col-6">
-        <h6>ФИО : @Model.Employee.NameSurname </h6>
-        <h6>Email : @Model.Employee.Email</h6>
-        <h6>Логин : @Model.Employee.UserName</h6>
-    </div>
-
-    <div class="col-6">
-        <button data-target="emplCreateModal" id="@Url.Action("GetCreateEmplModalAjax", "Employees")" class="getModal btn btn-dark">
-            Создать пользователя
-        </button>
-        <a asp-action="CreateGroup" asp-controller="Group" class="btn btn-dark">Создать группу </a>
-        <div class="btn-group">
-            <button type="button" class="btn btn-outline-info dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                Действия профиля
-            </button>
-            <div class="dropdown-menu">
-                <div data-target="editProfileModal" id="@Url.Action("GetEditModalAjax", "Employees")" class="getModal dropdown-item cursor-p">
-                    Редактировать профиль
-                </div>
-                <div data-target="changePasswordModal" id="@Url.Action("GetChangePasswordModalAjax", "Employees")" class="getModal dropdown-item cursor-p">
-                    Изменить пароль
+<h2 class="ml-4 mb-3">Старший менеджер</h2>
+<div class="container marginFromInput">
+    <div class="card" style="width: 400px;">
+        <div class="row">
+            <div>
+                <div class="card-body">
+                    <h5 class="card-title ml-4">Подробно</h5>
+                    <ul class="list-group list-group-flush">
+                        <li id="username" class="list-group-item">Логин - @Model.Employee.UserName</li>
+                        <li id="email" class="list-group-item">Почта - @Model.Employee.Email</li>
+                        <li id="nameSurname" class="list-group-item">Имя фамилия - @Model.Employee.NameSurname</li>
+                    </ul>
+                    <a asp-action="CreateGroup" asp-controller="Group" class="btn btn-dark" style="margin-top: 15px;">Создать группу </a>
+                    <a asp-action="CreateClients" asp-controller="Clients" class="btn btn-dark" style="margin-top: 15px; margin-left: 15px;">Добавить клиента</a>
                 </div>
             </div>
         </div>
     </div>
 </div>
-
+</div>
 @section Scripts{
     @{
         await Html.RenderPartialAsync("../Employees/PartialViews/GetModalScripts");
