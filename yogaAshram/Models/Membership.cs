@@ -7,6 +7,7 @@ namespace yogaAshram.Models
     {
         public long Id { get; set; }
         public string Name { get; set; }
+        public int Price { get; set; }
         public int AttendanceDays { get; set; }
         public long CategoryId { get; set; }
         public virtual ClientCategory Category { get; set; }

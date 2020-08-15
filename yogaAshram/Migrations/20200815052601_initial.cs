@@ -228,6 +228,7 @@ namespace yogaAshram.Migrations
                     Id = table.Column<long>(nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Name = table.Column<string>(nullable: true),
+                    Price = table.Column<int>(nullable: false),
                     AttendanceDays = table.Column<int>(nullable: false),
                     CategoryId = table.Column<long>(nullable: false)
                 },
@@ -438,18 +439,19 @@ namespace yogaAshram.Migrations
                     { 1L, "Пенсионеры" },
                     { 2L, "Студенты" },
                     { 3L, "Школьники" },
-                    { 4L, "Корпоратив" }
+                    { 4L, "Корпоратив" },
+                    { 5L, "Без скидок" }
                 });
 
             migrationBuilder.InsertData(
                 table: "Memberships",
-                columns: new[] { "Id", "AttendanceDays", "CategoryId", "Name" },
+                columns: new[] { "Id", "AttendanceDays", "CategoryId", "Name", "Price" },
                 values: new object[,]
                 {
-                    { 1L, 12, 1L, "12 разовый абонемент" },
-                    { 2L, 8, 2L, "8 разовый абонемент" },
-                    { 3L, 8, 3L, "8 разовый абонемент" },
-                    { 4L, 12, 4L, "12 разовый абонемент" }
+                    { 1L, 12, 1L, "12 разовый абонемент", 11000 },
+                    { 2L, 8, 2L, "8 разовый абонемент", 7000 },
+                    { 3L, 8, 3L, "8 разовый абонемент", 7000 },
+                    { 4L, 12, 5L, "12 разовый абонемент", 12000 }
                 });
 
             migrationBuilder.CreateIndex(
