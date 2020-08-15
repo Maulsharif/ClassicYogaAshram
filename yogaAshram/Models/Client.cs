@@ -33,7 +33,7 @@ namespace yogaAshram.Models
         
         public bool Paid { get; set; }
         
-        public long MembershipId { get; set; }
+        public long? MembershipId { get; set; }
         public virtual Membership Membership { get; set; }
         public virtual List<Membership> Memberships { get; set; }
       
