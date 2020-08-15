@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using yogaAshram.Models;
@@ -10,9 +11,10 @@ using yogaAshram.Models;
 namespace yogaAshram.Migrations
 {
     [DbContext(typeof(YogaAshramContext))]
-    partial class YogaAshramContextModelSnapshot : ModelSnapshot
+    [Migration("20200815111707_addedList")]
+    partial class addedList
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -243,7 +245,7 @@ namespace yogaAshram.Migrations
                     b.Property<int>("LessonNumbers")
                         .HasColumnType("integer");
 
-                    b.Property<long?>("MembershipId")
+                    b.Property<long>("MembershipId")
                         .HasColumnType("bigint");
 
                     b.Property<string>("NameSurname")
@@ -814,7 +816,9 @@ namespace yogaAshram.Migrations
 
                     b.HasOne("yogaAshram.Models.Membership", "Membership")
                         .WithMany()
-                        .HasForeignKey("MembershipId");
+                        .HasForeignKey("MembershipId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("yogaAshram.Models.Group", b =>

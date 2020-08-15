@@ -47,16 +47,15 @@ namespace yogaAshram.Controllers
             return View(dateTime);
         }
 
-        public IActionResult Group(string groupId, DateTime date)
+        public IActionResult Group(long groupId, DateTime date)
         {
-            var gId = long.Parse(groupId.Substring(0,groupId.IndexOf('?')));
-            Schedule schedule = _db.Schedules.FirstOrDefault(g => g.GroupId == gId);
+            Schedule schedule = _db.Schedules.FirstOrDefault(g => g.GroupId == groupId);
             if (schedule != null)
             {
                 if(date> DateTime.MinValue) ViewBag.Date = date;
                 schedule.ChosenDate = date ;
                 ViewBag.DaysArray =  string.Join(",", schedule.DayOfWeeksString);
-                ViewBag.Clients = _db.Clients.Where(c => c.GroupId == gId).ToList();
+                ViewBag.Clients = _db.Clients.Where(c => c.GroupId == groupId).ToList();
               
                  return View(schedule);
             }
@@ -98,7 +97,7 @@ namespace yogaAshram.Controllers
                         Type = SelectBootstrapColor(color),
                         BranchId = group.BranchId,
                         GroupId = group.Id,
-                        Action = $"/Schedule/Group/?groupId={group.Id}?branchId={group.BranchId}"
+                        Action = $"/Schedule/Group/?groupId={group.Id}&branchId={group.BranchId}"
                     };
                     List<CalendarEvent> events = _db.CalendarEvents.ToList();
                     foreach (var t in events)
@@ -162,7 +161,7 @@ namespace yogaAshram.Controllers
                         GroupId = schedule.GroupId,
                         BranchId = schedule.BranchId,
                         Type = SelectBootstrapColor(color),
-                        Action = $"/Schedule/Group/?groupId={schedule.GroupId}"
+                        Action = $"/Schedule/Group/?groupId={schedule.GroupId}&branchId={schedule.BranchId}"
                     };
                     List<CalendarEvent> events = _db.CalendarEvents.ToList();
                     foreach (var t in events)
