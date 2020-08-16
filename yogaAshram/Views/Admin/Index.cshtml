@@ -6,58 +6,52 @@
     ViewBag.Title = "Главная";
     Layout = "_Layout";
 }
-@if (@Model.Branch != null)
-{
-    <h2>Админ @Model.Branch.Name</h2>
 
-<div class="container" >
+<div class="container">
 
-    <div class="row" >
-        <div class="col-sm-4">
-            <ul class="list-group ">
-
-
-                <div id="info">
-                    <h6 id="name">ФИО : @Model.Employee.NameSurname </h6>
-                    <h6 id="email">Email : @Model.Employee.Email</h6>
-                    <h6 id="login">Логин : @Model.Employee.UserName</h6>
+    @{
+        await Html.RenderPartialAsync("PartialView/WebsiteBar");
+    }
+    @if (@Model.Branch != null)
+    {
+        <h2 class="ml-4">Админ</h2>
+        <h3 class="ml-4 mb-3" >Филиал : <b>@Model.Branch.Name</b></h3>
+                                                                 
+        <div class="container marginFromInput">
+            <div class="card" style="width: 400px;">
+                <div class="row">
+                    <div>
+                        <div class="card-body">
+                            <h5 class="card-title ml-4">Подробно</h5>
+                            <ul class="list-group list-group-flush">
+                                <li id="username" class="list-group-item">Логин - @Model.Employee.UserName</li>
+                                <li id="email" class="list-group-item">Почта - @Model.Employee.Email</li>
+                                <li id="nameSurname" class="list-group-item">Имя фамилия - @Model.Employee.NameSurname</li>
+                            </ul>
+                            <button><a asp-action="Scheduele" asp-controller="Admin" asp-route-branchId="@Model.Branch.Id" class="dropdown-item cursor-p">Записать на пробный</a></button> 
+                            <button> <a asp-action="Trials" asp-controller="Clients" asp-route-branchId="@Model.Branch.Id" class="dropdown-item cursor-p">Пробники</a></button>
+                        </div>
+                    </div>
                 </div>
-                <li class="list-group-item">
-                    <a data-target="editProfileModal" id="@Url.Action("GetEditModalAjax", "Employees")" class="getModal dropdown-item cursor-p">
-                        Редактировать профиль
-                    </a>
-                </li>
-                <li class="list-group-item">
-                    <a data-target="changePasswordModal" id="@Url.Action("GetChangePasswordModalAjax", "Employees")" class="getModal dropdown-item cursor-p">
-                        Изменить пароль
-                    </a>
-                </li>
-                <li class="list-group-item">    <a asp-action="Scheduele" asp-controller="Admin" asp-route-branchId="@Model.Branch.Id" class="dropdown-item cursor-p" >Записать на пробный</a></li>
-                <li class="list-group-item">    <a asp-action="Trials" asp-controller="Clients" asp-route-branchId="@Model.Branch.Id" class="dropdown-item cursor-p">Пробники</a></li>
-               
-            </ul>
+            </div>
         </div>
-      
-
-    </div>
-    
+    }
+    else
+    {
+        <p class="text-center">Добро пожаловать, @Model.Employee.UserName!</p>
+        <p class="text-center">Не найдено ни одного центра, где вы являетесь администратором. Пожалуйста, обратитесь к директору</p>
+        <p class="text-center">
+            А пока вы можете только
+            <a data-target="editProfileModal" id="@Url.Action("GetEditModalAjax", "Employees")" class="getModal cursor-p text-primary">
+                изменить свой профиль
+            </a>
+            или
+            <a data-target="changePasswordModal" id="@Url.Action("GetChangePasswordModalAjax", "Employees")" class="getModal cursor-p text-primary">
+                поменять пароль
+            </a>
+        </p>
+    }
 </div>
-}
-else
-{
-    
-    <p class="text-center">Добро пожаловать, @Model.Employee.UserName!</p>
-    <p class="text-center">Не найдено ни одного центра, где вы являетесь администратором. Пожалуйста, обратитесь к директору</p> 
-    <p class="text-center">А пока вы можете только <a data-target="editProfileModal" id="@Url.Action("GetEditModalAjax", "Employees")" class="getModal cursor-p text-primary">
-            изменить свой профиль
-        </a> 
-        или
-        <a data-target="changePasswordModal" id="@Url.Action("GetChangePasswordModalAjax", "Employees")" class="getModal cursor-p text-primary">
-           поменять пароль
-        </a>
-    </p> 
-                                                   
-}
 @section Scripts{
     @{
         await Html.RenderPartialAsync("../Employees/PartialViews/GetModalScripts");
