@@ -1,0 +1,72 @@
+﻿@model PaymentCreateModelView
+<!-- Modal -->
+<div class="modal fade" id="paymentCreateModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Новый платеж</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Выберите тип абонемента<span class="text-danger">*</span></label>
+                        <select class="form-control" id="membershipSelect">
+                            <option>...</option>
+                            @foreach (var item in ViewBag.Memberships)
+                            {
+                                <option value="@item.Id">@item.Category.Name @item.Price тг. @item.AttendanceDays посещений</option>
+                            }
+                        </select>
+                        <p id="invalidMembersip" class="text-danger"></p>
+                    </div>
+                    <div class="form-group">
+                        <label>Добавьте комментарий</label>
+                        <input id="commentPayment" type="text" class="form-control">
+                        <p id="invalidComment" class="text-danger"></p>
+                    </div>
+                    <div class="form-group">
+                        <label>Задолженность клиента (если присутствует)</label>
+                        <input id="paymentsDebts" type="number" class="form-control">
+                        <p id="invalidDebts" class="text-danger"></p>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+                    <button id="submitPaymentCreate" type="button" class="btn btn-primary">Добавить</button>
+                </div>
+        </div>
+    </div>
+</div>
+<script>
+    function checkRequired(data) {
+        if (data.length == 0) {
+            return true;
+        }
+        return false;
+    }
+    $('#submitPaymentCreate').on('click', function () {
+        var membershipId = $('#membershipSelect').val();
+        if (membershipId == '...') {
+            $('#invalidMembersip').html('Выберите тип абонемента');
+        }
+        $.ajax({
+            url: '@Url.Action("CreateAjax", "Payments")',
+            type: "POST",
+            datatype: "json",
+            data: {
+                "Comment": $("#commentPayment"),
+                "MembershipId": membershipId,
+                "ClientId": @Model.ClientId,
+                "Debts": $('#paymentsDebts')
+            },
+            success: function (data) {
+                if (data) {
+                    $('#paymentCreateModal').modal('hide');
+                }
+            }
+        })
+    })
+</script>
+
