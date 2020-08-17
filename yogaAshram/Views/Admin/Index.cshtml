@@ -28,8 +28,9 @@
                                 <li id="email" class="list-group-item">Почта - @Model.Employee.Email</li>
                                 <li id="nameSurname" class="list-group-item">Имя фамилия - @Model.Employee.NameSurname</li>
                             </ul>
-                            <button><a asp-action="Scheduele" asp-controller="Admin" asp-route-branchId="@Model.Branch.Id" class="dropdown-item cursor-p">Записать на пробный</a></button> 
+                            <button><a asp-action="Scheduele" asp-controller="Admin" asp-route-branchId="@Model.Branch.Id" class="dropdown-item cursor-p">Записать на занятия</a></button> 
                             <button> <a asp-action="Trials" asp-controller="Clients" asp-route-branchId="@Model.Branch.Id" class="dropdown-item cursor-p">Пробники</a></button>
+                            <button> <a asp-action="RegularClients" asp-controller="Clients" asp-route-branchId="@Model.Branch.Id" class="dropdown-item cursor-p">Клиенты</a></button>
                         </div>
                     </div>
                 </div>
