@@ -1,0 +1,13 @@
+﻿@model System.Collections.Generic.List<yogaAshram.Models.Client>
+
+@{
+    ViewBag.Title = "Список клиентов";
+    Layout = "_Layout";
+}
+
+<h2>Список клиентов</h2>
+@foreach (Client client in @Model)
+{
+    <p>@client.NameSurname</p>
+    <p>@client.Address</p>                    
+}
