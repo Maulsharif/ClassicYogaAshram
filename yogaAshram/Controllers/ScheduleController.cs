@@ -56,7 +56,7 @@ namespace yogaAshram.Controllers
                 schedule.ChosenDate = date ;
                 ViewBag.DaysArray =  string.Join(",", schedule.DayOfWeeksString);
                 ViewBag.Clients = _db.Clients.Where(c => c.GroupId == groupId).ToList();
-              
+                ViewBag.Memberships = _db.Memberships;
                  return View(schedule);
             }
             return NotFound();
