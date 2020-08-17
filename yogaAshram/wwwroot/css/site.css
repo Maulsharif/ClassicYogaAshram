@@ -358,6 +358,30 @@ tr:last-child td{
 .currentDay{
     background-color: #1e3d42;
 }
+.trialBlock{
+    display: none;
+}
+.baseClientBlock{
+    display: none;
+}
+#smallForm{
+    display: none;
+}
+#bigForm{
+    display: none;
+}
+#formForNewClient{
+    display: none;
+}
+#chooseTypeFromList{
+    display: none;
+}
+#trialClientsList{
+    display: none;
+}
+#existingClientsList{
+    display: none;
+}
 .websiteBar{
     margin: 10px 10px 10px 13px;
 }

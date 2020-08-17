@@ -187,5 +187,59 @@ namespace yogaAshram.Controllers
             return View(client);
 
         }
+
+        [HttpPost]
+        public async Task<IActionResult> NewClientRegister(Schedule schedule)
+        {
+            if (ModelState.IsValid)
+            {
+                Client client = new Client()
+                {
+                    NameSurname = schedule.ClientsCreateModelView.NameSurname,
+                    PhoneNumber = schedule.ClientsCreateModelView.PhoneNumber,
+                    DateOfBirth = schedule.ClientsCreateModelView.DateOfBirth,
+                    Email = schedule.ClientsCreateModelView.Email,
+                    Address = schedule.ClientsCreateModelView.Address,
+                    WorkPlace = schedule.ClientsCreateModelView.WorkPlace,
+                    Sickness = schedule.ClientsCreateModelView.Sickness,
+                    Source = schedule.ClientsCreateModelView.Source,
+                    Comment = schedule.ClientsCreateModelView.Comment,
+                    Paid = false,
+                    WhatsAppGroup = false,
+                    Contract = false,
+                    GroupId = schedule.ClientsCreateModelView.GroupId,
+                    MembershipId = schedule.ClientsCreateModelView.MembershipId,
+                    ClientType = ClientType.AreEngaged,
+                    CreatorId = GetUserId.GetCurrentUserId(this.HttpContext)
+                };
+                client.Memberships = new List<Membership>
+                {
+                    _db.Memberships.FirstOrDefault(m => m.Id == schedule.ClientsCreateModelView.MembershipId)
+                };
+
+                _db.Entry(client).State = EntityState.Added;
+                Group group = _db.Groups.FirstOrDefault(g => g.Id == schedule.ClientsCreateModelView.GroupId);
+                if(group != null && group.Clients.Count == 0)
+                    group.Clients = new List<Client>()
+                    {
+                        client
+                    };
+                else
+                    group?.Clients.Add(client);
+                
+
+                _db.Entry(group).State = EntityState.Modified;
+                await _db.SaveChangesAsync();
+            }
+            
+            return RedirectToAction("RegularClients", "Clients");
+        }
+        [Authorize]
+        public IActionResult RegularClients()
+        {
+            List<Client> clients = _db.Clients.Where(c => c.ClientType == ClientType.AreEngaged).ToList();
+            
+            return View(clients);
+        }
     }
 }

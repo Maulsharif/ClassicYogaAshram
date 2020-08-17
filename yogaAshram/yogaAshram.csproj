@@ -76,11 +76,24 @@
         <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
         <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       </Content>
+      <Content Update="Views\Clients\RegularClients.cshtml">
+        <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+        <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      </Content>
     </ItemGroup>
 
     <ItemGroup>
       <Folder Include="Views\Employees\PartialViews" />
       <Folder Include="Views\Marketing" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Remove="Migrations\20200815062521_initial.Designer.cs" />
+      <Compile Remove="Migrations\YogaAshramContextModelSnapshot.cs" />
+      <Compile Remove="Migrations\20200815111707_addedList.Designer.cs" />
+      <Compile Remove="Migrations\20200815062521_initial.cs" />
+      <Compile Remove="Migrations\20200815114620_madeMembershipIdNullable.Designer.cs" />
+      <Compile Remove="Migrations\20200815114620_madeMembershipIdNullable.cs" />
     </ItemGroup>
 
 </Project>

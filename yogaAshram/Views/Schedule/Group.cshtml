@@ -28,50 +28,7 @@
  	<p class="text-hide" id="timeForEditStart">@Model.StartTime</p>
  	<p class="text-hide" id="timeForEditFinish">@Model.FinishTime</p>
  </div>
- 
- <h3>Посещаемость клиентов за @ViewBag.Date</h3>
- @if (Enumerable.Count(@ViewBag.Clients) == 0)
- {
- 	<p>Не найдено ни одного клиента</p>
- }
- else
- {
- 	<label>Отметить всех</label>
- 	<div class="attendance">
- 		<input type="checkbox" id="checkAll"/>
- 		<span></span>
- 	</div>
- 	<table class="table">
- 		<thead>
- 		<tr>
- 			<th scope="col">Id клиента</th>
- 			<th scope="col">Имя клиента</th>
- 			<th scope="col">Статус</th>
- 			<th scope="col">Пришел<th>
- 			<th scope="col">Комментарий</th>
- 		</tr>
- 		</thead>
- 	
- 		<tbody>
- 		@foreach (Client client in (IEnumerable) @ViewBag.Clients)
- 		{    
- 			<tr>
- 				<td>@client.Id</td>
- 				<td>@client.NameSurname</td>
- 				<td>@client.ClientType</td>
- 				<td><div class="attendance">
- 						<input type="checkbox" />
- 						<span></span>
- 					</div>
- 				</td>
- 			<td><textarea type="text" class="form-control" rows="1"></textarea></td>
- 			</tr>
- 		}
- 		
- 		</tbody>
- 	</table>
- <button class="btn btn-outline-dark" id="submitAttendance">Отправить данные на сервер</button>
- }
+
 	<div class="modal fade w-100" id="scheduleCreate" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
 	<div class="modal-dialog modal-dialog-centered modal-lg" role="document">
 		<div class="modal-content">
@@ -121,6 +78,16 @@
 
 else if ( User.IsInRole("seller") ||User.IsInRole("admin") )
 {
+	<div id="selectType">
+	<h5 class="mb-3">Статус клиента</h5>
+	<select id="clientType" class="form-control w-25">
+		<option value="3">Выберите тип клиента</option>
+		<option value="1">Пробники</option>
+		<option value="2">Базовые клиенты</option>
+	</select>
+	<button class="btn btn-outline-dark mt-2" onclick="openClientForm()">Дальше</button>
+	</div>
+	<div id="trialBlock" class="trialBlock">
 	<div class="row d-flex justify-content-center">
     <div class="col-md-6">
         <h2>Записать на пробный</h2>
@@ -141,17 +108,10 @@ else if ( User.IsInRole("seller") ||User.IsInRole("admin") )
 
 			    <input class="form-control mb-4" asp-for="@Model.ClientsCreateModelView.GroupId" value="@Model.GroupId" type="hidden">
 		    </div>
+		    <input type="hidden" asp-for="@Model.ClientsCreateModelView.ClientType" value="0">		   
 		    <div class="form_row">
 			    <label>
-				    Статус клиента
-				    <select asp-for="@Model.ClientsCreateModelView.ClientType" class="form-control mb-4">
-					    <option value="0" class="form-control mb-4">Пробник</option >
-				    </select>
-			    </label>
-		    </div>
-		    <div class="form_row">
-			    <label>
-				    Количество занятии
+				    Количество занятий
 				    <select asp-for="@Model.ClientsCreateModelView.LessonNumbers" class="form-control mb-4">
 					    <option value="1" class="form-control mb-4">1 пробное занятие</option>
 					    <option value="3" class="form-control mb-4">3 пробных занятии</option>
@@ -177,7 +137,116 @@ else if ( User.IsInRole("seller") ||User.IsInRole("admin") )
 	    </form>
     </div>
 </div>
-	
+</div>
+	<div id="baseClientBlock" class="baseClientBlock">
+		<div id="selectSubscription">
+			<h5 class="mb-3">Выбор абонемента</h5>
+			<select id="subscriptionType" class="form-control w-50">
+				@foreach (Membership membership in (IEnumerable) @ViewBag.Memberships)
+				{
+					<option value="@membership.AttendanceDays @membership.Id">@membership.Name</option>
+				}
+			</select>
+			<button class="btn btn-outline-dark mt-2" onclick="openDetailedForm()">Дальше</button>
+		</div>
+	</div>
+	<div id="bigForm">
+		<div id="clientTypeSelection">
+		<h5 class="mb-3">Какого клиента необходимо добавить?</h5>
+			<button class="btn btn-outline-dark" id="newClient" onclick="openFormToAddNew()">Добавить нового клиента</button>
+			<button class="btn btn-outline-dark" id="existingClient" onclick="openToChooseOld()">Добавить существующего клиента</button>
+		</div>
+		
+		<div id="chooseTypeFromList">
+			<h5 class="mb-3">Выберите...</h5>
+			<select id="chooseTrialOrExisting" class="form-control w-25">
+				<option value="0">Выберите</option>
+				<option value="1">из пробников</option>
+				<option value="2">из старых клиентов</option>
+			</select>
+			<button class="btn btn-outline-dark mt-2" onclick="openFormExisting()">Выбрать</button>
+		</div>
+		
+		
+		<div id="formForNewClient">
+		<h5 class="mb-3">Форма для нового клиента</h5>
+			<form method="post" asp-controller="Clients" asp-action="NewClientRegister">
+
+            		    <label class="form-control w-50"><strong>Группа:</strong> @Model.Group.Name</label>
+            		    <label class="form-control w-50"><strong>Дата первого занятия:</strong> @Model.ChosenDate.ToString("D")</label>
+		                <label class="form-control w-75"><strong>Абонемент:</strong> <span id="membershipText"></span></label>
+		                                      
+		                <input type="hidden" class="form-control mb-4 w-50" value="@Model.GroupId" asp-for="@Model.ClientsCreateModelView.GroupId">
+		                <input class="form-control mb-4 w-50" id="membershipId" type="hidden" asp-for="@Model.ClientsCreateModelView.MembershipId">
+                       	   
+                        <div class="row">
+	                        <div class="col-sm-6">                        	
+		                        <span asp-validation-for="@Model.ClientsCreateModelView.NameSurname"></span>
+		                        <label>Ф.И.О</label><br/>
+		                        <input class="form-control mb-4" asp-for="@Model.ClientsCreateModelView.NameSurname"/>      
+	                        </div>                        	                        
+	                        <div class="col-sm-6">		                       
+			                        <span asp-validation-for="@Model.ClientsCreateModelView.DateOfBirth"></span>
+			                        <label>Дата рождения</label><br/>
+			                        <input class="form-control mb-4" type="date" asp-for="@Model.ClientsCreateModelView.DateOfBirth"/>		                       
+	                        </div>
+                        </div>
+		                <div class="row">
+	                        <div class="col-sm-6">		                           
+		                        <span asp-validation-for="@Model.ClientsCreateModelView.PhoneNumber"></span>
+		                        <label>Номер телефона</label><br/>
+		                        <input class="form-control mb-4" asp-for="@Model.ClientsCreateModelView.PhoneNumber"/>		                           
+	                        </div>
+	                            
+                        
+	                        <div class="col-sm-6">
+		                        <span asp-validation-for="@Model.ClientsCreateModelView.Email"></span>
+		                        <label>Еmаil:</label><br/>
+		                        <input class="form-control mb-4" asp-for="@Model.ClientsCreateModelView.Email"/>
+	                        </div>
+                        </div>
+                        
+                        						
+                        <div class="row">
+                        <div class="col-sm-6">
+	                        <label>Место работы и должность:</label><br/>
+	                        <textarea class="form-control mb-4" rows="2" asp-for="@Model.ClientsCreateModelView.WorkPlace"></textarea>  
+                        </div>
+
+            		    <div class="col-sm-6">
+            			    <label>Наличие заболеваний</label><br/>
+	                        <textarea class="form-control mb-4" rows="2" asp-for="@Model.ClientsCreateModelView.Sickness"></textarea>   
+	                       
+            		    </div>
+                        </div> 	
+                     <div class="row">   
+                        <div class="col-sm-6">
+                        <span asp-validation-for="@Model.ClientsCreateModelView.Source"></span>
+			                <label>Откуда вы о нас узнали?</label><br/>
+			                <textarea class="form-control mb-4" rows="2" asp-for="@Model.ClientsCreateModelView.Source"></textarea>           	                        
+		                </div>
+		    
+		                     <div class="col-sm-6">
+			                     <span asp-validation-for="@Model.ClientsCreateModelView.Comment"></span>
+			                     <label>Коментарий</label><br/>
+			                     <textarea class="form-control mb-4" asp-for="@Model.ClientsCreateModelView.Comment" rows="2"></textArea>
+		                     </div>
+	                 </div>   
+            			    <br/>
+			                <button class="btn btn-info" type="submit">Добавить</button>
+            	    </form>                			
+			</div>
+				
+		<div id="trialClientsList">
+			<h5 class="mb-3">Cписок пробников</h5>
+		</div>
+		<div id="existingClientsList">
+			<h5 class="mb-3">Cписок старых клиентов</h5>
+		
+		</div>
+
+	</div>
+	<div id="smallForm">small</div>	
 }
 
 
@@ -187,9 +256,15 @@ else if ( User.IsInRole("seller") ||User.IsInRole("admin") )
 	 @{
             await Html.RenderPartialAsync("_ValidationScriptsPartial");
         }
-	
-	
+
+<script type="text/javascript">
+	 	$(".input").focus(function() {
+	 		$(this).parent().addClass("focus");
+	 	})
+	 </script>
+
 	<script >
+	
 	$("#weekdays").weekLine({
             mousedownSel: false,            
             dayLabels: ["Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота", "Воскресенье"], 
@@ -301,10 +376,67 @@ else if ( User.IsInRole("seller") ||User.IsInRole("admin") )
                 $('#dayOfWeekInput').val(days);
             });
             </script>
-<script>
-$("#checkAll").change(function () {
-    $("input:checkbox").prop('checked', $(this).prop("checked"));
-});
+	 <script>
+
+</script>
+	 <script >	 
+	  function openClientForm(){
+	  	var option = $('#clientType').val();
+	  	
+	  	if(option === '1'){
+	  		$('.trialBlock').toggle();
+	  		$('.baseClientBlock').hide();
+	  		$('#selectType').hide();
+	  	}
+	  	else if(option === '2'){
+	  		$('.baseClientBlock').toggle();
+	  		$('.trialBlock').hide();
+	  		$('#selectType').hide();
+	  	}
+	  }
+</script>
+	 <script >
+	 function openDetailedForm(){
+     	  	var option = $('#subscriptionType').val();
+     	  	var optionText = $('#subscriptionType  option:selected').text();
+     	  	var theArray = option.split(" ");
+     	  	var membershipId = theArray.pop();
+     	  	console.log(membershipId);
+     	  	if(option.includes('12') || option.includes('8') || option.includes('4')){
+     	  		$('#bigForm').toggle();
+     	  		$('#smallForm').hide();
+     	  		$('.baseClientBlock').hide();
+     	  		$('#membershipId').val(membershipId);
+     	  		$('#membershipText').text(optionText);
+     	  	}
+     	  	else if(option.includes('1')){
+     	  		$('#smallForm').toggle();
+     	  		$('#bigForm').hide();
+     	  		$('.baseClientBlock').hide();    	  
+     	  	}
+     	  }
+</script>
+	 <script >
+	 function openFormToAddNew(){
+	 	$('#formForNewClient').toggle();
+        $('#clientTypeSelection').hide();
+       
+	 }
+	 function openToChooseOld(){
+     	 	$('#chooseTypeFromList').toggle();
+            $('#clientTypeSelection').hide();            
+     	 }
+     	 function openFormExisting() {
+     	   var option = $('#chooseTrialOrExisting').val();
+              if(option === '1'){
+                	$('#trialClientsList').toggle();
+                	$('#chooseTypeFromList').hide();
+           }
+              else if(option === '2'){
+                	$('#existingClientsList').toggle();
+                	$('#chooseTypeFromList').hide();               	  
+           }
+     	 }
 </script>
 }
 
