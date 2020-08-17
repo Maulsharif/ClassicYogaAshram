@@ -110,6 +110,13 @@ namespace yogaAshram.Controllers
         {
             return (startDate >= DateTime.Today);
         }
-
+        public bool CheckClient(long id)
+        {
+            return !_db.Clients.Any(p => p.Id == id);
+        }
+        public bool CheckMemberhip(long id)
+        {
+            return !_db.Memberships.Any(p => p.Id == id);
+        }
     }
 }
