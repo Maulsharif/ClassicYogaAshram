@@ -1,76 +1,78 @@
 @using System.Collections
 
-<div class="container">
-    <nav class="navbar navbar-expand-lg navbar-light bg-light mb-3">
-        <div class="row collapse navbar-collapse" id="navbarText">
-            <ul class="navbar-nav mr-auto">
-                @if (User.Identity.IsAuthenticated)
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+            @if (User.Identity.IsAuthenticated)
+            {
+                if (User.IsInRole("chief"))
                 {
-                    if (User.IsInRole("chief"))
-                    {
-                        <li class="nav-item">
-                            <button class="websiteBar btn btn-sm btn-outline-secondary getModal" data-target="emplCreateModal"  id="@Url.Action("GetCreateEmplModalAjax", "Employees")" type="button">Добавить работника</button>
-                        </li>
-                        <li class="nav-item">
-                            <button class="websiteBar btn btn-sm btn-outline-secondary" type="button" data-toggle="modal" data-target="#addBranch" onclick="validateAdminIds()">Добавить центр йоги</button>
-                        </li>
-                        <li class="nav-item">
-                            <button  asp-controller="Group" asp-action="CreateGroup" class="websiteBar btn btn-sm btn-outline-secondary" type="button">Создать группу</button>
-                        </li>
-                        <li class="nav-item">
-                            <button asp-action="CreateClients" asp-controller="Clients" class="websiteBar btn btn-sm btn-outline-secondary" type="button">Добавить клиента</button>
-                        </li>
-                        <li class="nav-item">
-                            <button class="websiteBar btn btn-sm btn-outline-secondary" type="button">Список клиентов</button>
-                        </li>
-                        <li class="nav-item">
-                            <button class="websiteBar btn btn-sm btn-outline-secondary" type="button">Список Филялов</button>
-                        </li>
-                        <li class="nav-item">
-                            <button class="websiteBar btn btn-sm btn-outline-secondary" type="button">Список групп</button>
-                        </li>
-                    }
-                    if (User.IsInRole("manager"))
-                    {
-                        <li class="nav-item">
-                            <button class="websiteBar btn btn-sm btn-outline-secondary getModal" data-target="emplCreateModal"  id="@Url.Action("GetCreateEmplModalAjax", "Employees")" type="button">Добавить работника</button>
-                        </li>
-                        <li class="nav-item">
-                            <button  asp-action="CreateGroup" asp-controller="Group" class="websiteBar btn btn-sm btn-outline-secondary" type="button">Создать группу</button>
-                        </li>
-                        <li class="nav-item">
-                            <button asp-action="CreateClients" asp-controller="Clients" class="websiteBar btn btn-sm btn-outline-secondary" type="button">Добавить клиента</button>
-                        </li>
-                        <li class="nav-item">
-                            <button class="websiteBar btn btn-sm btn-outline-secondary" type="button">Список клиентов</button>
-                        </li>
-                        <li class="nav-item">
-                            <button class="websiteBar btn btn-sm btn-outline-secondary" type="button">Список Филялов</button>
-                        </li>
-                        <li class="nav-item">
-                            <button class="websiteBar btn btn-sm btn-outline-secondary" type="button">Список групп</button>
-                        </li>
-                    }
-                    if (User.IsInRole("seller"))
-                    {
-                        <li class="nav-item">
-                            <button class="websiteBar btn btn-sm btn-outline-secondary" type="button">Записать на пробный</button>
-                        </li>
-                        <li class="nav-item">
-                            <button class="websiteBar btn btn-sm btn-outline-secondary" type="button">Пробники</button>
-                        </li>
-                    }
-                    if (User.IsInRole("admin"))
-                    {
-                        <li class="nav-item">
-                            <button class="websiteBar btn btn-sm btn-outline-secondary" type="button">Календарь</button>
-                        </li>
-                        <li class="nav-item">
-                            <button class="websiteBar btn btn-sm btn-outline-secondary" type="button">Пробники</button>
-                        </li>
-                    }
+                    <li class="nav-item">
+                        <button class="websiteBar btn btn-sm btn-outline-secondary getModal" data-target="emplCreateModal" id="@Url.Action("GetCreateEmplModalAjax", "Employees")" type="button">Добавить работника</button>
+                    </li>
+                    <li class="nav-item">
+                        <button class="websiteBar btn btn-sm btn-outline-secondary" type="button" data-toggle="modal" data-target="#addBranch" onclick="validateAdminIds()">Добавить центр йоги</button>
+                    </li>
+                    <li class="nav-item">
+                        <button asp-controller="Group" asp-action="CreateGroup" class="websiteBar btn btn-sm btn-outline-secondary" type="button">Создать группу</button>
+                    </li>
+                    <li class="nav-item">
+                        <button asp-action="CreateClients" asp-controller="Clients" class="websiteBar btn btn-sm btn-outline-secondary" type="button">Добавить клиента</button>
+                    </li>
+                    <li class="nav-item">
+                        <button class="websiteBar btn btn-sm btn-outline-secondary" type="button">Список клиентов</button>
+                    </li>
+                    <li class="nav-item">
+                        <button class="websiteBar btn btn-sm btn-outline-secondary" type="button">Список Филялов</button>
+                    </li>
+                    <li class="nav-item">
+                        <button class="websiteBar btn btn-sm btn-outline-secondary" type="button">Список групп</button>
+                    </li>
                 }
-            </ul>
-        </div>
-    </nav>
-</div>
+                if (User.IsInRole("manager"))
+                {
+                    <li class="nav-item">
+                        <button class="websiteBar btn btn-sm btn-outline-secondary getModal" data-target="emplCreateModal" id="@Url.Action("GetCreateEmplModalAjax", "Employees")" type="button">Добавить работника</button>
+                    </li>
+                    <li class="nav-item">
+                        <button asp-action="CreateGroup" asp-controller="Group" class="websiteBar btn btn-sm btn-outline-secondary" type="button">Создать группу</button>
+                    </li>
+                    <li class="nav-item">
+                        <button asp-action="CreateClients" asp-controller="Clients" class="websiteBar btn btn-sm btn-outline-secondary" type="button">Добавить клиента</button>
+                    </li>
+                    <li class="nav-item">
+                        <button class="websiteBar btn btn-sm btn-outline-secondary" type="button">Список клиентов</button>
+                    </li>
+                    <li class="nav-item">
+                        <button class="websiteBar btn btn-sm btn-outline-secondary" type="button">Список Филялов</button>
+                    </li>
+                    <li class="nav-item">
+                        <button class="websiteBar btn btn-sm btn-outline-secondary" type="button">Список групп</button>
+                    </li>
+                }
+                if (User.IsInRole("seller"))
+                {
+                    <li class="nav-item">
+                        <button class="websiteBar btn btn-sm btn-outline-secondary" type="button">Календарь</button>
+                    </li>
+                    <li class="nav-item">
+                        <button class="websiteBar btn btn-sm btn-outline-secondary" type="button">Пробники</button>
+                    </li>
+                }
+                if (User.IsInRole("admin"))
+                {
+                    <li class="nav-item">
+                        <button class="websiteBar btn btn-sm btn-outline-secondary" type="button">Записать на пробный</button>
+                    </li>
+                    <li class="nav-item">
+                        <button class="websiteBar btn btn-sm btn-outline-secondary" type="button">Пробники</button>
+                    </li>
+                }
+            }
+        </ul>
+    </div>
+</nav>
