@@ -13,7 +13,7 @@ namespace yogaAshram.Models.ModelViews
         public string NameSurname { get; set; }
         
         [Required(ErrorMessage = "Введите номер телефона")]
-        [Remote(action: "ClientPhoneNumber", controller: "Validation", ErrorMessage = "Ранее использовался этот номер !!!")]
+        [Remote(action: "ClientPhoneNumber", controller: "Validation", ErrorMessage = "Ранее использовался этот номер")]
         public string PhoneNumber { get; set; }
         public long GroupId { get; set; }
         public virtual Group Group { get; set; }
@@ -26,6 +26,20 @@ namespace yogaAshram.Models.ModelViews
         [Remote(action: "CheckDate", controller: "Validation", ErrorMessage = "Некоректная дата")]
         public DateTime StartDate { get; set; }
         public string Comment { get; set; }
+
+        public string Sickness { get; set; }
+        [Required(ErrorMessage = "Поле обязательно для заполнения")]
+        public string Source { get; set; }
+        public bool Contract { get; set; }
+        public bool WhatsAppGroup { get; set; }
+        [RegularExpression (@"[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4}", ErrorMessage = "Некорректный email")]
+        public string Email { get; set; }
+        public string Address { get; set; }
+        public string WorkPlace { get; set; }
+        [Required(ErrorMessage = "Поле обязательно для заполнения")]
+        public DateTime DateOfBirth { get; set; }
+
+        public long MembershipId { get; set; }
         
     }
 }
