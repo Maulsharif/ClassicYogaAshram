@@ -385,3 +385,9 @@ tr:last-child td{
 .websiteBar{
     margin: 10px 10px 10px 13px;
 }
+#hideIndex{
+    display: none;
+}
+#dataIndex{
+    display: none;
+}
