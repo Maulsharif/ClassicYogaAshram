@@ -222,6 +222,28 @@ namespace yogaAshram.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Memberships",
+                columns: table => new
+                {
+                    Id = table.Column<long>(nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Name = table.Column<string>(nullable: true),
+                    Price = table.Column<int>(nullable: false),
+                    AttendanceDays = table.Column<int>(nullable: false),
+                    CategoryId = table.Column<long>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Memberships", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Memberships_Categories_CategoryId",
+                        column: x => x.CategoryId,
+                        principalTable: "Categories",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Clients",
                 columns: table => new
                 {
@@ -240,10 +262,10 @@ namespace yogaAshram.Migrations
                     Source = table.Column<string>(nullable: true),
                     GroupId = table.Column<long>(nullable: false),
                     CreatorId = table.Column<long>(nullable: false),
-                    Comment = table.Column<string>(nullable: true),
-                    Paid = table.Column<bool>(nullable: false),
-                    Contract = table.Column<bool>(nullable: false),
-                    WhatsAppGroup = table.Column<bool>(nullable: false),
+                    Comments = table.Column<List<string>>(nullable: true),
+                    Paid = table.Column<int>(nullable: false),
+                    Contract = table.Column<int>(nullable: false),
+                    WhatsAppGroup = table.Column<int>(nullable: false),
                     MembershipId = table.Column<long>(nullable: true)
                 },
                 constraints: table =>
@@ -255,35 +277,70 @@ namespace yogaAshram.Migrations
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Clients_Memberships_MembershipId",
+                        column: x => x.MembershipId,
+                        principalTable: "Memberships",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Memberships",
+                name: "ClientsMemberships",
                 columns: table => new
                 {
                     Id = table.Column<long>(nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Name = table.Column<string>(nullable: true),
-                    Price = table.Column<int>(nullable: false),
-                    AttendanceDays = table.Column<int>(nullable: false),
-                    CategoryId = table.Column<long>(nullable: false),
-                    ClientId = table.Column<long>(nullable: true)
+                    DateOfPurchase = table.Column<DateTime>(nullable: false),
+                    ClientId = table.Column<long>(nullable: false),
+                    MembershipId = table.Column<long>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Memberships", x => x.Id);
+                    table.PrimaryKey("PK_ClientsMemberships", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Memberships_Categories_CategoryId",
-                        column: x => x.CategoryId,
-                        principalTable: "Categories",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Memberships_Clients_ClientId",
+                        name: "FK_ClientsMemberships_Clients_ClientId",
                         column: x => x.ClientId,
                         principalTable: "Clients",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ClientsMemberships_Memberships_MembershipId",
+                        column: x => x.MembershipId,
+                        principalTable: "Memberships",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Payments",
+                columns: table => new
+                {
+                    Id = table.Column<long>(nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Comment = table.Column<string>(nullable: true),
+                    MembershipId = table.Column<long>(nullable: false),
+                    ClientId = table.Column<long>(nullable: false),
+                    CreatorId = table.Column<long>(nullable: false),
+                    Debts = table.Column<int>(nullable: false),
+                    CateringDate = table.Column<DateTime>(nullable: false),
+                    LastUpdate = table.Column<DateTime>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Payments", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Payments_Clients_ClientId",
+                        column: x => x.ClientId,
+                        principalTable: "Clients",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Payments_AspNetUsers_CreatorId",
+                        column: x => x.CreatorId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -325,9 +382,11 @@ namespace yogaAshram.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     ClientId = table.Column<long>(nullable: false),
                     GroupId = table.Column<long>(nullable: false),
-                    Date = table.Column<DateTime>(nullable: false),
+                    AttendanceDays = table.Column<int>(nullable: false),
                     AttendanceState = table.Column<int>(nullable: false),
-                    IsChecked = table.Column<bool>(nullable: false)
+                    IsChecked = table.Column<bool>(nullable: false),
+                    DatesOfAttendance = table.Column<List<DateTime>>(nullable: true),
+                    DatesOfAbsence = table.Column<List<DateTime>>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -454,25 +513,25 @@ namespace yogaAshram.Migrations
 
             migrationBuilder.InsertData(
                 table: "Memberships",
-                columns: new[] { "Id", "AttendanceDays", "CategoryId", "ClientId", "Name", "Price" },
+                columns: new[] { "Id", "AttendanceDays", "CategoryId", "Name", "Price" },
                 values: new object[,]
                 {
-                    { 1L, 12, 1L, null, "12 разовый абонемент в группу для пенсионеров (40% скидка)", 10000 },
-                    { 2L, 8, 1L, null, "8 разовый абонемент в группу для пенсионеров (40% скидка)", 8000 },
-                    { 3L, 12, 1L, null, "12 разовый абонемент с 15% скидкой для пенсионеров", 14000 },
-                    { 4L, 8, 1L, null, "8 разовый абонемент с 15% скидкой для пенсионеров", 11000 },
-                    { 7L, 12, 2L, null, "12 разовый абонемент с 15% скидкой для студентов", 14000 },
-                    { 8L, 8, 2L, null, "8 разовый абонемент с 15% скидкой для студентов", 11000 },
-                    { 5L, 12, 3L, null, "12 разовый абонемент с 15% скидкой для школьников", 14000 },
-                    { 6L, 8, 3L, null, "8 разовый абонемент с 15% скидкой для школьников", 11000 },
-                    { 11L, 12, 3L, null, "12 разовый абонемент в детскую группу (20% скидка)", 13000 },
-                    { 12L, 8, 3L, null, "8 разовый абонемент в детскую группу (20% скидка)", 10500 },
-                    { 9L, 12, 4L, null, "12 разовый абонемент с 15% скидкой для корпоративных клиентов", 14000 },
-                    { 10L, 8, 4L, null, "8 разовый абонемент с 15% скидкой для корпоративных клиентов", 11000 },
-                    { 13L, 12, 5L, null, "12 разовый абонемент обычный", 16000 },
-                    { 14L, 8, 5L, null, "8 разовый абонемент обычный", 13000 },
-                    { 15L, 4, 5L, null, "4 разовый абонемент", 8000 },
-                    { 16L, 1, 5L, null, "1 разовый абонемент", 2500 }
+                    { 1L, 12, 1L, "12 разовый абонемент в группу для пенсионеров (40% скидка)", 10000 },
+                    { 2L, 8, 1L, "8 разовый абонемент в группу для пенсионеров (40% скидка)", 8000 },
+                    { 3L, 12, 1L, "12 разовый абонемент с 15% скидкой для пенсионеров", 14000 },
+                    { 4L, 8, 1L, "8 разовый абонемент с 15% скидкой для пенсионеров", 11000 },
+                    { 7L, 12, 2L, "12 разовый абонемент с 15% скидкой для студентов", 14000 },
+                    { 8L, 8, 2L, "8 разовый абонемент с 15% скидкой для студентов", 11000 },
+                    { 5L, 12, 3L, "12 разовый абонемент с 15% скидкой для школьников", 14000 },
+                    { 6L, 8, 3L, "8 разовый абонемент с 15% скидкой для школьников", 11000 },
+                    { 11L, 12, 3L, "12 разовый абонемент в детскую группу (20% скидка)", 13000 },
+                    { 12L, 8, 3L, "8 разовый абонемент в детскую группу (20% скидка)", 10500 },
+                    { 9L, 12, 4L, "12 разовый абонемент с 15% скидкой для корпоративных клиентов", 14000 },
+                    { 10L, 8, 4L, "8 разовый абонемент с 15% скидкой для корпоративных клиентов", 11000 },
+                    { 13L, 12, 5L, "12 разовый абонемент обычный", 16000 },
+                    { 14L, 8, 5L, "8 разовый абонемент обычный", 13000 },
+                    { 15L, 4, 5L, "4 разовый абонемент", 8000 },
+                    { 16L, 1, 5L, "1 разовый абонемент", 2500 }
                 });
 
             migrationBuilder.CreateIndex(
@@ -553,6 +612,16 @@ namespace yogaAshram.Migrations
                 column: "MembershipId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_ClientsMemberships_ClientId",
+                table: "ClientsMemberships",
+                column: "ClientId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ClientsMemberships_MembershipId",
+                table: "ClientsMemberships",
+                column: "MembershipId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Groups_BranchId",
                 table: "Groups",
                 column: "BranchId");
@@ -583,9 +652,14 @@ namespace yogaAshram.Migrations
                 column: "CategoryId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Memberships_ClientId",
-                table: "Memberships",
+                name: "IX_Payments_ClientId",
+                table: "Payments",
                 column: "ClientId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Payments_CreatorId",
+                table: "Payments",
+                column: "CreatorId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Schedules_BranchId",
@@ -616,14 +690,6 @@ namespace yogaAshram.Migrations
                 onDelete: ReferentialAction.Cascade);
 
             migrationBuilder.AddForeignKey(
-                name: "FK_Clients_Memberships_MembershipId",
-                table: "Clients",
-                column: "MembershipId",
-                principalTable: "Memberships",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Restrict);
-
-            migrationBuilder.AddForeignKey(
                 name: "FK_Groups_Schedules_ScheduleId",
                 table: "Groups",
                 column: "ScheduleId",
@@ -639,16 +705,8 @@ namespace yogaAshram.Migrations
                 table: "Branches");
 
             migrationBuilder.DropForeignKey(
-                name: "FK_Clients_AspNetUsers_CreatorId",
-                table: "Clients");
-
-            migrationBuilder.DropForeignKey(
                 name: "FK_Groups_AspNetUsers_CreatorId",
                 table: "Groups");
-
-            migrationBuilder.DropForeignKey(
-                name: "FK_Memberships_Clients_ClientId",
-                table: "Memberships");
 
             migrationBuilder.DropForeignKey(
                 name: "FK_Schedules_Groups_GroupId",
@@ -676,16 +734,19 @@ namespace yogaAshram.Migrations
                 name: "CalendarEvents");
 
             migrationBuilder.DropTable(
+                name: "ClientsMemberships");
+
+            migrationBuilder.DropTable(
                 name: "ManagerEmployees");
+
+            migrationBuilder.DropTable(
+                name: "Payments");
 
             migrationBuilder.DropTable(
                 name: "TrialUserses");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
-
-            migrationBuilder.DropTable(
-                name: "AspNetUsers");
 
             migrationBuilder.DropTable(
                 name: "Clients");
@@ -695,6 +756,9 @@ namespace yogaAshram.Migrations
 
             migrationBuilder.DropTable(
                 name: "Categories");
+
+            migrationBuilder.DropTable(
+                name: "AspNetUsers");
 
             migrationBuilder.DropTable(
                 name: "Groups");

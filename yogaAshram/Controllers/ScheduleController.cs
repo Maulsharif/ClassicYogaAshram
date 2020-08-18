@@ -53,10 +53,12 @@ namespace yogaAshram.Controllers
             if (schedule != null)
             {
                 if(date> DateTime.MinValue) ViewBag.Date = date;
-                schedule.ChosenDate = date ;
+                schedule.ChosenDate = date;
                 ViewBag.DaysArray =  string.Join(",", schedule.DayOfWeeksString);
                 ViewBag.Clients = _db.Clients.Where(c => c.GroupId == groupId).ToList();
                 ViewBag.Memberships = _db.Memberships;
+                ViewBag.TrialClients = _db.Clients.Where(c => c.ClientType == ClientType.Probe);
+                ViewBag.OldClients = _db.Clients.Where(c => c.ClientType == ClientType.NotEngaged);
                  return View(schedule);
             }
             return NotFound();
