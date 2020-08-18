@@ -12,30 +12,18 @@
     @{
         await Html.RenderPartialAsync("PartialView/WebsiteBar");
     }
+    
     @if (@Model.Branch != null)
     {
         <h2 class="ml-4">Админ</h2>
         <h3 class="ml-4 mb-3" >Филиал : <b>@Model.Branch.Name</b></h3>
                                                                  
-        <div class="container marginFromInput">
-            <div class="card" style="width: 400px;">
-                <div class="row">
-                    <div>
-                        <div class="card-body">
-                            <h5 class="card-title ml-4">Подробно</h5>
-                            <ul class="list-group list-group-flush">
-                                <li id="username" class="list-group-item">Логин - @Model.Employee.UserName</li>
-                                <li id="email" class="list-group-item">Почта - @Model.Employee.Email</li>
-                                <li id="nameSurname" class="list-group-item">Имя фамилия - @Model.Employee.NameSurname</li>
-                            </ul>
-                            <button><a asp-action="Scheduele" asp-controller="Admin" asp-route-branchId="@Model.Branch.Id" class="dropdown-item cursor-p">Записать на занятия</a></button> 
-                            <button> <a asp-action="Trials" asp-controller="Clients" asp-route-branchId="@Model.Branch.Id" class="dropdown-item cursor-p">Пробники</a></button>
-                            <button> <a asp-action="RegularClients" asp-controller="Clients" asp-route-branchId="@Model.Branch.Id" class="dropdown-item cursor-p">Клиенты</a></button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+        await Html.RenderPartialAsync("PartialView/IndexCardPartial", @Model.Employee);
+        
+        <button><a asp-action="Scheduele" asp-controller="Admin" asp-route-branchId="@Model.Branch.Id" class="dropdown-item cursor-p">Записать на занятия</a></button> 
+        <button> <a asp-action="Trials" asp-controller="Clients" asp-route-branchId="@Model.Branch.Id" class="dropdown-item cursor-p">Пробники</a></button>
+        <button> <a asp-action="RegularClients" asp-controller="Clients" asp-route-branchId="@Model.Branch.Id" class="dropdown-item cursor-p">Клиенты</a></button>
+        
     }
     else
     {
@@ -57,4 +45,18 @@
     @{
         await Html.RenderPartialAsync("../Employees/PartialViews/GetModalScripts");
     }
+    
+    <script>
+            $('#showIndex').click(function() {
+                $('#showIndex').css('display', 'none');
+                $('#dataIndex').show();
+                $('#hideIndex').show();
+            });
+                   
+            $('#hideIndex').click(function() {
+                $('#hideIndex').css('display', 'none');
+                $('#dataIndex').hide();
+                $('#showIndex').show();
+            });
+    </script>
 }
