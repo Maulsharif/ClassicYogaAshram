@@ -1,0 +1,20 @@
+@model Employee
+
+<div id="dataIndex" class="container marginFromInput">
+    <div class="card" style="width: 400px;">
+        <div class="row">
+            <div>
+                <div class="card-body">
+                    <h5 class="card-title ml-4">Подробно</h5>
+                    <ul class="list-group list-group-flush">
+                        <li id="username" class="list-group-item">Логин - @Model.UserName</li>
+                        <li id="email" class="list-group-item">Почта - @Model.Email</li>
+                        <li id="nameSurname" class="list-group-item">Имя фамилия - @Model.NameSurname</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
