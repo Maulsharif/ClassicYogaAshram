@@ -42,7 +42,7 @@ namespace yogaAshram.Controllers
                 Employee employee = await _db.Employees.
                     FirstOrDefaultAsync(p => p.Email == model.Authentificator ||
                     p.UserName == model.Authentificator);
-                if(employee.OnTimePassword)
+                /*if(employee.OnTimePassword && await _userManager.CheckPasswordAsync(employee ,model.Password))
                 {
                     if (employee.PasswordState == PasswordStates.DisposableUsed)
                     {
@@ -55,7 +55,7 @@ namespace yogaAshram.Controllers
                         _db.Entry(employee).State = EntityState.Modified;
                         await _db.SaveChangesAsync();
                     }
-                }
+                }*/
                 Microsoft.AspNetCore.Identity.SignInResult result = await _signInManager.PasswordSignInAsync(
                     employee,
                     model.Password,
