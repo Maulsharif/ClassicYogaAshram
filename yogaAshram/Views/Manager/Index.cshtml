@@ -6,33 +6,37 @@
     Layout = "_Layout";
 }
 <div class="container">
-    
-@{
-    await Html.RenderPartialAsync("PartialView/WebsiteBar");
-}
 
-<h2 class="ml-4 mb-3">Старший менеджер</h2>
-<div class="container marginFromInput">
-    <div class="card" style="width: 400px;">
-        <div class="row">
-            <div>
-                <div class="card-body">
-                    <h5 class="card-title ml-4">Подробно</h5>
-                    <ul class="list-group list-group-flush">
-                        <li id="username" class="list-group-item">Логин - @Model.Employee.UserName</li>
-                        <li id="email" class="list-group-item">Почта - @Model.Employee.Email</li>
-                        <li id="nameSurname" class="list-group-item">Имя фамилия - @Model.Employee.NameSurname</li>
-                    </ul>
-                    <a asp-action="CreateGroup" asp-controller="Group" class="btn btn-dark" style="margin-top: 15px;">Создать группу </a>
-                    <a asp-action="CreateClients" asp-controller="Clients" class="btn btn-dark" style="margin-top: 15px; margin-left: 15px;">Добавить клиента</a>
-                </div>
-            </div>
-        </div>
-    </div>
+    @{
+        await Html.RenderPartialAsync("PartialView/WebsiteBar");
+    }
+
+    <h2 class="ml-4 mb-3">Старший менеджер</h2>
+
+    @{
+        await Html.RenderPartialAsync("PartialView/IndexCardPartial", @Model.Employee);
+    }
+    
+    <a asp-action="CreateGroup" asp-controller="Group" class="btn btn-dark" style="margin-top: 15px;">Создать группу </a>
+    <a asp-action="CreateClients" asp-controller="Clients" class="btn btn-dark" style="margin-top: 15px; margin-left: 15px;">Добавить клиента</a>
 </div>
-</div>
+
 @section Scripts{
     @{
         await Html.RenderPartialAsync("../Employees/PartialViews/GetModalScripts");
     }
+
+    <script>
+            $('#showIndex').click(function() {
+                $('#showIndex').css('display', 'none');
+                $('#dataIndex').show();
+                $('#hideIndex').show();
+            });
+                   
+            $('#hideIndex').click(function() {
+                $('#hideIndex').css('display', 'none');
+                $('#dataIndex').hide();
+                $('#showIndex').show();
+            });
+    </script>
 }

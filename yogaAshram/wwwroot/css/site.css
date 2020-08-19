@@ -383,13 +383,22 @@ tr:last-child td{
     display: none;
 }
 .websiteBar{
+
+    margin: 5px 5px 5px 3px;
+}
+#hideIndex{
+    display: none;
+}
+#dataIndex{
+    display: none;
+
     margin: 10px 10px 10px 13px;
 }
 
 .editIcon{
     cursor: pointer;
     font-size:20px;
-=======
+
 .panel {
     border: 1px solid #ddd;
     background-color: #fcfcfc;
@@ -450,4 +459,5 @@ tr:last-child td{
     font-size: 14px;
 
   
+
 }
