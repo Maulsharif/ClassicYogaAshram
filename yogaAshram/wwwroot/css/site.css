@@ -385,6 +385,11 @@ tr:last-child td{
 .websiteBar{
     margin: 10px 10px 10px 13px;
 }
+
+.editIcon{
+    cursor: pointer;
+    font-size:20px;
+=======
 .panel {
     border: 1px solid #ddd;
     background-color: #fcfcfc;
@@ -443,4 +448,6 @@ tr:last-child td{
 }
 .table-filter .media .summary {
     font-size: 14px;
+
+  
 }
