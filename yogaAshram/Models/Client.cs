@@ -10,7 +10,23 @@ namespace yogaAshram.Models
         AreEngaged,
         NotEngaged
     }
-   
+    public enum Paid
+    {
+        Оплачено,
+        Не_оплачено,
+        Есть_долг
+    }
+    
+    public enum WhatsAppGroup
+    {
+        Состоит_в_группе,
+        Не_состоит_в_группе
+    }
+    public enum Contract
+    {
+        Есть_договор,
+        Нет_договора
+    }
     public class Client
     {
         public long Id { get; set; }
@@ -35,15 +51,30 @@ namespace yogaAshram.Models
         public long  CreatorId { get; set; }
         
         public virtual Employee Creator { get; set; }
-        public string Comment{ get; set; }
+        public List<string> Comments { get; set; }
         
-        public bool Paid { get; set; }
-        public bool Contract { get; set; }
-        public bool WhatsAppGroup { get; set; }
+        public Paid Paid { get; set; }
+        public Contract Contract{ get; set; }
+        public WhatsAppGroup WhatsAppGroup{ get; set; }
         
         public long? MembershipId { get; set; }
         public virtual Membership Membership { get; set; }
-        public virtual List<Membership> Memberships { get; set; }
-      
+
+        public override string ToString()
+        {
+            return $"Я: {NameSurname}\n" +
+                   "(Ф.И.О. полностью)\n" +
+                   "настоящим подтверждаю, что с Правилами посещения и условиями абонемента йога- центра\n" +
+                   "Classical Yoga Ashram ознакомлен и согласен. В дальнейшем иметь претензий не буду.\n" +
+                   $"Информация о практикующем: {Source}\n" +
+                   $"Место работы и должность: {WorkPlace}\n " +
+                   $"Моб.: {PhoneNumber}\n" +
+                   $"Дата рождения: {DateOfBirth}\n" +
+                   $"E-mail: {Email}\n" +
+                   $"Наличие заболеваний: {Sickness}\n" +
+                   "Дата: " +
+                   "Подпись: ";
+        }
     }
+    
 }

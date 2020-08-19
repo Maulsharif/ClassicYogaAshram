@@ -16,6 +16,7 @@ namespace yogaAshram.Models
         public DateTime CateringDate { get; set; } = DateTime.Now;
         public DateTime LastUpdate { get; set; } = DateTime.Now;
         public virtual Employee Creator { get; set; }
-        public virtual Client Client { get; set; }       
+        public virtual Client Client { get; set; }
+        public virtual Membership Membership { get; set; }
     }
 }

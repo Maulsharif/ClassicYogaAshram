@@ -1,13 +1,19 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Threading.Channels;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using PdfSharpCore.Drawing;
+using PdfSharpCore.Drawing.Layout;
+using PdfSharpCore.Pdf;
 using yogaAshram.Models;
 using yogaAshram.Models.ModelViews;
 using yogaAshram.Services;
@@ -39,10 +45,13 @@ namespace yogaAshram.Controllers
                 ClientType = schedule.ClientsCreateModelView.ClientType,
                  GroupId = schedule.ClientsCreateModelView.GroupId,
                  LessonNumbers =schedule.ClientsCreateModelView.LessonNumbers,
-                 Comment =schedule.ClientsCreateModelView.Comment,
                  CreatorId = GetUserId.GetCurrentUserId(this.HttpContext)
              }; 
-             _db.Entry(client).State = EntityState.Added;
+            Employee employee =
+                _db.Employees.FirstOrDefault(e => e.Id == GetUserId.GetCurrentUserId(this.HttpContext));
+            if(schedule.ClientsCreateModelView.Comment != null)
+                client.Comments = new List<string> {$"{employee?.UserName}: {schedule.ClientsCreateModelView.Comment}, {DateTime.Now:dd.MM.yyyy}"};
+            _db.Entry(client).State = EntityState.Added;
              await _db.SaveChangesAsync();  
              long ClientId = client.Id;
              if (schedule.ClientsCreateModelView.LessonNumbers == 3)
@@ -203,20 +212,18 @@ namespace yogaAshram.Controllers
                     WorkPlace = schedule.ClientsCreateModelView.WorkPlace,
                     Sickness = schedule.ClientsCreateModelView.Sickness,
                     Source = schedule.ClientsCreateModelView.Source,
-                    Comment = schedule.ClientsCreateModelView.Comment,
-                    Paid = false,
-                    WhatsAppGroup = false,
-                    Contract = false,
+                    Paid = Paid.Не_оплачено,
+                    WhatsAppGroup = WhatsAppGroup.Не_состоит_в_группе,
+                    Contract = Contract.Нет_договора,
                     GroupId = schedule.ClientsCreateModelView.GroupId,
                     MembershipId = schedule.ClientsCreateModelView.MembershipId,
                     ClientType = ClientType.AreEngaged,
                     CreatorId = GetUserId.GetCurrentUserId(this.HttpContext)
                 };
-                client.Memberships = new List<Membership>
-                {
-                    _db.Memberships.FirstOrDefault(m => m.Id == schedule.ClientsCreateModelView.MembershipId)
-                };
-
+                Employee employee =
+                    _db.Employees.FirstOrDefault(e => e.Id == GetUserId.GetCurrentUserId(this.HttpContext));
+                if(schedule.ClientsCreateModelView.Comment != null)
+                  client.Comments = new List<string> {$"{employee?.UserName}: {schedule.ClientsCreateModelView.Comment}, {DateTime.Now:dd.MM.yyyy}"};
                 _db.Entry(client).State = EntityState.Added;
                 Group group = _db.Groups.FirstOrDefault(g => g.Id == schedule.ClientsCreateModelView.GroupId);
                 if(group != null && group.Clients.Count == 0)
@@ -234,12 +241,129 @@ namespace yogaAshram.Controllers
             
             return RedirectToAction("RegularClients", "Clients");
         }
+        [HttpPost]
+        public async Task<IActionResult> OldClientRegister(Schedule schedule, long clientId)
+        {
+            if (ModelState.IsValid)
+            {
+                Client client = _db.Clients.FirstOrDefault(c => c.Id == clientId);
+
+                Debug.Assert(client != null, nameof(client) + " != null");
+                client.NameSurname = schedule.ClientsCreateModelView.NameSurname;
+                client.PhoneNumber = schedule.ClientsCreateModelView.PhoneNumber;
+                client.DateOfBirth = schedule.ClientsCreateModelView.DateOfBirth;
+                client.Email = schedule.ClientsCreateModelView.Email;
+                client.Address = schedule.ClientsCreateModelView.Address;
+                client.WorkPlace = schedule.ClientsCreateModelView.WorkPlace;
+                client.Sickness = schedule.ClientsCreateModelView.Sickness;
+                client.Source = schedule.ClientsCreateModelView.Source;
+                Employee employee =
+                    _db.Employees.FirstOrDefault(e => e.Id == GetUserId.GetCurrentUserId(this.HttpContext));
+                if (client.Comments.Count == 0 && schedule.ClientsCreateModelView.Comment != null) 
+                    client.Comments = new List<string> {$"{employee?.UserName}: {schedule.ClientsCreateModelView.Comment}, {DateTime.Now:dd.MM.yyyy}"};
+                else client.Comments.Add($"{employee?.UserName}: {schedule.ClientsCreateModelView.Comment}, {DateTime.Now:dd.MM.yyyy}");
+                client.Paid = Paid.Не_оплачено;
+                client.WhatsAppGroup = WhatsAppGroup.Не_состоит_в_группе;
+                client.Contract = Contract.Нет_договора;
+                client.GroupId = schedule.ClientsCreateModelView.GroupId;
+                client.MembershipId = schedule.ClientsCreateModelView.MembershipId;
+                client.ClientType = ClientType.AreEngaged;
+                client.CreatorId = GetUserId.GetCurrentUserId(this.HttpContext);
+                
+
+                _db.Entry(client).State = EntityState.Modified;
+                Group group = _db.Groups.FirstOrDefault(g => g.Id == schedule.ClientsCreateModelView.GroupId);
+                if(group != null && group.Clients.Count == 0)
+                    group.Clients = new List<Client>()
+                    {
+                        client
+                    };
+                else
+                    group?.Clients.Add(client);
+                
+
+                _db.Entry(group).State = EntityState.Modified;
+                await _db.SaveChangesAsync();
+            }
+            
+            return RedirectToAction("RegularClients", "Clients");
+        }
+        
         [Authorize]
         public IActionResult RegularClients()
         {
             List<Client> clients = _db.Clients.Where(c => c.ClientType == ClientType.AreEngaged).ToList();
             
             return View(clients);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> MakeClientUnActive(long? clientId)
+        {
+            Client client = _db.Clients.FirstOrDefault(c => c.Id == clientId);
+            if (client != null) client.ClientType = ClientType.NotEngaged;
+            _db.Entry(client).State = EntityState.Modified;
+            await _db.SaveChangesAsync();
+            return RedirectToAction("RegularClients");
+        }
+        [HttpPost]
+        public async Task<IActionResult> MakeClientJoinInWhatsAppGroup(long? clientId)
+        {
+            Client client = _db.Clients.FirstOrDefault(c => c.Id == clientId);
+            if (client != null) client.WhatsAppGroup = WhatsAppGroup.Состоит_в_группе;
+            _db.Entry(client).State = EntityState.Modified;
+            await _db.SaveChangesAsync();
+            return RedirectToAction("RegularClients");
+        }
+        [HttpPost]
+        public async Task<IActionResult> ClientSignedContract(long? clientId)
+        {
+            Client client = _db.Clients.FirstOrDefault(c => c.Id == clientId);
+            if (client != null) client.Contract = Contract.Есть_договор;
+            _db.Entry(client).State = EntityState.Modified;
+            await _db.SaveChangesAsync();
+            return RedirectToAction("RegularClients");
+        }
+        [HttpPost]
+        public async Task<IActionResult> Comment(long? clientId, string comment)
+        {
+            Client client = _db.Clients.FirstOrDefault(c => c.Id == clientId);
+            Employee employee =
+                _db.Employees.FirstOrDefault(e => e.Id == GetUserId.GetCurrentUserId(this.HttpContext));
+            if (client != null && (client.Comments.Count == 0 && comment != null)) 
+                client.Comments = new List<string> {$"{employee?.UserName}: {comment}, {DateTime.Now:dd.MM.yyyy}"};
+            else
+                client?.Comments.Add(
+                    $"{employee?.UserName}: {comment}, {DateTime.Now:dd.MM.yyyy}");
+
+
+            _db.Entry(client).State = EntityState.Modified;
+            await _db.SaveChangesAsync();
+            return RedirectToAction("RegularClients");
+        }
+
+        public IActionResult GetPdfDocument(long? clientId)
+        {
+            Client client = _db.Clients.FirstOrDefault(c => c.Id == clientId);
+            PdfDocument document = new PdfDocument();
+ 
+            PdfPage page = document.AddPage();
+            XGraphics gfx = XGraphics.FromPdfPage(page);
+            XFont font = new XFont("Times New Roman", 13, XFontStyle.Bold);
+            XTextFormatter tf = new XTextFormatter(gfx);
+ 
+            XRect rect = new XRect(0, 50, 600, 900);
+            gfx.DrawRectangle(XBrushes.White, rect);
+            tf.Alignment = XParagraphAlignment.Center;
+            tf.DrawString(client.ToString(), font, XBrushes.Black, rect, XStringFormats.TopLeft);
+            
+            
+            MemoryStream stream = new MemoryStream();
+            document.Save(stream);
+            stream.Position = 0;
+            FileStreamResult fileStreamResult = new FileStreamResult(stream, "application/pdf");
+            fileStreamResult.FileDownloadName = $"{client.NameSurname}.pdf";
+            return fileStreamResult;
         }
     }
 }

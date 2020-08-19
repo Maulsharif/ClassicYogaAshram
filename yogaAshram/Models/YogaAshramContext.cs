@@ -22,6 +22,7 @@ namespace yogaAshram.Models
         public DbSet<Membership> Memberships { get; set; }
         public DbSet<ClientCategory> Categories { get; set; }
         public DbSet<Payment> Payments { get; set; }
+        public DbSet<ClientsMembership> ClientsMemberships { get; set; }
         public YogaAshramContext(DbContextOptions options) : base(options) 
         {
         }
