@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using yogaAshram.Models;
@@ -11,10 +10,9 @@ using yogaAshram.Models;
 namespace yogaAshram.Migrations
 {
     [DbContext(typeof(YogaAshramContext))]
-    [Migration("20200817062106_initial")]
-    partial class initial
+    partial class YogaAshramContextModelSnapshot : ModelSnapshot
     {
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -130,14 +128,20 @@ namespace yogaAshram.Migrations
                         .HasColumnType("bigint")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
+                    b.Property<int>("AttendanceDays")
+                        .HasColumnType("integer");
+
                     b.Property<int>("AttendanceState")
                         .HasColumnType("integer");
 
                     b.Property<long>("ClientId")
                         .HasColumnType("bigint");
 
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("timestamp without time zone");
+                    b.Property<List<DateTime>>("DatesOfAbsence")
+                        .HasColumnType("timestamp without time zone[]");
+
+                    b.Property<List<DateTime>>("DatesOfAttendance")
+                        .HasColumnType("timestamp without time zone[]");
 
                     b.Property<long>("GroupId")
                         .HasColumnType("bigint");
@@ -236,11 +240,11 @@ namespace yogaAshram.Migrations
                     b.Property<string>("Color")
                         .HasColumnType("text");
 
-                    b.Property<string>("Comment")
-                        .HasColumnType("text");
+                    b.Property<List<string>>("Comments")
+                        .HasColumnType("text[]");
 
-                    b.Property<bool>("Contract")
-                        .HasColumnType("boolean");
+                    b.Property<int>("Contract")
+                        .HasColumnType("integer");
 
                     b.Property<long>("CreatorId")
                         .HasColumnType("bigint");
@@ -263,8 +267,8 @@ namespace yogaAshram.Migrations
                     b.Property<string>("NameSurname")
                         .HasColumnType("text");
 
-                    b.Property<bool>("Paid")
-                        .HasColumnType("boolean");
+                    b.Property<int>("Paid")
+                        .HasColumnType("integer");
 
                     b.Property<string>("PhoneNumber")
                         .HasColumnType("text");
@@ -275,8 +279,8 @@ namespace yogaAshram.Migrations
                     b.Property<string>("Source")
                         .HasColumnType("text");
 
-                    b.Property<bool>("WhatsAppGroup")
-                        .HasColumnType("boolean");
+                    b.Property<int>("WhatsAppGroup")
+                        .HasColumnType("integer");
 
                     b.Property<string>("WorkPlace")
                         .HasColumnType("text");
@@ -332,6 +336,31 @@ namespace yogaAshram.Migrations
                             Id = 5L,
                             Name = "Без скидок"
                         });
+                });
+
+            modelBuilder.Entity("yogaAshram.Models.ClientsMembership", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<long>("ClientId")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime>("DateOfPurchase")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<long>("MembershipId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ClientId");
+
+                    b.HasIndex("MembershipId");
+
+                    b.ToTable("ClientsMemberships");
                 });
 
             modelBuilder.Entity("yogaAshram.Models.Employee", b =>
@@ -486,9 +515,6 @@ namespace yogaAshram.Migrations
                     b.Property<long>("CategoryId")
                         .HasColumnType("bigint");
 
-                    b.Property<long?>("ClientId")
-                        .HasColumnType("bigint");
-
                     b.Property<string>("Name")
                         .HasColumnType("text");
 
@@ -498,8 +524,6 @@ namespace yogaAshram.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("CategoryId");
-
-                    b.HasIndex("ClientId");
 
                     b.ToTable("Memberships");
 
@@ -632,6 +656,43 @@ namespace yogaAshram.Migrations
                             Name = "1 разовый абонемент",
                             Price = 2500
                         });
+                });
+
+            modelBuilder.Entity("yogaAshram.Models.Payment", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<DateTime>("CateringDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<long>("ClientId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Comment")
+                        .HasColumnType("text");
+
+                    b.Property<long>("CreatorId")
+                        .HasColumnType("bigint");
+
+                    b.Property<int>("Debts")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("LastUpdate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<long>("MembershipId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ClientId");
+
+                    b.HasIndex("CreatorId");
+
+                    b.ToTable("Payments");
                 });
 
             modelBuilder.Entity("yogaAshram.Models.Role", b =>
@@ -843,6 +904,21 @@ namespace yogaAshram.Migrations
                         .HasForeignKey("MembershipId");
                 });
 
+            modelBuilder.Entity("yogaAshram.Models.ClientsMembership", b =>
+                {
+                    b.HasOne("yogaAshram.Models.Client", "Client")
+                        .WithMany()
+                        .HasForeignKey("ClientId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("yogaAshram.Models.Membership", "Membership")
+                        .WithMany()
+                        .HasForeignKey("MembershipId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("yogaAshram.Models.Group", b =>
                 {
                     b.HasOne("yogaAshram.Models.Branch", "Branch")
@@ -884,10 +960,21 @@ namespace yogaAshram.Migrations
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
 
-                    b.HasOne("yogaAshram.Models.Client", null)
-                        .WithMany("Memberships")
-                        .HasForeignKey("ClientId");
+            modelBuilder.Entity("yogaAshram.Models.Payment", b =>
+                {
+                    b.HasOne("yogaAshram.Models.Client", "Client")
+                        .WithMany()
+                        .HasForeignKey("ClientId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("yogaAshram.Models.Employee", "Creator")
+                        .WithMany()
+                        .HasForeignKey("CreatorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("yogaAshram.Models.Schedule", b =>

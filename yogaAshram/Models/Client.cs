@@ -10,7 +10,23 @@ namespace yogaAshram.Models
         AreEngaged,
         NotEngaged
     }
-   
+    public enum Paid
+    {
+        Оплачено,
+        Не_оплачено,
+        Есть_долг
+    }
+    
+    public enum WhatsAppGroup
+    {
+        Состоит_в_группе,
+        Не_состоит_в_группе
+    }
+    public enum Contract
+    {
+        Есть_договор,
+        Нет_договора
+    }
     public class Client
     {
         public long Id { get; set; }
@@ -35,15 +51,15 @@ namespace yogaAshram.Models
         public long  CreatorId { get; set; }
         
         public virtual Employee Creator { get; set; }
-        public string Comment{ get; set; }
+        public List<string> Comments { get; set; }
         
-        public bool Paid { get; set; }
-        public bool Contract { get; set; }
-        public bool WhatsAppGroup { get; set; }
+        public Paid Paid { get; set; }
+        public Contract Contract{ get; set; }
+        public WhatsAppGroup WhatsAppGroup{ get; set; }
         
         public long? MembershipId { get; set; }
         public virtual Membership Membership { get; set; }
-        public virtual List<Membership> Memberships { get; set; }
+
       
     }
 }

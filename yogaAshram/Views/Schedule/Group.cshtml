@@ -157,17 +157,6 @@ else if ( User.IsInRole("seller") ||User.IsInRole("admin") )
 			<button class="btn btn-outline-dark" id="existingClient" onclick="openToChooseOld()">Добавить существующего клиента</button>
 		</div>
 		
-		<div id="chooseTypeFromList">
-			<h5 class="mb-3">Выберите...</h5>
-			<select id="chooseTrialOrExisting" class="form-control w-25">
-				<option value="0">Выберите</option>
-				<option value="1">из пробников</option>
-				<option value="2">из старых клиентов</option>
-			</select>
-			<button class="btn btn-outline-dark mt-2" onclick="openFormExisting()">Выбрать</button>
-		</div>
-		
-		
 		<div id="formForNewClient">
 		<h5 class="mb-3">Форма для нового клиента</h5>
 			<form method="post" asp-controller="Clients" asp-action="NewClientRegister">
@@ -197,19 +186,17 @@ else if ( User.IsInRole("seller") ||User.IsInRole("admin") )
 		                        <label>Номер телефона</label><br/>
 		                        <input class="form-control mb-4" asp-for="@Model.ClientsCreateModelView.PhoneNumber"/>		                           
 	                        </div>
-	                            
-                        
+	                                                  
 	                        <div class="col-sm-6">
 		                        <span asp-validation-for="@Model.ClientsCreateModelView.Email"></span>
-		                        <label>Еmаil:</label><br/>
+		                        <label>Еmаil</label><br/>
 		                        <input class="form-control mb-4" asp-for="@Model.ClientsCreateModelView.Email"/>
 	                        </div>
                         </div>
-                        
-                        						
+                                               						
                         <div class="row">
                         <div class="col-sm-6">
-	                        <label>Место работы и должность:</label><br/>
+	                        <label>Место работы и должность</label><br/>
 	                        <textarea class="form-control mb-4" rows="2" asp-for="@Model.ClientsCreateModelView.WorkPlace"></textarea>  
                         </div>
 
@@ -237,34 +224,111 @@ else if ( User.IsInRole("seller") ||User.IsInRole("admin") )
             	    </form>                			
 			</div>
 				
-		<div id="trialClientsList">
-			<h5 class="mb-3">Cписок пробников</h5>
-		</div>
-		<div id="existingClientsList">
-			<h5 class="mb-3">Cписок старых клиентов</h5>
-		
-		</div>
+		<div id="chooseTypeFromList">
+			<div class="row">
+				<div class="col-sm-6">
+				<h5 class="mb-3">Cписок пробников</h5>
+				<select id="trialClients" class="form-control w-50" onchange="openTrialClientForm()">
+					<option value="">Выберите из списка</option>
+					@foreach (Client client in (IEnumerable) @ViewBag.TrialClients)
+					{
+						<option value='{"phone":"@client.PhoneNumber","id":"@client.Id"}'>@client.NameSurname</option>
+					}
+				</select>
+				</div>
+				<div class="col-sm-6">
+					<h5 class="mb-3">Cписок старых клиентов</h5>
+					<select id="regularClients" class="form-control w-50" onchange="openRegularClientForm()">
+						<option value="">Выберите из списка</option>
+						@foreach (Client client in (IEnumerable) @ViewBag.OldClients)
+						{
+							<option value='{"id":"@client.Id","phone":"@client.PhoneNumber","email":"@client.Email","birthday":"@client.DateOfBirth.ToString("yyyy-MM-dd")","workPlace":"@client.WorkPlace","source":"@client.Source","sickness":"@client.Sickness"}'>@client.NameSurname</option>
+						}
+					</select>
+				</div>
+			</div>
+			<div id="formForTrialClient">
+				<h5 class="mb-3">Форма для клиента</h5>
+				<form method="post" asp-controller="Clients" asp-action="OldClientRegister">
 
+					<label class="form-control w-50"><strong>Группа:</strong> @Model.Group.Name</label>
+					<label class="form-control w-50"><strong>Дата первого занятия:</strong> @Model.ChosenDate.ToString("D")</label>
+					<label class="form-control w-75"><strong>Абонемент:</strong> <span id="membershipTextTrial"></span></label>
+
+					<input type="hidden" class="form-control mb-4 w-50" value="@Model.GroupId" asp-for="@Model.ClientsCreateModelView.GroupId">
+					<input class="form-control mb-4 w-50" id="membershipIdTrial" type="hidden" asp-for="@Model.ClientsCreateModelView.MembershipId">
+					<input type="hidden" id="trialClientId" name="clientId">
+					<div class="row">
+						<div class="col-sm-6">
+							<span asp-validation-for="@Model.ClientsCreateModelView.NameSurname"></span>
+							<label>Ф.И.О</label><br/>
+							<input class="form-control mb-4" asp-for="@Model.ClientsCreateModelView.NameSurname" id="trialNameInput"/>
+						</div>
+						<div class="col-sm-6">
+							<span asp-validation-for="@Model.ClientsCreateModelView.DateOfBirth"></span>
+							<label>Дата рождения</label><br/>
+							<input class="form-control mb-4" type="date" asp-for="@Model.ClientsCreateModelView.DateOfBirth" id="birthdayInput"/>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-sm-6">
+							<span asp-validation-for="@Model.ClientsCreateModelView.PhoneNumber"></span>
+							<label>Номер телефона</label><br/>
+							<input class="form-control mb-4" asp-for="@Model.ClientsCreateModelView.PhoneNumber" id="trialPhoneInput"/>
+						</div>
+
+						<div class="col-sm-6">
+							<span asp-validation-for="@Model.ClientsCreateModelView.Email"></span>
+							<label>Еmаil</label><br/>
+							<input class="form-control mb-4" asp-for="@Model.ClientsCreateModelView.Email" id="emailInput"/>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-sm-6">
+							<label>Место работы и должность</label><br/>
+							<textarea class="form-control mb-4" rows="2" asp-for="@Model.ClientsCreateModelView.WorkPlace" id="workPlaceInput"></textarea>
+						</div>
+
+						<div class="col-sm-6">
+							<label>Наличие заболеваний</label><br/>
+							<textarea class="form-control mb-4" rows="2" asp-for="@Model.ClientsCreateModelView.Sickness" id="sicknessInput"></textarea>
+
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-sm-6">
+							<span asp-validation-for="@Model.ClientsCreateModelView.Source"></span>
+							<label>Откуда вы о нас узнали?</label><br/>
+							<textarea class="form-control mb-4" rows="2" asp-for="@Model.ClientsCreateModelView.Source" id="sourceInput"></textarea>
+						</div>
+
+						<div class="col-sm-6">
+							<span asp-validation-for="@Model.ClientsCreateModelView.Comment"></span>
+							<label>Комментарий</label><br/>
+							<textarea class="form-control mb-4" asp-for="@Model.ClientsCreateModelView.Comment" rows="2"></textArea>
+						</div>
+					</div>
+					<br/>
+					<button class="btn btn-info" type="submit">Добавить</button>
+				</form>
+			</div>
+		</div>
 	</div>
-	<div id="smallForm">small</div>	
+	
 }
 
 
 
-@section Scripts{
-	
-	 @{
-            await Html.RenderPartialAsync("_ValidationScriptsPartial");
-        }
-
-<script type="text/javascript">
+@section Scripts{	
+	@{
+		 await Html.RenderPartialAsync("_ValidationScriptsPartial");
+	 }
+	<script type="text/javascript">
 	 	$(".input").focus(function() {
 	 		$(this).parent().addClass("focus");
 	 	})
 	 </script>
-
-	<script >
-	
+	<script >	
 	$("#weekdays").weekLine({
             mousedownSel: false,            
             dayLabels: ["Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота", "Воскресенье"], 
@@ -401,19 +465,16 @@ else if ( User.IsInRole("seller") ||User.IsInRole("admin") )
      	  	var optionText = $('#subscriptionType  option:selected').text();
      	  	var theArray = option.split(" ");
      	  	var membershipId = theArray.pop();
-     	  	console.log(membershipId);
-     	  	if(option.includes('12') || option.includes('8') || option.includes('4')){
+     	  	
+     	  	if(option.includes('12') || option.includes('8') || option.includes('4') || option.includes('1')){
      	  		$('#bigForm').toggle();
      	  		$('#smallForm').hide();
      	  		$('.baseClientBlock').hide();
      	  		$('#membershipId').val(membershipId);
+     	  		$('#membershipIdTrial').val(membershipId);
      	  		$('#membershipText').text(optionText);
-     	  	}
-     	  	else if(option.includes('1')){
-     	  		$('#smallForm').toggle();
-     	  		$('#bigForm').hide();
-     	  		$('.baseClientBlock').hide();    	  
-     	  	}
+     	  		$('#membershipTextTrial').text(optionText);
+     	  	}	      	  	
      	  }
 </script>
 	 <script >
@@ -426,17 +487,33 @@ else if ( User.IsInRole("seller") ||User.IsInRole("admin") )
      	 	$('#chooseTypeFromList').toggle();
             $('#clientTypeSelection').hide();            
      	 }
-     	 function openFormExisting() {
-     	   var option = $('#chooseTrialOrExisting').val();
-              if(option === '1'){
-                	$('#trialClientsList').toggle();
-                	$('#chooseTypeFromList').hide();
-           }
-              else if(option === '2'){
-                	$('#existingClientsList').toggle();
-                	$('#chooseTypeFromList').hide();               	  
-           }
-     	 }
+     	 
+     	 function openTrialClientForm() {
+              	   var optionValue = $('#trialClients').val();
+              	   var obj = $.parseJSON(optionValue);
+              	   var optionText = $('#trialClients option:selected').text();
+                      $('#trialPhoneInput').val(obj.phone);
+                      $('#trialNameInput').val(optionText);
+                      $('#trialClientId').val(obj.id);
+                      $('#emailInput').val('');
+                      $('#workPlaceInput').val('');
+                      $('#sourceInput').val('');
+                      $('#birthdayInput').val('');
+                      $('#sicknessInput').val('');
+              	 }
+         function openRegularClientForm() {
+                       	   var optionValue = $('#regularClients').val();                       	  
+                       	   var obj = $.parseJSON(optionValue);
+                       	   var optionText = $('#regularClients option:selected').text();
+                               $('#trialPhoneInput').val(obj.phone);
+                               $('#trialNameInput').val(optionText);
+                               $('#trialClientId').val(obj.id);
+                               $('#emailInput').val(obj.email);
+                               $('#workPlaceInput').val(obj.workPlace);
+                               $('#sourceInput').val(obj.source);
+                               $('#birthdayInput').val(obj.birthday);
+                               $('#sicknessInput').val(obj.sickness);
+                       	 }     	 
 </script>
 }
 
