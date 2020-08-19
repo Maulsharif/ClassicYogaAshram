@@ -385,3 +385,7 @@ tr:last-child td{
 .websiteBar{
     margin: 10px 10px 10px 13px;
 }
+.editIcon{
+    cursor: pointer;
+    font-size:20px;
+}
