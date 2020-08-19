@@ -16,7 +16,9 @@
                             <option>...</option>
                             @foreach (var item in ViewBag.Memberships)
                             {
-                                <option value="@item.Id">@item.Category.Name @item.Price тг. @item.AttendanceDays посещений</option>
+                                <option id="membership-@item.Id" price="@item.Price" value="@item.Id">
+                                    @item.Category.Name @item.Price тг. @item.AttendanceDays посещений
+                                </option>
                             }
                         </select>
                         <p id="invalidMembersip" class="text-danger"></p>
@@ -48,25 +50,40 @@
     }
     $('#submitPaymentCreate').on('click', function () {
         var membershipId = $('#membershipSelect').val();
+        var truth = true;
         if (membershipId == '...') {
             $('#invalidMembersip').html('Выберите тип абонемента');
+            truth = false;
         }
-        $.ajax({
-            url: '@Url.Action("CreateAjax", "Payments")',
-            type: "POST",
-            datatype: "json",
-            data: {
-                "Comment": $("#commentPayment"),
-                "MembershipId": membershipId,
-                "ClientId": @Model.ClientId,
-                "Debts": $('#paymentsDebts')
-            },
-            success: function (data) {
-                if (data) {
-                    $('#paymentCreateModal').modal('hide');
+        else {
+             $('#invalidMembersip').html('');
+        }
+        var debts = $('#paymentDebts').val();
+        if (debts > $('#membership-' + membershipId).attr('price')) {
+            $('#invalidDebts').html('Сумма долгов не должна превышать стоимости абонемента');
+        }
+        else if (truth) {
+            $('#invalidDebts').html('');
+            $.ajax({
+                url: '@Url.Action("CreateAjax", "Payments")',
+                type: "POST",
+                datatype: "json",
+                data: {
+                    "Comment": $("#commentPayment").val(),
+                    "MembershipId": membershipId,
+                    "ClientId": @Model.ClientId,
+                    "Debts": $('#paymentsDebts').val()
+                },
+                success: function (data) {
+                    if (data) {
+                        $('#paymentCreateModal').modal('hide');
+                        $('#membershipSelect').val('...');
+                        $('#paymentDebts').val('');
+                        $("#commentPayment").val();
+                    }
                 }
-            }
-        })
+            })
+        }      
     })
 </script>
 
