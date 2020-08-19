@@ -44,9 +44,10 @@
             }
             <td>
                 <div class="dropdown">
-                  <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    Действия
-                  </button>
+                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Действия
+                    </button>
+                    <a class="mt-2" style="DISPLAY: block;" asp-action="GetPdfDocument" asp-controller="Clients" asp-route-clientId="@client.Id">PDF Договор</a>
                   <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                     @if (@client.Paid == Paid.Не_оплачено)
                     {

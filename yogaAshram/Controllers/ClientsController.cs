@@ -2,13 +2,18 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Threading.Channels;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using PdfSharpCore.Drawing;
+using PdfSharpCore.Drawing.Layout;
+using PdfSharpCore.Pdf;
 using yogaAshram.Models;
 using yogaAshram.Models.ModelViews;
 using yogaAshram.Services;
@@ -335,6 +340,30 @@ namespace yogaAshram.Controllers
             _db.Entry(client).State = EntityState.Modified;
             await _db.SaveChangesAsync();
             return RedirectToAction("RegularClients");
+        }
+
+        public IActionResult GetPdfDocument(long? clientId)
+        {
+            Client client = _db.Clients.FirstOrDefault(c => c.Id == clientId);
+            PdfDocument document = new PdfDocument();
+ 
+            PdfPage page = document.AddPage();
+            XGraphics gfx = XGraphics.FromPdfPage(page);
+            XFont font = new XFont("Times New Roman", 13, XFontStyle.Bold);
+            XTextFormatter tf = new XTextFormatter(gfx);
+ 
+            XRect rect = new XRect(0, 50, 600, 900);
+            gfx.DrawRectangle(XBrushes.White, rect);
+            tf.Alignment = XParagraphAlignment.Center;
+            tf.DrawString(client.ToString(), font, XBrushes.Black, rect, XStringFormats.TopLeft);
+            
+            
+            MemoryStream stream = new MemoryStream();
+            document.Save(stream);
+            stream.Position = 0;
+            FileStreamResult fileStreamResult = new FileStreamResult(stream, "application/pdf");
+            fileStreamResult.FileDownloadName = $"{client.NameSurname}.pdf";
+            return fileStreamResult;
         }
     }
 }
