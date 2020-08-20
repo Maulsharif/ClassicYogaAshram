@@ -22,7 +22,9 @@ namespace yogaAshram.Models
             public virtual ClientsCreateModelView ClientsCreateModelView { get; set; } 
             [NotMapped] 
             public DateTime ChosenDate { get; set; }
-        }
+            [NotMapped] 
+            public List<Attendance> Attendances { get; set; }
+         }
     }
 
    
