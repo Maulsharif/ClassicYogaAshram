@@ -18,13 +18,12 @@ namespace yogaAshram.Models
         public virtual Client  Client { get; set; }
         public long  GroupId  { get; set; }
         public virtual Group  Group { get; set; }
-        public int AttendanceDays { get; set; }
+        public long? MembershipId { get; set; }
+        public virtual Membership Membership { get; set; }
+        public int? AttendanceDays { get; set; }
         public AttendanceState AttendanceState { get; set; } = Models.AttendanceState.notcheked;
         public bool IsChecked { get; set; } = false;
-        public List<DateTime> DatesOfAttendance { get; set; }
-        public List<DateTime> DatesOfAbsence { get; set; }
-        
-
+        public DateTime Date { get; set; }
         
     }
 }
