@@ -31,7 +31,7 @@
                             Налл
                         </option>
                         <option value="@PaymentType.Card">
-                            Без налл
+                            Безналл
                         </option>
                     </select>
                     <p id="invalidPaymentType" class="text-danger"></p>
@@ -93,7 +93,7 @@
                     "Comment": $("#commentPaymentEdit").val(),
                     "MembershipId": membershipId,
                     "PaymentId": @Model.PaymentId,
-                    "PaymentType": paymentType,
+                    "Type": paymentType,
                     "Debts": $('#paymentsDebtsEdit').val()
                 },
                 success: function (data) {

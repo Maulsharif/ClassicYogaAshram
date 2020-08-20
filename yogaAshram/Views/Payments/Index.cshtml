@@ -53,6 +53,7 @@
                         <th scope="col">Оплаченная сумма</th>
                         <th scope="col">Имя клиента, номер телефона</th>
                         <th scope="col">Дата создания</th>
+                        <th scope="col">Тип оплаты</th>
                         <th scope="col">Комментарий</th>
                         @if (User.IsInRole("chief"))
                         {
@@ -63,19 +64,28 @@
                 <tbody>
                     @foreach (var payment in Model.Payments)
                     {
-                        <tr>
-                            <th scope="row">@payment.Id</th>
-                            <td scope="row">@payment.Membership.Category.Name @payment.Membership.Price тг. @payment.Membership.AttendanceDays посещений</td>
-                            <td scope="row">@(payment.Membership.Price - payment.Debts)</td>
-                            <td scope="row">@payment.Client.NameSurname, @payment.Client.PhoneNumber</td>
-                            <td scope="row">@payment.CateringDate.ToShortDateString()</td>
-                            <td scope="row">@payment.Comment</td>
-
-                            @if (User.IsInRole("chief"))
+                    <tr>
+                        <th scope="row">@payment.Id</th>
+                        <td scope="row">@payment.Membership.Category.Name @payment.Membership.Price тг. @payment.Membership.AttendanceDays посещений</td>
+                        <td scope="row">@(payment.Membership.Price - payment.Debts)</td>
+                        <td scope="row">@payment.Client.NameSurname, @payment.Client.PhoneNumber</td>
+                        <td scope="row">@payment.CateringDate.ToShortDateString()</td>
+                        <td scope="row">@payment.Comment</td>
+                        <td scope="row">
+                            @if (payment.Type == PaymentType.Cash)
                             {
-                                <td scope="row"><i id="@payment.Id" class="far fa-edit editIcon"></i></td>
+                                <span>Налл</span>
                             }
-                        </tr>
+                            else
+                            {
+                                <span>Безналл</span>
+                            }
+                        </td>
+                        @if (User.IsInRole("chief"))
+                        {
+                            <td scope="row"><i id="@payment.Id" class="far fa-edit editIcon"></i></td>
+                        }
+                    </tr>
                     }
                 </tbody>
             </table>
