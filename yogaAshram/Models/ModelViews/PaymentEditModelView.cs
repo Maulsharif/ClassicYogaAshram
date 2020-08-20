@@ -13,6 +13,8 @@ namespace yogaAshram.Models.ModelViews
         public long MembershipId { get; set; }
         [Remote(action: "CheckClient", controller: "Validation")]
         public long PaymentId { get; set; }
+        [Remote(action: "CheckPaymentType", controller: "Validation")]
+        public PaymentType Type { get; set; }
         public int Debts { get; set; }
         public Membership Membership { get; set; }
     }

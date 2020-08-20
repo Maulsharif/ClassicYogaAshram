@@ -118,5 +118,11 @@ namespace yogaAshram.Controllers
         {
             return !_db.Memberships.Any(p => p.Id == id);
         }
+        public bool CheckMemberhip(PaymentType type)
+        {
+            if (type == PaymentType.None)
+                return false;
+            return true;
+        }
     }
 }
