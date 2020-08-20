@@ -52,8 +52,10 @@ namespace yogaAshram.Controllers
             Schedule schedule = _db.Schedules.FirstOrDefault(g => g.GroupId == groupId);
             if (schedule != null)
             {
-                if(date> DateTime.MinValue) ViewBag.Date = date;
+                if(date > DateTime.MinValue) ViewBag.Date = date;
                 schedule.ChosenDate = date;
+                schedule.Attendances = _db.Attendances.Where(c => c.GroupId == groupId).
+                    Where(c => c.Date == date).ToList();
                 ViewBag.DaysArray =  string.Join(",", schedule.DayOfWeeksString);
                 ViewBag.Clients = _db.Clients.Where(c => c.GroupId == groupId).ToList();
                 ViewBag.Memberships = _db.Memberships;
@@ -186,7 +188,6 @@ namespace yogaAshram.Controllers
                 await _db.SaveChangesAsync();
                 return Content("success");
             }
-
             return NotFound();
 
         }
