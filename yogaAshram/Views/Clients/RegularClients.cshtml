@@ -51,7 +51,7 @@
                   <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                     @if (@client.Paid == Paid.Не_оплачено)
                     {
-                        <button class="dropdown-item">Оплатил</button>
+                        <button class="dropdown-item getPaymentCreateModal" clientId="@client.Id" >Провести платеж</button>
                     }
                     @if (@client.WhatsAppGroup == WhatsAppGroup.Не_состоит_в_группе)
                     {
@@ -172,6 +172,9 @@
 								
 @section Scripts
 {
+   @{
+		await Html.RenderPartialAsync("../Payments/PartialViews/GetModalScripts");
+	}
     <script >
 $(document).ready(function () { 
     $('.btn-filter').on('click', function () {
