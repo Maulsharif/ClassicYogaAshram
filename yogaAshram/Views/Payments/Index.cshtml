@@ -1,6 +1,7 @@
 ﻿@model PaymentsIndexModelView
 @{ 
     ViewBag.Title = "Список платежей";
+    string jsonModel = System.Text.Json.JsonSerializer.Serialize(Model); 
 }
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.8/css/all.css" />
     <div class="card text-center">
@@ -78,6 +79,20 @@
                     }
                 </tbody>
             </table>
+        </div>
+        <div class="card-footer text-muted d-flex justify-content-between">
+            @if (Model.CurrentPage != 1)
+            {
+                <a role="button" class="btn btn-outline-dark" asp-action="Index" asp-route-model="@jsonModel" asp-route-pageTo="@(Model.CurrentPage - 1)">
+                    Назад
+                </a>
+            }
+            @if (Model.IsNextPage)
+            {
+                <a role="button" class="btn btn-outline-dark" asp-action="Index" asp-route-model="@jsonModel" asp-route-pageTo="@(Model.CurrentPage + 1)">
+                    Вперёд
+                </a>
+            }
         </div>
     </div>
 @section Scripts{ 

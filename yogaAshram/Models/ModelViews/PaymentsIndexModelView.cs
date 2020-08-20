@@ -21,5 +21,8 @@ namespace yogaAshram.Models.ModelViews
         public int MyProperty { get; set; }
         public bool SortReverse { get; set; } = false;
         public SortPaymentsBy SortSelect { get; set; }
+        public int CurrentPage { get; set; }
+        public bool IsNextPage { get; set; } = false;
+        public int PaymentsLength { get; set; } = 20;
     }
 }
