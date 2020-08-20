@@ -26,12 +26,13 @@ namespace yogaAshram.Controllers
         private readonly UserManager<Employee> _userManager;
         private readonly SignInManager<Employee> _signInManager;
         private readonly YogaAshramContext _db;
-
-        public ClientsController(UserManager<Employee> userManager, SignInManager<Employee> signInManager, YogaAshramContext db)
+        private readonly ClientServices _clientServices;
+        public ClientsController(UserManager<Employee> userManager, SignInManager<Employee> signInManager, YogaAshramContext db, ClientServices clientServices)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _db = db;
+            _clientServices = clientServices;
         }
 
         [HttpPost]
@@ -65,7 +66,7 @@ namespace yogaAshram.Controllers
                      LessonTime = schedule.ClientsCreateModelView.StartDate
                  };
                  _db.Entry(trialUsers).State = EntityState.Added;
-                List<DateTime>dates=TwoTimesTrial(schedule.ClientsCreateModelView.GroupId, schedule.ClientsCreateModelView.StartDate);
+                List<DateTime>dates = _clientServices.TwoTimesTrial(schedule.ClientsCreateModelView.GroupId, schedule.ClientsCreateModelView.StartDate);
 
                 for (int i = 0; i < 2; i++)
                 {
@@ -164,30 +165,6 @@ namespace yogaAshram.Controllers
            return RedirectToAction("Trials", "Clients",new {branchId= HbranchId});
         }
 
-        
-        //метод возвращающий две даты 
-        public List<DateTime> TwoTimesTrial(long? groupId, DateTime firstTime)
-        {
-            List<CalendarEvent> calendarEvents = _db.CalendarEvents.Where(c => c.GroupId == groupId).ToList();
-            DayOfWeek[] dayOfWeeks = new DayOfWeek[calendarEvents.Count];
-            for (int i = 0; i < calendarEvents.Count; i++)
-            {
-                dayOfWeeks[i] = calendarEvents[i].DayOfWeek;
-            }
-            DateTime tenDays = firstTime.AddDays(10);
-            
-            List<DateTime> dates = Enumerable.Range(0, 1 + tenDays.Subtract(firstTime).Days)
-                .Select(offset => firstTime.AddDays(offset))
-                .Where(d => dayOfWeeks.Contains(d.DayOfWeek))
-                .ToList();
-            
-            DateTime [] dateTimes = new DateTime[2];
-    
-            dateTimes[0] = dates[1];
-            dateTimes[1] = dates[2];
-
-            return dateTimes.ToList();
-        }
 
         public IActionResult ClientInfo(long Id)
         {
@@ -233,8 +210,34 @@ namespace yogaAshram.Controllers
                     };
                 else
                     group?.Clients.Add(client);
+
+                Membership membership =
+                    _db.Memberships.FirstOrDefault(m => m.Id == schedule.ClientsCreateModelView.MembershipId);
+                
+                    var datesOfAttendance = _clientServices.DatesForAttendance(
+                        schedule.ClientsCreateModelView.StartDate, schedule.ClientsCreateModelView.GroupId,
+                        membership.AttendanceDays + 3);
+                
+                    for (int i = 0; i < membership?.AttendanceDays + 3; i++)
+                    {
+                        Attendance attendance = new Attendance()
+                        {
+                            Client = client,
+                            MembershipId = membership.Id,
+                            Date = datesOfAttendance[i],
+                            AttendanceState = AttendanceState.notcheked,
+                            GroupId = schedule.ClientsCreateModelView.GroupId,
+                            AttendanceDays = membership.AttendanceDays
+                        };          
+                        Console.WriteLine(datesOfAttendance[i]);
+                        _db.Entry(attendance).State = EntityState.Added;
+                    }
                 
 
+
+                //
+                
+                
                 _db.Entry(group).State = EntityState.Modified;
                 await _db.SaveChangesAsync();
             }
@@ -270,7 +273,7 @@ namespace yogaAshram.Controllers
                 client.ClientType = ClientType.AreEngaged;
                 client.CreatorId = GetUserId.GetCurrentUserId(this.HttpContext);
                 
-
+                  
                 _db.Entry(client).State = EntityState.Modified;
                 Group group = _db.Groups.FirstOrDefault(g => g.Id == schedule.ClientsCreateModelView.GroupId);
                 if(group != null && group.Clients.Count == 0)
@@ -281,6 +284,27 @@ namespace yogaAshram.Controllers
                 else
                     group?.Clients.Add(client);
                 
+                Membership membership =
+                    _db.Memberships.FirstOrDefault(m => m.Id == schedule.ClientsCreateModelView.MembershipId);
+                
+                var datesOfAttendance = _clientServices.DatesForAttendance(
+                    schedule.ClientsCreateModelView.StartDate, schedule.ClientsCreateModelView.GroupId,
+                    membership.AttendanceDays + 3);
+                
+                for (int i = 0; i < membership?.AttendanceDays + 3; i++)
+                {
+                    Attendance attendance = new Attendance()
+                    {
+                        Client = client,
+                        MembershipId = membership.Id,
+                        Date = datesOfAttendance[i],
+                        AttendanceState = AttendanceState.notcheked,
+                        GroupId = schedule.ClientsCreateModelView.GroupId,
+                        AttendanceDays = membership.AttendanceDays
+                    };          
+                    Console.WriteLine(datesOfAttendance[i]);
+                    _db.Entry(attendance).State = EntityState.Added;
+                }
 
                 _db.Entry(group).State = EntityState.Modified;
                 await _db.SaveChangesAsync();
@@ -364,6 +388,41 @@ namespace yogaAshram.Controllers
             FileStreamResult fileStreamResult = new FileStreamResult(stream, "application/pdf");
             fileStreamResult.FileDownloadName = $"{client.NameSurname}.pdf";
             return fileStreamResult;
+        }
+        [HttpPost]
+        public async Task<IActionResult> RegularAttendance(DateTime date, long clientId, long groupId, int state)
+        {
+           
+            Client client = _db.Clients.FirstOrDefault(c => c.Id == clientId);
+            int maxDays = client.Membership.AttendanceDays;
+            List<Attendance> attendances = _db.Attendances.Where(a => a.ClientId == clientId).ToList();
+            List<Attendance> attendanceToCheckState = _db.Attendances
+                    .Where(a => a.AttendanceState == AttendanceState.notattended)
+                    .Where(a => a.ClientId == clientId)
+                    .ToList();
+            
+            
+
+            List<Attendance> attendancesToCheckDate = _db.Attendances.Where(a => a.IsChecked)
+                .Where(a => a.ClientId == clientId).ToList();
+            if (attendancesToCheckDate.Any(a => a.Date == date))
+                return Content("errorCheckedAlready");
+
+
+            Attendance attendance = _db.Attendances
+                .FirstOrDefault(a => a.ClientId == clientId && a.GroupId == groupId && a.Date == date);
+            Console.WriteLine(attendance.ClientId);
+            Debug.Assert(attendance != null, nameof(attendance) + " != null");
+            
+                attendance.IsChecked = true;
+                attendance.AttendanceState = (AttendanceState) state;
+                attendance.AttendanceDays = attendance.AttendanceDays - 1;
+                _db.Entry(attendance).State = EntityState.Modified;
+             
+            
+           
+            await _db.SaveChangesAsync();
+            return Content("success");
         }
     }
 }
