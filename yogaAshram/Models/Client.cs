@@ -59,6 +59,7 @@ namespace yogaAshram.Models
         
         public long? MembershipId { get; set; }
         public virtual Membership Membership { get; set; }
+        public virtual List<Attendance> Attendances { get; set; }
 
         public override string ToString()
         {

@@ -341,6 +341,12 @@ namespace yogaAshram.Migrations
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Payments_Memberships_MembershipId",
+                        column: x => x.MembershipId,
+                        principalTable: "Memberships",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -382,11 +388,11 @@ namespace yogaAshram.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     ClientId = table.Column<long>(nullable: false),
                     GroupId = table.Column<long>(nullable: false),
+                    MembershipId = table.Column<long>(nullable: true),
                     AttendanceDays = table.Column<int>(nullable: false),
                     AttendanceState = table.Column<int>(nullable: false),
                     IsChecked = table.Column<bool>(nullable: false),
-                    DatesOfAttendance = table.Column<List<DateTime>>(nullable: true),
-                    DatesOfAbsence = table.Column<List<DateTime>>(nullable: true)
+                    Date = table.Column<DateTime>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -403,6 +409,12 @@ namespace yogaAshram.Migrations
                         principalTable: "Groups",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Attendances_Memberships_MembershipId",
+                        column: x => x.MembershipId,
+                        principalTable: "Memberships",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -582,6 +594,11 @@ namespace yogaAshram.Migrations
                 column: "GroupId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Attendances_MembershipId",
+                table: "Attendances",
+                column: "MembershipId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Branches_AdminId",
                 table: "Branches",
                 column: "AdminId");
@@ -660,6 +677,11 @@ namespace yogaAshram.Migrations
                 name: "IX_Payments_CreatorId",
                 table: "Payments",
                 column: "CreatorId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Payments_MembershipId",
+                table: "Payments",
+                column: "MembershipId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Schedules_BranchId",

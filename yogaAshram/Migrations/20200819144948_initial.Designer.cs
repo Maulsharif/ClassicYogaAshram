@@ -11,7 +11,7 @@ using yogaAshram.Models;
 namespace yogaAshram.Migrations
 {
     [DbContext(typeof(YogaAshramContext))]
-    [Migration("20200818153359_initial")]
+    [Migration("20200819144948_initial")]
     partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -139,11 +139,8 @@ namespace yogaAshram.Migrations
                     b.Property<long>("ClientId")
                         .HasColumnType("bigint");
 
-                    b.Property<List<DateTime>>("DatesOfAbsence")
-                        .HasColumnType("timestamp without time zone[]");
-
-                    b.Property<List<DateTime>>("DatesOfAttendance")
-                        .HasColumnType("timestamp without time zone[]");
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<long>("GroupId")
                         .HasColumnType("bigint");
@@ -151,11 +148,16 @@ namespace yogaAshram.Migrations
                     b.Property<bool>("IsChecked")
                         .HasColumnType("boolean");
 
+                    b.Property<long?>("MembershipId")
+                        .HasColumnType("bigint");
+
                     b.HasKey("Id");
 
                     b.HasIndex("ClientId");
 
                     b.HasIndex("GroupId");
+
+                    b.HasIndex("MembershipId");
 
                     b.ToTable("Attendances");
                 });
@@ -694,6 +696,8 @@ namespace yogaAshram.Migrations
 
                     b.HasIndex("CreatorId");
 
+                    b.HasIndex("MembershipId");
+
                     b.ToTable("Payments");
                 });
 
@@ -853,7 +857,7 @@ namespace yogaAshram.Migrations
             modelBuilder.Entity("yogaAshram.Models.Attendance", b =>
                 {
                     b.HasOne("yogaAshram.Models.Client", "Client")
-                        .WithMany()
+                        .WithMany("Attendances")
                         .HasForeignKey("ClientId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -863,6 +867,10 @@ namespace yogaAshram.Migrations
                         .HasForeignKey("GroupId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("yogaAshram.Models.Membership", "Membership")
+                        .WithMany()
+                        .HasForeignKey("MembershipId");
                 });
 
             modelBuilder.Entity("yogaAshram.Models.Branch", b =>
@@ -975,6 +983,12 @@ namespace yogaAshram.Migrations
                     b.HasOne("yogaAshram.Models.Employee", "Creator")
                         .WithMany()
                         .HasForeignKey("CreatorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("yogaAshram.Models.Membership", "Membership")
+                        .WithMany()
+                        .HasForeignKey("MembershipId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
