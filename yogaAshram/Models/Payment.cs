@@ -5,6 +5,12 @@ using System.Threading.Tasks;
 
 namespace yogaAshram.Models
 {
+    public enum PaymentType
+    {
+        None,
+        Cash,
+        Card
+    }
     public class Payment
     {
         public long Id { get; set; }
@@ -18,5 +24,6 @@ namespace yogaAshram.Models
         public virtual Employee Creator { get; set; }
         public virtual Client Client { get; set; }
         public virtual Membership Membership { get; set; }
+        public PaymentType Type { get; set; }
     }
 }

@@ -9,31 +9,44 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-                <div class="modal-body">
-                    <div class="form-group">
-                        <label>Выберите тип абонемента<span class="text-danger">*</span></label>
-                        <select class="form-control" id="membershipSelect">
-                            <option>...</option>
-                            @foreach (var item in ViewBag.Memberships)
-                            {
-                                <option id="membership-@item.Id" price="@item.Price" value="@item.Id">
-                                    @item.Category.Name @item.Price тг. @item.AttendanceDays посещений
-                                </option>
-                            }
-                        </select>
-                        <p id="invalidMembersip" class="text-danger"></p>
-                    </div>
-                    <div class="form-group">
-                        <label>Добавьте комментарий</label>
-                        <input id="commentPayment" type="text" class="form-control">
-                        <p id="invalidComment" class="text-danger"></p>
-                    </div>
-                    <div class="form-group">
-                        <label>Задолженность клиента (если присутствует)</label>
-                        <input id="paymentsDebts" type="number" class="form-control">
-                        <p id="invalidDebts" class="text-danger"></p>
-                    </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Выберите тип абонемента<span class="text-danger">*</span></label>
+                    <select class="form-control" id="membershipSelect">
+                        <option>...</option>
+                        @foreach (var item in ViewBag.Memberships)
+                        {
+                            <option id="membership-@item.Id" price="@item.Price" value="@item.Id">
+                                @item.Category.Name @item.Price тг. @item.AttendanceDays посещений
+                            </option>
+                        }
+                    </select>
+                    <p id="invalidMembersip" class="text-danger"></p>
                 </div>
+                <div class="form-group">
+                    <label>Выберите тип оплаты<span class="text-danger">*</span></label>
+                    <select class="form-control" id="paymentTypeSelect">
+                        <option>...</option>
+                        <option value="@PaymentType.Cash">
+                            Налл
+                        </option>
+                        <option value="@PaymentType.Card">
+                            Без налл
+                        </option>
+                    </select>
+                    <p id="invalidPaymentType" class="text-danger"></p>
+                </div>
+                <div class="form-group">
+                    <label>Добавьте комментарий</label>
+                    <input id="commentPayment" type="text" class="form-control">
+                    <p id="invalidComment" class="text-danger"></p>
+                </div>
+                <div class="form-group">
+                    <label>Задолженность клиента (если присутствует)</label>
+                    <input id="paymentsDebts" type="number" class="form-control">
+                    <p id="invalidDebts" class="text-danger"></p>
+                </div>
+            </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
                     <button id="submitPaymentCreate" type="button" class="btn btn-primary">Добавить</button>
@@ -58,6 +71,14 @@
         else {
              $('#invalidMembersip').html('');
         }
+        var paymentType = $('#paymentTypeSelect').val();
+        if (paymentType == '...') {
+            $('#invalidPaymentType').html('Выберите тип оплаты');
+            truth = false;
+        }
+        else {
+             $('#invalidPaymentType').html('');
+        }
         var debts = $('#paymentDebts').val();
         if (debts > $('#membership-' + membershipId).attr('price')) {
             $('#invalidDebts').html('Сумма долгов не должна превышать стоимости абонемента');
@@ -72,6 +93,7 @@
                     "Comment": $("#commentPayment").val(),
                     "MembershipId": membershipId,
                     "ClientId": @Model.ClientId,
+                    "PaymentType": paymentType,
                     "Debts": $('#paymentsDebts').val()
                 },
                 success: function (data) {

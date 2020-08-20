@@ -24,6 +24,19 @@
                     <p id="invalidMembersipEdit" class="text-danger"></p>
                 </div>
                 <div class="form-group">
+                    <label>Выберите тип оплаты<span class="text-danger">*</span></label>
+                    <select class="form-control" id="paymentTypeSelect">
+                        <option>...</option>
+                        <option value="@PaymentType.Cash">
+                            Налл
+                        </option>
+                        <option value="@PaymentType.Card">
+                            Без налл
+                        </option>
+                    </select>
+                    <p id="invalidPaymentType" class="text-danger"></p>
+                </div>
+                <div class="form-group">
                     <label>Добавьте комментарий</label>
                     <input asp-for="Comment" id="commentPaymentEdit" type="text" class="form-control">
                     <p id="invalidCommentEdit" class="text-danger"></p>
@@ -58,6 +71,14 @@
         else {
             $('#invalidMembersipEdit').html('');
         }
+        var paymentType = $('#paymentTypeSelect').val();
+        if (paymentType == '...') {
+            $('#invalidPaymentType').html('Выберите тип оплаты');
+            truth = false;
+        }
+        else {
+             $('#invalidPaymentType').html('');
+        }
         var debts = $('#paymentDebtsEdit').val();
         if (debts > $('#editMembership-' + membershipId).attr('price')) {
             $('#invalidDebtsEdit').html('Сумма долгов не должна превышать стоимости абонемента');
@@ -72,6 +93,7 @@
                     "Comment": $("#commentPaymentEdit").val(),
                     "MembershipId": membershipId,
                     "PaymentId": @Model.PaymentId,
+                    "PaymentType": paymentType,
                     "Debts": $('#paymentsDebtsEdit').val()
                 },
                 success: function (data) {
