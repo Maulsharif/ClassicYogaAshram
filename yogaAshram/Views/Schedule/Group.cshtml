@@ -8,26 +8,27 @@
 }
 
 
-@if (User.IsInRole("chief") )
-{<h2 class="text-center">Расписание группы "@Model.Group.Name"</h2>
- 
- <p><strong>Тренер</strong> - @Model.Group.CoachName</p>
+
+<h2 class="text-center">Расписание группы "@Model.Group.Name"</h2>
+<p><strong>Тренер:</strong> @Model.Group.CoachName</p>
  <hr>
- <div id="reloadSchedule">
- 	@foreach (var day in @Model.DayOfWeeksString)
- 	{
- 		<p>@day</p>
- 	}
- 
- 	<p>Начало - @Model.StartTime</p>
- 	<p>Окончание - @Model.FinishTime</p>
- 	<button data-toggle="modal" data-target="#scheduleCreate" class="btn btn-outline-dark">Изменить расписание</button>
- 	<a asp-action="Index" asp-controller="Schedule" asp-route-branchId="@Model.BranchId" class="btn btn-outline-dark">Назад</a>
- 
- 	<p class="text-hide" id="datesForEdit">@ViewBag.DaysArray</p>
- 	<p class="text-hide" id="timeForEditStart">@Model.StartTime</p>
- 	<p class="text-hide" id="timeForEditFinish">@Model.FinishTime</p>
- </div>
+<div id="reloadSchedule">
+	<strong>Дни:</strong>
+	@foreach (var day in @Model.DayOfWeeksString)
+	{
+		<span> @day</span>
+	}
+	<p><strong>Время:</strong> @Model.StartTime.ToString("hh\\:mm") - @Model.FinishTime.ToString("hh\\:mm")</p>
+	@if (User.IsInRole("chief"))
+	{
+		<button data-toggle="modal" data-target="#scheduleCreate" class="btn btn-outline-dark">Изменить расписание</button>
+		<a asp-action="Index" asp-controller="Schedule" asp-route-branchId="@Model.BranchId" class="btn btn-outline-dark">Назад</a>
+	}
+
+	<p class="text-hide" id="datesForEdit">@ViewBag.DaysArray</p>
+	<p class="text-hide" id="timeForEditStart">@Model.StartTime</p>
+	<p class="text-hide" id="timeForEditFinish">@Model.FinishTime</p>
+</div>
 
 	<div class="modal fade w-100" id="scheduleCreate" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
 	<div class="modal-dialog modal-dialog-centered modal-lg" role="document">
@@ -73,13 +74,67 @@
 		</div>
 	</div>
 </div>
+<div>
+	@if (@Model.Attendances.Count != 0)
+	{
+		<H5 class="text-center">Посещаемость клиентов</H5>
+        	<p>Статус: <span id="log" class="text-danger"></span></p>
+        	<table class="table">
+        		<thead>
+        		<tr>
+        			<th scope="col">Клиент</th>
+        			<th scope="col">Количество пропусков</th>
+        			<th>Проверено</th>
+        			<th>Абонемент</th>
+        			<th>Осталось дней</th>
+        			<th scope="col">Посещение</th>
+	                <th scope="col">Подтверждение</th>
+                </tr>
+        		</thead>
+        		<tbody>
+        
+        		@foreach (Attendance attendance in (IEnumerable) @Model.Attendances)
+        		{
+        			<div id="attToReload-@attendance.ClientId">
+        				<tr>
+        					<th scope="row" id="clientName-@attendance.ClientId">@attendance.Client.NameSurname</th>
+        					<td>@Model.Attendances.Where(c => c.ClientId == attendance.ClientId).Count(c => c.AttendanceState == AttendanceState.notattended)</td>
+        					<td>
+        						@if (@attendance.IsChecked)
+        						{
+        							<p>Проверено</p>
+        						}
+        						else
+        						{
+        							<p>Не проверено</p>
+        						}
+        					</td>
+        					<td>@attendance.Membership.Name</td>
+        					<td>@attendance.AttendanceDays</td>
+        					<td>
+        						<input type="hidden" name="groupId" value="@attendance.GroupId" id="inputGroupId-@attendance.ClientId">
+        						<select name="state" id="cameOrNot-@attendance.ClientId">
+        							<option value="1">Пришел</option>
+        							<option value="2">Не пришел</option>
+        						</select>
+        					</td>
+        					<td>
+        						<button onclick="checkRegularAttendance('@attendance.ClientId')" class="btn btn-primary">Отметить</button>        
+        					</td>        
+        				</tr>
+        			</div>
+        		}
+                </tbody>
+        	</table>
+	}
+	</div>
+	<p class="text-hide" id="dateForAttendance">@ViewBag.Date</p>	
 
-}
 
-else if ( User.IsInRole("seller") ||User.IsInRole("admin") )
+@if ( User.IsInRole("seller") ||User.IsInRole("admin") )
 {
 	<div id="selectType">
-	<h5 class="mb-3">Статус клиента</h5>
+	<h5 class="mb-3">Добавление клиента</h5>
 	<select id="clientType" class="form-control w-25">
 		<option value="3">Выберите тип клиента</option>
 		<option value="1">Пробники</option>
@@ -167,7 +222,7 @@ else if ( User.IsInRole("seller") ||User.IsInRole("admin") )
 		                                      
 		                <input type="hidden" class="form-control mb-4 w-50" value="@Model.GroupId" asp-for="@Model.ClientsCreateModelView.GroupId">
 		                <input class="form-control mb-4 w-50" id="membershipId" type="hidden" asp-for="@Model.ClientsCreateModelView.MembershipId">
-                       	   
+                       	   <input type="hidden" asp-for="@Model.ClientsCreateModelView.StartDate" value="@Model.ChosenDate">
                         <div class="row">
 	                        <div class="col-sm-6">                        	
 		                        <span asp-validation-for="@Model.ClientsCreateModelView.NameSurname"></span>
@@ -319,7 +374,8 @@ else if ( User.IsInRole("seller") ||User.IsInRole("admin") )
 
 
 
-@section Scripts{	
+@section Scripts
+{
 	@{
 		 await Html.RenderPartialAsync("_ValidationScriptsPartial");
 	 }
@@ -477,7 +533,7 @@ else if ( User.IsInRole("seller") ||User.IsInRole("admin") )
      	  	}	      	  	
      	  }
 </script>
-	 <script >
+	<script >
 	 function openFormToAddNew(){
 	 	$('#formForNewClient').toggle();
         $('#clientTypeSelection').hide();
@@ -515,5 +571,41 @@ else if ( User.IsInRole("seller") ||User.IsInRole("admin") )
                                $('#sicknessInput').val(obj.sickness);
                        	 }     	 
 </script>
+	<script >
+	function checkRegularAttendance(clientId) {
+       
+            var groupId = $('#inputGroupId-' + clientId).val();
+            var state = $('#cameOrNot-' + clientId).val();
+            var date = $('#dateForAttendance').text();
+            var clientName = $('#clientName-' + clientId).text();
+                	$.ajax({
+                    url : '@Url.Action("RegularAttendance", "Clients")',
+                    type : 'POST',
+                    data : {              
+                    'groupId' : groupId,
+                    'clientId': clientId,
+                    'state': state,
+                    'date': date                         
+                 },                                                         
+                success: function (data) {
+                 console.log(data);
+                                                    
+                 setTimeout(function(){  
+                 if(data === "errorCheckedAlready"){
+                 $('#log').text(clientName + ' уже отмечен');         
+                 } 
+                 if(data === "errorTimesOfAttendance"){
+                 $('#log').text(clientName + ' пора обновить абонемент');         
+                 } 
+                 else if (data === "success"){                 
+                  $('#log').text(clientName + ' успешно отмечен');  
+                   $("#attToReload-" + clientId).load(" #attToReload-" + clientId);  
+                  }                                                                                                                
+                  }, 700)                            
+              },
+            })
+          }          
+       
+	</script>
 }
 
