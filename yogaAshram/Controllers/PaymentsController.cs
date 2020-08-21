@@ -99,10 +99,10 @@ namespace yogaAshram.Controllers
         [Authorize]
         public async Task<IActionResult> GetCreateModalAjax(long clientId)
         {
-            if (!_db.Clients.Any(p => p.Id == clientId))
+            Client client = await _db.Clients.FindAsync(clientId);
+            if (client is null)
                 return NotFound();
-            PaymentCreateModelView model = new PaymentCreateModelView{ ClientId = clientId };
-            ViewBag.Memberships = await _db.Memberships.ToArrayAsync();
+            PaymentCreateModelView model = new PaymentCreateModelView { ClientId = clientId, Client = client };
             return PartialView("PartialViews/CreatePartial", model);
         }
         [Authorize]
@@ -111,6 +111,8 @@ namespace yogaAshram.Controllers
         {
             if (ModelState.IsValid)
             {
+                if (model.Debts is null)
+                    model.Debts = 0;
                 Employee employee = await _userManager.GetUserAsync(User);
                 Client client = await _db.Clients.FindAsync(model.ClientId);
                 Membership membership = await _db.Memberships.FindAsync(model.MembershipId);
@@ -122,7 +124,7 @@ namespace yogaAshram.Controllers
                     MembershipId = model.MembershipId,
                     ClientId = model.ClientId,
                     CreatorId = employee.Id,
-                    Debts = model.Debts
+                    Debts = (int)model.Debts
                 };
                 if (model.Debts > 0)
                 {
@@ -147,10 +149,12 @@ namespace yogaAshram.Controllers
             Payment payment = await _db.Payments.FindAsync(paymentId);
             if (payment is null)
                 return NotFound();
-            PaymentEditModelView model = new PaymentEditModelView { PaymentId = paymentId,
+            PaymentEditModelView model = new PaymentEditModelView { 
+                PaymentId = paymentId,
+                Type = payment.Type,
                 Comment = payment.Comment,
-                MembershipId = payment.MembershipId,
-                Debts = payment.Debts
+                Debts = payment.Debts,
+                Payment = payment
             };
             ViewBag.Memberships = await _db.Memberships.ToArrayAsync();
             return PartialView("PartialViews/EditPartial", model);
@@ -160,15 +164,18 @@ namespace yogaAshram.Controllers
         {
             if (ModelState.IsValid)
             {
-                Membership membership = await _db.Memberships.FindAsync(model.MembershipId);
-                if (membership.Price < model.Debts)
-                    return BadRequest();
+                if (model.Debts is null)
+                    model.Debts = 0;
                 Payment payment = await _db.Payments.FindAsync(model.PaymentId);
+                if (payment is null)
+                    return NotFound();
+                if (payment.Membership.Price < model.Debts)
+                    return BadRequest();              
                 Client client = await _db.Clients.FindAsync(payment.ClientId);
                 payment.Comment = model.Comment;
-                payment.MembershipId = model.MembershipId;
-                payment.Debts = model.Debts;
+                payment.Debts = (int)model.Debts;
                 payment.LastUpdate = DateTime.Now;
+                payment.Type = model.Type;
                 if (model.Debts > 0)
                 {
                     client.Paid = Paid.Есть_долг;

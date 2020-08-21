@@ -18,10 +18,9 @@ namespace yogaAshram.Models.ModelViews
     {
         public List<Payment> Payments { get; set; }
         public string FilterByName { get; set; }
-        public int MyProperty { get; set; }
         public bool SortReverse { get; set; } = false;
         public SortPaymentsBy SortSelect { get; set; }
-        public int CurrentPage { get; set; }
+        public int CurrentPage { get; set; } = 1;
         public bool IsNextPage { get; set; } = false;
         public int PaymentsLength { get; set; } = 20;
     }

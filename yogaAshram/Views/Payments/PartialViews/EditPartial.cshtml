@@ -11,34 +11,21 @@
             </div>
             <div class="modal-body">
                 <div class="form-group">
-                    <label>Выберите тип абонемента<span class="text-danger">*</span></label>
-                    <select asp-for="MembershipId" class="form-control" id="membershipEditSelect">
-                        <option>...</option>
-                        @foreach (var item in ViewBag.Memberships)
-                        {
-                            <option id="editMembership-@item.Id" price="@item.Price" value="@item.Id">
-                                @item.Category.Name @item.Price тг. @item.AttendanceDays посещений
-                            </option>
-                        }
-                    </select>
-                    <p id="invalidMembersipEdit" class="text-danger"></p>
-                </div>
-                <div class="form-group">
                     <label>Выберите тип оплаты<span class="text-danger">*</span></label>
-                    <select class="form-control" id="paymentTypeSelect">
+                    <select value="@Model.Type" class="form-control" id="paymentTypeSelect">
                         <option>...</option>
-                        <option value="@PaymentType.Cash">
-                            Нал
-                        </option>
-                        <option value="@PaymentType.Card">
-                            Безна
-                        </option>
+                                <option value="@PaymentType.Cash">
+                                    Нал
+                                </option>
+                                <option value="@PaymentType.Card">
+                                    Безнал
+                                </option>
                     </select>
                     <p id="invalidPaymentType" class="text-danger"></p>
                 </div>
                 <div class="form-group">
                     <label>Добавьте комментарий</label>
-                    <input asp-for="Comment" id="commentPaymentEdit" type="text" class="form-control">
+                    <input value="@Model.Comment" id="commentPaymentEdit" type="text" class="form-control">
                     <p id="invalidCommentEdit" class="text-danger"></p>
                 </div>
                 <div class="form-group">
@@ -49,7 +36,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
-                <button id="submitPaymentEdit" type="button" class="btn btn-primary">Добавить</button>
+                <button id="submitPaymentEdit" type="button" class="btn btn-primary">Сохранить</button>
             </div>
         </div>
     </div>
@@ -62,15 +49,7 @@
         return false;
     }
     $('#submitPaymentEdit').on('click', function () {
-        var membershipId = $('#membershipEditSelect').val();
         var truth = true;
-        if (membershipId == '...') {
-            $('#invalidMembersipEdit').html('Выберите тип абонемента');
-            truth = false;
-        }
-        else {
-            $('#invalidMembersipEdit').html('');
-        }
         var paymentType = $('#paymentTypeSelect').val();
         if (paymentType == '...') {
             $('#invalidPaymentType').html('Выберите тип оплаты');
@@ -80,18 +59,17 @@
              $('#invalidPaymentType').html('');
         }
         var debts = $('#paymentDebtsEdit').val();
-        if (debts > $('#editMembership-' + membershipId).attr('price')) {
+        if (debts > @Model.Payment.Membership.Price) {
             $('#invalidDebtsEdit').html('Сумма долгов не должна превышать стоимости абонемента');
         }
         else if (truth) {
             $('#invalidDebtsEdit').html('');
             $.ajax({
-                url: '@Url.Action("CreateAjax", "Payments")',
+                url: '@Url.Action("EditAjax", "Payments")',
                 type: "POST",
                 datatype: "json",
                 data: {
                     "Comment": $("#commentPaymentEdit").val(),
-                    "MembershipId": membershipId,
                     "PaymentId": @Model.PaymentId,
                     "Type": paymentType,
                     "Debts": $('#paymentsDebtsEdit').val()
