@@ -10,19 +10,12 @@
                 </button>
             </div>
             <div class="modal-body">
+                  <fieldset disabled>
                 <div class="form-group">
-                    <label>Выберите тип абонемента<span class="text-danger">*</span></label>
-                    <select class="form-control" id="membershipSelect">
-                        <option>...</option>
-                        @foreach (var item in ViewBag.Memberships)
-                        {
-                            <option id="membership-@item.Id" price="@item.Price" value="@item.Id">
-                                @item.Category.Name @item.Price тг. @item.AttendanceDays посещений
-                            </option>
-                        }
-                    </select>
-                    <p id="invalidMembersip" class="text-danger"></p>
+                    <label id="membership-@Model.Client.Membership.Id" price="@Model.Client.Membership.Price" for="disabledTextInput">Тип абонемента</label>
+                    <input value="@Model.Client.Membership.Category.Name @Model.Client.Membership.Price тг. @Model.Client.Membership.AttendanceDays посещений" type="text" id="disabledTextInput" class="form-control">
                 </div>
+                      </fieldset>
                 <div class="form-group">
                     <label>Выберите тип оплаты<span class="text-danger">*</span></label>
                     <select class="form-control" id="paymentTypeSelect">
@@ -62,15 +55,7 @@
         return false;
     }
     $('#submitPaymentCreate').on('click', function () {
-        var membershipId = $('#membershipSelect').val();
         var truth = true;
-        if (membershipId == '...') {
-            $('#invalidMembersip').html('Выберите тип абонемента');
-            truth = false;
-        }
-        else {
-             $('#invalidMembersip').html('');
-        }
         var paymentType = $('#paymentTypeSelect').val();
         if (paymentType == '...') {
             $('#invalidPaymentType').html('Выберите тип оплаты');
@@ -80,7 +65,7 @@
              $('#invalidPaymentType').html('');
         }
         var debts = $('#paymentDebts').val();
-        if (debts > $('#membership-' + membershipId).attr('price')) {
+        if (debts > $('#membership-@Model.Client.MembershipId').attr('price')) {
             $('#invalidDebts').html('Сумма долгов не должна превышать стоимости абонемента');
         }
         else if (truth) {
@@ -91,7 +76,7 @@
                 datatype: "json",
                 data: {
                     "Comment": $("#commentPayment").val(),
-                    "MembershipId": membershipId,
+                    "MembershipId": @Model.Client.MembershipId,
                     "ClientId": @Model.ClientId,
                     "Type": paymentType,
                     "Debts": $('#paymentsDebts').val()
@@ -99,9 +84,9 @@
                 success: function (data) {
                     if (data) {
                         $('#paymentCreateModal').modal('hide');
-                        $('#membershipSelect').val('...');
                         $('#paymentDebts').val('');
                         $("#commentPayment").val();
+                        document.location.reload();
                     }
                 }
             })
