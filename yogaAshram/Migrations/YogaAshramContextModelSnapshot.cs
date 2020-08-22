@@ -128,8 +128,8 @@ namespace yogaAshram.Migrations
                         .HasColumnType("bigint")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
-                    b.Property<int>("AttendanceDays")
-                        .HasColumnType("integer");
+                    b.Property<long?>("AttendanceCountId")
+                        .HasColumnType("bigint");
 
                     b.Property<int>("AttendanceState")
                         .HasColumnType("integer");
@@ -151,6 +151,8 @@ namespace yogaAshram.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("AttendanceCountId");
+
                     b.HasIndex("ClientId");
 
                     b.HasIndex("GroupId");
@@ -158,6 +160,27 @@ namespace yogaAshram.Migrations
                     b.HasIndex("MembershipId");
 
                     b.ToTable("Attendances");
+                });
+
+            modelBuilder.Entity("yogaAshram.Models.AttendanceCount", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<int>("AbsenceTimes")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("AttendingTimes")
+                        .HasColumnType("integer");
+
+                    b.Property<List<string>>("Comments")
+                        .HasColumnType("text[]");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("AttendanceCounts");
                 });
 
             modelBuilder.Entity("yogaAshram.Models.Branch", b =>
@@ -250,6 +273,9 @@ namespace yogaAshram.Migrations
 
                     b.Property<long>("CreatorId")
                         .HasColumnType("bigint");
+
+                    b.Property<DateTime>("DateCreate")
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<DateTime>("DateOfBirth")
                         .HasColumnType("timestamp without time zone");
@@ -688,6 +714,9 @@ namespace yogaAshram.Migrations
                     b.Property<long>("MembershipId")
                         .HasColumnType("bigint");
 
+                    b.Property<int>("Type")
+                        .HasColumnType("integer");
+
                     b.HasKey("Id");
 
                     b.HasIndex("ClientId");
@@ -854,6 +883,10 @@ namespace yogaAshram.Migrations
 
             modelBuilder.Entity("yogaAshram.Models.Attendance", b =>
                 {
+                    b.HasOne("yogaAshram.Models.AttendanceCount", "AttendanceCount")
+                        .WithMany()
+                        .HasForeignKey("AttendanceCountId");
+
                     b.HasOne("yogaAshram.Models.Client", "Client")
                         .WithMany("Attendances")
                         .HasForeignKey("ClientId")
