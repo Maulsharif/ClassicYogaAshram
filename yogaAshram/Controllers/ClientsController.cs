@@ -373,7 +373,7 @@ namespace yogaAshram.Controllers
             Client client = _db.Clients.FirstOrDefault(c => c.Id == clientId);
             Employee employee =
                 _db.Employees.FirstOrDefault(e => e.Id == GetUserId.GetCurrentUserId(this.HttpContext));
-            if (client != null && (client.Comments.Count == 0 && comment != null))
+            if (client != null && client.Comments is null)
                 client.Comments = new List<string> {$"{employee?.UserName}: {comment}, {DateTime.Now:dd.MM.yyyy}"};
             else
                 client?.Comments.Add(
@@ -449,17 +449,15 @@ namespace yogaAshram.Controllers
         [HttpPost]
         public async Task<IActionResult> CommentFromAttendance(long attendanceCountId, string comment)
         {
-            
             Employee employee =
                 _db.Employees.FirstOrDefault(e => e.Id == GetUserId.GetCurrentUserId(this.HttpContext));
             AttendanceCount attendanceCount = _db.AttendanceCounts.FirstOrDefault(a => a.Id == attendanceCountId);
             
-            if (attendanceCount != null && (attendanceCount.Comments.Count == 0 && comment != null))
+            if (attendanceCount?.Comments is null)
                 attendanceCount.Comments = new List<string> {$"{employee?.UserName}: {comment}, {DateTime.Now:dd.MM.yyyy}"};
             else
                 attendanceCount?.Comments.Add(
                     $"{employee?.UserName}: {comment}, {DateTime.Now:dd.MM.yyyy}");
-            
             _db.Entry(attendanceCount).State = EntityState.Modified;
             await _db.SaveChangesAsync();
             return Content("success");

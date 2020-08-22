@@ -684,25 +684,18 @@
     	function sendComment(attenId) {            
                 var comment = $('#commentInput-' + attenId).val();
                 var attCountId = $('#attendanceCountId-' + attenId).val();
-               console.log(attCountId);
-               console.log(comment);
                     	$.ajax({
                         url : '@Url.Action("CommentFromAttendance", "Clients")',
                         type : 'POST',
                         data : {              
                         'comment': comment,
-                        'attendanceCountId': attCountId
-                                                
+                        'attendanceCountId': attCountId                                                
                      },                                                         
-                    success: function (data) {
-                     console.log(data);
-                                                        
+                    success: function (data) {                                                       
                      setTimeout(function(){  
-                     if (data === "success"){                 
-                      $('#log').text(clientName + ' успешно отмечен');  
+                     if (data === "success"){                       	
                        $("#commentSection-" + attenId).load(" #commentSection-" + attenId); 
-                        $("#comment-" + attenId).load(" #comment-" + attenId); 
-                        $("#comment-" + attenId).modal("toggle");
+                       $("#commentInput-" + attenId).val('');  
                       }                                                                                                                
                       }, 700)                            
                   },
