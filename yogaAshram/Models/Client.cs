@@ -56,7 +56,7 @@ namespace yogaAshram.Models
         public Paid Paid { get; set; }
         public Contract Contract{ get; set; }
         public WhatsAppGroup WhatsAppGroup{ get; set; }
-        
+        public DateTime DateCreate { get; set; } = DateTime.Now;
         public long? MembershipId { get; set; }
         public virtual Membership Membership { get; set; }
         public virtual List<Attendance> Attendances { get; set; }
@@ -73,7 +73,7 @@ namespace yogaAshram.Models
                    $"Дата рождения: {DateOfBirth}\n" +
                    $"E-mail: {Email}\n" +
                    $"Наличие заболеваний: {Sickness}\n" +
-                   "Дата: " +
+                   "Дата: \n" +
                    "Подпись: ";
         }
     }
