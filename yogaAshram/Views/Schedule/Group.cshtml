@@ -11,8 +11,8 @@
 
 <h2 class="text-center">Расписание группы "@Model.Group.Name"</h2>
 <p><strong>Тренер:</strong> @Model.Group.CoachName</p>
- <hr>
 <div id="reloadSchedule">
+<hr>
 	<strong>Дни:</strong>
 	@foreach (var day in @Model.DayOfWeeksString)
 	{
@@ -79,53 +79,126 @@
 	{
 		<H5 class="text-center">Посещаемость клиентов</H5>
         	<p>Статус: <span id="log" class="text-danger"></span></p>
-        	<table class="table">
-        		<thead>
-        		<tr>
-        			<th scope="col">Клиент</th>
-        			<th scope="col">Количество пропусков</th>
-        			<th>Проверено</th>
-        			<th>Абонемент</th>
-        			<th>Осталось дней</th>
-        			<th scope="col">Посещение</th>
-	                <th scope="col">Подтверждение</th>
-                </tr>
-        		</thead>
-        		<tbody>
+		<table class="table" id="absTimes">
+			<thead>
+			<tr>
+				<th scope="col">Клиент</th>
+				<th scope="col">Количество пропусков</th>
+				<th>Проверено</th>
+				<th>Абонемент</th>
+				<th>Осталось дней</th>
+				<th scope="col">Посещение</th>
+				<th scope="col">Подтверждение</th>
+				<th>Комментарии</th>
+			</tr>
+			</thead>
+			<tbody>
         
-        		@foreach (Attendance attendance in (IEnumerable) @Model.Attendances)
-        		{
-        			<div id="attToReload-@attendance.ClientId">
-        				<tr>
-        					<th scope="row" id="clientName-@attendance.ClientId">@attendance.Client.NameSurname</th>
-        					<td>@Model.Attendances.Where(c => c.ClientId == attendance.ClientId).Count(c => c.AttendanceState == AttendanceState.notattended)</td>
-        					<td>
-        						@if (@attendance.IsChecked)
-        						{
-        							<p>Проверено</p>
-        						}
-        						else
-        						{
-        							<p>Не проверено</p>
-        						}
-        					</td>
-        					<td>@attendance.Membership.Name</td>
-        					<td>@attendance.AttendanceDays</td>
-        					<td>
-        						<input type="hidden" name="groupId" value="@attendance.GroupId" id="inputGroupId-@attendance.ClientId">
-        						<select name="state" id="cameOrNot-@attendance.ClientId">
-        							<option value="1">Пришел</option>
-        							<option value="2">Не пришел</option>
-        						</select>
-        					</td>
-        					<td>
-        						<button onclick="checkRegularAttendance('@attendance.ClientId')" class="btn btn-primary">Отметить</button>        
-        					</td>        
-        				</tr>
-        			</div>
-        		}
-                </tbody>
-        	</table>
+			@foreach (Attendance attendance in (IEnumerable) @Model.Attendances)
+			{
+        			
+				<tr>
+					<th scope="row" id="clientName-@attendance.Id">@attendance.Client.NameSurname</th>
+					<td>
+						<div id="absTimes-@attendance.Id">
+							@attendance.AttendanceCount.AbsenceTimes
+						</div>
+					</td>
+					<td>
+						<div id="checkToReload-@attendance.Id">
+							@if (@attendance.IsChecked)
+							{
+								<p>Проверено</p>
+							}
+							else
+							{
+								<p>Не проверено</p>
+							}
+						</div>
+					</td>
+					<td>@attendance.Membership.Name</td>
+					
+						@if(@attendance.AttendanceCount.AttendingTimes < 3 && @attendance.AttendanceCount.AttendingTimes > 1)
+						{ 
+						<div >
+							<td class="bg-warning">													        
+								@attendance.AttendanceCount.AttendingTimes							
+							</td>
+							</div>
+						}
+						else if (@attendance.AttendanceCount.AttendingTimes <= 1)
+						{
+						<div >	
+							<td class="bg-danger">										        
+								@attendance.AttendanceCount.AttendingTimes														        
+							</td> 
+							</div>	
+						}
+						else
+						{
+						<div >
+							<td>														        
+								@attendance.AttendanceCount.AttendingTimes													        
+							</td> 
+							</div>	
+						}
+					
+					<td>
+						<input type="hidden" name="attendanceId" value="@attendance.Id" id="inputAttendance-@attendance.Id">
+						<input type="hidden" name="attendanceId" value="@attendance.ClientId" id="inputClientId-@attendance.Id">
+        						
+						<select name="state" id="cameOrNot-@attendance.Id" class="form-control">
+							<option value="1">Пришел</option>
+							<option value="2">Не пришел</option>
+							<option value="3">Заморозка</option>
+						</select>
+					</td>
+					<td>
+						<button onclick="checkRegularAttendance('@attendance.Id')" class="btn btn-primary">Отметить</button>        
+					</td> 
+					<td>
+						<div class="row">
+							<div id="commentSection-@attendance.Id">
+								@if (@attendance.AttendanceCount.Comments != null)
+								{								       
+									@foreach (string comment in @attendance.AttendanceCount.Comments)
+									{
+										<p class="small">@comment</p>
+									}
+								}
+							</div>
+							<div>
+								<a href="#" data-toggle="modal" data-target="#comment-@attendance.Id">
+								<img src="/Images/SiteImages/comment.png" alt="comment" class="commentIcon">
+								</a>
+							</div>
+						</div>
+					</td>
+				</tr>
+				<div class="modal fade" id="comment-@attendance.Id" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+					<div class="modal-dialog modal-dialog-centered" role="document">
+						<div class="modal-content">
+							<div class="modal-header">
+								<h5 class="modal-title" id="exampleModalLongTitle">Добавить комментарий</h5>
+								<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+									<span aria-hidden="true">&times;</span>
+								</button>
+							</div>
+							<div class="modal-body">
+							<input type="hidden" value="@attendance.AttendanceCountId" id="attendanceCountId-@attendance.Id">
+								<textarea type="text" class="form-control" id="commentInput-@attendance.Id"></textarea>
+							</div>
+							<div class="modal-footer">
+								<button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="sendComment('@attendance.Id')">Отправить</button>
+								<button type="button" class="btn btn-primary">Закрыть</button>
+							</div>
+						</div>
+					</div>
+				</div>	
+			}
+			</tbody>
+		</table>
+		
 	}
 	</div>
 	<p class="text-hide" id="dateForAttendance">@ViewBag.Date</p>	
@@ -571,21 +644,22 @@
                                $('#sicknessInput').val(obj.sickness);
                        	 }     	 
 </script>
-	<script >
-	function checkRegularAttendance(clientId) {
-       
-            var groupId = $('#inputGroupId-' + clientId).val();
-            var state = $('#cameOrNot-' + clientId).val();
+	<script type="text/javascript">
+	function checkRegularAttendance(attenId) {
+        
+            var state = $('#cameOrNot-' + attenId).val();
             var date = $('#dateForAttendance').text();
-            var clientName = $('#clientName-' + clientId).text();
+            var clientName = $('#clientName-' + attenId).text();
+            var attId = $('#inputAttendance-' + attenId).val();
+            var clientId = $('#inputClientId-' + attenId).val();
                 	$.ajax({
                     url : '@Url.Action("RegularAttendance", "Clients")',
                     type : 'POST',
                     data : {              
-                    'groupId' : groupId,
-                    'clientId': clientId,
                     'state': state,
-                    'date': date                         
+                    'date': date,
+                    'attendanceId': attId,
+                    'clientId': clientId                         
                  },                                                         
                 success: function (data) {
                  console.log(data);
@@ -598,14 +672,42 @@
                  $('#log').text(clientName + ' пора обновить абонемент');         
                  } 
                  else if (data === "success"){                 
-                  $('#log').text(clientName + ' успешно отмечен');  
-                   $("#attToReload-" + clientId).load(" #attToReload-" + clientId);  
+                  $('#log').text(clientName + ' успешно отмечен');                     
+                    $("#absTimes").load(" #absTimes");
                   }                                                                                                                
                   }, 700)                            
               },
             })
-          }          
-       
+          }                 
 	</script>
+	<script type="text/javascript">
+    	function sendComment(attenId) {            
+                var comment = $('#commentInput-' + attenId).val();
+                var attCountId = $('#attendanceCountId-' + attenId).val();
+               console.log(attCountId);
+               console.log(comment);
+                    	$.ajax({
+                        url : '@Url.Action("CommentFromAttendance", "Clients")',
+                        type : 'POST',
+                        data : {              
+                        'comment': comment,
+                        'attendanceCountId': attCountId
+                                                
+                     },                                                         
+                    success: function (data) {
+                     console.log(data);
+                                                        
+                     setTimeout(function(){  
+                     if (data === "success"){                 
+                      $('#log').text(clientName + ' успешно отмечен');  
+                       $("#commentSection-" + attenId).load(" #commentSection-" + attenId); 
+                        $("#comment-" + attenId).load(" #comment-" + attenId); 
+                        $("#comment-" + attenId).modal("toggle");
+                      }                                                                                                                
+                      }, 700)                            
+                  },
+                })
+              }                 
+    	</script>
 }
 
