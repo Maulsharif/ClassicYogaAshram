@@ -55,6 +55,21 @@ namespace yogaAshram.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "AttendanceCounts",
+                columns: table => new
+                {
+                    Id = table.Column<long>(nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    AttendingTimes = table.Column<int>(nullable: false),
+                    AbsenceTimes = table.Column<int>(nullable: false),
+                    Comments = table.Column<List<string>>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AttendanceCounts", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Categories",
                 columns: table => new
                 {
@@ -266,6 +281,7 @@ namespace yogaAshram.Migrations
                     Paid = table.Column<int>(nullable: false),
                     Contract = table.Column<int>(nullable: false),
                     WhatsAppGroup = table.Column<int>(nullable: false),
+                    DateCreate = table.Column<DateTime>(nullable: false),
                     MembershipId = table.Column<long>(nullable: true)
                 },
                 constraints: table =>
@@ -324,7 +340,8 @@ namespace yogaAshram.Migrations
                     CreatorId = table.Column<long>(nullable: false),
                     Debts = table.Column<int>(nullable: false),
                     CateringDate = table.Column<DateTime>(nullable: false),
-                    LastUpdate = table.Column<DateTime>(nullable: false)
+                    LastUpdate = table.Column<DateTime>(nullable: false),
+                    Type = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -389,14 +406,20 @@ namespace yogaAshram.Migrations
                     ClientId = table.Column<long>(nullable: false),
                     GroupId = table.Column<long>(nullable: false),
                     MembershipId = table.Column<long>(nullable: true),
-                    AttendanceDays = table.Column<int>(nullable: false),
                     AttendanceState = table.Column<int>(nullable: false),
                     IsChecked = table.Column<bool>(nullable: false),
-                    Date = table.Column<DateTime>(nullable: false)
+                    Date = table.Column<DateTime>(nullable: false),
+                    AttendanceCountId = table.Column<long>(nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Attendances", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Attendances_AttendanceCounts_AttendanceCountId",
+                        column: x => x.AttendanceCountId,
+                        principalTable: "AttendanceCounts",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Attendances_Clients_ClientId",
                         column: x => x.ClientId,
@@ -584,6 +607,11 @@ namespace yogaAshram.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_Attendances_AttendanceCountId",
+                table: "Attendances",
+                column: "AttendanceCountId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Attendances_ClientId",
                 table: "Attendances",
                 column: "ClientId");
@@ -769,6 +797,9 @@ namespace yogaAshram.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
+
+            migrationBuilder.DropTable(
+                name: "AttendanceCounts");
 
             migrationBuilder.DropTable(
                 name: "Clients");
