@@ -21,13 +21,14 @@ namespace yogaAshram.Models
         public DbSet<Attendance> Attendances { get; set; }
         public DbSet<Membership> Memberships { get; set; }
         public DbSet<ClientCategory> Categories { get; set; }
+    
         public DbSet<Payment> Payments { get; set; }
         public DbSet<ClientsMembership> ClientsMemberships { get; set; }
         public DbSet<AttendanceCount> AttendanceCounts { get; set; }
         public YogaAshramContext(DbContextOptions options) : base(options) 
         {
         }
-         protected override void OnModelCreating(ModelBuilder modelBuilder)
+           protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
              modelBuilder.Entity<ClientCategory>().HasData( 
@@ -38,48 +39,50 @@ namespace yogaAshram.Models
                  new {Id=Convert.ToInt64(5), Name = "Без скидок"} 
              );
              modelBuilder.Entity<Membership>().HasData( 
-                 new {Id=Convert.ToInt64(1), Name = "12 разовый абонемент в группу для пенсионеров (40% скидка)",
+                 new Membership {Id=Convert.ToInt64(10000), Name = "12 разовый абонемент в группу для пенсионеров (40% скидка)",
                      Price = 10000, AttendanceDays = 12, CategoryId = Convert.ToInt64(1)},
-                 new {Id=Convert.ToInt64(2), Name = "8 разовый абонемент в группу для пенсионеров (40% скидка)",
+                 new {Id=Convert.ToInt64(10001), Name = "8 разовый абонемент в группу для пенсионеров (40% скидка)",
                      Price = 8000, AttendanceDays = 8, CategoryId = Convert.ToInt64(1)},
                  
-                 new {Id=Convert.ToInt64(3), Name = "12 разовый абонемент с 15% скидкой для пенсионеров",
+                 new {Id=Convert.ToInt64(10002), Name = "12 разовый абонемент с 15% скидкой для пенсионеров",
                      Price = 14000, AttendanceDays = 12, CategoryId = Convert.ToInt64(1)},
-                 new {Id=Convert.ToInt64(4), Name = "8 разовый абонемент с 15% скидкой для пенсионеров",
+                 new {Id=Convert.ToInt64(10003), Name = "8 разовый абонемент с 15% скидкой для пенсионеров",
                      Price = 11000, AttendanceDays = 8, CategoryId = Convert.ToInt64(1)},
                  
-                 new {Id=Convert.ToInt64(5), Name = "12 разовый абонемент с 15% скидкой для школьников",
+                 new {Id=Convert.ToInt64(10004), Name = "12 разовый абонемент с 15% скидкой для школьников",
                      Price = 14000, AttendanceDays = 12, CategoryId = Convert.ToInt64(3)},
-                 new {Id=Convert.ToInt64(6), Name = "8 разовый абонемент с 15% скидкой для школьников",
+                 new {Id=Convert.ToInt64(10005), Name = "8 разовый абонемент с 15% скидкой для школьников",
                      Price = 11000, AttendanceDays = 8, CategoryId = Convert.ToInt64(3)},
                  
-                 new {Id=Convert.ToInt64(7), Name = "12 разовый абонемент с 15% скидкой для студентов",
+                 new {Id=Convert.ToInt64(10006), Name = "12 разовый абонемент с 15% скидкой для студентов",
                      Price = 14000, AttendanceDays = 12, CategoryId = Convert.ToInt64(2)},
-                 new {Id=Convert.ToInt64(8), Name = "8 разовый абонемент с 15% скидкой для студентов",
+                 new {Id=Convert.ToInt64(10007), Name = "8 разовый абонемент с 15% скидкой для студентов",
                      Price = 11000, AttendanceDays = 8, CategoryId = Convert.ToInt64(2)},
                  
-                 new {Id=Convert.ToInt64(9), Name = "12 разовый абонемент с 15% скидкой для корпоративных клиентов",
+                 new {Id=Convert.ToInt64(10008), Name = "12 разовый абонемент с 15% скидкой для корпоративных клиентов",
                      Price = 14000, AttendanceDays = 12, CategoryId = Convert.ToInt64(4)},
-                 new {Id=Convert.ToInt64(10), Name = "8 разовый абонемент с 15% скидкой для корпоративных клиентов",
+                 new {Id=Convert.ToInt64(10009), Name = "8 разовый абонемент с 15% скидкой для корпоративных клиентов",
                      Price = 11000, AttendanceDays = 8, CategoryId = Convert.ToInt64(4)},
                  
-                 new {Id=Convert.ToInt64(11), Name = "12 разовый абонемент в детскую группу (20% скидка)",
+                 new {Id=Convert.ToInt64(10010), Name = "12 разовый абонемент в детскую группу (20% скидка)",
                      Price = 13000, AttendanceDays = 12, CategoryId = Convert.ToInt64(3)},
-                 new {Id=Convert.ToInt64(12), Name = "8 разовый абонемент в детскую группу (20% скидка)",
+                 new {Id=Convert.ToInt64(10011), Name = "8 разовый абонемент в детскую группу (20% скидка)",
                      Price = 10500, AttendanceDays = 8, CategoryId = Convert.ToInt64(3)},
                  
-                 new {Id=Convert.ToInt64(13), Name = "12 разовый абонемент обычный",
+                 new {Id=Convert.ToInt64(10012), Name = "12 разовый абонемент обычный",
                      Price = 16000, AttendanceDays = 12, CategoryId = Convert.ToInt64(5)},
-                 new {Id=Convert.ToInt64(14), Name = "8 разовый абонемент обычный",
+                 new {Id=Convert.ToInt64(10013), Name = "8 разовый абонемент обычный",
                      Price = 13000, AttendanceDays = 8, CategoryId = Convert.ToInt64(5)},
                  
-                 new {Id=Convert.ToInt64(15), Name = "4 разовый абонемент",
+                 new {Id=Convert.ToInt64(10014), Name = "4 разовый абонемент",
                      Price = 8000, AttendanceDays = 4, CategoryId = Convert.ToInt64(5)},
-                 new {Id=Convert.ToInt64(16), Name = "1 разовый абонемент",
+                 new {Id=Convert.ToInt64(10015), Name = "1 разовый абонемент",
                      Price = 2500, AttendanceDays = 1, CategoryId = Convert.ToInt64(5)}
              );
          }
 
         
     }
+
+  
 }

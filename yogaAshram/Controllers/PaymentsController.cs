@@ -74,7 +74,8 @@ namespace yogaAshram.Controllers
         }
         public async Task<IActionResult> Index(PaymentsIndexModelView model, int pageTo = 1)
         {
-            var payments = _db.Payments;
+            var payments =
+                _db.Payments;
             if (payments.Count() > pageTo * model.PaymentsLength)
                 model.IsNextPage = true;
             if (String.IsNullOrEmpty(model.FilterByName) && model.SortSelect == SortPaymentsBy.None)

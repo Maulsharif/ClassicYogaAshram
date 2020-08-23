@@ -22,15 +22,25 @@ namespace yogaAshram
             var services = scope.ServiceProvider;
             try
             {
+                
                 var userManager = services.GetRequiredService<UserManager<Employee>>();
                 var roleManager = services.GetRequiredService<RoleManager<Role>>();
                 await RoleInitializer.Initialize(roleManager, userManager);
+             
+             
             }
             catch (Exception e)
             {
                 var logger = services.GetRequiredService<ILogger<Program>>();
-                logger.LogError(e, "Возникло исключение при инициализации ролей");
+                logger.LogError(e, "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ");
             }
+            
+            
+            
+            
+            
+            
+            
             host.Run();
         }
 

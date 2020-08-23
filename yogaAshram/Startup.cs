@@ -43,6 +43,7 @@ namespace yogaAshram
                 .AddDefaultTokenProviders();
             services.AddTransient<EmailService>();
             services.AddTransient<ClientServices>();
+            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

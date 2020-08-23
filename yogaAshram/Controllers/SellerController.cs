@@ -72,7 +72,7 @@ namespace yogaAshram.Controllers
                  user = await _db.TrialUserses.FirstOrDefaultAsync(p => p.Id == clientId);
               
                 user.Commentdate = DateTime.Now;
-                user.SellerComment = SellerComment;
+                user.SellerComments.Add(SellerComment);
                 _db.Entry(user).State = EntityState.Modified;
                 await _db.SaveChangesAsync();
             }
