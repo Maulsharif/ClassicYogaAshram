@@ -54,16 +54,13 @@ namespace yogaAshram.Controllers
         {
             if (ModelState.IsValid)
             {
-                //Insert
                 if (id == 0)
                 {
-
-                  
+                    
                     _db.Entry(membershipModel).State = EntityState.Added;
                     await _db.SaveChangesAsync();
 
                 }
-                //Update
                 else
                 {
                     try
@@ -85,9 +82,6 @@ namespace yogaAshram.Controllers
         }
 
        
-        public IActionResult Delete()
-        {
-            throw new NotImplementedException();
-        }
+      
     }
 }
