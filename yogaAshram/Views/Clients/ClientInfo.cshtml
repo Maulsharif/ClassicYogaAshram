@@ -25,7 +25,13 @@
             <td>@client.LessonTime</td>
             <td style="background: @client.Color"> @client.GetValueOfState()</td>
             <td>
-                @client.SellerComment<br/>
+                @if (@client.SellerComments != null)
+                             {
+                                 @foreach (string comment in @client.SellerComments)
+                                 {
+                                     <p class="small">@comment</p>
+                                 }
+                             }<br/>
                 <small class="text-muted">@client.Commentdate</small> 
             </td>
             <td>

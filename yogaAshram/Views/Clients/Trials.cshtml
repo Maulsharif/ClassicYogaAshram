@@ -38,11 +38,12 @@
           <td>@client.Group.Name</td>
           <td>@client.LessonTime.ToShortDateString()</td>
           <td style="background: @client.Color">@client.GetValueOfState()</td>
+           <td style="background: @client.Color">@client.FreeLessons</td>
           @if (User.IsInRole("admin"))
           {
               @if(@client.IsChecked==false || @client.State==State.willAttend)
               {<td>
-                                 <a asp-action="CheckAttendanceTrial" asp-route-groupId="@client.GroupId" asp-route-clientId="@client.ClientId" asp-route-branchId="@client.Group.Branch.Id">Отметить</a>
+                                 <a asp-action="CheckAttendanceTrial" asp-route-groupId="@client.GroupId" asp-route-clientId="@client.Id" asp-route-branchId="@client.Group.Branch.Id">Отметить</a>
                              </td>
                   
               }
@@ -54,7 +55,17 @@
               
           }
         
-          <td>@client.SellerComment</td>
+          <td>
+
+              @if (@client.SellerComments != null)
+              {
+                  @foreach (string comment in @client.SellerComments)
+                  {
+                      <p class="small">@comment</p>
+                  }
+              }
+                    
+          </td>
       </tr>
         
     }
