@@ -7,9 +7,8 @@ namespace yogaAshram.Models
 {
     public enum PaymentType
     {
-        None,
-        Cash,
-        Card
+        Pay,
+        Surcharge
     }
     public class Payment
     {
@@ -18,7 +17,9 @@ namespace yogaAshram.Models
         public long MembershipId { get; set; }
         public long ClientId { get; set; }
         public long CreatorId { get; set; }
-        public int Debts { get; set; }
+        public int Debts { get; set; } = 0;
+        public int CashSum { get; set; } = 0;
+        public int CardSum { get; set; } = 0;
         public DateTime CateringDate { get; set; } = DateTime.Now;
         public DateTime LastUpdate { get; set; } = DateTime.Now;
         public virtual Employee Creator { get; set; }
