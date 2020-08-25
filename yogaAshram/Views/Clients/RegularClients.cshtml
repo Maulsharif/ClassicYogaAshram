@@ -52,10 +52,7 @@
                     </button>
                     <a class="mt-2" style="DISPLAY: block;" asp-action="GetPdfDocument" asp-controller="Clients" asp-route-clientId="@client.Id">PDF Договор</a>
                   <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                    @if (@client.Paid == Paid.Не_оплачено)
-                    {
                         <button class="dropdown-item getPaymentCreateModal" clientId="@client.Id" >Провести платеж</button>
-                    }
                     @if (@client.WhatsAppGroup == WhatsAppGroup.Не_состоит_в_группе)
                     {
                         <button class="dropdown-item" data-toggle="modal" data-target="#groupInW-@client.Id">В гр. Whatsapp</button>
