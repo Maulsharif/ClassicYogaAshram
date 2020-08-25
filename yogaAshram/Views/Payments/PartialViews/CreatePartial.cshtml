@@ -10,6 +10,10 @@
                 </button>
             </div>
             <div class="modal-body">
+                @if (Model.Client.Paid == Paid.Есть_долг)
+                {
+                    <p class="text-center">Есть долг в размере @(-Model.Client.Balance) тг</p>
+                }
                 <fieldset disabled>
                     <div class="form-group">
                         <label id="membership-@Model.Client.Membership.Id" price="@Model.Client.Membership.Price" for="disabledTextInput">Тип абонемента</label>
@@ -31,13 +35,13 @@
                     <input id="commentPayment" type="text" class="form-control">
                     <p id="invalidComment" class="text-danger"></p>
                 </div>
-                @if (Model.Client.Paid != Paid.Оплачено)
+                @if (Model.Client.Paid == Paid.Не_оплачено)
                 {
-                    <input id="paymentTypeSelect" type="hidden" value="@PaymentType.Surcharge" />
+                    <input id="paymentTypeSelect" type="hidden" value="@PaymentType.Pay" />
                 }
                 else
                 {
-                    <input id="paymentTypeSelect" type="hidden" value="@PaymentType.Pay" />
+                    <input id="paymentTypeSelect" type="hidden" value="@PaymentType.Surcharge" />
                 }
             </div>
                 <div class="modal-footer">

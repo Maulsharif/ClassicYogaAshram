@@ -5,7 +5,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace yogaAshram.Migrations
 {
-    public partial class initial : Migration
+    public partial class Initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -278,6 +278,7 @@ namespace yogaAshram.Migrations
                     GroupId = table.Column<long>(nullable: false),
                     CreatorId = table.Column<long>(nullable: false),
                     Comments = table.Column<List<string>>(nullable: true),
+                    Balance = table.Column<int>(nullable: false),
                     Paid = table.Column<int>(nullable: false),
                     Contract = table.Column<int>(nullable: false),
                     WhatsAppGroup = table.Column<int>(nullable: false),
@@ -339,6 +340,8 @@ namespace yogaAshram.Migrations
                     ClientId = table.Column<long>(nullable: false),
                     CreatorId = table.Column<long>(nullable: false),
                     Debts = table.Column<int>(nullable: false),
+                    CashSum = table.Column<int>(nullable: false),
+                    CardSum = table.Column<int>(nullable: false),
                     CateringDate = table.Column<DateTime>(nullable: false),
                     LastUpdate = table.Column<DateTime>(nullable: false),
                     Type = table.Column<int>(nullable: false)

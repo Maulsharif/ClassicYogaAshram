@@ -11,8 +11,8 @@ using yogaAshram.Models;
 namespace yogaAshram.Migrations
 {
     [DbContext(typeof(YogaAshramContext))]
-    [Migration("20200821114033_initial")]
-    partial class initial
+    [Migration("20200825120244_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -260,6 +260,9 @@ namespace yogaAshram.Migrations
 
                     b.Property<string>("Address")
                         .HasColumnType("text");
+
+                    b.Property<int>("Balance")
+                        .HasColumnType("integer");
 
                     b.Property<int>("ClientType")
                         .HasColumnType("integer");
@@ -694,6 +697,12 @@ namespace yogaAshram.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<int>("CardSum")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("CashSum")
+                        .HasColumnType("integer");
 
                     b.Property<DateTime>("CateringDate")
                         .HasColumnType("timestamp without time zone");
