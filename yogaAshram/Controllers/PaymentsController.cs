@@ -204,6 +204,10 @@ namespace yogaAshram.Controllers
             }
             return BadRequest();
         }
+        public async Task<IActionResult> GetSumAjax(PaymentsDates date)
+        {
+            return Json(await GetFilteredByDate(date).SumAsync(p => p.CashSum + p.CardSum));
+        }
         [Authorize(Roles = "chief")]
         public async Task<IActionResult> GetEditModalAjax(long paymentId)
         {

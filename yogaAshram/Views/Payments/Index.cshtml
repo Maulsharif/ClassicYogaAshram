@@ -5,14 +5,71 @@
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.8/css/all.css" />
 <div class="card text-center">
     <div class="card-header">
-        <form class="mb-3 border-bottom" asp-action="Index" style="margin:auto">
+        <div  style="margin-left:150px; margin-right:150px">
+            <form class="mb-3 border-bottom" asp-action="Index">
+                <div class="form-row align-items-center">
+                    <div class="col-auto">
+                        <input placeholder="Поиск клиента по имени" type="text" class="form-control mb-2" asp-for="FilterByName">
+                    </div>
+                    <div class="col-auto">
+                        <div class="form-group">
+                            <select asp-for="ByDate" class="form-control">
+                                <option value="@PaymentsDates.AllTime">За все время</option>
+                                <option value="@PaymentsDates.LastDay">За последний день</option>
+                                <option value="@PaymentsDates.LastWeek">За последнюю неделю</option>
+                                <option value="@PaymentsDates.LastMonth">За последний месяц</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        <button type="submit" class="btn btn-primary mb-2">Фильтровать</button>
+                    </div>
+                </div>
+            </form>
+            <form asp-action="Index" class="mt-3">
+                <div class="form-row align-items-center">
+                    <div class="col-auto">
+                        <div class="form-group">
+                            <select asp-for="SortSelect" class="form-control">
+                                <option value="">Сортирока по</option>
+                                <option value="@SortPaymentsBy.Memberships">По абонементу</option>
+                                <option value="@SortPaymentsBy.Price">По цене</option>
+                                <option value="@SortPaymentsBy.Group">По группе</option>
+                                <option value="@SortPaymentsBy.Comment">По комментарию</option>
+                                <option value="@SortPaymentsBy.Sickness">По болезни</option>
+                                <option value="@SortPaymentsBy.Debtors">По должникам</option>
+                                <option value="@SortPaymentsBy.Debts">По задолженности</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        <div class="form-group">
+                            <select asp-for="ByDate" class="form-control">
+                                <option value="@PaymentsDates.AllTime">За все время</option>
+                                <option value="@PaymentsDates.LastDay">За последний день</option>
+                                <option value="@PaymentsDates.LastWeek">За последнюю неделю</option>
+                                <option value="@PaymentsDates.LastMonth">За последний месяц</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        <div class="form-check mb-2">
+                            <input asp-for="SortReverse" class="form-check-input" type="checkbox" id="autoSizingCheck">
+                            <label class="form-check-label" for="autoSizingCheck">
+                                В обратном порядке
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        <button type="submit" class="btn btn-primary mb-2">Сортировать</button>
+                    </div>
+                </div>
+            </form>
             <div class="form-row align-items-center">
                 <div class="col-auto">
-                    <input placeholder="Поиск клиента по имени" type="text" class="form-control mb-2" asp-for="FilterByName">
-                </div>
-                <div class="col-auto">
-                    <div class="form-group">
-                        <select asp-for="ByDate" class="form-control">
+                    <div class="form-group col-md-4">
+                        <label>Получить сумму</label>
+                        <select id="getSumDates" asp-for="ByDate" class="form-control">
                             <option value="@PaymentsDates.AllTime">За все время</option>
                             <option value="@PaymentsDates.LastDay">За последний день</option>
                             <option value="@PaymentsDates.LastWeek">За последнюю неделю</option>
@@ -21,50 +78,12 @@
                     </div>
                 </div>
                 <div class="col-auto">
-                    <button type="submit" class="btn btn-primary mb-2">Фильтровать</button>
+                    <button id="getSumBtn" type="button" class="btn btn-primary">Получить</button>
                 </div>
             </div>
-        </form>
-        <form asp-action="Index" class="mt-3" style="margin:auto">
-            <div class="form-row align-items-center">
-                <div class="col-auto">
-                    <div class="form-group">
-                        <select asp-for="SortSelect" class="form-control">
-                            <option value="">Сортирока по</option>
-                            <option value="@SortPaymentsBy.Memberships">По абонементу</option>
-                            <option value="@SortPaymentsBy.Price">По цене</option>
-                            <option value="@SortPaymentsBy.Group">По группе</option>
-                            <option value="@SortPaymentsBy.Comment">По комментарию</option>
-                            <option value="@SortPaymentsBy.Sickness">По болезни</option>
-                            <option value="@SortPaymentsBy.Debtors">По должникам</option>
-                            <option value="@SortPaymentsBy.Debts">По задолженности</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="col-auto">
-                    <div class="form-group">
-                        <select asp-for="ByDate" class="form-control">
-                            <option value="@PaymentsDates.AllTime">За все время</option>
-                            <option value="@PaymentsDates.LastDay">За последний день</option>
-                            <option value="@PaymentsDates.LastWeek">За последнюю неделю</option>
-                            <option value="@PaymentsDates.LastMonth">За последний месяц</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="col-auto">
-                    <div class="form-check mb-2">
-                        <input asp-for="SortReverse" class="form-check-input" type="checkbox" id="autoSizingCheck">
-                        <label class="form-check-label" for="autoSizingCheck">
-                            В обратном порядке
-                        </label>
-                    </div>
-                </div>
-                <div class="col-auto">
-                    <button type="submit" class="btn btn-primary mb-2">Сортировать</button>
-                </div>
-            </div>
-        </form>
+        <p id="paymentsSum" class="mt-3"></p>
     </div>
+        </div>
     <div class="card-body">
         <table class="table">
             <thead>
@@ -161,4 +180,11 @@
         }
         </script>
     }
+    <script>
+        $('#getSumBtn').on('click', function myfunction() {
+            $.get('@Url.Action("GetSumAjax", "Payments")/?date=' + $('#getSumDates').val(), function (data) {
+                $('#paymentsSum').html('Общая сумма - ' + data);
+            })
+        })
+    </script>
 }
