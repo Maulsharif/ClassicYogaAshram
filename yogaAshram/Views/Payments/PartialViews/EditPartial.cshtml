@@ -15,17 +15,17 @@
                     <input value="@Model.Comment" id="commentPaymentEdit" type="text" class="form-control">
                     <p id="invalidCommentEdit" class="text-danger"></p>
                 </div>
-            </div>
-            <div class="form-group">
-                <label>Оплата налом</label>
-                <input id="cashSumEdit" type="text" class="form-control">
-                <p id="invalidCashSumEdit" class="text-danger"></p>
-            </div>
-            <div class="form-group">
-                <label>Безнал</label>
-                <input id="cardSumEdit" type="text" class="form-control">
-                <p id="invalidCardSumEdit" class="text-danger"></p>
-            </div>
+                <div class="form-group">
+                    <label>Оплата налом</label>
+                    <input value="@Model.CashSum." id="cashSumEdit" type="text" class="form-control">
+                    <p id="invalidCashSumEdit" class="text-danger"></p>
+                </div>
+                <div class="form-group">
+                    <label>Безнал</label>
+                    <input value="@Model.CardSum" id="cardSumEdit" type="text" class="form-control">
+                    <p id="invalidCardSumEdit" class="text-danger"></p>
+                </div>
+            </div>          
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
                 <button id="submitPaymentEdit" type="button" class="btn btn-primary">Сохранить</button>

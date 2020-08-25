@@ -152,6 +152,8 @@ namespace yogaAshram.Controllers
                 int sum = (int)model.CashSum + (int)model.CardSum;
                 Employee employee = await _userManager.GetUserAsync(User);
                 Client client = await _db.Clients.FindAsync(model.ClientId);
+                if (client.Balance < 0 && model.Type == PaymentType.Pay)
+                    return BadRequest();
                 if (client.Membership is null && model.Type == PaymentType.Pay)
                     return BadRequest();
                 int balance = client.Balance;
@@ -167,15 +169,14 @@ namespace yogaAshram.Controllers
                     CreatorId = employee.Id,
                     CashSum = (int)model.CashSum,
                     CardSum = (int)model.CardSum,
-                    Debts = debts,
                     Type = model.Type
                 };
                 if (debts > 0 && model.Type == PaymentType.Pay)
                 {
                     client.Paid = Paid.Есть_долг;
                     client.Color = "dark";
-                    payment.Debts =  debts;
                     client.Balance -= debts;
+                    payment.Debts = -client.Balance;
                 }
                 else
                 {
@@ -184,6 +185,7 @@ namespace yogaAshram.Controllers
                         client.Paid = Paid.Оплачено;
                         client.Color = "";
                         client.Balance -= debts;
+                        payment.Debts = 0;
                     }
                     else
                     {
@@ -192,11 +194,12 @@ namespace yogaAshram.Controllers
                         {
                             client.Paid = Paid.Оплачено;
                             client.Color = "";
+                            payment.Debts = 0;
                         }
+                        else
+                            payment.Debts = -client.Balance;
                     }             
-                }              
-                if (client.Balance < 0 && model.Type == PaymentType.Pay && client.Balance < 0)
-                    return BadRequest();
+                }                              
                 _db.Entry(client).State = EntityState.Modified;
                 _db.Entry(payment).State = EntityState.Added;
                 await _db.SaveChangesAsync();
@@ -237,23 +240,27 @@ namespace yogaAshram.Controllers
                 Payment payment = await _db.Payments.FindAsync(model.PaymentId);
                 int oldSum = payment.CashSum + payment.CardSum;
                 Client client = payment.Client;
-                if (payment.Type == PaymentType.Pay)
-                    client.Balance +=  payment.Debts;
-                else
-                    client.Balance -= oldSum;
                 if (payment is null)
-                    return NotFound();
-                int debts = payment.Membership.Price - sum - client.Balance;               
+                    return NotFound();                             
                 payment.Comment = model.Comment;
                 payment.CashSum = (int)model.CashSum;
                 payment.CardSum = (int)model.CardSum;
                 payment.LastUpdate = DateTime.Now;
+                if (payment.Type == PaymentType.Pay)
+                    client.Balance += payment.Debts;
+                else
+                    client.Balance -= oldSum;
                 payment.Type = model.Type;
+                int balance = client.Balance;
+                if (balance < 0)
+                    balance = 0;
+                int debts = payment.Membership.Price - sum - balance;
                 if (debts > 0 && client.Balance < debts && model.Type == PaymentType.Pay)
                 {
                     client.Paid = Paid.Есть_долг;
                     client.Color = "dark";
-                    payment.Debts = debts;
+                    client.Balance -= debts;
+                    payment.Debts = -client.Balance;
                 }
                 else
                 {
@@ -270,7 +277,10 @@ namespace yogaAshram.Controllers
                         {
                             client.Paid = Paid.Оплачено;
                             client.Color = "";
+                            payment.Debts = 0;
                         }
+                        else
+                            payment.Debts = -client.Balance;
                     }
                 }
                 _db.Entry(client).State = EntityState.Modified;
