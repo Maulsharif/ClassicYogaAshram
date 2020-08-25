@@ -259,6 +259,9 @@ namespace yogaAshram.Migrations
                     b.Property<string>("Address")
                         .HasColumnType("text");
 
+                    b.Property<int>("Balance")
+                        .HasColumnType("integer");
+
                     b.Property<int>("ClientType")
                         .HasColumnType("integer");
 
@@ -692,6 +695,12 @@ namespace yogaAshram.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<int>("CardSum")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("CashSum")
+                        .HasColumnType("integer");
 
                     b.Property<DateTime>("CateringDate")
                         .HasColumnType("timestamp without time zone");
