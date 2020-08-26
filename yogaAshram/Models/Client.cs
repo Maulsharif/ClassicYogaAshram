@@ -60,22 +60,5 @@ namespace yogaAshram.Models
         public long? MembershipId { get; set; }
         public virtual Membership Membership { get; set; }
         public virtual List<Attendance> Attendances { get; set; }
-
-        public override string ToString()
-        {
-            return $"Я: {NameSurname}\n" +
-                   "(Ф.И.О. полностью)\n" +
-                   "настоящим подтверждаю, что с Правилами посещения и условиями абонемента йога- центра\n" +
-                   "Classical Yoga Ashram ознакомлен и согласен. В дальнейшем иметь претензий не буду.\n" +
-                   $"Информация о практикующем: {Source}\n" +
-                   $"Место работы и должность: {WorkPlace}\n " +
-                   $"Моб.: {PhoneNumber}\n" +
-                   $"Дата рождения: {DateOfBirth}\n" +
-                   $"E-mail: {Email}\n" +
-                   $"Наличие заболеваний: {Sickness}\n" +
-                   "Дата: \n" +
-                   "Подпись: ";
-        }
     }
-    
 }
