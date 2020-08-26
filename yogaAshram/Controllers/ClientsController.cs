@@ -411,16 +411,7 @@ namespace yogaAshram.Controllers
         [HttpPost]
         public async Task<IActionResult> RegularAttendance(DateTime date, long clientId, int state, long attendanceId)
         {
-            Client client = _db.Clients.FirstOrDefault(c => c.Id == clientId);
-            int maxDays = client.Membership.AttendanceDays;
-            List<Attendance> attendances = _db.Attendances.Where(a => a.ClientId == clientId).ToList();
-            List<Attendance> attendanceToCheckState = _db.Attendances
-                .Where(a => a.AttendanceState == AttendanceState.notattended)
-                .Where(a => a.ClientId == clientId)
-                .ToList();
             
-            
-
 
             List<Attendance> attendancesToCheckDate = _db.Attendances.Where(a => a.IsChecked)
                 .Where(a => a.ClientId == clientId).ToList();
@@ -436,6 +427,13 @@ namespace yogaAshram.Controllers
             attendance.IsChecked = true;
             attendance.AttendanceState = (AttendanceState) state;
             attendance.AttendanceCount.AttendingTimes -= 1;
+            if (attendance.AttendanceCount.AttendingTimes == 0)
+            {
+                foreach (var attendanceDays in _db.Attendances.Where(a => a.ClientId == clientId && a.Date > date))
+                {
+                    _db.Entry(attendanceDays).State = EntityState.Deleted;
+                }
+            }
             if (attendance.AttendanceCount.AbsenceTimes < 0)
                 return Content("errorAttend");
             

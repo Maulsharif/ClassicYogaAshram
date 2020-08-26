@@ -19,6 +19,15 @@
                         }
                     </select>
                 </div>
+                <div class="form-group">
+                    <label>Выберите группу</label>
+                    <select class="form-control" id="groupSelect">
+                        @foreach (var group in ViewBag.Groups)
+                        {
+                            <option value="@group.Id">@group.Name</option>
+                        }
+                    </select>
+                </div>
                 <hr />
                 <h5>Проведение платежа</h5>
                 @if (Model.Client.Paid == Paid.Есть_долг)
@@ -29,12 +38,6 @@
                 {
                     <p class="text-center">У клиента есть предоплата в размере @(Model.Client.Balance) тг</p>
                 }
-                <fieldset disabled>
-                    <div class="form-group">
-                        <label id="membership-@Model.Client.Membership.Id" price="@Model.Client.Membership.Price" for="disabledTextInput">Тип абонемента</label>
-                        <input value="@Model.Client.Membership.Category.Name @Model.Client.Membership.Price тг. @Model.Client.Membership.AttendanceDays посещений" type="text" id="disabledTextInput" class="form-control">
-                    </div>
-                </fieldset>
                 <div class="form-group">
                     <label>Оплата налом</label>
                     <input id="cashSumExtend" type="text" class="form-control">
@@ -63,7 +66,7 @@
         }
         else {
             $.ajax({
-                url: '@Url.Action("ExtendAjax", "Memberships")',
+                url: '@Url.Action("ExtendAjax", "Membership")',
                 type: "POST",
                 datatype: "json",
                 data: {
@@ -72,7 +75,8 @@
                     "CardSum": $('#cardSumExtend').val(),
                     "Type": $('#paymentTypeSelect').val(),
                     "CashSum": $('#cashSumExtend').val(),
-                    "MembershipId": $('#membershipSelect')
+                    "MembershipId": $('#membershipSelect').val(),
+                    "GroupId": $('groupSelect').val()
                 },
                 success: function (data) {
                     if (data) {
