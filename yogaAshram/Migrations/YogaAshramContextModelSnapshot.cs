@@ -178,6 +178,9 @@ namespace yogaAshram.Migrations
                     b.Property<List<string>>("Comments")
                         .HasColumnType("text[]");
 
+                    b.Property<int>("FrozenTimes")
+                        .HasColumnType("integer");
+
                     b.HasKey("Id");
 
                     b.ToTable("AttendanceCounts");

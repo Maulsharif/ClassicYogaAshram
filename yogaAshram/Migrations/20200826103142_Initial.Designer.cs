@@ -11,7 +11,7 @@ using yogaAshram.Models;
 namespace yogaAshram.Migrations
 {
     [DbContext(typeof(YogaAshramContext))]
-    [Migration("20200826071459_Initial")]
+    [Migration("20200826103142_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -179,6 +179,9 @@ namespace yogaAshram.Migrations
 
                     b.Property<List<string>>("Comments")
                         .HasColumnType("text[]");
+
+                    b.Property<int>("FrozenTimes")
+                        .HasColumnType("integer");
 
                     b.HasKey("Id");
 

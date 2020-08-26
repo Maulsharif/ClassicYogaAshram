@@ -62,6 +62,7 @@ namespace yogaAshram.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     AttendingTimes = table.Column<int>(nullable: false),
                     AbsenceTimes = table.Column<int>(nullable: false),
+                    FrozenTimes = table.Column<int>(nullable: false),
                     Comments = table.Column<List<string>>(nullable: true)
                 },
                 constraints: table =>
