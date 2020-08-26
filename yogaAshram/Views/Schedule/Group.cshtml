@@ -142,7 +142,7 @@
                         {
                         	<div >	
                         	<td class="bg-danger">										        
-                        		<a href="#" >Продлить абонемент</a>														        
+                        		<button class="getMembershipExtendModal" clientId="@attendance.ClientId" >Продлить абонемент</button>														        
                         		</td> 
                         	</div>	
                         }
@@ -464,6 +464,9 @@
 	@{
 		 await Html.RenderPartialAsync("_ValidationScriptsPartial");
 	 }
+	 @{
+     		 await Html.RenderPartialAsync("../Membership/PartialViews/GetExtendModalScripts");
+     }
 	<script type="text/javascript">
 	 	$(".input").focus(function() {
 	 		$(this).parent().addClass("focus");
