@@ -118,5 +118,9 @@ namespace yogaAshram.Controllers
         {
             return !_db.Memberships.Any(p => p.Id == id);
         }
+        public bool CheckMemberhipId(long membershipId)
+        {
+            return !_db.Memberships.Any(p => p.Id == membershipId);
+        }
     }
 }
