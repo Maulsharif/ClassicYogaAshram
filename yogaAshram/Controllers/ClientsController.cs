@@ -366,7 +366,7 @@ namespace yogaAshram.Controllers
             await _db.SaveChangesAsync();
             return RedirectToAction("RegularClients");
         }
-
+        
         [HttpPost]
         public async Task<IActionResult> Comment(long? clientId, string comment)
         {
@@ -384,35 +384,17 @@ namespace yogaAshram.Controllers
             await _db.SaveChangesAsync();
             return RedirectToAction("RegularClients");
         }
-
+        
         public IActionResult GetPdfDocument(long? clientId)
         {
             Client client = _db.Clients.FirstOrDefault(c => c.Id == clientId);
-            PdfDocument document = new PdfDocument();
-
-            PdfPage page = document.AddPage();
-            XGraphics gfx = XGraphics.FromPdfPage(page);
-            XFont font = new XFont("Times New Roman", 13, XFontStyle.Bold);
-            XTextFormatter tf = new XTextFormatter(gfx);
-
-            XRect rect = new XRect(0, 50, 600, 900);
-            gfx.DrawRectangle(XBrushes.White, rect);
-            tf.Alignment = XParagraphAlignment.Center;
-            tf.DrawString(client.ToString(), font, XBrushes.Black, rect, XStringFormats.TopLeft);
-
-
-            MemoryStream stream = new MemoryStream();
-            document.Save(stream);
-            stream.Position = 0;
-            FileStreamResult fileStreamResult = new FileStreamResult(stream, "application/pdf");
-            fileStreamResult.FileDownloadName = $"{client.NameSurname}.pdf";
-            return fileStreamResult;
+            ContractPdfService contractPdf = new ContractPdfService(_db);
+            return contractPdf.RenderPdfDocument(client.Id);
         }
 
         [HttpPost]
         public async Task<IActionResult> RegularAttendance(DateTime date, long clientId, int state, long attendanceId)
         {
-
             Client client = _db.Clients.FirstOrDefault(c => c.Id == clientId);
             int maxDays = client.Membership.AttendanceDays;
             List<Attendance> attendances = _db.Attendances.Where(a => a.ClientId == clientId).ToList();
