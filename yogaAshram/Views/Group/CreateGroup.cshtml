@@ -30,9 +30,21 @@
                 <input class="form-control mb-4" asp-for="Name"/>
             </div>
             <div>
-                <span asp-validation-for="CoachName"></span>
-                <label>Имя тренера</label><br/>
-                <input class="form-control mb-4" asp-for="CoachName"/>
+                <span asp-validation-for="CoachId"></span>
+                <label> Тренер</label><br/>
+                 <select class="form-control mb-4" asp-for="CoachId">
+                                @if (Enumerable.Count(@ViewBag.Coaches) == 0)
+                                {
+                                    <p>Не найдено ни одного тренера</p>
+                                }
+                                else
+                                {
+                                    @foreach (Employee coach in (IEnumerable) @ViewBag.Coaches)
+                                    {
+                                        <option value="@coach.Id">@coach.NameSurname</option>
+                                    }
+                                }
+                            </select>
             </div>
             <div>
                 <br/>
