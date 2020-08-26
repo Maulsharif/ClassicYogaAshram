@@ -12,7 +12,17 @@ namespace yogaAshram.Models.ModelViews
         Price,
         Group,
         Comment,
-        Sickness
+        Sickness,
+        Debtors,
+        Debts
+    }
+
+    public enum PaymentsDates
+    {
+        AllTime,
+        LastMonth,
+        LastWeek,
+        LastDay
     }
     public class PaymentsIndexModelView
     {
@@ -20,6 +30,7 @@ namespace yogaAshram.Models.ModelViews
         public string FilterByName { get; set; }
         public bool SortReverse { get; set; } = false;
         public SortPaymentsBy SortSelect { get; set; }
+        public PaymentsDates ByDate { get; set; }
         public int CurrentPage { get; set; } = 1;
         public bool IsNextPage { get; set; } = false;
         public int PaymentsLength { get; set; } = 20;

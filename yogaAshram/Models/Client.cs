@@ -52,7 +52,8 @@ namespace yogaAshram.Models
         
         public virtual Employee Creator { get; set; }
         public List<string> Comments { get; set; }
-        
+
+        public int Balance { get; set; }
         public Paid Paid { get; set; }
         public Contract Contract{ get; set; }
         public WhatsAppGroup WhatsAppGroup{ get; set; }

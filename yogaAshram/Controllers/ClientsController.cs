@@ -301,10 +301,20 @@ namespace yogaAshram.Controllers
                 var datesOfAttendance = _clientServices.DatesForAttendance(
                     schedule.ClientsCreateModelView.StartDate, schedule.ClientsCreateModelView.GroupId,
                     membership.AttendanceDays + 3);
+                
+                int daysFrozen = 0;
+                if (membership.AttendanceDays == 12)
+                    daysFrozen = 3;
+                else if (membership.AttendanceDays == 8)
+                    daysFrozen = 2;
+                else
+                    daysFrozen = 0;
+                
                 AttendanceCount attendanceCount = new AttendanceCount()
                 {
                     AttendingTimes = membership.AttendanceDays,
-                    AbsenceTimes = 0
+                    AbsenceTimes = 0,
+                    FrozenTimes = daysFrozen
                 };
                 _db.Entry(attendanceCount).State = EntityState.Added;
                 for (int i = 0; i < membership?.AttendanceDays + 3; i++)
@@ -402,7 +412,8 @@ namespace yogaAshram.Controllers
                 .Where(a => a.AttendanceState == AttendanceState.notattended)
                 .Where(a => a.ClientId == clientId)
                 .ToList();
-
+            
+            
 
 
             List<Attendance> attendancesToCheckDate = _db.Attendances.Where(a => a.IsChecked)
@@ -419,10 +430,13 @@ namespace yogaAshram.Controllers
             attendance.IsChecked = true;
             attendance.AttendanceState = (AttendanceState) state;
             attendance.AttendanceCount.AttendingTimes -= 1;
-
+            if (attendance.AttendanceCount.AbsenceTimes < 0)
+                return Content("errorAttend");
+            
             if (attendance.AttendanceState == AttendanceState.notattended)
                 attendance.AttendanceCount.AbsenceTimes += 1;
-
+            else if (attendance.AttendanceState == AttendanceState.frozen && attendance.AttendanceCount.FrozenTimes > 0)
+                attendance.AttendanceCount.FrozenTimes -= 1;
             _db.Entry(attendance).State = EntityState.Modified;
             
             await _db.SaveChangesAsync();

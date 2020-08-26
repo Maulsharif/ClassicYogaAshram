@@ -80,8 +80,15 @@ namespace yogaAshram.Controllers
             }
             return Json(new { isValid = false, html = Helper.RenderRazorViewToString(this, "AddOrEdit", membershipModel) });
         }
-
-       
-      
-    }
+        [HttpGet]
+        // public async Task<IActionResult> GetExtendModalAjax()
+        // {
+        //     return PartialView();
+        // }
+        [HttpPost]
+        public async Task<IActionResult> ExtendAjax()
+        {
+            return Json(true);
+        }
+    }   
 }

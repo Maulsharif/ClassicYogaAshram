@@ -10,35 +10,39 @@
                 </button>
             </div>
             <div class="modal-body">
-                  <fieldset disabled>
+                @if (Model.Client.Paid == Paid.Есть_долг)
+                {
+                    <p class="text-center">Есть долг в размере @(-Model.Client.Balance) тг</p>
+                }
+                <fieldset disabled>
+                    <div class="form-group">
+                        <label id="membership-@Model.Client.Membership.Id" price="@Model.Client.Membership.Price" for="disabledTextInput">Тип абонемента</label>
+                        <input value="@Model.Client.Membership.Category.Name @Model.Client.Membership.Price тг. @Model.Client.Membership.AttendanceDays посещений" type="text" id="disabledTextInput" class="form-control">
+                    </div>
+                </fieldset>
                 <div class="form-group">
-                    <label id="membership-@Model.Client.Membership.Id" price="@Model.Client.Membership.Price" for="disabledTextInput">Тип абонемента</label>
-                    <input value="@Model.Client.Membership.Category.Name @Model.Client.Membership.Price тг. @Model.Client.Membership.AttendanceDays посещений" type="text" id="disabledTextInput" class="form-control">
+                    <label>Оплата налом</label>
+                    <input id="cashSum" type="text" class="form-control">
+                    <p id="invalidCashSum" class="text-danger"></p>
                 </div>
-                      </fieldset>
                 <div class="form-group">
-                    <label>Выберите тип оплаты<span class="text-danger">*</span></label>
-                    <select class="form-control" id="paymentTypeSelect">
-                        <option>...</option>
-                        <option value="@PaymentType.Cash">
-                            Нал
-                        </option>
-                        <option value="@PaymentType.Card">
-                            Безнал
-                        </option>
-                    </select>
-                    <p id="invalidPaymentType" class="text-danger"></p>
+                    <label>Безнал</label>
+                    <input id="cardSum" type="text" class="form-control">
+                    <p id="invalidCardSum" class="text-danger"></p>
                 </div>
                 <div class="form-group">
                     <label>Добавьте комментарий</label>
                     <input id="commentPayment" type="text" class="form-control">
                     <p id="invalidComment" class="text-danger"></p>
                 </div>
-                <div class="form-group">
-                    <label>Задолженность клиента (если присутствует)</label>
-                    <input id="paymentsDebts" type="number" class="form-control">
-                    <p id="invalidDebts" class="text-danger"></p>
-                </div>
+                @if (Model.Client.Paid == Paid.Не_оплачено)
+                {
+                    <input id="paymentTypeSelect" type="hidden" value="@PaymentType.Pay" />
+                }
+                else
+                {
+                    <input id="paymentTypeSelect" type="hidden" value="@PaymentType.Surcharge" />
+                }
             </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
@@ -48,49 +52,26 @@
     </div>
 </div>
 <script>
-    function checkRequired(data) {
-        if (data.length == 0) {
-            return true;
-        }
-        return false;
-    }
     $('#submitPaymentCreate').on('click', function () {
-        var truth = true;
-        var paymentType = $('#paymentTypeSelect').val();
-        if (paymentType == '...') {
-            $('#invalidPaymentType').html('Выберите тип оплаты');
-            truth = false;
-        }
-        else {
-             $('#invalidPaymentType').html('');
-        }
-        var debts = $('#paymentDebts').val();
-        if (debts > $('#membership-@Model.Client.MembershipId').attr('price')) {
-            $('#invalidDebts').html('Сумма долгов не должна превышать стоимости абонемента');
-        }
-        else if (truth) {
-            $('#invalidDebts').html('');
-            $.ajax({
-                url: '@Url.Action("CreateAjax", "Payments")',
-                type: "POST",
-                datatype: "json",
-                data: {
-                    "Comment": $("#commentPayment").val(),
-                    "MembershipId": @Model.Client.MembershipId,
-                    "ClientId": @Model.ClientId,
-                    "Type": paymentType,
-                    "Debts": $('#paymentsDebts').val()
-                },
-                success: function (data) {
-                    if (data) {
-                        $('#paymentCreateModal').modal('hide');
-                        $('#paymentDebts').val('');
-                        $("#commentPayment").val();
-                        document.location.reload();
-                    }
+        $.ajax({
+            url: '@Url.Action("CreateAjax", "Payments")',
+            type: "POST",
+            datatype: "json",
+            data: {
+                "Comment": $("#commentPayment").val(),
+                "ClientId": @Model.ClientId,
+                "CardSum": $('#cardSum').val(),
+                "Type": $('#paymentTypeSelect').val(),
+                "CashSum": $('#cashSum').val()
+            },
+            success: function (data) {
+                if (data) {
+                    $('#paymentCreateModal').modal('hide');
+                    $("#commentPayment").val();
+                    document.location.reload();
                 }
-            })
-        }      
+            }
+        })
     })
 </script>
 
