@@ -680,9 +680,12 @@
                  if(data === "errorCheckedAlready"){
                  $('#log').text(clientName + ' уже отмечен');         
                  } 
-                 if(data === "errorAttend"){
+                 else if(data === "errorAttend"){
                  $('#log').text(clientName + ' пора обновить абонемент');         
                  } 
+                 else if(data === "errorFrozen"){
+                 $('#log').text('У ' + clientName + ' использованы все заморозки');         
+                 }
                  else if (data === "success"){                 
                   $('#log').text(clientName + ' успешно отмечен');                     
                     $("#absTimes").load(" #absTimes");

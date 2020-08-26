@@ -1,0 +1,86 @@
+﻿@model MembershipExtendModelView
+<!-- Modal -->
+<div class="modal fade" id="extendMembershipModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Продление абонемента</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Выберите тип абонемента</label>
+                    <select class="form-control" id="membershipSelect">
+                        @foreach (var membership in ViewBag.Memberships)
+                        {
+                            <option value="@membership.Id">@membership.Name</option>
+                        }
+                    </select>
+                </div>
+                <hr />
+                <h5>Проведение платежа</h5>
+                @if (Model.Client.Paid == Paid.Есть_долг)
+                {
+                    <p class="text-center">Есть долг в размере <span id="debts">@(-Model.Client.Balance)</span> тг</p>
+                }
+                @if (Model.Client.Balance > 0)
+                {
+                    <p class="text-center">У клиента есть предоплата в размере @(Model.Client.Balance) тг</p>
+                }
+                <fieldset disabled>
+                    <div class="form-group">
+                        <label id="membership-@Model.Client.Membership.Id" price="@Model.Client.Membership.Price" for="disabledTextInput">Тип абонемента</label>
+                        <input value="@Model.Client.Membership.Category.Name @Model.Client.Membership.Price тг. @Model.Client.Membership.AttendanceDays посещений" type="text" id="disabledTextInput" class="form-control">
+                    </div>
+                </fieldset>
+                <div class="form-group">
+                    <label>Оплата налом</label>
+                    <input id="cashSumExtend" type="text" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label>Безнал</label>
+                    <input id="cardSumExtend" type="text" class="form-control">
+                    <p id="invalidExtendSum" class="text-danger"></p>
+                </div>
+                <div class="form-group">
+                    <label>Добавьте комментарий</label>
+                    <input id="commentPayment" type="text" class="form-control">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+                <button id="submitPaymentCreate" type="button" class="btn btn-primary">Добавить</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $('#submitPaymentCreate').on('click', function () {
+        if ($('#debts').val() > $('#cashSumExtend').val() + $('#cardSumExtend').val()) {
+            $('#invalidExtendSum').html("Минимальная сумма платежа - " + $('#debts').val() + ' (размер долга)')
+        }
+        else {
+            $.ajax({
+                url: '@Url.Action("ExtendAjax", "Memberships")',
+                type: "POST",
+                datatype: "json",
+                data: {
+                    "Comment": $("#commentPayment").val(),
+                    "ClientId": @Model.ClientId,
+                    "CardSum": $('#cardSumExtend').val(),
+                    "Type": $('#paymentTypeSelect').val(),
+                    "CashSum": $('#cashSumExtend').val(),
+                    "MembershipId": $('#membershipSelect')
+                },
+                success: function (data) {
+                    if (data) {
+                        $('#extendMembershipModal').modal('hide');
+                        document.location.reload();
+                    }
+                }
+            })
+        }
+    })
+</script>
