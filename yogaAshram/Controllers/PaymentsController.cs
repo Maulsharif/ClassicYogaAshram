@@ -31,26 +31,26 @@ namespace yogaAshram.Controllers
                 case SortPaymentsBy.Memberships:
                     if (model.SortReverse)
                         model.Payments = await payments.Skip((pageTo - 1) * model.PaymentsLength)
-                            .Take(model.PaymentsLength).OrderByDescending(p => p.MembershipId).ToListAsync();
+                            .Take(model.PaymentsLength).OrderByDescending(p => p.ClientsMembership.MembershipId).ToListAsync();
                     else
                         model.Payments = await payments.Skip((pageTo - 1) * model.PaymentsLength)
-                            .Take(model.PaymentsLength).OrderBy(p => p.MembershipId).ToListAsync();
+                            .Take(model.PaymentsLength).OrderBy(p => p.ClientsMembership.MembershipId).ToListAsync();
                     break;
                 case SortPaymentsBy.Price:
                     if (model.SortReverse)
                         model.Payments = await payments.Skip((pageTo - 1) * model.PaymentsLength)
-                            .Take(model.PaymentsLength).OrderByDescending(p => (p.Membership.Price - p.Debts)).ToListAsync();
+                            .Take(model.PaymentsLength).OrderByDescending(p => (p.ClientsMembership.Membership.Price - p.Debts)).ToListAsync();
                     else
                         model.Payments = await payments.Skip((pageTo - 1) * model.PaymentsLength)
-                            .Take(model.PaymentsLength).OrderBy(p => (p.Membership.Price - p.Debts)).ToListAsync();
+                            .Take(model.PaymentsLength).OrderBy(p => (p.ClientsMembership.Membership.Price - p.Debts)).ToListAsync();
                     break;
                 case SortPaymentsBy.Group:
                     if (model.SortReverse)
                         model.Payments = await payments.Skip((pageTo - 1) * model.PaymentsLength)
-                            .Take(model.PaymentsLength).OrderByDescending(p => p.Client.GroupId).ToListAsync();
+                            .Take(model.PaymentsLength).OrderByDescending(p => p.ClientsMembership.Client.GroupId).ToListAsync();
                     else
                         model.Payments = await payments.Skip((pageTo - 1) * model.PaymentsLength)
-                            .Take(model.PaymentsLength).OrderBy(p => p.Client.GroupId).ToListAsync();
+                            .Take(model.PaymentsLength).OrderBy(p => p.ClientsMembership.Client.GroupId).ToListAsync();
                     break;
                 case SortPaymentsBy.Comment:
                     if (model.SortReverse)
@@ -63,18 +63,18 @@ namespace yogaAshram.Controllers
                 case SortPaymentsBy.Sickness:
                     if (model.SortReverse)
                         model.Payments = await payments.Skip((pageTo - 1) * model.PaymentsLength)
-                            .Take(model.PaymentsLength).OrderByDescending(p => p.Client.Sickness).ToListAsync();
+                            .Take(model.PaymentsLength).OrderByDescending(p => p.ClientsMembership.Client.Sickness).ToListAsync();
                     else
                         model.Payments = await payments.Skip((pageTo - 1) * model.PaymentsLength)
-                            .Take(model.PaymentsLength).OrderBy(p => p.Client.Sickness).ToListAsync();
+                            .Take(model.PaymentsLength).OrderBy(p => p.ClientsMembership.Client.Sickness).ToListAsync();
                     break;
                 case SortPaymentsBy.Debtors:
                     if (model.SortReverse)
-                        model.Payments = await payments.Where(p => p.Client.Balance < 0).Skip((pageTo - 1) * model.PaymentsLength)
-                            .Take(model.PaymentsLength).OrderByDescending(p => p.Client.Balance).ToListAsync();
+                        model.Payments = await payments.Where(p => p.ClientsMembership.Client.Balance < 0).Skip((pageTo - 1) * model.PaymentsLength)
+                            .Take(model.PaymentsLength).OrderByDescending(p => p.ClientsMembership.Client.Balance).ToListAsync();
                     else
-                        model.Payments = await payments.Where(p => p.Client.Balance < 0).Skip((pageTo - 1) * model.PaymentsLength)
-                            .Take(model.PaymentsLength).OrderBy(p => p.Client.Balance).ToListAsync();
+                        model.Payments = await payments.Where(p => p.ClientsMembership.Client.Balance < 0).Skip((pageTo - 1) * model.PaymentsLength)
+                            .Take(model.PaymentsLength).OrderBy(p => p.ClientsMembership.Client.Balance).ToListAsync();
                     break;
                 case SortPaymentsBy.Debts:
                     if (model.SortReverse)
@@ -125,7 +125,7 @@ namespace yogaAshram.Controllers
                 if(model.SortSelect != SortPaymentsBy.None)
                     model = await SortPayments(model, pageTo);
                 else 
-                    model.Payments = await GetFilteredByDate(model.ByDate).Where(p => p.Client.NameSurname.Contains(model.FilterByName))
+                    model.Payments = await GetFilteredByDate(model.ByDate).Where(p => p.ClientsMembership.Client.NameSurname.Contains(model.FilterByName))
                         .Skip((pageTo - 1) * model.PaymentsLength)
                             .Take(model.PaymentsLength).ToListAsync();
             }          
@@ -160,13 +160,15 @@ namespace yogaAshram.Controllers
                 int balance = client.Balance;
                 if (balance < 0)
                     balance = 0;
-                Membership membership = await _db.Memberships.FindAsync(model.MembershipId);
-                int debts = membership.Price - sum - balance;               
+                Membership membership = client.Membership;
+                int debts = membership.Price - sum - balance;
+                ClientsMembership clientsMembership = await _db.ClientsMemberships.FirstOrDefaultAsync(p => p.MembershipId == membership.Id && p.ClientId == client.Id);
+                if (clientsMembership is null)
+                    return BadRequest();
                 Payment payment = new Payment()
                 {
                     Comment = model.Comment,
-                    MembershipId = model.MembershipId,
-                    ClientId = model.ClientId,
+                    ClientsMembershipId = clientsMembership.Id,
                     CreatorId = employee.Id,
                     CashSum = (int)model.CashSum,
                     CardSum = (int)model.CardSum,
@@ -240,7 +242,7 @@ namespace yogaAshram.Controllers
                 int sum = (int)model.CashSum + (int)model.CardSum;
                 Payment payment = await _db.Payments.FindAsync(model.PaymentId);
                 int oldSum = payment.CashSum + payment.CardSum;
-                Client client = payment.Client;
+                Client client = payment.ClientsMembership.Client;
                 if (payment is null)
                     return NotFound();                             
                 payment.Comment = model.Comment;
@@ -255,7 +257,7 @@ namespace yogaAshram.Controllers
                 int balance = client.Balance;
                 if (balance < 0)
                     balance = 0;
-                int debts = payment.Membership.Price - sum - balance;
+                int debts = payment.ClientsMembership.Membership.Price - sum - balance;
                 if (debts > 0 && client.Balance < debts && model.Type == PaymentType.Pay)
                 {
                     client.Paid = Paid.Есть_долг;
