@@ -84,6 +84,7 @@
 			<tr>
 				<th scope="col">Клиент</th>
 				<th scope="col">Количество пропусков</th>
+				<th scope="col">Количество заморозок</th>
 				<th>Проверено</th>
 				<th>Абонемент</th>
 				<th>Осталось дней</th>
@@ -104,6 +105,9 @@
 							@attendance.AttendanceCount.AbsenceTimes
 						</div>
 					</td>
+					<td>
+                    @attendance.AttendanceCount.FrozenTimes
+                    </td>
 					<td>
 						<div id="checkToReload-@attendance.Id">
 							@if (@attendance.IsChecked)
@@ -126,7 +130,7 @@
 							</td>
 							</div>
 						}
-						else if (@attendance.AttendanceCount.AttendingTimes <= 1)
+						else if (@attendance.AttendanceCount.AttendingTimes == 1)
 						{
 						<div >	
 							<td class="bg-danger">										        
@@ -134,6 +138,14 @@
 							</td> 
 							</div>	
 						}
+						else if (@attendance.AttendanceCount.AttendingTimes == 0)
+                        {
+                        	<div >	
+                        	<td class="bg-danger">										        
+                        		<a href="#" >Продлить абонемент</a>														        
+                        		</td> 
+                        	</div>	
+                        }
 						else
 						{
 						<div >
@@ -668,7 +680,7 @@
                  if(data === "errorCheckedAlready"){
                  $('#log').text(clientName + ' уже отмечен');         
                  } 
-                 if(data === "errorTimesOfAttendance"){
+                 if(data === "errorAttend"){
                  $('#log').text(clientName + ' пора обновить абонемент');         
                  } 
                  else if (data === "success"){                 

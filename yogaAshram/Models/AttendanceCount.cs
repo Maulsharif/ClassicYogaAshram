@@ -7,6 +7,7 @@ namespace yogaAshram.Models
         public long Id { get; set; }
         public int AttendingTimes { get; set; }
         public int AbsenceTimes { get; set; }
+        public int FrozenTimes { get; set; }
         public List<string> Comments { get; set; }
     }
 }
