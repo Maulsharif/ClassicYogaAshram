@@ -242,7 +242,7 @@ namespace yogaAshram.Migrations
                 {
                     Id = table.Column<long>(nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Name = table.Column<string>(nullable: true),
+                    Name = table.Column<string>(nullable: false),
                     Price = table.Column<int>(nullable: false),
                     AttendanceDays = table.Column<int>(nullable: false),
                     CategoryId = table.Column<long>(nullable: false)
@@ -336,9 +336,8 @@ namespace yogaAshram.Migrations
                     Id = table.Column<long>(nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Comment = table.Column<string>(nullable: true),
-                    MembershipId = table.Column<long>(nullable: false),
-                    ClientId = table.Column<long>(nullable: false),
                     CreatorId = table.Column<long>(nullable: false),
+                    ClientsMembershipId = table.Column<long>(nullable: false),
                     Debts = table.Column<int>(nullable: false),
                     CashSum = table.Column<int>(nullable: false),
                     CardSum = table.Column<int>(nullable: false),
@@ -350,21 +349,15 @@ namespace yogaAshram.Migrations
                 {
                     table.PrimaryKey("PK_Payments", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Payments_Clients_ClientId",
-                        column: x => x.ClientId,
-                        principalTable: "Clients",
+                        name: "FK_Payments_ClientsMemberships_ClientsMembershipId",
+                        column: x => x.ClientsMembershipId,
+                        principalTable: "ClientsMemberships",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Payments_AspNetUsers_CreatorId",
                         column: x => x.CreatorId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Payments_Memberships_MembershipId",
-                        column: x => x.MembershipId,
-                        principalTable: "Memberships",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -516,7 +509,7 @@ namespace yogaAshram.Migrations
                     State = table.Column<int>(nullable: false),
                     Color = table.Column<string>(nullable: true),
                     IsChecked = table.Column<bool>(nullable: false),
-                    SellerComment = table.Column<string>(nullable: true),
+                    SellerComments = table.Column<List<string>>(nullable: true),
                     Commentdate = table.Column<DateTime>(nullable: false),
                     FreeLessons = table.Column<int>(nullable: false)
                 },
@@ -554,22 +547,22 @@ namespace yogaAshram.Migrations
                 columns: new[] { "Id", "AttendanceDays", "CategoryId", "Name", "Price" },
                 values: new object[,]
                 {
-                    { 1L, 12, 1L, "12 разовый абонемент в группу для пенсионеров (40% скидка)", 10000 },
-                    { 2L, 8, 1L, "8 разовый абонемент в группу для пенсионеров (40% скидка)", 8000 },
-                    { 3L, 12, 1L, "12 разовый абонемент с 15% скидкой для пенсионеров", 14000 },
-                    { 4L, 8, 1L, "8 разовый абонемент с 15% скидкой для пенсионеров", 11000 },
-                    { 7L, 12, 2L, "12 разовый абонемент с 15% скидкой для студентов", 14000 },
-                    { 8L, 8, 2L, "8 разовый абонемент с 15% скидкой для студентов", 11000 },
-                    { 5L, 12, 3L, "12 разовый абонемент с 15% скидкой для школьников", 14000 },
-                    { 6L, 8, 3L, "8 разовый абонемент с 15% скидкой для школьников", 11000 },
-                    { 11L, 12, 3L, "12 разовый абонемент в детскую группу (20% скидка)", 13000 },
-                    { 12L, 8, 3L, "8 разовый абонемент в детскую группу (20% скидка)", 10500 },
-                    { 9L, 12, 4L, "12 разовый абонемент с 15% скидкой для корпоративных клиентов", 14000 },
-                    { 10L, 8, 4L, "8 разовый абонемент с 15% скидкой для корпоративных клиентов", 11000 },
-                    { 13L, 12, 5L, "12 разовый абонемент обычный", 16000 },
-                    { 14L, 8, 5L, "8 разовый абонемент обычный", 13000 },
-                    { 15L, 4, 5L, "4 разовый абонемент", 8000 },
-                    { 16L, 1, 5L, "1 разовый абонемент", 2500 }
+                    { 10000L, 12, 1L, "12 разовый абонемент в группу для пенсионеров (40% скидка)", 10000 },
+                    { 10001L, 8, 1L, "8 разовый абонемент в группу для пенсионеров (40% скидка)", 8000 },
+                    { 10002L, 12, 1L, "12 разовый абонемент с 15% скидкой для пенсионеров", 14000 },
+                    { 10003L, 8, 1L, "8 разовый абонемент с 15% скидкой для пенсионеров", 11000 },
+                    { 10006L, 12, 2L, "12 разовый абонемент с 15% скидкой для студентов", 14000 },
+                    { 10007L, 8, 2L, "8 разовый абонемент с 15% скидкой для студентов", 11000 },
+                    { 10004L, 12, 3L, "12 разовый абонемент с 15% скидкой для школьников", 14000 },
+                    { 10005L, 8, 3L, "8 разовый абонемент с 15% скидкой для школьников", 11000 },
+                    { 10010L, 12, 3L, "12 разовый абонемент в детскую группу (20% скидка)", 13000 },
+                    { 10011L, 8, 3L, "8 разовый абонемент в детскую группу (20% скидка)", 10500 },
+                    { 10008L, 12, 4L, "12 разовый абонемент с 15% скидкой для корпоративных клиентов", 14000 },
+                    { 10009L, 8, 4L, "8 разовый абонемент с 15% скидкой для корпоративных клиентов", 11000 },
+                    { 10012L, 12, 5L, "12 разовый абонемент обычный", 16000 },
+                    { 10013L, 8, 5L, "8 разовый абонемент обычный", 13000 },
+                    { 10014L, 4, 5L, "4 разовый абонемент", 8000 },
+                    { 10015L, 1, 5L, "1 разовый абонемент", 2500 }
                 });
 
             migrationBuilder.CreateIndex(
@@ -700,19 +693,14 @@ namespace yogaAshram.Migrations
                 column: "CategoryId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Payments_ClientId",
+                name: "IX_Payments_ClientsMembershipId",
                 table: "Payments",
-                column: "ClientId");
+                column: "ClientsMembershipId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Payments_CreatorId",
                 table: "Payments",
                 column: "CreatorId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Payments_MembershipId",
-                table: "Payments",
-                column: "MembershipId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Schedules_BranchId",
@@ -787,9 +775,6 @@ namespace yogaAshram.Migrations
                 name: "CalendarEvents");
 
             migrationBuilder.DropTable(
-                name: "ClientsMemberships");
-
-            migrationBuilder.DropTable(
                 name: "ManagerEmployees");
 
             migrationBuilder.DropTable(
@@ -803,6 +788,9 @@ namespace yogaAshram.Migrations
 
             migrationBuilder.DropTable(
                 name: "AttendanceCounts");
+
+            migrationBuilder.DropTable(
+                name: "ClientsMemberships");
 
             migrationBuilder.DropTable(
                 name: "Clients");
