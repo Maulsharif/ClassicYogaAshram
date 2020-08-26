@@ -50,8 +50,7 @@
                     <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         Действия
                     </button>
-                    <a class="mt-2" style="DISPLAY: block;" asp-action="GetPdfDocument" asp-controller="Clients" asp-route-clientId="@client.Id">PDF Договор</a>
-                  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                     @if (@client.Paid == Paid.Не_оплачено)
                     {
                         <button class="dropdown-item getPaymentCreateModal" clientId="@client.Id" >Провести платеж</button>
@@ -63,6 +62,7 @@
                     @if (@client.Contract == Contract.Нет_договора)
                     {
                         <button class="dropdown-item" data-toggle="modal" data-target="#contract-@client.Id">Подписал договор</button>
+                        <a class="dropdown-item" asp-action="GetPdfDocument" asp-controller="Clients" asp-route-clientId="@client.Id">PDF Договор</a>
                     }
                       <button class="dropdown-item" data-toggle="modal" data-target="#comment-@client.Id">Оставить комментарий</button>
                     <button class="dropdown-item" data-toggle="modal" data-target="#makeClientUnactive-@client.Id">Сделать неактивным</button>
