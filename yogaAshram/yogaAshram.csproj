@@ -88,6 +88,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <Folder Include="Files" />
       <Folder Include="Views\Employees\PartialViews" />
       <Folder Include="Views\Marketing" />
     </ItemGroup>
