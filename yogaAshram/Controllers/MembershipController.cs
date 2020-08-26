@@ -89,7 +89,9 @@ namespace yogaAshram.Controllers
             if (client is null)
                 return NotFound();
             ViewBag.Memberships = await _db.Memberships.ToArrayAsync();
-            return PartialView(new MembershipExtendModelView() { ClientId = client.Id, Client = client });
+            ViewBag.Groups = await _db.Groups.ToListAsync();
+
+            return PartialView("PartialViews/ExtendModalPartial" ,new MembershipExtendModelView() { ClientId = client.Id, Client = client });
         }
         [HttpPost]
         public async Task<IActionResult> ExtendAjax(MembershipExtendModelView model)
@@ -103,8 +105,13 @@ namespace yogaAshram.Controllers
                 Client client = await _db.Clients.FirstOrDefaultAsync(p => p.Id == model.ClientId);
                 if (client.Balance < 0 && -client.Balance > model.CashSum + model.CardSum)
                     return BadRequest();
+
+                Schedule schedule = _db.Schedules.FirstOrDefault(s => s.GroupId == model.GroupId);
+                
+                
                 Membership membership = await _db.Memberships.FirstOrDefaultAsync(p => p.Id == model.MembershipId);
                 client.MembershipId = membership.Id;
+                client.GroupId = model.GroupId;
                 client.Membership = membership;
                 client.LessonNumbers = membership.AttendanceDays;
                 ClientsMembership clientsMembership = new ClientsMembership()

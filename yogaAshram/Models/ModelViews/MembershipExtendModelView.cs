@@ -10,5 +10,6 @@ namespace yogaAshram.Models.ModelViews
     {
         [Remote(action: "CheckMembershipId", controller: "Validation")]
         public long MembershipId { get; set; }
+        public long GroupId { get; set; }
     }
 }
