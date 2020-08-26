@@ -1,0 +1,14 @@
+﻿<div id="extendModal"></div>
+<script>
+    var btns = $(".getMembershipExtendModal");
+    for (var i = 0; i < btns.length; i++) {
+        let btn = btns[i];
+        $(btn).on('click', function () {
+            let clientId = $(btn).attr('clientId');
+            $.get("@Url.Action("GetExtendModalAjax", "Memberships")/?clientId=" + clientId, function (data) {
+                $('#extendModal').html(data);
+                $(document.getElementById('extendMembershipModal')).modal('show');
+            });
+        });
+    }
+</script>
