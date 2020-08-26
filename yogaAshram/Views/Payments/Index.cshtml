@@ -106,8 +106,8 @@
                 {
                 <tr>
                     <th scope="row">@payment.Id</th>
-                    <td scope="row">@payment.Membership.Category.Name @payment.Membership.Price тг. @payment.Membership.AttendanceDays посещений</td>
-                    <td scope="row">@payment.Client.NameSurname, @payment.Client.PhoneNumber</td>
+                    <td scope="row">@payment.ClientsMembership.Membership.Category.Name @payment.ClientsMembership.Membership.Price тг. @payment.ClientsMembership.Membership.AttendanceDays посещений</td>
+                    <td scope="row">@payment.ClientsMembership.Client.NameSurname, @payment.ClientsMembership.Client.PhoneNumber</td>
                     <td scope="row">@payment.CateringDate.ToShortDateString()<br />Последнее обновление - @payment.LastUpdate.ToShortDateString()</td>
                     <td scope="row">@payment.Comment</td>
                     <td scope="row">@payment.Debts</td>

@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using yogaAshram.Models;
@@ -11,10 +10,9 @@ using yogaAshram.Models;
 namespace yogaAshram.Migrations
 {
     [DbContext(typeof(YogaAshramContext))]
-    [Migration("20200825120244_Initial")]
-    partial class Initial
+    partial class YogaAshramContextModelSnapshot : ModelSnapshot
     {
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -549,6 +547,7 @@ namespace yogaAshram.Migrations
                         .HasColumnType("bigint");
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<int>("Price")
@@ -563,7 +562,7 @@ namespace yogaAshram.Migrations
                     b.HasData(
                         new
                         {
-                            Id = 1L,
+                            Id = 10000L,
                             AttendanceDays = 12,
                             CategoryId = 1L,
                             Name = "12 разовый абонемент в группу для пенсионеров (40% скидка)",
@@ -571,7 +570,7 @@ namespace yogaAshram.Migrations
                         },
                         new
                         {
-                            Id = 2L,
+                            Id = 10001L,
                             AttendanceDays = 8,
                             CategoryId = 1L,
                             Name = "8 разовый абонемент в группу для пенсионеров (40% скидка)",
@@ -579,7 +578,7 @@ namespace yogaAshram.Migrations
                         },
                         new
                         {
-                            Id = 3L,
+                            Id = 10002L,
                             AttendanceDays = 12,
                             CategoryId = 1L,
                             Name = "12 разовый абонемент с 15% скидкой для пенсионеров",
@@ -587,7 +586,7 @@ namespace yogaAshram.Migrations
                         },
                         new
                         {
-                            Id = 4L,
+                            Id = 10003L,
                             AttendanceDays = 8,
                             CategoryId = 1L,
                             Name = "8 разовый абонемент с 15% скидкой для пенсионеров",
@@ -595,7 +594,7 @@ namespace yogaAshram.Migrations
                         },
                         new
                         {
-                            Id = 5L,
+                            Id = 10004L,
                             AttendanceDays = 12,
                             CategoryId = 3L,
                             Name = "12 разовый абонемент с 15% скидкой для школьников",
@@ -603,7 +602,7 @@ namespace yogaAshram.Migrations
                         },
                         new
                         {
-                            Id = 6L,
+                            Id = 10005L,
                             AttendanceDays = 8,
                             CategoryId = 3L,
                             Name = "8 разовый абонемент с 15% скидкой для школьников",
@@ -611,7 +610,7 @@ namespace yogaAshram.Migrations
                         },
                         new
                         {
-                            Id = 7L,
+                            Id = 10006L,
                             AttendanceDays = 12,
                             CategoryId = 2L,
                             Name = "12 разовый абонемент с 15% скидкой для студентов",
@@ -619,7 +618,7 @@ namespace yogaAshram.Migrations
                         },
                         new
                         {
-                            Id = 8L,
+                            Id = 10007L,
                             AttendanceDays = 8,
                             CategoryId = 2L,
                             Name = "8 разовый абонемент с 15% скидкой для студентов",
@@ -627,7 +626,7 @@ namespace yogaAshram.Migrations
                         },
                         new
                         {
-                            Id = 9L,
+                            Id = 10008L,
                             AttendanceDays = 12,
                             CategoryId = 4L,
                             Name = "12 разовый абонемент с 15% скидкой для корпоративных клиентов",
@@ -635,7 +634,7 @@ namespace yogaAshram.Migrations
                         },
                         new
                         {
-                            Id = 10L,
+                            Id = 10009L,
                             AttendanceDays = 8,
                             CategoryId = 4L,
                             Name = "8 разовый абонемент с 15% скидкой для корпоративных клиентов",
@@ -643,7 +642,7 @@ namespace yogaAshram.Migrations
                         },
                         new
                         {
-                            Id = 11L,
+                            Id = 10010L,
                             AttendanceDays = 12,
                             CategoryId = 3L,
                             Name = "12 разовый абонемент в детскую группу (20% скидка)",
@@ -651,7 +650,7 @@ namespace yogaAshram.Migrations
                         },
                         new
                         {
-                            Id = 12L,
+                            Id = 10011L,
                             AttendanceDays = 8,
                             CategoryId = 3L,
                             Name = "8 разовый абонемент в детскую группу (20% скидка)",
@@ -659,7 +658,7 @@ namespace yogaAshram.Migrations
                         },
                         new
                         {
-                            Id = 13L,
+                            Id = 10012L,
                             AttendanceDays = 12,
                             CategoryId = 5L,
                             Name = "12 разовый абонемент обычный",
@@ -667,7 +666,7 @@ namespace yogaAshram.Migrations
                         },
                         new
                         {
-                            Id = 14L,
+                            Id = 10013L,
                             AttendanceDays = 8,
                             CategoryId = 5L,
                             Name = "8 разовый абонемент обычный",
@@ -675,7 +674,7 @@ namespace yogaAshram.Migrations
                         },
                         new
                         {
-                            Id = 15L,
+                            Id = 10014L,
                             AttendanceDays = 4,
                             CategoryId = 5L,
                             Name = "4 разовый абонемент",
@@ -683,7 +682,7 @@ namespace yogaAshram.Migrations
                         },
                         new
                         {
-                            Id = 16L,
+                            Id = 10015L,
                             AttendanceDays = 1,
                             CategoryId = 5L,
                             Name = "1 разовый абонемент",
@@ -707,7 +706,7 @@ namespace yogaAshram.Migrations
                     b.Property<DateTime>("CateringDate")
                         .HasColumnType("timestamp without time zone");
 
-                    b.Property<long>("ClientId")
+                    b.Property<long>("ClientsMembershipId")
                         .HasColumnType("bigint");
 
                     b.Property<string>("Comment")
@@ -722,19 +721,14 @@ namespace yogaAshram.Migrations
                     b.Property<DateTime>("LastUpdate")
                         .HasColumnType("timestamp without time zone");
 
-                    b.Property<long>("MembershipId")
-                        .HasColumnType("bigint");
-
                     b.Property<int>("Type")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ClientId");
+                    b.HasIndex("ClientsMembershipId");
 
                     b.HasIndex("CreatorId");
-
-                    b.HasIndex("MembershipId");
 
                     b.ToTable("Payments");
                 });
@@ -826,8 +820,8 @@ namespace yogaAshram.Migrations
                     b.Property<DateTime>("LessonTime")
                         .HasColumnType("timestamp without time zone");
 
-                    b.Property<string>("SellerComment")
-                        .HasColumnType("text");
+                    b.Property<List<string>>("SellerComments")
+                        .HasColumnType("text[]");
 
                     b.Property<int>("State")
                         .HasColumnType("integer");
@@ -1016,21 +1010,15 @@ namespace yogaAshram.Migrations
 
             modelBuilder.Entity("yogaAshram.Models.Payment", b =>
                 {
-                    b.HasOne("yogaAshram.Models.Client", "Client")
+                    b.HasOne("yogaAshram.Models.ClientsMembership", "ClientsMembership")
                         .WithMany()
-                        .HasForeignKey("ClientId")
+                        .HasForeignKey("ClientsMembershipId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("yogaAshram.Models.Employee", "Creator")
                         .WithMany()
                         .HasForeignKey("CreatorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("yogaAshram.Models.Membership", "Membership")
-                        .WithMany()
-                        .HasForeignKey("MembershipId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
