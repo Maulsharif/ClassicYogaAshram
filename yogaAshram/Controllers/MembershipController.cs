@@ -83,14 +83,14 @@ namespace yogaAshram.Controllers
             return Json(new { isValid = false, html = Helper.RenderRazorViewToString(this, "AddOrEdit", membershipModel) });
         }
         [HttpGet]
-        public async Task<IActionResult> GetExtendModalAjax(long clientId)
+        public async Task<IActionResult> GetExtendModalAjax(long clientId, string date)
         {
             Client client = await _db.Clients.FindAsync(clientId);
             if (client is null)
                 return NotFound();
             ViewBag.Memberships = await _db.Memberships.ToArrayAsync();
             ViewBag.Groups = await _db.Groups.ToListAsync();
-
+            ViewBag.Date = Convert.ToDateTime(date);
             return PartialView("PartialViews/ExtendModalPartial" ,new MembershipExtendModelView() { ClientId = client.Id, Client = client });
         }
         [HttpPost]
@@ -107,6 +107,10 @@ namespace yogaAshram.Controllers
                     return BadRequest();
 
                 Schedule schedule = _db.Schedules.FirstOrDefault(s => s.GroupId == model.GroupId);
+
+                Console.WriteLine(model.Date);
+                Console.WriteLine(model.GroupId);
+                Console.WriteLine(model.MembershipId);
                 
                 
                 Membership membership = await _db.Memberships.FirstOrDefaultAsync(p => p.Id == model.MembershipId);

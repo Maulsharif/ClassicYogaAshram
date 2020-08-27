@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using yogaAshram.Models;
@@ -11,10 +10,9 @@ using yogaAshram.Models;
 namespace yogaAshram.Migrations
 {
     [DbContext(typeof(YogaAshramContext))]
-    [Migration("20200826103142_Initial")]
-    partial class Initial
+    partial class YogaAshramContextModelSnapshot : ModelSnapshot
     {
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -487,8 +485,8 @@ namespace yogaAshram.Migrations
                     b.Property<long>("BranchId")
                         .HasColumnType("bigint");
 
-                    b.Property<string>("CoachName")
-                        .HasColumnType("text");
+                    b.Property<long>("CoachId")
+                        .HasColumnType("bigint");
 
                     b.Property<long>("CreatorId")
                         .HasColumnType("bigint");
@@ -508,6 +506,8 @@ namespace yogaAshram.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("BranchId");
+
+                    b.HasIndex("CoachId");
 
                     b.HasIndex("CreatorId");
 
@@ -975,6 +975,12 @@ namespace yogaAshram.Migrations
                     b.HasOne("yogaAshram.Models.Branch", "Branch")
                         .WithMany()
                         .HasForeignKey("BranchId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("yogaAshram.Models.Employee", "Coach")
+                        .WithMany()
+                        .HasForeignKey("CoachId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
