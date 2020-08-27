@@ -33,7 +33,7 @@ namespace yogaAshram.Controllers
         [Authorize]
         public IActionResult CreateGroup()
         {
-            
+            ViewBag.Coaches = _db.Employees.Where(p => p.Role == "coach");
             ViewBag.Branches = _db.Branches.ToList();
             return View();
         }
@@ -45,7 +45,7 @@ namespace yogaAshram.Controllers
             Group group = new Group
             {
                 Name = model.Name,
-                CoachName = model.CoachName,
+                CoachId = model.CoachId,
                 BranchId = model.BranchId,
                 CreatorId = GetUserId.GetCurrentUserId(this.HttpContext)
             };

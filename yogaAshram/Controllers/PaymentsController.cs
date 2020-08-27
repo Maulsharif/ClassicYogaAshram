@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using yogaAshram.Models;
 using yogaAshram.Models.ModelViews;
+using yogaAshram.Services;
 
 namespace yogaAshram.Controllers
 {
@@ -15,11 +16,13 @@ namespace yogaAshram.Controllers
     {
         private readonly YogaAshramContext _db;
         private readonly UserManager<Employee> _userManager;
+        private readonly PaymentsService _paymentsService;
 
-        public PaymentsController(YogaAshramContext db, UserManager<Employee> userManager)
+        public PaymentsController(YogaAshramContext db, UserManager<Employee> userManager, PaymentsService paymentsService)
         {
             _db = db;
             _userManager = userManager;
+            _paymentsService = paymentsService;
         }
         private async Task<PaymentsIndexModelView> SortPayments(PaymentsIndexModelView model, int pageTo)
         {
@@ -146,66 +149,14 @@ namespace yogaAshram.Controllers
         {
             if (ModelState.IsValid)
             {
-                if (model.CashSum is null)
-                    model.CashSum = 0;
-                if (model.CardSum is null)
-                    model.CardSum = 0;
-                int sum = (int)model.CashSum + (int)model.CardSum;
-                Employee employee = await _userManager.GetUserAsync(User);
-                Client client = await _db.Clients.FindAsync(model.ClientId);
-                if (client.Balance < 0 && model.Type == PaymentType.Pay)
-                    return BadRequest();
-                if (client.Membership is null && model.Type == PaymentType.Pay)
-                    return BadRequest();
-                int balance = client.Balance;
-                if (balance < 0)
-                    balance = 0;
-                Membership membership = client.Membership;
-                int debts = membership.Price - sum - balance;
-                ClientsMembership clientsMembership = await _db.ClientsMemberships.FirstOrDefaultAsync(p => p.MembershipId == membership.Id && p.ClientId == client.Id);
+                Client client = await _db.Clients.FirstOrDefaultAsync(p => p.Id == model.ClientId);
+                ClientsMembership clientsMembership = await _db.ClientsMemberships.LastOrDefaultAsync(p => p.ClientId == client.Id && p.MembershipId == client.Membership.Id);
                 if (clientsMembership is null)
                     return BadRequest();
-                Payment payment = new Payment()
-                {
-                    Comment = model.Comment,
-                    ClientsMembershipId = clientsMembership.Id,
-                    CreatorId = employee.Id,
-                    CashSum = (int)model.CashSum,
-                    CardSum = (int)model.CardSum,
-                    Type = model.Type
-                };
-                if (debts > 0 && model.Type == PaymentType.Pay)
-                {
-                    client.Paid = Paid.Есть_долг;
-                    client.Color = "dark";
-                    client.Balance -= debts;
-                    payment.Debts = -client.Balance;
-                }
-                else
-                {
-                    if(model.Type == PaymentType.Pay)
-                    {
-                        client.Paid = Paid.Оплачено;
-                        client.Color = "";
-                        client.Balance -= debts;
-                        payment.Debts = 0;
-                    }
-                    else
-                    {
-                        client.Balance += sum;
-                        if (client.Balance >= 0)
-                        {
-                            client.Paid = Paid.Оплачено;
-                            client.Color = "";
-                            payment.Debts = 0;
-                        }
-                        else
-                            payment.Debts = -client.Balance;
-                    }             
-                }                              
-                _db.Entry(client).State = EntityState.Modified;
-                _db.Entry(payment).State = EntityState.Added;
-                await _db.SaveChangesAsync();
+                Employee employee = await _userManager.GetUserAsync(User);
+                bool check = await _paymentsService.CreatePayment(model, clientsMembership, client, employee.Id);
+                if (!check)
+                    return BadRequest();
                 return Json(true);
             }
             return BadRequest();
@@ -235,60 +186,9 @@ namespace yogaAshram.Controllers
         {
             if (ModelState.IsValid)
             {
-                if (model.CashSum is null)
-                    model.CashSum = 0;
-                if (model.CardSum is null)
-                    model.CardSum = 0;
-                int sum = (int)model.CashSum + (int)model.CardSum;
-                Payment payment = await _db.Payments.FindAsync(model.PaymentId);
-                int oldSum = payment.CashSum + payment.CardSum;
-                Client client = payment.ClientsMembership.Client;
-                if (payment is null)
-                    return NotFound();                             
-                payment.Comment = model.Comment;
-                payment.CashSum = (int)model.CashSum;
-                payment.CardSum = (int)model.CardSum;
-                payment.LastUpdate = DateTime.Now;
-                if (payment.Type == PaymentType.Pay)
-                    client.Balance += payment.Debts;
-                else
-                    client.Balance -= oldSum;
-                payment.Type = model.Type;
-                int balance = client.Balance;
-                if (balance < 0)
-                    balance = 0;
-                int debts = payment.ClientsMembership.Membership.Price - sum - balance;
-                if (debts > 0 && client.Balance < debts && model.Type == PaymentType.Pay)
-                {
-                    client.Paid = Paid.Есть_долг;
-                    client.Color = "dark";
-                    client.Balance -= debts;
-                    payment.Debts = -client.Balance;
-                }
-                else
-                {
-                    if (model.Type == PaymentType.Pay)
-                    {
-                        client.Paid = Paid.Оплачено;
-                        client.Color = "";
-                        client.Balance -= debts;
-                    }
-                    else
-                    {
-                        client.Balance += sum;
-                        if (client.Balance >= 0)
-                        {
-                            client.Paid = Paid.Оплачено;
-                            client.Color = "";
-                            payment.Debts = 0;
-                        }
-                        else
-                            payment.Debts = -client.Balance;
-                    }
-                }
-                _db.Entry(client).State = EntityState.Modified;
-                _db.Entry(payment).State = EntityState.Modified;
-                await _db.SaveChangesAsync();
+                bool check = await _paymentsService.EditPayment(model);
+                if (!check)
+                    BadRequest();
                 return Json(true);
             }
             return BadRequest();

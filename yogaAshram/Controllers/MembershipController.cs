@@ -17,11 +17,13 @@ namespace yogaAshram.Controllers
     { 
         private readonly UserManager<Employee> _userManager;
         private readonly YogaAshramContext _db;
+        private readonly PaymentsService _paymentsService;
 
-        public MembershipController(YogaAshramContext db, UserManager<Employee> userManager)
+        public MembershipController(YogaAshramContext db, UserManager<Employee> userManager, PaymentsService paymentsService)
         {
             _db = db;
             _userManager = userManager;
+            _paymentsService = paymentsService;
         }
 
         // GET
@@ -81,14 +83,59 @@ namespace yogaAshram.Controllers
             return Json(new { isValid = false, html = Helper.RenderRazorViewToString(this, "AddOrEdit", membershipModel) });
         }
         [HttpGet]
-        // public async Task<IActionResult> GetExtendModalAjax()
-        // {
-        //     return PartialView();
-        // }
-        [HttpPost]
-        public async Task<IActionResult> ExtendAjax()
+        public async Task<IActionResult> GetExtendModalAjax(long clientId, string date)
         {
-            return Json(true);
+            Client client = await _db.Clients.FindAsync(clientId);
+            if (client is null)
+                return NotFound();
+            ViewBag.Memberships = await _db.Memberships.ToArrayAsync();
+            ViewBag.Groups = await _db.Groups.ToListAsync();
+            ViewBag.Date = Convert.ToDateTime(date);
+            return PartialView("PartialViews/ExtendModalPartial" ,new MembershipExtendModelView() { ClientId = client.Id, Client = client });
+        }
+        [HttpPost]
+        public async Task<IActionResult> ExtendAjax(MembershipExtendModelView model)
+        {
+            if (ModelState.IsValid)
+            {
+                if (model.CardSum is null)
+                    model.CardSum = 0;
+                if (model.CashSum is null)
+                    model.CashSum = 0;
+                Client client = await _db.Clients.FirstOrDefaultAsync(p => p.Id == model.ClientId);
+                if (client.Balance < 0 && -client.Balance > model.CashSum + model.CardSum)
+                    return BadRequest();
+
+                Schedule schedule = _db.Schedules.FirstOrDefault(s => s.GroupId == model.GroupId);
+
+                Console.WriteLine(model.Date);
+                Console.WriteLine(model.GroupId);
+                Console.WriteLine(model.MembershipId);
+                
+                
+                Membership membership = await _db.Memberships.FirstOrDefaultAsync(p => p.Id == model.MembershipId);
+                client.MembershipId = membership.Id;
+                client.GroupId = model.GroupId;
+                client.Membership = membership;
+                client.LessonNumbers = membership.AttendanceDays;
+                ClientsMembership clientsMembership = new ClientsMembership()
+                {
+                    Id = _db.Memberships.Last().Id + 1,
+                    Client = client,
+                    ClientId = client.Id,
+                    Membership = membership,
+                    MembershipId = membership.Id,
+                    DateOfPurchase = DateTime.Now
+                };
+                Employee employee = await _userManager.GetUserAsync(User);
+                _db.Entry(clientsMembership).State = EntityState.Added;
+                await _db.SaveChangesAsync();
+                bool check = await _paymentsService.CreatePayment(model, clientsMembership, client, employee.Id);
+                if (!check)
+                    return BadRequest();
+                return Json(true);
+            }
+            return BadRequest();
         }
     }   
 }

@@ -10,7 +10,7 @@
 
 
 <h2 class="text-center">Расписание группы "@Model.Group.Name"</h2>
-<p><strong>Тренер:</strong> @Model.Group.CoachName</p>
+<p><strong>Тренер:</strong> @Model.Group.Coach.NameSurname</p>
 <div id="reloadSchedule">
 <hr>
 	<strong>Дни:</strong>
@@ -142,7 +142,7 @@
                         {
                         	<div >	
                         	<td class="bg-danger">										        
-                        		<a href="#" >Продлить абонемент</a>														        
+                        		<button class="getMembershipExtendModal" clientId="@attendance.ClientId" date="@ViewBag.Date">Продлить абонемент</button>														        
                         		</td> 
                         	</div>	
                         }
@@ -355,8 +355,23 @@
                      <div class="row">   
                         <div class="col-sm-6">
                         <span asp-validation-for="@Model.ClientsCreateModelView.Source"></span>
-			                <label>Откуда вы о нас узнали?</label><br/>
-			                <textarea class="form-control mb-4" rows="2" asp-for="@Model.ClientsCreateModelView.Source"></textarea>           	                        
+	                        <label>Откуда вы о нас узнали?</label><br/>
+	                        <select class="form-control mb-4" asp-for="ClientsCreateModelView.Source">
+                                <option >...</option>
+		                        <option value="Инстаграм страница">Инстаграм страница</option>
+		                        <option value="Таргет в инстаграмме">Таргет в инстаграмме</option>
+		                        <option value="Инстаграм страница">Инстаграм страница</option>
+		                        <option value="Вывеска">Вывеска</option>
+		                        <option value="По рекомендации">По рекомендации</option>
+		                        <option value="По брошюре">По брошюре</option>
+		                        <option value="2ГИС">2ГИС</option>
+		                        <option value="1Fit">1Fit</option>
+		                        <option value="Гугл реклама">Гугл реклама</option>
+		                        <option value="Яндекс реклама">Яндекс реклама </option>
+		                        <option value="Другое">Другое</option>
+		                        
+	                        </select>
+			                      	                        
 		                </div>
 		    
 		                     <div class="col-sm-6">
@@ -477,6 +492,9 @@
 	@{
 		 await Html.RenderPartialAsync("_ValidationScriptsPartial");
 	 }
+	 @{
+     		 await Html.RenderPartialAsync("../Membership/PartialViews/GetExtendModalScripts");
+     }
 	<script type="text/javascript">
 	 	$(".input").focus(function() {
 	 		$(this).parent().addClass("focus");
@@ -693,9 +711,12 @@
                  if(data === "errorCheckedAlready"){
                  $('#log').text(clientName + ' уже отмечен');         
                  } 
-                 if(data === "errorAttend"){
+                 else if(data === "errorAttend"){
                  $('#log').text(clientName + ' пора обновить абонемент');         
                  } 
+                 else if(data === "errorFrozen"){
+                 $('#log').text('У ' + clientName + ' использованы все заморозки');         
+                 }
                  else if (data === "success"){                 
                   $('#log').text(clientName + ' успешно отмечен');                     
                     $("#absTimes").load(" #absTimes");

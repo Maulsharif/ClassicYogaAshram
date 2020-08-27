@@ -5,7 +5,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace yogaAshram.Migrations
 {
-    public partial class Initial : Migration
+    public partial class initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -371,7 +371,7 @@ namespace yogaAshram.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Name = table.Column<string>(nullable: true),
                     BranchId = table.Column<long>(nullable: false),
-                    CoachName = table.Column<string>(nullable: true),
+                    CoachId = table.Column<long>(nullable: false),
                     MaxCapacity = table.Column<int>(nullable: false),
                     MinCapacity = table.Column<int>(nullable: false),
                     CreatorId = table.Column<long>(nullable: false),
@@ -384,6 +384,12 @@ namespace yogaAshram.Migrations
                         name: "FK_Groups_Branches_BranchId",
                         column: x => x.BranchId,
                         principalTable: "Branches",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Groups_AspNetUsers_CoachId",
+                        column: x => x.CoachId,
+                        principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
@@ -669,6 +675,11 @@ namespace yogaAshram.Migrations
                 column: "BranchId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Groups_CoachId",
+                table: "Groups",
+                column: "CoachId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Groups_CreatorId",
                 table: "Groups",
                 column: "CreatorId");
@@ -745,6 +756,10 @@ namespace yogaAshram.Migrations
             migrationBuilder.DropForeignKey(
                 name: "FK_Branches_AspNetUsers_AdminId",
                 table: "Branches");
+
+            migrationBuilder.DropForeignKey(
+                name: "FK_Groups_AspNetUsers_CoachId",
+                table: "Groups");
 
             migrationBuilder.DropForeignKey(
                 name: "FK_Groups_AspNetUsers_CreatorId",
