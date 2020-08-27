@@ -84,6 +84,19 @@ namespace yogaAshram.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Sicknesses",
+                columns: table => new
+                {
+                    Id = table.Column<long>(nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Name = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Sicknesses", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "AspNetRoleClaims",
                 columns: table => new
                 {
@@ -274,7 +287,6 @@ namespace yogaAshram.Migrations
                     ClientType = table.Column<int>(nullable: false),
                     LessonNumbers = table.Column<int>(nullable: false),
                     Color = table.Column<string>(nullable: true),
-                    Sickness = table.Column<string>(nullable: true),
                     Source = table.Column<string>(nullable: true),
                     GroupId = table.Column<long>(nullable: false),
                     CreatorId = table.Column<long>(nullable: false),
@@ -284,7 +296,8 @@ namespace yogaAshram.Migrations
                     Contract = table.Column<int>(nullable: false),
                     WhatsAppGroup = table.Column<int>(nullable: false),
                     DateCreate = table.Column<DateTime>(nullable: false),
-                    MembershipId = table.Column<long>(nullable: true)
+                    MembershipId = table.Column<long>(nullable: true),
+                    SicknessId = table.Column<long>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -299,6 +312,12 @@ namespace yogaAshram.Migrations
                         name: "FK_Clients_Memberships_MembershipId",
                         column: x => x.MembershipId,
                         principalTable: "Memberships",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Clients_Sicknesses_SicknessId",
+                        column: x => x.SicknessId,
+                        principalTable: "Sicknesses",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -411,6 +430,7 @@ namespace yogaAshram.Migrations
                     MembershipId = table.Column<long>(nullable: true),
                     AttendanceState = table.Column<int>(nullable: false),
                     IsChecked = table.Column<bool>(nullable: false),
+                    IsNotActive = table.Column<bool>(nullable: false),
                     Date = table.Column<DateTime>(nullable: false),
                     AttendanceCountId = table.Column<long>(nullable: true)
                 },
@@ -550,6 +570,21 @@ namespace yogaAshram.Migrations
                 });
 
             migrationBuilder.InsertData(
+                table: "Sicknesses",
+                columns: new[] { "Id", "Name" },
+                values: new object[,]
+                {
+                    { 10000L, "остеохондроз" },
+                    { 10001L, "грыжа" },
+                    { 10002L, "сколиоз" },
+                    { 10003L, "артрит" },
+                    { 10004L, "гипертония" },
+                    { 10005L, "сахарный диабет" },
+                    { 10006L, "сердечная недостаточность" },
+                    { 10007L, "ожирение" }
+                });
+
+            migrationBuilder.InsertData(
                 table: "Memberships",
                 columns: new[] { "Id", "AttendanceDays", "CategoryId", "Name", "Price" },
                 values: new object[,]
@@ -658,6 +693,11 @@ namespace yogaAshram.Migrations
                 name: "IX_Clients_MembershipId",
                 table: "Clients",
                 column: "MembershipId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Clients_SicknessId",
+                table: "Clients",
+                column: "SicknessId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ClientsMemberships_ClientId",
@@ -813,6 +853,9 @@ namespace yogaAshram.Migrations
 
             migrationBuilder.DropTable(
                 name: "Memberships");
+
+            migrationBuilder.DropTable(
+                name: "Sicknesses");
 
             migrationBuilder.DropTable(
                 name: "Categories");
