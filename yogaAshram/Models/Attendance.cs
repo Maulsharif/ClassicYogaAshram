@@ -22,6 +22,7 @@ namespace yogaAshram.Models
         public virtual Membership Membership { get; set; }
         public AttendanceState AttendanceState { get; set; } = Models.AttendanceState.notcheked;
         public bool IsChecked { get; set; } = false;
+        public bool IsNotActive { get; set; }
         public DateTime Date { get; set; }
         public long? AttendanceCountId { get; set; }
         public virtual AttendanceCount AttendanceCount { get; set; }
