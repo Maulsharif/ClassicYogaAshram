@@ -218,66 +218,326 @@
 
 @if ( User.IsInRole("seller") ||User.IsInRole("admin") )
 {
-	<div id="selectType">
-	<h5 class="mb-3">Добавление клиента</h5>
-	<select id="clientType" class="form-control w-25">
-		<option value="3">Выберите тип клиента</option>
-		<option value="1">Пробники</option>
-		<option value="2">Базовые клиенты</option>
-	</select>
-	<button class="btn btn-outline-dark mt-2" onclick="openClientForm()">Дальше</button>
+@* 	<div id="selectType"> *@
+@* 		<h5 class="mb-3">Добавление клиента</h5> *@
+@* 		<select id="clientType" class="form-control w-25"> *@
+@* 			<option value="3">Выберите тип клиента</option> *@
+@* 			<option value="1">Пробники</option> *@
+@* 			<option value="2">Базовые клиенты</option> *@
+@* 		</select> *@
+@* 		<button class="btn btn-outline-dark mt-2" onclick="openClientForm()">Дальше</button> *@
+@* 	</div> *@
+	
+	
+	
+	<!-- Tab links -->
+	<div class="tab">
+		<button class="tablinks" onclick="openCleits(event, 'Probes')">Пробники</button>
+		<button class="tablinks" onclick="openCleits(event, 'NewClient')">Базовые клиенты - Добавить нового клиента</button>
+		<button class="tablinks" onclick="openCleits(event, 'ExistingClient')">Базовые клиенты - Добавить существующего клиента</button>
 	</div>
-	<div id="trialBlock" class="trialBlock">
-	<div class="row d-flex justify-content-center">
-    <div class="col-md-6">
-        <h2>Записать на пробный</h2>
-	    <form method="post" asp-controller="Clients" asp-action="CreateClients">
-		    <input asp-for="BranchId" value="@Model.BranchId" type="hidden">
-		    <div>
-			    <span asp-validation-for="@Model.ClientsCreateModelView.NameSurname"></span>
-			    <label>Ф.И.О</label><br/>
-			    <input class="form-control mb-4" asp-for="@Model.ClientsCreateModelView.NameSurname"/>
-		    </div>
-		    <div>
-			    <span asp-validation-for="@Model.ClientsCreateModelView.PhoneNumber"></span>
-			    <label>Номер телефона</label><br/>
-			    <input class="form-control mb-4" asp-for="@Model.ClientsCreateModelView.PhoneNumber"/>
-		    </div>
-		    <div>
-			    <label class="form-control mb-4">Группа:@Model.Group.Name</label>
 
-			    <input class="form-control mb-4" asp-for="@Model.ClientsCreateModelView.GroupId" value="@Model.GroupId" type="hidden">
-		    </div>
-		    <input type="hidden" asp-for="@Model.ClientsCreateModelView.ClientType" value="0">		   
-		    <div class="form_row">
-			    <label>
-				    Количество занятий
-				    <select asp-for="@Model.ClientsCreateModelView.LessonNumbers" class="form-control mb-4">
-					    <option value="1" class="form-control mb-4">1 пробное занятие</option>
-					    <option value="3" class="form-control mb-4">3 пробных занятии</option>
-				    </select>
-			    </label>
-		    </div>
-		    <div>
-			    <div>
+	<!-- Tab content -->
+	<div id="Probes" class="tabcontent">
+		<h2>Записать на пробный</h2>
+		<form method="post" asp-controller="Clients" asp-action="CreateClients">
+			<input asp-for="BranchId" value="@Model.BranchId" type="hidden">
+			<div>
+				<span asp-validation-for="@Model.ClientsCreateModelView.NameSurname"></span>
+				<label>Ф.И.О</label><br/>
+				<input class="form-control mb-4" asp-for="@Model.ClientsCreateModelView.NameSurname"/>
+			</div>
+			<div>
+				<span asp-validation-for="@Model.ClientsCreateModelView.PhoneNumber"></span>
+				<label>Номер телефона</label><br/>
+				<input class="form-control mb-4" asp-for="@Model.ClientsCreateModelView.PhoneNumber"/>
+			</div>
+			<div>
+				<label class="form-control mb-4">Группа:@Model.Group.Name</label>
 
-				    <label class="form-control mb-4">Дата занятия: @Model.ChosenDate</label><br/>
+				<input class="form-control mb-4" asp-for="@Model.ClientsCreateModelView.GroupId" value="@Model.GroupId" type="hidden">
+			</div>
+			<input type="hidden" asp-for="@Model.ClientsCreateModelView.ClientType" value="0">
+			<div class="form_row">
+				<label>
+					Количество занятий
+					<select asp-for="@Model.ClientsCreateModelView.LessonNumbers" class="form-control mb-4">
+						<option value="1" class="form-control mb-4">1 пробное занятие</option>
+						<option value="3" class="form-control mb-4">3 пробных занятии</option>
+					</select>
+				</label>
+			</div>
+			<div>
+				<div>
 
-				    <input class="form-control mb-4" asp-for="@Model.ClientsCreateModelView.StartDate" type="hidden" value="@Model.ChosenDate">
-			    </div>
-			    <div>
-				    <span asp-validation-for="@Model.ClientsCreateModelView.Comment"></span>
-				    <label>Коментарии</label><br/>
-				    <input class="form-control mb-4" asp-for="@Model.ClientsCreateModelView.Comment">
-			    </div>
+					<label class="form-control mb-4">Дата занятия: @Model.ChosenDate</label><br/>
 
-			    <br/>
-			    <input class="btn btn-info btn-block my-4" type="submit" value="Добавить"/>
-		    </div>
-	    </form>
-    </div>
-</div>
-</div>
+					<input class="form-control mb-4" asp-for="@Model.ClientsCreateModelView.StartDate" type="hidden" value="@Model.ChosenDate">
+				</div>
+				<div>
+					<span asp-validation-for="@Model.ClientsCreateModelView.Comment"></span>
+					<label>Коментарии</label><br/>
+					<input class="form-control mb-4" asp-for="@Model.ClientsCreateModelView.Comment">
+				</div>
+
+				<br/>
+				<input class="btn btn-info btn-block my-4" type="submit" value="Добавить"/>
+			</div>
+		</form>
+	</div>
+
+	<div id="NewClient" class="tabcontent">
+		<h5 class="mb-3">Форма для нового клиента</h5>
+		<form method="post" asp-controller="Clients" asp-action="NewClientRegister">
+
+			<label class="form-control w-50">
+				<strong>Группа:</strong> @Model.Group.Name</label>
+			<label class="form-control w-50">
+				<strong>Дата первого занятия:</strong> @Model.ChosenDate.ToString("D")</label>
+			<label class="form-control w-75">
+				<strong>Абонемент:</strong> <span id="membershipText"></span>
+			</label>
+
+			<h5 class="mb-3">Выбор абонемента</h5>
+			<select id="subscriptionType" class="form-control w-50">
+				@foreach (Membership membership in (IEnumerable) @ViewBag.Memberships)
+				{
+					<option value="@membership.AttendanceDays @membership.Id">@membership.Name</option>
+				}
+			</select>
+
+			<input type="hidden" class="form-control mb-4 w-50" value="@Model.GroupId" asp-for="@Model.ClientsCreateModelView.GroupId">
+			<input class="form-control mb-4 w-50" id="membershipId" type="hidden" asp-for="@Model.ClientsCreateModelView.MembershipId">
+			<input type="hidden" asp-for="@Model.ClientsCreateModelView.StartDate" value="@Model.ChosenDate">
+			<div class="row">
+				<div class="col-sm-6">
+					<span asp-validation-for="@Model.ClientsCreateModelView.NameSurname"></span>
+					<label>Ф.И.О</label><br/>
+					<input class="form-control mb-4" asp-for="@Model.ClientsCreateModelView.NameSurname"/>
+				</div>
+				<div class="col-sm-6">
+					<span asp-validation-for="@Model.ClientsCreateModelView.DateOfBirth"></span>
+					<label>Дата рождения</label><br/>
+					<input class="form-control mb-4" type="date" asp-for="@Model.ClientsCreateModelView.DateOfBirth"/>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-6">
+					<span asp-validation-for="@Model.ClientsCreateModelView.PhoneNumber"></span>
+					<label>Номер телефона</label><br/>
+					<input class="form-control mb-4" asp-for="@Model.ClientsCreateModelView.PhoneNumber"/>
+				</div>
+
+				<div class="col-sm-6">
+					<span asp-validation-for="@Model.ClientsCreateModelView.Email"></span>
+					<label>Еmаil</label><br/>
+					<input class="form-control mb-4" asp-for="@Model.ClientsCreateModelView.Email"/>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="col-sm-6">
+					<label>Место работы и должность</label><br/>
+					<textarea class="form-control mb-4" rows="2" asp-for="@Model.ClientsCreateModelView.WorkPlace"></textarea>
+				</div>
+				<div class="col-sm-6" style="display: block; margin-top: 4px;">
+					<label style="display: block" for="">Наличие заболеваний</label>
+					<select style="height: 40px;width: auto;" asp-for="@Model.ClientsCreateModelView.SicknessId">
+						<option></option>
+						@foreach (Sickness sickness in (IEnumerable) @ViewBag.Sicknesses)
+						{
+							<option value="@sickness.Id">
+								@sickness.Name
+							</option>
+						}
+					</select>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-6">
+					<span asp-validation-for="@Model.ClientsCreateModelView.Source"></span>
+					<label>Откуда вы о нас узнали?</label><br/>
+					<select class="form-control mb-4" asp-for="ClientsCreateModelView.Source">
+						<option >...</option>
+						<option value="Инстаграм страница">Инстаграм страница</option>
+						<option value="Таргет в инстаграмме">Таргет в инстаграмме</option>
+						<option value="Инстаграм страница">Инстаграм страница</option>
+						<option value="Вывеска">Вывеска</option>
+						<option value="По рекомендации">По рекомендации</option>
+						<option value="По брошюре">По брошюре</option>
+						<option value="2ГИС">2ГИС</option>
+						<option value="1Fit">1Fit</option>
+						<option value="Гугл реклама">Гугл реклама</option>
+						<option value="Яндекс реклама">Яндекс реклама </option>
+						<option value="Другое">Другое</option>
+
+					</select>
+
+				</div>
+
+				<div class="col-sm-6">
+					<span asp-validation-for="@Model.ClientsCreateModelView.Comment"></span>
+					<label>Коментарий</label><br/>
+					<textarea class="form-control mb-4" asp-for="@Model.ClientsCreateModelView.Comment" rows="2"></textArea>
+				</div>
+			</div>
+			<br/>
+			<button class="btn btn-info" type="submit">Добавить</button>
+		</form>
+	</div>
+
+	<div id="ExistingClient" class="tabcontent">
+		<div class="row">
+			<div class="col-sm-6">
+				<h5 class="mb-3">Cписок пробников</h5>
+				<select id="trialClients" class="form-control w-50" onchange="openTrialClientForm()">
+					<option value="">Выберите из списка</option>
+					@foreach (Client client in (IEnumerable) @ViewBag.TrialClients)
+					{
+						<option value='{"phone":"@client.PhoneNumber","id":"@client.Id"}'>@client.NameSurname</option>
+					}
+				</select>
+			</div>
+			<div class="col-sm-6">
+				<h5 class="mb-3">Cписок старых клиентов</h5>
+				<select id="regularClients" class="form-control w-50" onchange="openRegularClientForm()">
+					<option value="">Выберите из списка</option>
+					@foreach (Client client in (IEnumerable) @ViewBag.OldClients)
+					{
+						<option value='{"id":"@client.Id","phone":"@client.PhoneNumber","email":"@client.Email","birthday":"@client.DateOfBirth.ToString("yyyy-MM-dd")","workPlace":"@client.WorkPlace","source":"@client.Source","sickness":"@client.Sickness"}'>@client.NameSurname</option>
+					}
+				</select>
+			</div>
+		</div>
+
+		<h5 class="mb-3">Форма для клиента</h5>
+		<form method="post" asp-controller="Clients" asp-action="OldClientRegister">
+
+			<label class="form-control w-50">
+				<strong>Группа:</strong> @Model.Group.Name</label>
+			<label class="form-control w-50">
+				<strong>Дата первого занятия:</strong> @Model.ChosenDate.ToString("D")</label>
+			<label class="form-control w-75">
+				<strong>Абонемент:</strong> <span id="membershipTextTrial"></span>
+			</label>
+
+			<input type="hidden" class="form-control mb-4 w-50" value="@Model.GroupId" asp-for="@Model.ClientsCreateModelView.GroupId">
+			<input class="form-control mb-4 w-50" id="membershipIdTrial" type="hidden" asp-for="@Model.ClientsCreateModelView.MembershipId">
+			<input type="hidden" id="trialClientId" name="clientId">
+			<div class="row">
+				<div class="col-sm-6">
+					<span asp-validation-for="@Model.ClientsCreateModelView.NameSurname"></span>
+					<label>Ф.И.О</label><br/>
+					<input class="form-control mb-4" asp-for="@Model.ClientsCreateModelView.NameSurname" id="trialNameInput"/>
+				</div>
+				<div class="col-sm-6">
+					<span asp-validation-for="@Model.ClientsCreateModelView.DateOfBirth"></span>
+					<label>Дата рождения</label><br/>
+					<input class="form-control mb-4" type="date" asp-for="@Model.ClientsCreateModelView.DateOfBirth" id="birthdayInput"/>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-6">
+					<span asp-validation-for="@Model.ClientsCreateModelView.PhoneNumber"></span>
+					<label>Номер телефона</label><br/>
+					<input class="form-control mb-4" asp-for="@Model.ClientsCreateModelView.PhoneNumber" id="trialPhoneInput"/>
+				</div>
+
+				<div class="col-sm-6">
+					<span asp-validation-for="@Model.ClientsCreateModelView.Email"></span>
+					<label>Еmаil</label><br/>
+					<input class="form-control mb-4" asp-for="@Model.ClientsCreateModelView.Email" id="emailInput"/>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-6">
+					<label>Место работы и должность</label><br/>
+					<textarea class="form-control mb-4" rows="2" asp-for="@Model.ClientsCreateModelView.WorkPlace" id="workPlaceInput"></textarea>
+				</div>
+
+				<div class="col-sm-6" style="display: block; margin-top: 4px;">
+					<label style="display: block" for="">Наличие заболеваний</label>
+					<select style="height: 40px;width: auto;" asp-for="@Model.ClientsCreateModelView.SicknessId">
+						<option></option>
+						@foreach (Sickness sickness in (IEnumerable) @ViewBag.Sicknesses)
+						{
+							<option value="@sickness.Id">
+								@sickness.Name
+							</option>
+						}
+					</select>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-6">
+					<span asp-validation-for="@Model.ClientsCreateModelView.Source"></span>
+					<label>Откуда вы о нас узнали?</label><br/>
+					<textarea class="form-control mb-4" rows="2" asp-for="@Model.ClientsCreateModelView.Source" id="sourceInput"></textarea>
+				</div>
+
+				<div class="col-sm-6">
+					<span asp-validation-for="@Model.ClientsCreateModelView.Comment"></span>
+					<label>Комментарий</label><br/>
+					<textarea class="form-control mb-4" asp-for="@Model.ClientsCreateModelView.Comment" rows="2"></textArea>
+				</div>
+			</div>
+			<br/>
+			<button class="btn btn-info" type="submit">Добавить</button>
+		</form>
+
+	</div>
+	
+@* 	<div id="trialBlock" class="trialBlock"> *@
+@* 	<div class="row d-flex justify-content-center"> *@
+@*     <div class="col-md-6"> *@
+@*         <h2>Записать на пробный</h2> *@
+@* 	    <form method="post" asp-controller="Clients" asp-action="CreateClients"> *@
+@* 		    <input asp-for="BranchId" value="@Model.BranchId" type="hidden"> *@
+@* 		    <div> *@
+@* 			    <span asp-validation-for="@Model.ClientsCreateModelView.NameSurname"></span> *@
+@* 			    <label>Ф.И.О</label><br/> *@
+@* 			    <input class="form-control mb-4" asp-for="@Model.ClientsCreateModelView.NameSurname"/> *@
+@* 		    </div> *@
+@* 		    <div> *@
+@* 			    <span asp-validation-for="@Model.ClientsCreateModelView.PhoneNumber"></span> *@
+@* 			    <label>Номер телефона</label><br/> *@
+@* 			    <input class="form-control mb-4" asp-for="@Model.ClientsCreateModelView.PhoneNumber"/> *@
+@* 		    </div> *@
+@* 		    <div> *@
+@* 			    <label class="form-control mb-4">Группа:@Model.Group.Name</label> *@
+@* *@
+@* 			    <input class="form-control mb-4" asp-for="@Model.ClientsCreateModelView.GroupId" value="@Model.GroupId" type="hidden"> *@
+@* 		    </div> *@
+@* 		    <input type="hidden" asp-for="@Model.ClientsCreateModelView.ClientType" value="0">		    *@
+@* 		    <div class="form_row"> *@
+@* 			    <label> *@
+@* 				    Количество занятий *@
+@* 				    <select asp-for="@Model.ClientsCreateModelView.LessonNumbers" class="form-control mb-4"> *@
+@* 					    <option value="1" class="form-control mb-4">1 пробное занятие</option> *@
+@* 					    <option value="3" class="form-control mb-4">3 пробных занятии</option> *@
+@* 				    </select> *@
+@* 			    </label> *@
+@* 		    </div> *@
+@* 		    <div> *@
+@* 			    <div> *@
+@* *@
+@* 				    <label class="form-control mb-4">Дата занятия: @Model.ChosenDate</label><br/> *@
+@* *@
+@* 				    <input class="form-control mb-4" asp-for="@Model.ClientsCreateModelView.StartDate" type="hidden" value="@Model.ChosenDate"> *@
+@* 			    </div> *@
+@* 			    <div> *@
+@* 				    <span asp-validation-for="@Model.ClientsCreateModelView.Comment"></span> *@
+@* 				    <label>Коментарии</label><br/> *@
+@* 				    <input class="form-control mb-4" asp-for="@Model.ClientsCreateModelView.Comment"> *@
+@* 			    </div> *@
+@* *@
+@* 			    <br/> *@
+@* 			    <input class="btn btn-info btn-block my-4" type="submit" value="Добавить"/> *@
+@* 		    </div> *@
+@* 	    </form> *@
+@*     </div> *@
+@* </div> *@
+@* </div> *@
 	<div id="baseClientBlock" class="baseClientBlock">
 		<div id="selectSubscription">
 			<h5 class="mb-3">Выбор абонемента</h5>
@@ -289,203 +549,201 @@
 			</select>
 			<button class="btn btn-outline-dark mt-2" onclick="openDetailedForm()">Дальше</button>
 		</div>
-	</div>
-	<div id="bigForm">
-		<div id="clientTypeSelection">
-		<h5 class="mb-3">Какого клиента необходимо добавить?</h5>
-			<button class="btn btn-outline-dark" id="newClient" onclick="openFormToAddNew()">Добавить нового клиента</button>
-			<button class="btn btn-outline-dark" id="existingClient" onclick="openToChooseOld()">Добавить существующего клиента</button>
-		</div>
-		
-		<div id="formForNewClient">
-		<h5 class="mb-3">Форма для нового клиента</h5>
-			<form method="post" asp-controller="Clients" asp-action="NewClientRegister">
-
-            		    <label class="form-control w-50"><strong>Группа:</strong> @Model.Group.Name</label>
-            		    <label class="form-control w-50"><strong>Дата первого занятия:</strong> @Model.ChosenDate.ToString("D")</label>
-		                <label class="form-control w-75"><strong>Абонемент:</strong> <span id="membershipText"></span></label>
-		                                      
-		                <input type="hidden" class="form-control mb-4 w-50" value="@Model.GroupId" asp-for="@Model.ClientsCreateModelView.GroupId">
-		                <input class="form-control mb-4 w-50" id="membershipId" type="hidden" asp-for="@Model.ClientsCreateModelView.MembershipId">
-                       	   <input type="hidden" asp-for="@Model.ClientsCreateModelView.StartDate" value="@Model.ChosenDate">
-                        <div class="row">
-	                        <div class="col-sm-6">                        	
-		                        <span asp-validation-for="@Model.ClientsCreateModelView.NameSurname"></span>
-		                        <label>Ф.И.О</label><br/>
-		                        <input class="form-control mb-4" asp-for="@Model.ClientsCreateModelView.NameSurname"/>      
-	                        </div>                        	                        
-	                        <div class="col-sm-6">		                       
-			                        <span asp-validation-for="@Model.ClientsCreateModelView.DateOfBirth"></span>
-			                        <label>Дата рождения</label><br/>
-			                        <input class="form-control mb-4" type="date" asp-for="@Model.ClientsCreateModelView.DateOfBirth"/>		                       
-	                        </div>
-                        </div>
-		                <div class="row">
-	                        <div class="col-sm-6">		                           
-		                        <span asp-validation-for="@Model.ClientsCreateModelView.PhoneNumber"></span>
-		                        <label>Номер телефона</label><br/>
-		                        <input class="form-control mb-4" asp-for="@Model.ClientsCreateModelView.PhoneNumber"/>		                           
-	                        </div>
-	                                                  
-	                        <div class="col-sm-6">
-		                        <span asp-validation-for="@Model.ClientsCreateModelView.Email"></span>
-		                        <label>Еmаil</label><br/>
-		                        <input class="form-control mb-4" asp-for="@Model.ClientsCreateModelView.Email"/>
-	                        </div>
-                        </div>
-                                               						
-                        <div class="row">
-                        <div class="col-sm-6">
-	                        <label>Место работы и должность</label><br/>
-	                        <textarea class="form-control mb-4" rows="2" asp-for="@Model.ClientsCreateModelView.WorkPlace"></textarea>  
-                        </div>
-	                        <div class="col-sm-6" style="display: block; margin-top: 4px;">
-		                        <label style="display: block" for="">Наличие заболеваний</label>
-		                        <select style="height: 40px;width: auto;" asp-for="@Model.ClientsCreateModelView.SicknessId">
-			                        <option></option>
-			                        @foreach (Sickness sickness in (IEnumerable) @ViewBag.Sicknesses)
-			                        {
-				                        <option value="@sickness.Id">
-					                        @sickness.Name
-				                        </option>
-			                        }
-		                        </select>
-	                        </div>
-                        </div> 	
-                     <div class="row">   
-                        <div class="col-sm-6">
-                        <span asp-validation-for="@Model.ClientsCreateModelView.Source"></span>
-	                        <label>Откуда вы о нас узнали?</label><br/>
-	                        <select class="form-control mb-4" asp-for="ClientsCreateModelView.Source">
-                                <option >...</option>
-		                        <option value="Инстаграм страница">Инстаграм страница</option>
-		                        <option value="Таргет в инстаграмме">Таргет в инстаграмме</option>
-		                        <option value="Инстаграм страница">Инстаграм страница</option>
-		                        <option value="Вывеска">Вывеска</option>
-		                        <option value="По рекомендации">По рекомендации</option>
-		                        <option value="По брошюре">По брошюре</option>
-		                        <option value="2ГИС">2ГИС</option>
-		                        <option value="1Fit">1Fit</option>
-		                        <option value="Гугл реклама">Гугл реклама</option>
-		                        <option value="Яндекс реклама">Яндекс реклама </option>
-		                        <option value="Другое">Другое</option>
-		                        
-	                        </select>
-			                      	                        
-		                </div>
-		    
-		                     <div class="col-sm-6">
-			                     <span asp-validation-for="@Model.ClientsCreateModelView.Comment"></span>
-			                     <label>Коментарий</label><br/>
-			                     <textarea class="form-control mb-4" asp-for="@Model.ClientsCreateModelView.Comment" rows="2"></textArea>
-		                     </div>
-	                 </div>   
-            			    <br/>
-			                <button class="btn btn-info" type="submit">Добавить</button>
-            	    </form>                			
-			</div>
-				
-		<div id="chooseTypeFromList">
-			<div class="row">
-				<div class="col-sm-6">
-				<h5 class="mb-3">Cписок пробников</h5>
-				<select id="trialClients" class="form-control w-50" onchange="openTrialClientForm()">
-					<option value="">Выберите из списка</option>
-					@foreach (Client client in (IEnumerable) @ViewBag.TrialClients)
-					{
-						<option value='{"phone":"@client.PhoneNumber","id":"@client.Id"}'>@client.NameSurname</option>
-					}
-				</select>
-				</div>
-				<div class="col-sm-6">
-					<h5 class="mb-3">Cписок старых клиентов</h5>
-					<select id="regularClients" class="form-control w-50" onchange="openRegularClientForm()">
-						<option value="">Выберите из списка</option>
-						@foreach (Client client in (IEnumerable) @ViewBag.OldClients)
-						{
-							<option value='{"id":"@client.Id","phone":"@client.PhoneNumber","email":"@client.Email","birthday":"@client.DateOfBirth.ToString("yyyy-MM-dd")","workPlace":"@client.WorkPlace","source":"@client.Source","sickness":"@client.Sickness"}'>@client.NameSurname</option>
-						}
-					</select>
-				</div>
-			</div>
-			<div id="formForTrialClient">
-				<h5 class="mb-3">Форма для клиента</h5>
-				<form method="post" asp-controller="Clients" asp-action="OldClientRegister">
-
-					<label class="form-control w-50"><strong>Группа:</strong> @Model.Group.Name</label>
-					<label class="form-control w-50"><strong>Дата первого занятия:</strong> @Model.ChosenDate.ToString("D")</label>
-					<label class="form-control w-75"><strong>Абонемент:</strong> <span id="membershipTextTrial"></span></label>
-
-					<input type="hidden" class="form-control mb-4 w-50" value="@Model.GroupId" asp-for="@Model.ClientsCreateModelView.GroupId">
-					<input class="form-control mb-4 w-50" id="membershipIdTrial" type="hidden" asp-for="@Model.ClientsCreateModelView.MembershipId">
-					<input type="hidden" id="trialClientId" name="clientId">
-					<div class="row">
-						<div class="col-sm-6">
-							<span asp-validation-for="@Model.ClientsCreateModelView.NameSurname"></span>
-							<label>Ф.И.О</label><br/>
-							<input class="form-control mb-4" asp-for="@Model.ClientsCreateModelView.NameSurname" id="trialNameInput"/>
-						</div>
-						<div class="col-sm-6">
-							<span asp-validation-for="@Model.ClientsCreateModelView.DateOfBirth"></span>
-							<label>Дата рождения</label><br/>
-							<input class="form-control mb-4" type="date" asp-for="@Model.ClientsCreateModelView.DateOfBirth" id="birthdayInput"/>
-						</div>
-					</div>
-					<div class="row">
-						<div class="col-sm-6">
-							<span asp-validation-for="@Model.ClientsCreateModelView.PhoneNumber"></span>
-							<label>Номер телефона</label><br/>
-							<input class="form-control mb-4" asp-for="@Model.ClientsCreateModelView.PhoneNumber" id="trialPhoneInput"/>
-						</div>
-
-						<div class="col-sm-6">
-							<span asp-validation-for="@Model.ClientsCreateModelView.Email"></span>
-							<label>Еmаil</label><br/>
-							<input class="form-control mb-4" asp-for="@Model.ClientsCreateModelView.Email" id="emailInput"/>
-						</div>
-					</div>
-					<div class="row">
-						<div class="col-sm-6">
-							<label>Место работы и должность</label><br/>
-							<textarea class="form-control mb-4" rows="2" asp-for="@Model.ClientsCreateModelView.WorkPlace" id="workPlaceInput"></textarea>
-						</div>
-
-						<div class="col-sm-6" style="display: block; margin-top: 4px;">
-							<label style="display: block" for="">Наличие заболеваний</label>
-							<select style="height: 40px;width: auto;" asp-for="@Model.ClientsCreateModelView.SicknessId">
-								<option></option>
-								@foreach (Sickness sickness in (IEnumerable) @ViewBag.Sicknesses)
-								{
-									<option value="@sickness.Id">
-										@sickness.Name
-									</option>
-								}
-							</select>
-						</div>
-					</div>
-					<div class="row">
-						<div class="col-sm-6">
-							<span asp-validation-for="@Model.ClientsCreateModelView.Source"></span>
-							<label>Откуда вы о нас узнали?</label><br/>
-							<textarea class="form-control mb-4" rows="2" asp-for="@Model.ClientsCreateModelView.Source" id="sourceInput"></textarea>
-						</div>
-
-						<div class="col-sm-6">
-							<span asp-validation-for="@Model.ClientsCreateModelView.Comment"></span>
-							<label>Комментарий</label><br/>
-							<textarea class="form-control mb-4" asp-for="@Model.ClientsCreateModelView.Comment" rows="2"></textArea>
-						</div>
-					</div>
-					<br/>
-					<button class="btn btn-info" type="submit">Добавить</button>
-				</form>
-			</div>
-		</div>
-	</div>
+@* 	</div> *@
+@* 	<div id="bigForm"> *@
+@* 		<div id="clientTypeSelection"> *@
+@* 		<h5 class="mb-3">Какого клиента необходимо добавить?</h5> *@
+@* 			<button class="btn btn-outline-dark" id="newClient" onclick="openFormToAddNew()">Добавить нового клиента</button> *@
+@* 			<button class="btn btn-outline-dark" id="existingClient" onclick="openToChooseOld()">Добавить существующего клиента</button> *@
+@* 		</div> *@
+@* 		 *@
+@* 		<div id="formForNewClient"> *@
+@* 		<h5 class="mb-3">Форма для нового клиента</h5> *@
+@* 			<form method="post" asp-controller="Clients" asp-action="NewClientRegister"> *@
+@* *@
+@*             		    <label class="form-control w-50"><strong>Группа:</strong> @Model.Group.Name</label> *@
+@*             		    <label class="form-control w-50"><strong>Дата первого занятия:</strong> @Model.ChosenDate.ToString("D")</label> *@
+@* 		                <label class="form-control w-75"><strong>Абонемент:</strong> <span id="membershipText"></span></label> *@
+@* 		                                       *@
+@* 		                <input type="hidden" class="form-control mb-4 w-50" value="@Model.GroupId" asp-for="@Model.ClientsCreateModelView.GroupId"> *@
+@* 		                <input class="form-control mb-4 w-50" id="membershipId" type="hidden" asp-for="@Model.ClientsCreateModelView.MembershipId"> *@
+@*                        	   <input type="hidden" asp-for="@Model.ClientsCreateModelView.StartDate" value="@Model.ChosenDate"> *@
+@*                         <div class="row"> *@
+@* 	                        <div class="col-sm-6">                        	 *@
+@* 		                        <span asp-validation-for="@Model.ClientsCreateModelView.NameSurname"></span> *@
+@* 		                        <label>Ф.И.О</label><br/> *@
+@* 		                        <input class="form-control mb-4" asp-for="@Model.ClientsCreateModelView.NameSurname"/>       *@
+@* 	                        </div>                        	                         *@
+@* 	                        <div class="col-sm-6">		                        *@
+@* 			                        <span asp-validation-for="@Model.ClientsCreateModelView.DateOfBirth"></span> *@
+@* 			                        <label>Дата рождения</label><br/> *@
+@* 			                        <input class="form-control mb-4" type="date" asp-for="@Model.ClientsCreateModelView.DateOfBirth"/>		                        *@
+@* 	                        </div> *@
+@*                         </div> *@
+@* 		                <div class="row"> *@
+@* 	                        <div class="col-sm-6">		                            *@
+@* 		                        <span asp-validation-for="@Model.ClientsCreateModelView.PhoneNumber"></span> *@
+@* 		                        <label>Номер телефона</label><br/> *@
+@* 		                        <input class="form-control mb-4" asp-for="@Model.ClientsCreateModelView.PhoneNumber"/>		                            *@
+@* 	                        </div> *@
+@* 	                                                   *@
+@* 	                        <div class="col-sm-6"> *@
+@* 		                        <span asp-validation-for="@Model.ClientsCreateModelView.Email"></span> *@
+@* 		                        <label>Еmаil</label><br/> *@
+@* 		                        <input class="form-control mb-4" asp-for="@Model.ClientsCreateModelView.Email"/> *@
+@* 	                        </div> *@
+@*                         </div> *@
+@*                                                						 *@
+@*                         <div class="row"> *@
+@*                         <div class="col-sm-6"> *@
+@* 	                        <label>Место работы и должность</label><br/> *@
+@* 	                        <textarea class="form-control mb-4" rows="2" asp-for="@Model.ClientsCreateModelView.WorkPlace"></textarea>   *@
+@*                         </div> *@
+@* 	                        <div class="col-sm-6" style="display: block; margin-top: 4px;"> *@
+@* 		                        <label style="display: block" for="">Наличие заболеваний</label> *@
+@* 		                        <select style="height: 40px;width: auto;" asp-for="@Model.ClientsCreateModelView.SicknessId"> *@
+@* 			                        <option></option> *@
+@* 			                        @foreach (Sickness sickness in (IEnumerable) @ViewBag.Sicknesses) *@
+@* 			                        { *@
+@* 				                        <option value="@sickness.Id"> *@
+@* 					                        @sickness.Name *@
+@* 				                        </option> *@
+@* 			                        } *@
+@* 		                        </select> *@
+@* 	                        </div> *@
+@*                         </div> 	 *@
+@*                      <div class="row">    *@
+@*                         <div class="col-sm-6"> *@
+@*                         <span asp-validation-for="@Model.ClientsCreateModelView.Source"></span> *@
+@* 	                        <label>Откуда вы о нас узнали?</label><br/> *@
+@* 	                        <select class="form-control mb-4" asp-for="ClientsCreateModelView.Source"> *@
+@*                                 <option >...</option> *@
+@* 		                        <option value="Инстаграм страница">Инстаграм страница</option> *@
+@* 		                        <option value="Таргет в инстаграмме">Таргет в инстаграмме</option> *@
+@* 		                        <option value="Инстаграм страница">Инстаграм страница</option> *@
+@* 		                        <option value="Вывеска">Вывеска</option> *@
+@* 		                        <option value="По рекомендации">По рекомендации</option> *@
+@* 		                        <option value="По брошюре">По брошюре</option> *@
+@* 		                        <option value="2ГИС">2ГИС</option> *@
+@* 		                        <option value="1Fit">1Fit</option> *@
+@* 		                        <option value="Гугл реклама">Гугл реклама</option> *@
+@* 		                        <option value="Яндекс реклама">Яндекс реклама </option> *@
+@* 		                        <option value="Другое">Другое</option> *@
+@* 		                         *@
+@* 	                        </select> *@
+@* 			                      	                         *@
+@* 		                </div> *@
+@* 		     *@
+@* 		                     <div class="col-sm-6"> *@
+@* 			                     <span asp-validation-for="@Model.ClientsCreateModelView.Comment"></span> *@
+@* 			                     <label>Коментарий</label><br/> *@
+@* 			                     <textarea class="form-control mb-4" asp-for="@Model.ClientsCreateModelView.Comment" rows="2"></textArea> *@
+@* 		                     </div> *@
+@* 	                 </div>    *@
+@*             			    <br/> *@
+@* 			                <button class="btn btn-info" type="submit">Добавить</button> *@
+@*             	    </form>                			 *@
+@* 			</div> *@
+@* 				 *@
+@* 		<div id="chooseTypeFromList"> *@
+@* 			<div class="row"> *@
+@* 				<div class="col-sm-6"> *@
+@* 				<h5 class="mb-3">Cписок пробников</h5> *@
+@* 				<select id="trialClients" class="form-control w-50" onchange="openTrialClientForm()"> *@
+@* 					<option value="">Выберите из списка</option> *@
+@* 					@foreach (Client client in (IEnumerable) @ViewBag.TrialClients) *@
+@* 					{ *@
+@* 						<option value='{"phone":"@client.PhoneNumber","id":"@client.Id"}'>@client.NameSurname</option> *@
+@* 					} *@
+@* 				</select> *@
+@* 				</div> *@
+@* 				<div class="col-sm-6"> *@
+@* 					<h5 class="mb-3">Cписок старых клиентов</h5> *@
+@* 					<select id="regularClients" class="form-control w-50" onchange="openRegularClientForm()"> *@
+@* 						<option value="">Выберите из списка</option> *@
+@* 						@foreach (Client client in (IEnumerable) @ViewBag.OldClients) *@
+@* 						{ *@
+@* 							<option value='{"id":"@client.Id","phone":"@client.PhoneNumber","email":"@client.Email","birthday":"@client.DateOfBirth.ToString("yyyy-MM-dd")","workPlace":"@client.WorkPlace","source":"@client.Source","sickness":"@client.Sickness"}'>@client.NameSurname</option> *@
+@* 						} *@
+@* 					</select> *@
+@* 				</div> *@
+@* 			</div> *@
+@* 			<div id="formForTrialClient"> *@
+@* 				<h5 class="mb-3">Форма для клиента</h5> *@
+@* 				<form method="post" asp-controller="Clients" asp-action="OldClientRegister"> *@
+@* *@
+@* 					<label class="form-control w-50"><strong>Группа:</strong> @Model.Group.Name</label> *@
+@* 					<label class="form-control w-50"><strong>Дата первого занятия:</strong> @Model.ChosenDate.ToString("D")</label> *@
+@* 					<label class="form-control w-75"><strong>Абонемент:</strong> <span id="membershipTextTrial"></span></label> *@
+@* *@
+@* 					<input type="hidden" class="form-control mb-4 w-50" value="@Model.GroupId" asp-for="@Model.ClientsCreateModelView.GroupId"> *@
+@* 					<input class="form-control mb-4 w-50" id="membershipIdTrial" type="hidden" asp-for="@Model.ClientsCreateModelView.MembershipId"> *@
+@* 					<input type="hidden" id="trialClientId" name="clientId"> *@
+@* 					<div class="row"> *@
+@* 						<div class="col-sm-6"> *@
+@* 							<span asp-validation-for="@Model.ClientsCreateModelView.NameSurname"></span> *@
+@* 							<label>Ф.И.О</label><br/> *@
+@* 							<input class="form-control mb-4" asp-for="@Model.ClientsCreateModelView.NameSurname" id="trialNameInput"/> *@
+@* 						</div> *@
+@* 						<div class="col-sm-6"> *@
+@* 							<span asp-validation-for="@Model.ClientsCreateModelView.DateOfBirth"></span> *@
+@* 							<label>Дата рождения</label><br/> *@
+@* 							<input class="form-control mb-4" type="date" asp-for="@Model.ClientsCreateModelView.DateOfBirth" id="birthdayInput"/> *@
+@* 						</div> *@
+@* 					</div> *@
+@* 					<div class="row"> *@
+@* 						<div class="col-sm-6"> *@
+@* 							<span asp-validation-for="@Model.ClientsCreateModelView.PhoneNumber"></span> *@
+@* 							<label>Номер телефона</label><br/> *@
+@* 							<input class="form-control mb-4" asp-for="@Model.ClientsCreateModelView.PhoneNumber" id="trialPhoneInput"/> *@
+@* 						</div> *@
+@* *@
+@* 						<div class="col-sm-6"> *@
+@* 							<span asp-validation-for="@Model.ClientsCreateModelView.Email"></span> *@
+@* 							<label>Еmаil</label><br/> *@
+@* 							<input class="form-control mb-4" asp-for="@Model.ClientsCreateModelView.Email" id="emailInput"/> *@
+@* 						</div> *@
+@* 					</div> *@
+@* 					<div class="row"> *@
+@* 						<div class="col-sm-6"> *@
+@* 							<label>Место работы и должность</label><br/> *@
+@* 							<textarea class="form-control mb-4" rows="2" asp-for="@Model.ClientsCreateModelView.WorkPlace" id="workPlaceInput"></textarea> *@
+@* 						</div> *@
+@* *@
+@* 						<div class="col-sm-6" style="display: block; margin-top: 4px;"> *@
+@* 							<label style="display: block" for="">Наличие заболеваний</label> *@
+@* 							<select style="height: 40px;width: auto;" asp-for="@Model.ClientsCreateModelView.SicknessId"> *@
+@* 								<option></option> *@
+@* 								@foreach (Sickness sickness in (IEnumerable) @ViewBag.Sicknesses) *@
+@* 								{ *@
+@* 									<option value="@sickness.Id"> *@
+@* 										@sickness.Name *@
+@* 									</option> *@
+@* 								} *@
+@* 							</select> *@
+@* 						</div> *@
+@* 					</div> *@
+@* 					<div class="row"> *@
+@* 						<div class="col-sm-6"> *@
+@* 							<span asp-validation-for="@Model.ClientsCreateModelView.Source"></span> *@
+@* 							<label>Откуда вы о нас узнали?</label><br/> *@
+@* 							<textarea class="form-control mb-4" rows="2" asp-for="@Model.ClientsCreateModelView.Source" id="sourceInput"></textarea> *@
+@* 						</div> *@
+@* *@
+@* 						<div class="col-sm-6"> *@
+@* 							<span asp-validation-for="@Model.ClientsCreateModelView.Comment"></span> *@
+@* 							<label>Комментарий</label><br/> *@
+@* 							<textarea class="form-control mb-4" asp-for="@Model.ClientsCreateModelView.Comment" rows="2"></textArea> *@
+@* 						</div> *@
+@* 					</div> *@
+@* 					<br/> *@
+@* 					<button class="btn btn-info" type="submit">Добавить</button> *@
+@* 				</form> *@
+@* 			</div> *@
+@* 		</div> *@
+	</div> 
 	
 }
-
-
 
 @section Scripts
 {
@@ -748,5 +1006,26 @@
                 })
               }                 
     	</script>
+	
+	<script>
+	
+//Этот скрипт нужен 
+	function openCleits(evt, clientTypes) {
+        var i, tabcontent, tablinks;
+    
+        tabcontent = document.getElementsByClassName("tabcontent");
+        for (i = 0; i < tabcontent.length; i++) {
+            tabcontent[i].style.display = "none";
+        }
+    
+        tablinks = document.getElementsByClassName("tablinks");
+        for (i = 0; i < tablinks.length; i++) {
+            tablinks[i].className = tablinks[i].className.replace(" active", "");
+        }
+    
+        document.getElementById(clientTypes).style.display = "block";
+        evt.currentTarget.className += " active";
+    }
+	</script>
 }
 
