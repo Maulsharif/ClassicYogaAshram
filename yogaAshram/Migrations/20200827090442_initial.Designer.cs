@@ -11,7 +11,7 @@ using yogaAshram.Models;
 namespace yogaAshram.Migrations
 {
     [DbContext(typeof(YogaAshramContext))]
-    [Migration("20200827034052_initial")]
+    [Migration("20200827090442_initial")]
     partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -146,6 +146,9 @@ namespace yogaAshram.Migrations
                         .HasColumnType("bigint");
 
                     b.Property<bool>("IsChecked")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsNotActive")
                         .HasColumnType("boolean");
 
                     b.Property<long?>("MembershipId")
@@ -309,8 +312,8 @@ namespace yogaAshram.Migrations
                     b.Property<string>("PhoneNumber")
                         .HasColumnType("text");
 
-                    b.Property<string>("Sickness")
-                        .HasColumnType("text");
+                    b.Property<long?>("SicknessId")
+                        .HasColumnType("bigint");
 
                     b.Property<string>("Source")
                         .HasColumnType("text");
@@ -328,6 +331,8 @@ namespace yogaAshram.Migrations
                     b.HasIndex("GroupId");
 
                     b.HasIndex("MembershipId");
+
+                    b.HasIndex("SicknessId");
 
                     b.ToTable("Clients");
                 });
@@ -799,6 +804,63 @@ namespace yogaAshram.Migrations
                     b.ToTable("Schedules");
                 });
 
+            modelBuilder.Entity("yogaAshram.Models.Sickness", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<string>("Name")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Sicknesses");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 10000L,
+                            Name = "остеохондроз"
+                        },
+                        new
+                        {
+                            Id = 10001L,
+                            Name = "грыжа"
+                        },
+                        new
+                        {
+                            Id = 10002L,
+                            Name = "сколиоз"
+                        },
+                        new
+                        {
+                            Id = 10003L,
+                            Name = "артрит"
+                        },
+                        new
+                        {
+                            Id = 10004L,
+                            Name = "гипертония"
+                        },
+                        new
+                        {
+                            Id = 10005L,
+                            Name = "сахарный диабет"
+                        },
+                        new
+                        {
+                            Id = 10006L,
+                            Name = "сердечная недостаточность"
+                        },
+                        new
+                        {
+                            Id = 10007L,
+                            Name = "ожирение"
+                        });
+                });
+
             modelBuilder.Entity("yogaAshram.Models.TrialUsers", b =>
                 {
                     b.Property<long>("Id")
@@ -955,6 +1017,10 @@ namespace yogaAshram.Migrations
                     b.HasOne("yogaAshram.Models.Membership", "Membership")
                         .WithMany()
                         .HasForeignKey("MembershipId");
+
+                    b.HasOne("yogaAshram.Models.Sickness", "Sickness")
+                        .WithMany()
+                        .HasForeignKey("SicknessId");
                 });
 
             modelBuilder.Entity("yogaAshram.Models.ClientsMembership", b =>

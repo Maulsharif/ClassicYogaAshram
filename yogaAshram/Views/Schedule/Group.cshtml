@@ -84,7 +84,7 @@
 			<tr>
 				<th scope="col">Клиент</th>
 				<th scope="col">Количество пропусков</th>
-				<th scope="col">Количество заморозок</th>
+				<th scope="col">Осталось заморозок</th>
 				<th>Проверено</th>
 				<th>Абонемент</th>
 				<th>Осталось дней</th>
@@ -138,11 +138,11 @@
 							</td> 
 							</div>	
 						}
-						else if (@attendance.AttendanceCount.AttendingTimes == 0)
+						else if (@attendance.AttendanceCount.AttendingTimes == 0 && @attendance.IsNotActive == false)
                         {
                         	<div >	
                         	<td class="bg-danger">										        
-                        		<button class="getMembershipExtendModal" clientId="@attendance.ClientId" date="@ViewBag.Date">Продлить абонемент</button>														        
+                        		<button class="getMembershipExtendModal btn btn-primary" clientId="@attendance.ClientId" date="@ViewBag.Date">Продлить абонемент</button>														        
                         		</td> 
                         	</div>	
                         }

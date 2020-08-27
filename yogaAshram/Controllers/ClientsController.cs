@@ -244,6 +244,7 @@ namespace yogaAshram.Controllers
                     AttendingTimes = membership.AttendanceDays,
                     AbsenceTimes = 0,
                     FrozenTimes = daysFrozen
+                    
                 };
                 _db.Entry(attendanceCount).State = EntityState.Added;
                 for (int i = 0; i < membership?.AttendanceDays + daysFrozen; i++)
@@ -332,6 +333,7 @@ namespace yogaAshram.Controllers
                     AttendingTimes = membership.AttendanceDays,
                     AbsenceTimes = 0,
                     FrozenTimes = daysFrozen
+                    
                 };
                 _db.Entry(attendanceCount).State = EntityState.Added;
                 for (int i = 0; i < membership?.AttendanceDays + daysFrozen; i++)

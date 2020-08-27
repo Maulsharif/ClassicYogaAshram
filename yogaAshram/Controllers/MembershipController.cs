@@ -18,12 +18,13 @@ namespace yogaAshram.Controllers
         private readonly UserManager<Employee> _userManager;
         private readonly YogaAshramContext _db;
         private readonly PaymentsService _paymentsService;
-
-        public MembershipController(YogaAshramContext db, UserManager<Employee> userManager, PaymentsService paymentsService)
+        private readonly ClientServices _clientServices;
+        public MembershipController(YogaAshramContext db, UserManager<Employee> userManager, PaymentsService paymentsService, ClientServices clientServices)
         {
             _db = db;
             _userManager = userManager;
             _paymentsService = paymentsService;
+            _clientServices = clientServices;
         }
 
         // GET
@@ -106,24 +107,56 @@ namespace yogaAshram.Controllers
                 if (client.Balance < 0 && -client.Balance > model.CashSum + model.CardSum)
                     return BadRequest();
 
-                Schedule schedule = _db.Schedules.FirstOrDefault(s => s.GroupId == model.GroupId);
-
-                Console.WriteLine(model.Date);
-                Console.WriteLine(model.GroupId);
-                Console.WriteLine(model.MembershipId);
-                
-                
+                foreach (var attendanceUnActive in _db.Attendances.Where(a => a.ClientId == model.ClientId))
+                {
+                    attendanceUnActive.IsNotActive = true;
+                    _db.Entry(attendanceUnActive).State = EntityState.Modified;
+                }
                 Membership membership = await _db.Memberships.FirstOrDefaultAsync(p => p.Id == model.MembershipId);
+                
+                _db.Entry(membership).State = EntityState.Modified;
+                int daysFrozen = 0;
+                if (membership.AttendanceDays == 12)
+                    daysFrozen = 3;
+                else if (membership.AttendanceDays == 8)
+                    daysFrozen = 2;
+                else
+                    daysFrozen = 0;
+                var datesOfAttendance = _clientServices.DatesSkipFirst(
+                    model.Date, model.GroupId,
+                    membership.AttendanceDays + daysFrozen);
+                
+                AttendanceCount attendanceCount = new AttendanceCount()
+                {
+                    AttendingTimes = membership.AttendanceDays,
+                    AbsenceTimes = 0,
+                    FrozenTimes = daysFrozen
+                };
+                _db.Entry(attendanceCount).State = EntityState.Added;
+
+                foreach (var date in datesOfAttendance.Skip(1))
+                {
+                    Attendance attendance = new Attendance()
+                    {
+                        ClientId = client.Id,
+                        MembershipId = membership.Id,
+                        Date = date,
+                        AttendanceState = AttendanceState.notcheked,
+                        GroupId = model.GroupId,
+                        AttendanceCount = attendanceCount
+                    };
+                    _db.Entry(attendance).State = EntityState.Added;
+                }
+               
                 client.MembershipId = membership.Id;
                 client.GroupId = model.GroupId;
                 client.Membership = membership;
                 client.LessonNumbers = membership.AttendanceDays;
+                _db.Entry(client).State = EntityState.Modified;
+                
                 ClientsMembership clientsMembership = new ClientsMembership()
                 {
-                    Id = _db.Memberships.Last().Id + 1,
-                    Client = client,
                     ClientId = client.Id,
-                    Membership = membership,
                     MembershipId = membership.Id,
                     DateOfPurchase = DateTime.Now
                 };

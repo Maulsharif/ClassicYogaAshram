@@ -16,7 +16,8 @@
                     <select class="form-control" id="membershipSelect">
                         @foreach (var membership in ViewBag.Memberships)
                         {
-                            <option value="@membership.Id">@membership.Name</option>
+                            <option value="@membership.Id">@membership.Name - @membership.Price тг.</option>
+                           
                         }
                     </select>
                 </div>

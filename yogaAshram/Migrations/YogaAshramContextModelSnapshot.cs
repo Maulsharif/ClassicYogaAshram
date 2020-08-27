@@ -146,6 +146,9 @@ namespace yogaAshram.Migrations
                     b.Property<bool>("IsChecked")
                         .HasColumnType("boolean");
 
+                    b.Property<bool>("IsNotActive")
+                        .HasColumnType("boolean");
+
                     b.Property<long?>("MembershipId")
                         .HasColumnType("bigint");
 
