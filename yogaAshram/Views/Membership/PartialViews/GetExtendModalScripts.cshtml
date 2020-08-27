@@ -5,7 +5,9 @@
         let btn = btns[i];
         $(btn).on('click', function () {
             let clientId = $(btn).attr('clientId');
-            $.get("@Url.Action("GetExtendModalAjax", "Membership")/?clientId=" + clientId, function (data) {
+            let date = $(btn).attr('date');
+            console.log(date);
+            $.get("@Url.Action("GetExtendModalAjax", "Membership")/?clientId=" + clientId + "&date=" + date, function (data) {
                 $('#extendModal').html(data);
                 $(document.getElementById('extendMembershipModal')).modal('show');
             });

@@ -222,7 +222,13 @@ namespace yogaAshram.Controllers
 
                 Membership membership =
                     _db.Memberships.FirstOrDefault(m => m.Id == schedule.ClientsCreateModelView.MembershipId);
-                
+                ClientsMembership clientsMembership = new ClientsMembership()
+                {
+                    Client = client,
+                    MembershipId = membership.Id,
+                    DateOfPurchase = DateTime.Now
+                };
+                _db.Entry(clientsMembership).State = EntityState.Added;
                 int daysFrozen = 0;
                 if (membership.AttendanceDays == 12)
                     daysFrozen = 3;
@@ -302,8 +308,13 @@ namespace yogaAshram.Controllers
 
                 Membership membership =
                     _db.Memberships.FirstOrDefault(m => m.Id == schedule.ClientsCreateModelView.MembershipId);
-                Console.WriteLine(membership?.AttendanceDays);
-                
+               ClientsMembership clientsMembership = new ClientsMembership()
+               {
+                   ClientId = client.Id,
+                   MembershipId = membership.Id,
+                   DateOfPurchase = DateTime.Now
+               };
+               _db.Entry(clientsMembership).State = EntityState.Added;
                 
                 int daysFrozen = 0;
                 if (membership.AttendanceDays == 12)

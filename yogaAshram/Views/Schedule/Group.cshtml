@@ -142,7 +142,7 @@
                         {
                         	<div >	
                         	<td class="bg-danger">										        
-                        		<button class="getMembershipExtendModal" clientId="@attendance.ClientId" >Продлить абонемент</button>														        
+                        		<button class="getMembershipExtendModal" clientId="@attendance.ClientId" date="@ViewBag.Date">Продлить абонемент</button>														        
                         		</td> 
                         	</div>	
                         }
@@ -365,7 +365,7 @@
 		                        <option value="Другое">Другое</option>
 		                        
 	                        </select>
-			                <textarea class="form-control mb-4" rows="2" asp-for="@Model.ClientsCreateModelView.Source"></textarea>           	                        
+			                      	                        
 		                </div>
 		    
 		                     <div class="col-sm-6">
