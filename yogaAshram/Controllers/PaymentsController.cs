@@ -143,6 +143,16 @@ namespace yogaAshram.Controllers
             PaymentCreateModelView model = new PaymentCreateModelView { ClientId = clientId, Client = client };
             return PartialView("PartialViews/CreatePartial", model);
         }
+        public async Task<ClientsMembership> GetClientMembership(long clientId, long membershipId)
+        {
+            ClientsMembership[] clientsMemberships = await _db.ClientsMemberships.ToArrayAsync();
+            for (int i = clientsMemberships.Length - 1; i >= 0; i++)
+            {
+                if (clientsMemberships[i].ClientId == clientId && clientsMemberships[0].MembershipId == membershipId)
+                    return clientsMemberships[i];
+            }
+            return null;
+        }
         [Authorize]
         [HttpPost]
         public async Task<IActionResult> CreateAjax(PaymentCreateModelView model)
@@ -150,7 +160,7 @@ namespace yogaAshram.Controllers
             if (ModelState.IsValid)
             {
                 Client client = await _db.Clients.FirstOrDefaultAsync(p => p.Id == model.ClientId);
-                ClientsMembership clientsMembership = await _db.ClientsMemberships.LastOrDefaultAsync(p => p.ClientId == client.Id && p.MembershipId == client.Membership.Id);
+                ClientsMembership clientsMembership = await GetClientMembership(client.Id, (long)client.MembershipId);
                 if (clientsMembership is null)
                     return BadRequest();
                 Employee employee = await _userManager.GetUserAsync(User);
