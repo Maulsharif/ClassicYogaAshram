@@ -339,12 +339,18 @@
 	                        <label>Место работы и должность</label><br/>
 	                        <textarea class="form-control mb-4" rows="2" asp-for="@Model.ClientsCreateModelView.WorkPlace"></textarea>  
                         </div>
-
-            		    <div class="col-sm-6">
-            			    <label>Наличие заболеваний</label><br/>
-	                        <textarea class="form-control mb-4" rows="2" asp-for="@Model.ClientsCreateModelView.Sickness"></textarea>   
-	                       
-            		    </div>
+	                        <div class="col-sm-6" style="display: block; margin-top: 4px;">
+		                        <label style="display: block" for="">Наличие заболеваний</label>
+		                        <select style="height: 40px;width: auto;" asp-for="@Model.ClientsCreateModelView.SicknessId">
+			                        <option></option>
+			                        @foreach (Sickness sickness in (IEnumerable) @ViewBag.Sicknesses)
+			                        {
+				                        <option value="@sickness.Id">
+					                        @sickness.Name
+				                        </option>
+			                        }
+		                        </select>
+	                        </div>
                         </div> 	
                      <div class="row">   
                         <div class="col-sm-6">
@@ -429,10 +435,17 @@
 							<textarea class="form-control mb-4" rows="2" asp-for="@Model.ClientsCreateModelView.WorkPlace" id="workPlaceInput"></textarea>
 						</div>
 
-						<div class="col-sm-6">
-							<label>Наличие заболеваний</label><br/>
-							<textarea class="form-control mb-4" rows="2" asp-for="@Model.ClientsCreateModelView.Sickness" id="sicknessInput"></textarea>
-
+						<div class="col-sm-6" style="display: block; margin-top: 4px;">
+							<label style="display: block" for="">Наличие заболеваний</label>
+							<select style="height: 40px;width: auto;" asp-for="@Model.ClientsCreateModelView.SicknessId">
+								<option></option>
+								@foreach (Sickness sickness in (IEnumerable) @ViewBag.Sicknesses)
+								{
+									<option value="@sickness.Id">
+										@sickness.Name
+									</option>
+								}
+							</select>
 						</div>
 					</div>
 					<div class="row">
