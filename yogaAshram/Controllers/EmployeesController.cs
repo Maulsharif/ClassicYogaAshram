@@ -37,7 +37,9 @@ namespace yogaAshram.Controllers
             if (employeeId == null)
                 employeeId = GetUserId.GetCurrentUserId(this.HttpContext);
             
+            
             Employee employee = _db.Users.FirstOrDefault(u => u.Id == employeeId);
+            
             return View(employee);
         }
         string GetRuRoleName(string role)
@@ -52,6 +54,8 @@ namespace yogaAshram.Controllers
                     return "Маркетолог";
                 case "admin":
                     return "Администратор";
+                case "coach":
+                    return "Инструктор";
             }
             return null;
         }
@@ -114,6 +118,12 @@ namespace yogaAshram.Controllers
                     NameSurname = model.NameSurname,
                     Role = model.Role
                 };
+                if (model.Role == "coach")
+                {
+                    _db.Entry(employee).State = EntityState.Added;
+                    await _db.SaveChangesAsync();
+                    return Json("true");
+                }
                 string newPsw = PasswordGenerator.Generate();
                 Console.WriteLine(newPsw);
                 var result = await _userManager.CreateAsync(employee, newPsw);

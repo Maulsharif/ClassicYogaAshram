@@ -13,8 +13,8 @@ namespace yogaAshram.Models.ModelViews
         [Remote(action: "CheckCreate", controller: "Validation", ErrorMessage = "Такого филиала нет !!!")]
         public long BranchId { get; set; }
         public virtual Branch Branch { get; set; }
-        [Required(ErrorMessage = "Введите имя тенера")]
-        public string  CoachName { get; set; }
+        [Required(ErrorMessage = "Выберите тренера")]
+        public long CoachId { get; set; }
         
         public int MaxCapacity { get; set; } = 16;
         
