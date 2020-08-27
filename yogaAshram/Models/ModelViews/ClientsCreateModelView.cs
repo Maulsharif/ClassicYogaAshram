@@ -26,8 +26,10 @@ namespace yogaAshram.Models.ModelViews
         [Remote(action: "CheckDate", controller: "Validation", ErrorMessage = "Некоректная дата")]
         public DateTime StartDate { get; set; }
         public string Comment { get; set; }
-
-        public string Sickness { get; set; }
+        
+        public long SicknessId { get; set; }
+        public Sickness Sickness { get; set; }
+        
         [Required(ErrorMessage = "Поле обязательно для заполнения")]
         public string Source { get; set; }
         public bool Contract { get; set; }
@@ -40,6 +42,8 @@ namespace yogaAshram.Models.ModelViews
         public DateTime DateOfBirth { get; set; }
 
         public long MembershipId { get; set; }
+        
+        public virtual Client Client { get; set; }
         
     }
 }

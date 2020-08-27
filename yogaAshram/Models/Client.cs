@@ -42,7 +42,6 @@ namespace yogaAshram.Models
         public int LessonNumbers  { get; set; }
         
         public string Color { get; set; }
-        public string Sickness { get; set; }
         public string Source { get; set; }
 
         public long GroupId { get; set; }
@@ -59,6 +58,9 @@ namespace yogaAshram.Models
         public WhatsAppGroup WhatsAppGroup{ get; set; }
         public DateTime DateCreate { get; set; } = DateTime.Now;
         public long? MembershipId { get; set; }
+        
+        public long? SicknessId { get; set; }
+        public virtual Sickness Sickness { get; set; }
         public virtual Membership Membership { get; set; }
         public virtual List<Attendance> Attendances { get; set; }
     }
