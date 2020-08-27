@@ -50,6 +50,7 @@ namespace yogaAshram.Controllers
         public IActionResult Group(long groupId, DateTime date)
         {
             Schedule schedule = _db.Schedules.FirstOrDefault(g => g.GroupId == groupId);
+            ViewBag.Sicknesses = _db.Sicknesses.ToList();
             if (schedule != null)
             {
                 if(date > DateTime.MinValue) ViewBag.Date = date;

@@ -25,10 +25,13 @@ namespace yogaAshram.Models
         public DbSet<Payment> Payments { get; set; }
         public DbSet<ClientsMembership> ClientsMemberships { get; set; }
         public DbSet<AttendanceCount> AttendanceCounts { get; set; }
+        
+        public DbSet<Sickness> Sicknesses { get; set; }
+
         public YogaAshramContext(DbContextOptions options) : base(options)
         {
         }
-
+        
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -126,6 +129,17 @@ namespace yogaAshram.Models
                     Id = Convert.ToInt64(10015), Name = "1 разовый абонемент",
                     Price = 2500, AttendanceDays = 1, CategoryId = Convert.ToInt64(5)
                 }
+            );
+            
+            modelBuilder.Entity<Sickness>().HasData(
+                new Sickness {Id = Convert.ToInt64(10000), Name = "остеохондроз"},
+                new Sickness {Id = Convert.ToInt64(10001), Name = "грыжа"},
+                new Sickness {Id = Convert.ToInt64(10002), Name = "сколиоз"},
+                new Sickness {Id = Convert.ToInt64(10003), Name = "артрит"},
+                new Sickness {Id = Convert.ToInt64(10004), Name = "гипертония"},
+                new Sickness {Id = Convert.ToInt64(10005), Name = "сахарный диабет"},
+                new Sickness {Id = Convert.ToInt64(10006), Name = "сердечная недостаточность"},
+                new Sickness {Id = Convert.ToInt64(10007), Name = "ожирение"}
             );
         }
     }
