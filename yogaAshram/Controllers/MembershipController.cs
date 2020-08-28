@@ -122,9 +122,22 @@ namespace yogaAshram.Controllers
                     daysFrozen = 2;
                 else
                     daysFrozen = 0;
-                var datesOfAttendance = _clientServices.DatesSkipFirst(
+                List<CalendarEvent>calendarEventsNew = 
+                    _db.CalendarEvents.Where(c => c.GroupId == model.GroupId).ToList();
+                List<CalendarEvent> calendarEventsOld =
+                    _db.CalendarEvents.Where(c => c.GroupId == client.GroupId).ToList();
+                
+                bool areTheSame = (calendarEventsNew.Count == calendarEventsOld.Count);
+                Console.WriteLine(areTheSame);
+                List<DateTime> datesOfAttendance;
+                if(areTheSame)
+                  datesOfAttendance = _clientServices.DatesSkipFirst(
                     model.Date, model.GroupId,
                     membership.AttendanceDays + daysFrozen);
+                else
+                    datesOfAttendance = _clientServices.DatesForAttendance(
+                        model.Date, model.GroupId,
+                        membership.AttendanceDays + daysFrozen);
                 
                 AttendanceCount attendanceCount = new AttendanceCount()
                 {
@@ -133,9 +146,9 @@ namespace yogaAshram.Controllers
                     FrozenTimes = daysFrozen
                 };
                 _db.Entry(attendanceCount).State = EntityState.Added;
-
-                foreach (var date in datesOfAttendance.Skip(1))
-                {
+                if(areTheSame)
+                  foreach (var date in datesOfAttendance.Skip(1))
+                  {
                     Attendance attendance = new Attendance()
                     {
                         ClientId = client.Id,
@@ -146,8 +159,22 @@ namespace yogaAshram.Controllers
                         AttendanceCount = attendanceCount
                     };
                     _db.Entry(attendance).State = EntityState.Added;
-                }
-               
+                  }
+                else 
+                    foreach (var date in datesOfAttendance)
+                    {
+                        Attendance attendance = new Attendance()
+                        {
+                            ClientId = client.Id,
+                            MembershipId = membership.Id,
+                            Date = date,
+                            AttendanceState = AttendanceState.notcheked,
+                            GroupId = model.GroupId,
+                            AttendanceCount = attendanceCount
+                        };
+                        _db.Entry(attendance).State = EntityState.Added;
+                    }
+                
                 client.MembershipId = membership.Id;
                 client.GroupId = model.GroupId;
                 client.Membership = membership;
