@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="~/css/site.css"/>
     <link rel="stylesheet" href="~/css/cleanslate.css">
     <link rel="stylesheet" href="~/css/jquery.weekLine.css">
-         
+
 </head>
 <body>
 <header>
@@ -19,35 +19,35 @@
                     aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            
-             @if (User.IsInRole("chief"))
-             {
-                 <input id="search" type="search" class="search-input search-form" placeholder="Поиск сотрудников" name="search" autocomplete="off">
-                 <div class="popup-overlay" id="myModal">
-                     <div class="popup-content">
-                         <div class="scrollbar-3" id="style-4">
-                             <div class="force-overflow-2">
-                                 <div id="result"></div>
-                             </div>
-                         </div>
-                     </div>
-                 </div>
-             }
-             @if (User.IsInRole("manager"))
-                          {
-                              <input id="search" type="search" class="search-input search-form" placeholder="Поиск сотрудников" name="search" autocomplete="off">
-                              <div class="popup-overlay" id="myModal">
-                                  <div class="popup-content">
-                                      <div class="scrollbar-3" id="style-4">
-                                          <div class="force-overflow-2">
-                                              <div id="result"></div>
-                                              </div>
-                                          </div>
-                                      </div>
-                                  </div>
-                          }
-              <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
-                
+
+            @if (User.IsInRole("chief"))
+            {
+                <input id="search" type="search" class="search-input search-form" placeholder="Поиск сотрудников" name="search" autocomplete="off">
+                <div class="popup-overlay" id="myModal">
+                    <div class="popup-content">
+                        <div class="scrollbar-3" id="style-4">
+                            <div class="force-overflow-2">
+                                <div id="result"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+            @if (User.IsInRole("manager"))
+            {
+                <input id="search" type="search" class="search-input search-form" placeholder="Поиск сотрудников" name="search" autocomplete="off">
+                <div class="popup-overlay" id="myModal">
+                    <div class="popup-content">
+                        <div class="scrollbar-3" id="style-4">
+                            <div class="force-overflow-2">
+                                <div id="result"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+            <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
+
                 <ul class="navbar-nav ml-auto">
                     @if (!User.Identity.IsAuthenticated)
                     {
@@ -57,52 +57,130 @@
                     }
                     @if (User.Identity.IsAuthenticated)
                     {
-                        <div class="btn-group">
-                            <button class="btn dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                Настройки
-                            </button>
-                            <div class="dropdown-menu">
-                                <div data-target="editProfileModal" id="@Url.Action("GetEditModalAjax", "Employees")" class="getModal dropdown-item cursor-p">
-                                    Редактировать профиль
-                                </div>
-                                <div data-target="changePasswordModal" id="@Url.Action("GetChangePasswordModalAjax", "Employees")" class="getModal dropdown-item cursor-p">
-                                    Изменить пароль
-                                </div>
-                            </div>
-                        </div>
                         if (User.IsInRole("chief"))
                         {
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="Chief" asp-action="Index"><img class="profile-icons" src="/Images/SiteImages/profile.png" alt="profile"></a>
-                            </li>
+                            <div class="btn-group">
+                                <button class="btn dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    @User.Identity.Name
+                                </button>
+                                <div class="dropdown-menu">
+                                    <li class="dropdown-item cursor-p">
+                                        <a class="text-decoration-none text-dark" asp-controller="Chief" asp-action="Index">
+                                            Мои профиль
+                                        </a>
+                                    </li>
+                                    <div data-target="editProfileModal" id="@Url.Action("GetEditModalAjax", "Employees")"
+                                         class="getModal dropdown-item cursor-p">
+                                        Редактировать профиль
+                                    </div>
+                                    <div data-target="changePasswordModal" id="@Url.Action("GetChangePasswordModalAjax", "Employees")"
+                                         class="getModal dropdown-item cursor-p">
+                                        Изменить пароль
+                                    </div>
+                                    <li class="dropdown-item cursor-p">
+                                        <form method="post" asp-controller="Account" asp-action="Logout" id="my_form">
+                                            <a class="text-decoration-none text-dark" href="javascript:{}" onclick="document.getElementById('my_form').submit(); return false;">
+                                                Выход
+                                            </a>
+                                        </form>
+                                    </li>
+                                </div>
+                            </div>
                         }
                         else if (User.IsInRole("manager"))
                         {
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="Manager" asp-action="Index"><img class="profile-icons" src="/Images/SiteImages/profile.png" alt="profile"></a>
-                            </li>
+                            <div class="btn-group">
+                                <button class="btn dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    @User.Identity.Name
+                                </button>
+                                <div class="dropdown-menu">
+                                    <li class="dropdown-item cursor-p">
+                                        <a class="text-decoration-none text-dark" asp-controller="Manager" asp-action="Index">
+                                            Мои профиль
+                                        </a>
+                                    </li>
+                                    <div data-target="editProfileModal" id="@Url.Action("GetEditModalAjax", "Employees")"
+                                         class="getModal dropdown-item cursor-p">
+                                        Редактировать профиль
+                                    </div>
+                                    <div data-target="changePasswordModal" id="@Url.Action("GetChangePasswordModalAjax", "Employees")"
+                                         class="getModal dropdown-item cursor-p">
+                                        Изменить пароль
+                                    </div>
+                                    <li class="dropdown-item cursor-p">
+                                        <form method="post" asp-controller="Account" asp-action="Logout" id="my_form">
+                                            <a class="text-decoration-none text-dark" href="javascript:{}" onclick="document.getElementById('my_form').submit(); return false;">
+                                                Выход
+                                            </a>
+                                        </form>
+                                    </li>
+                                </div>
+                            </div>
                         }
                         else if (User.IsInRole("admin"))
                         {
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="Admin" asp-action="Index"><img class="profile-icons" src="/Images/SiteImages/profile.png" alt="profile"></a>
-                            </li>
+                            <div class="btn-group">
+                                <button class="btn dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    @User.Identity.Name
+                                </button>
+                                <div class="dropdown-menu">
+                                    <li class="dropdown-item cursor-p">
+                                        <a class="text-decoration-none text-dark" asp-controller="Admin" asp-action="Index">
+                                            Мои профиль
+                                        </a>
+                                    </li>
+                                    <div data-target="editProfileModal" id="@Url.Action("GetEditModalAjax", "Employees")"
+                                         class="getModal dropdown-item cursor-p">
+                                        Редактировать профиль
+                                    </div>
+                                    <div data-target="changePasswordModal" id="@Url.Action("GetChangePasswordModalAjax", "Employees")"
+                                         class="getModal dropdown-item cursor-p">
+                                        Изменить пароль
+                                    </div>
+                                    <li class="dropdown-item cursor-p">
+                                        <form method="post" asp-controller="Account" asp-action="Logout" id="my_form">
+                                            <a class="text-decoration-none text-dark" href="javascript:{}" onclick="document.getElementById('my_form').submit(); return false;">
+                                                Выход
+                                            </a>
+                                        </form>
+                                    </li>
+                                </div>
+                            </div>
                         }
                         else if (User.IsInRole("seller"))
                         {
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="Seller" asp-action="Index"><img class="profile-icons" src="/Images/SiteImages/profile.png" alt="profile"></a>
-                            </li>
+                            <div class="btn-group">
+                                <button class="btn dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    @User.Identity.Name
+                                </button>
+                                <div class="dropdown-menu">
+                                    <li class="dropdown-item cursor-p">
+                                        <a class="text-decoration-none text-dark" asp-controller="Seller" asp-action="Index">
+                                            Мои профиль
+                                        </a>
+                                    </li>
+                                    <div data-target="editProfileModal" id="@Url.Action("GetEditModalAjax", "Employees")"
+                                         class="getModal dropdown-item cursor-p">
+                                        Редактировать профиль
+                                    </div>
+                                    <div data-target="changePasswordModal" id="@Url.Action("GetChangePasswordModalAjax", "Employees")"
+                                         class="getModal dropdown-item cursor-p">
+                                        Изменить пароль
+                                    </div>
+                                    <li class="dropdown-item cursor-p">
+                                        <form method="post" asp-controller="Account" asp-action="Logout" id="my_form">
+                                            <a class="text-decoration-none text-dark" href="javascript:{}" onclick="document.getElementById('my_form').submit(); return false;">
+                                                Выход
+                                            </a>
+                                        </form>
+                                    </li>
+                                </div>
+                            </div>
                         }
-                        <li class="nav-item">
-                            <form method="post" asp-controller="Account" asp-action="Logout" id="my_form">
-                                <a class="nav-link" href="javascript:{}" onclick="document.getElementById('my_form').submit(); return false;"><img class="profile-icons" src="/Images/SiteImages/out.jpg" alt="out"></a>
-                            </form>
-                        </li>
                     }
-                    
+
                 </ul>
-                
+
             </div>
         </div>
     </nav>
@@ -132,15 +210,14 @@
 ...
 
 
-
 <footer class="border-top footer text-muted">
     <div class="container">
-        &copy; 2020 - yogaAshram 
+        &copy; 2020 - yogaAshram
     </div>
 </footer>
-  <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<script src="~/js/site.js" asp-append-version="true"></script>
 <script src="~/js/jquery.weekLine.min.js" asp-append-version="true"></script>
 <script>   
     $(document).ready(function() {
