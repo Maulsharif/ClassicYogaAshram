@@ -90,7 +90,7 @@
                 			    <option value="">Выберите из списка</option>
                 			    @foreach (Client client in (IEnumerable) @ViewBag.OldClients)
                 			    {
-                				    <option value='{"phone":"@client.PhoneNumber","id":"@client.Id","birthday":"@client.DateOfBirth","email":"@client.Email"  }'>@client.NameSurname</option>
+                				    <option value='{"id":"@client.Id","phone":"@client.PhoneNumber","email":"@client.Email","birthday":"@client.DateOfBirth.ToString("yyyy-MM-dd")","workPlace":"@client.WorkPlace","source":"@client.Source","sickness":"@client.Sickness"}'>@client.NameSurname</option>
                 			    }
                 		    </select>
 		    </div>
