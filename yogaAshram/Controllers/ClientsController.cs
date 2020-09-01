@@ -41,15 +41,24 @@ namespace yogaAshram.Controllers
         [Authorize]
         public async Task<IActionResult> CreateClients(Schedule schedule)
         {
-            Client client = new Client
+            
+            Client client = new Client()
             {
                 NameSurname = schedule.ClientsCreateModelView.NameSurname,
                 PhoneNumber = schedule.ClientsCreateModelView.PhoneNumber,
-                ClientType = schedule.ClientsCreateModelView.ClientType,
+                DateOfBirth = schedule.ClientsCreateModelView.DateOfBirth,
+                Email = schedule.ClientsCreateModelView.Email,
+                Address = schedule.ClientsCreateModelView.Address,
+                WorkPlace = schedule.ClientsCreateModelView.WorkPlace,
+                Sickness = schedule.ClientsCreateModelView.Sickness,
+                Source = schedule.ClientsCreateModelView.Source,
                 GroupId = schedule.ClientsCreateModelView.GroupId,
+                ClientType = ClientType.Probe,
                 LessonNumbers = schedule.ClientsCreateModelView.LessonNumbers,
                 CreatorId = GetUserId.GetCurrentUserId(this.HttpContext)
             };
+            
+            
             Employee employee =
                 _db.Employees.FirstOrDefault(e => e.Id == GetUserId.GetCurrentUserId(this.HttpContext));
             if (schedule.ClientsCreateModelView.Comment != null)
@@ -183,10 +192,18 @@ namespace yogaAshram.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> NewClientRegister(Schedule schedule)
+        public async Task<IActionResult> NewClientRegister(Schedule schedule, string newSikness)
         {
+            long _sicknessId;
             if (ModelState.IsValid)
             {
+                if (newSikness != null)
+                {
+                    
+                    _sicknessId=AddSickness(newSikness);
+                }
+
+                _sicknessId = schedule.ClientsCreateModelView.SicknessId;
                 Client client = new Client()
                 {
                     NameSurname = schedule.ClientsCreateModelView.NameSurname,
@@ -195,7 +212,7 @@ namespace yogaAshram.Controllers
                     Email = schedule.ClientsCreateModelView.Email,
                     Address = schedule.ClientsCreateModelView.Address,
                     WorkPlace = schedule.ClientsCreateModelView.WorkPlace,
-                    Sickness = schedule.ClientsCreateModelView.Sickness,
+                    SicknessId = _sicknessId,
                     Source = schedule.ClientsCreateModelView.Source,
                     Paid = Paid.Не_оплачено,
                     WhatsAppGroup = WhatsAppGroup.Не_состоит_в_группе,
@@ -480,6 +497,29 @@ namespace yogaAshram.Controllers
             _db.Entry(attendanceCount).State = EntityState.Modified;
             await _db.SaveChangesAsync();
             return Content("success");
+        }
+
+        [HttpPost]
+        public long AddSickness(string sicknessName)
+        {
+            try
+            {
+                Sickness sickness = new Sickness()
+                {
+                    Name = sicknessName
+                };
+
+                _db.Entry(sickness).State = EntityState.Added;
+                return sickness.Id;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                throw;
+            }
+                
+          
+            
         }
     }
 }

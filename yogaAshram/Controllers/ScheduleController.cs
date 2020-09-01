@@ -64,8 +64,7 @@ namespace yogaAshram.Controllers
                 ViewBag.DaysArray =  string.Join(",", schedule.DayOfWeeksString);
                 ViewBag.Clients = _db.Clients.Where(c => c.GroupId == groupId).ToList();
                 ViewBag.Memberships = _db.Memberships;
-                ViewBag.TrialClients = _db.Clients.Where(c => c.ClientType == ClientType.Probe);
-                ViewBag.OldClients = _db.Clients.Where(c => c.ClientType == ClientType.NotEngaged);
+                ViewBag.OldClients = _db.Clients.Where(c => c.ClientType != ClientType.AreEngaged);
                  return View(schedule);
             }
             return NotFound();
