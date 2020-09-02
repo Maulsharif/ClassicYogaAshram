@@ -14,6 +14,7 @@ namespace yogaAshram.Quartz
     {
        
         private readonly IServiceScopeFactory serviceScopeFactory;
+        
 
         public DataJob(IServiceScopeFactory serviceScopeFactory)
         {
