@@ -6,18 +6,20 @@ namespace yogaAshram.Services
 {
     public class EmailService
     {
+       
+
         public static async Task SendMessageAsync(string email, string subject, string message)
         {
             var emailMessage = new MimeMessage();
             emailMessage.From.Add(new MailboxAddress("Администрация сайта",
-                "akmetovN@yandex.ru"));
+                "busindavis@yandex.kz"));
             emailMessage.To.Add(new MailboxAddress("", email));
             emailMessage.Subject = subject;
             emailMessage.Body = new BodyBuilder() { HtmlBody = message }.ToMessageBody();
             emailMessage.Prepare(EncodingConstraint.EightBit);
             using var client = new SmtpClient();
             await client.ConnectAsync("smtp.yandex.ru", 25, false);
-            await client.AuthenticateAsync("akmetovN@yandex.ru", "Integradc2");
+            await client.AuthenticateAsync("busindavis@yandex.kz", "rindoman666");
             await client.SendAsync(emailMessage);
             await client.DisconnectAsync(true);
             
