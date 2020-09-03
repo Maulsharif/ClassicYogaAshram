@@ -8,8 +8,7 @@
     <link rel="stylesheet" href="~/css/site.css"/>
     <link rel="stylesheet" href="~/css/cleanslate.css">
     <link rel="stylesheet" href="~/css/jquery.weekLine.css">
-     <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet"/>
-         
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet"/>
 </head>
 <body>
 <header>
@@ -20,35 +19,35 @@
                     aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            
-             @if (User.IsInRole("chief"))
-             {
-                 <input id="search" type="search" class="search-input search-form" placeholder="Поиск сотрудников" name="search" autocomplete="off">
-                 <div class="popup-overlay" id="myModal">
-                     <div class="popup-content">
-                         <div class="scrollbar-3" id="style-4">
-                             <div class="force-overflow-2">
-                                 <div id="result"></div>
-                             </div>
-                         </div>
-                     </div>
-                 </div>
-             }
-             @if (User.IsInRole("manager"))
-                          {
-                              <input id="search" type="search" class="search-input search-form" placeholder="Поиск сотрудников" name="search" autocomplete="off">
-                              <div class="popup-overlay" id="myModal">
-                                  <div class="popup-content">
-                                      <div class="scrollbar-3" id="style-4">
-                                          <div class="force-overflow-2">
-                                              <div id="result"></div>
-                                              </div>
-                                          </div>
-                                      </div>
-                                  </div>
-                          }
-              <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
-                
+
+            @if (User.IsInRole("chief"))
+            {
+                <input id="search" type="search" class="search-input search-form" placeholder="Поиск сотрудников" name="search" autocomplete="off">
+                <div class="popup-overlay" id="myModal">
+                    <div class="popup-content">
+                        <div class="scrollbar-3" id="style-4">
+                            <div class="force-overflow-2">
+                                <div id="result"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+            @if (User.IsInRole("manager"))
+            {
+                <input id="search" type="search" class="search-input search-form" placeholder="Поиск сотрудников" name="search" autocomplete="off">
+                <div class="popup-overlay" id="myModal">
+                    <div class="popup-content">
+                        <div class="scrollbar-3" id="style-4">
+                            <div class="force-overflow-2">
+                                <div id="result"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+            <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
+
                 <ul class="navbar-nav ml-auto">
                     @if (!User.Identity.IsAuthenticated)
                     {
@@ -179,9 +178,9 @@
                             </div>
                         }
                     }
-                    
+
                 </ul>
-                
+
             </div>
         </div>
     </nav>
@@ -211,16 +210,17 @@
 ...
 
 
-
 <footer class="border-top footer text-muted">
     <div class="container">
-        &copy; 2020 - yogaAshram 
+        &copy; 2020 - yogaAshram
     </div>
 </footer>
-  <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<script src="~/js/site.js" asp-append-version="true"></script>
 <script src="~/js/jquery.weekLine.min.js" asp-append-version="true"></script>
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
+
 <script>   
     $(document).ready(function() {
              $("#search").keyup(function(event) {
