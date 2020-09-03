@@ -129,10 +129,9 @@ namespace yogaAshram.Controllers
         [HttpGet]
         public IActionResult CheckAttendanceTrial(long groupId, long clientId, long branchId)
         {
-
+            //исправлено 
             TrialUsers user = _db.TrialUserses.FirstOrDefault(u => u.Id == clientId);
-
-
+            
             List<TrialUsers> clients = _db.TrialUserses
                 .Where(p => p.GroupId == groupId && p.LessonTime == user.LessonTime).ToList();
 
