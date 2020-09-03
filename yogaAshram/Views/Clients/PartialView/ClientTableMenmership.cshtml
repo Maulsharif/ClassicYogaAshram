@@ -1,0 +1,50 @@
+@model List<ClientsMembership>
+
+<h1 class="mt-5 mb-5" style="text-align: center">Таблица информации о клиентах</h1>
+<table class="table table-bordered" style="margin-left: -125px;">
+    <thead>
+    <tr>
+        <th scope="col" ><a asp-action="Index" asp-controller="Clients" asp-route-sortOrder="@ViewBag.NameSort">ИФО</a></th>
+        <th scope="col">E-mail</th>
+        <th scope="col">Номер телефона</th>
+        <th scope="col">Филиал</th>
+        <th scope="col" ><a asp-action="Index" asp-controller="Clients" asp-route-sortOrder="@ViewBag.GroupSort">Группа</a></th>
+        <th scope="col">Инструктор</th>
+        <th scope="col">Категория</th>
+        <th scope="col">Комментарий</th>
+        <th scope="col" ><a asp-action="Index" asp-controller="Clients" asp-route-sortOrder="@ViewBag.BranchSort">Абонемент</a></th>
+        <th scope="col" ><a asp-action="Index" asp-controller="Clients" asp-route-sortOrder="@ViewBag.AttendingTimesSort">Осталось посещений</a></th>
+        <th scope="col" ><a asp-action="Index" asp-controller="Clients" asp-route-sortOrder="@ViewBag.AbsenceTimesSort">Пропуски</a></th>
+        <th scope="col" ><a asp-action="Index" asp-controller="Clients" asp-route-sortOrder="@ViewBag.ForzenTimesSort" >Осталось заморозок</a></th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var clientsMembership in Model)
+    {
+        <tr>
+            <td>@clientsMembership.Client.NameSurname</td>
+            <td>@clientsMembership.Client.Email</td>
+            <td>@clientsMembership.Client.PhoneNumber</td>
+            <td>@clientsMembership.Client.Group.Branch.Name</td>
+            <td>@clientsMembership.Client.Group.Name</td>
+            <td>@clientsMembership.Client.Group.Coach.NameSurname</td>
+            <td>@clientsMembership.Client.Membership.Category.Name</td>
+            @foreach (var comment in @clientsMembership.Client.Comments)
+            {
+                if (comment != null)
+                {
+                    <td>@comment</td>
+                }
+                else
+                {
+                    <td>Комментарий нет</td>
+                }
+            }
+            <td>@clientsMembership.Client.Membership.Name</td>
+            <td>@clientsMembership.Client.Attendances.AttendanceCount.AttendingTimes</td>
+            <td>@clientsMembership.Client.Attendances.AttendanceCount.AbsenceTimes</td>
+            <td>@clientsMembership.Client.Attendances.AttendanceCount.FrozenTimes</td>
+        </tr>
+    }
+    </tbody>
+</table>
