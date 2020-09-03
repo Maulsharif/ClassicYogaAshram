@@ -21,6 +21,22 @@ using State = yogaAshram.Models.State;
 
 namespace yogaAshram.Controllers
 {
+    
+    public enum SortState
+    {
+        NameAsc,
+        NameDesc,
+        GroupAsc,
+        GroupDesc,
+        AttendingTimesAsc,
+        AttendingTimesDesc,
+        AbsenceTimesAsc,
+        AbsenceTimesDesc,
+        ForzenTimesAsc,
+        ForzenTimesDesc,
+        BranchAsc,
+        BranchDesc
+    }
     public class ClientsController : Controller
     {
         private readonly UserManager<Employee> _userManager;
@@ -35,6 +51,66 @@ namespace yogaAshram.Controllers
             _signInManager = signInManager;
             _db = db;
             _clientServices = clientServices;
+        }
+
+        public async Task<IActionResult> Index(SortState sortOrder = SortState.GroupAsc)
+        {
+            ViewBag.GroupSort = sortOrder == SortState.GroupAsc ?
+                SortState.GroupDesc : SortState.GroupAsc;
+            ViewBag.BranchSort = sortOrder == SortState.BranchAsc ?
+                SortState.BranchDesc : SortState.BranchAsc;
+            ViewBag.NameSort = sortOrder == SortState.NameAsc ?
+                SortState.NameDesc : SortState.NameAsc;
+            ViewBag.AbsenceTimesSort = sortOrder == SortState.AbsenceTimesAsc ?
+                SortState.AbsenceTimesDesc : SortState.AbsenceTimesAsc;
+            ViewBag.AttendingTimesSort = sortOrder == SortState.AttendingTimesAsc ? 
+                SortState.AttendingTimesDesc : SortState.AttendingTimesAsc;
+            ViewBag.ForzenTimesSort = sortOrder == SortState.ForzenTimesAsc ? 
+                SortState.ForzenTimesDesc : SortState.ForzenTimesAsc;
+            
+            List<ClientsMembership> model = _db.ClientsMemberships.ToList(); 
+            
+            switch (sortOrder)
+            {
+                case SortState.GroupDesc:
+                    model = model.OrderByDescending(p => p.Client.Group.Name).ToList();
+                    break;
+                case SortState.NameAsc:
+                    model = model.OrderBy(p => p.Client.NameSurname).ToList();
+                    break;
+                case SortState.NameDesc:
+                    model = model.OrderByDescending(p => p.Client.NameSurname).ToList();
+                    break;
+                case SortState.BranchAsc:
+                    model = model.OrderBy(p => p.Client.Group.Branch.Name).ToList();
+                    break;
+                case SortState.BranchDesc:
+                    model = model.OrderByDescending(p => p.Client.Group.Branch.Name).ToList();
+                    break;
+                case SortState.AbsenceTimesAsc:
+                    model = model.OrderBy(p => p.Client.Attendances.AttendanceCount.AbsenceTimes).ToList();
+                    break;
+                case SortState.AbsenceTimesDesc:
+                    model = model.OrderByDescending(p => p.Client.Attendances.AttendanceCount.AbsenceTimes).ToList();
+                    break;
+                case SortState.AttendingTimesAsc:
+                    model = model.OrderBy(p => p.Client.Attendances.AttendanceCount.AttendingTimes).ToList();
+                    break;
+                case SortState.AttendingTimesDesc:
+                    model = model.OrderByDescending(p => p.Client.Attendances.AttendanceCount.AttendingTimes).ToList();
+                    break;
+                case SortState.ForzenTimesAsc:
+                    model = model.OrderBy(p => p.Client.Attendances.AttendanceCount.FrozenTimes).ToList();
+                    break;
+                case SortState.ForzenTimesDesc:
+                    model = model.OrderByDescending(p => p.Client.Attendances.AttendanceCount.FrozenTimes).ToList();
+                    break;
+                default:
+                    model = model.OrderBy(p => p.Client.Group.Name).ToList();
+                    break;
+            }
+            
+            return View(model);
         }
 
         [HttpPost]
