@@ -1,4 +1,5 @@
-﻿@model MembershipExtendModelView
+﻿@using System.Collections
+@model MembershipExtendModelView
 <!-- Modal -->
 <div class="modal fade" id="extendMembershipModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
@@ -9,24 +10,23 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <p class="text-hide" id="date">@ViewBag.Date</p>
+            <p class="text-hide" id="date">@ViewBag.Date.AddDays(1).ToString("dd.MM.yyyy")</p>
             <div class="modal-body">
                 <div class="form-group">
                     <label>Выберите тип абонемента</label>
                     <select class="form-control" id="membershipSelect">
-                        @foreach (var membership in ViewBag.Memberships)
+                        @foreach (Membership membership in (IEnumerable) @ViewBag.Memberships)
                         {
-                            <option value="@membership.Id">@membership.Name - @membership.Price тг.</option>
-                           
+                            <option value='{"membershipId":"@membership.Id", "price":"@membership.Price"}'>@membership.Name</option>
                         }
                     </select>
                 </div>
                 <div class="form-group">
                     <label>Выберите группу</label>
                     <select class="form-control" id="groupSelect">
-                        @foreach (var group in ViewBag.Groups)
+                        @foreach (var schedule in ViewBag.Schedules)
                         {
-                            <option value="@group.Id">@group.Name</option>
+                            <option value='{"group":"@schedule.GroupId", "days":@{ string result = String.Join(",", @schedule.DayOfWeeksString);}"@result"}'>@schedule.Group.Name</option>
                         }
                     </select>
                 </div>
@@ -34,12 +34,14 @@
                 <h5>Проведение платежа</h5>
                 @if (Model.Client.Paid == Paid.Есть_долг)
                 {
-                    <p class="text-center">Есть долг в размере <span id="debts">@(-Model.Client.Balance)</span> тг</p>
+                    <p class="text-center">Есть долг в размере <span id="debts">@(-Model.Client.Balance)</span> тг.</p>
                 }
                 @if (Model.Client.Balance > 0)
                 {
-                    <p class="text-center">У клиента есть предоплата в размере @(Model.Client.Balance) тг</p>
+                    <p class="text-center">У клиента есть предоплата в размере <span id="prepayment">@(Model.Client.Balance)</span> тг.</p>
                 }
+                <p class="text-center"><strong>Цена абонемента:</strong> <span id="price"></span> тг.</p>
+                <p class="text-center"><strong>К оплате:</strong> <span id="toPay"></span> тг.</p>
                 <div class="form-group">
                     <label>Оплата налом</label>
                     <input id="cashSumExtend" type="text" class="form-control">
@@ -53,7 +55,12 @@
                     <label>Добавьте комментарий</label>
                     <input id="commentPayment" type="text" class="form-control">
                 </div>
+                <div class="form-group">
+                    <label>Выберите дату</label>
+                    <input type="text" id="datepicker" class="form-control" autocomplete="off">
+                </div>  
             </div>
+            
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
                 <button id="submitPaymentCreate" type="button" class="btn btn-primary">Добавить</button>
@@ -67,6 +74,10 @@
             $('#invalidExtendSum').html("Минимальная сумма платежа - " + $('#debts').val() + ' (размер долга)')
         }
         else {
+            var optionValueGroup = $('#groupSelect').val();                         	  
+            var objGroup = $.parseJSON(optionValueGroup);
+            var optionValueMembership = $('#membershipSelect').val();
+            var objMembership = $.parseJSON(optionValueMembership);
             $.ajax({
                 url: '@Url.Action("ExtendAjax", "Membership")',
                 type: "POST",
@@ -77,9 +88,9 @@
                     "CardSum": $('#cardSumExtend').val(),
                     "Type": $('#paymentTypeSelect').val(),
                     "CashSum": $('#cashSumExtend').val(),
-                    "MembershipId": $('#membershipSelect').val(),
-                    "GroupId": $('#groupSelect').val(),
-                    "Date": $('#date').text()
+                    "MembershipId": objMembership.membershipId,
+                    "GroupId": objGroup.group,
+                    "Date": $('#datepicker').val()
                 },
                 success: function (data) {
                     if (data) {
@@ -90,4 +101,62 @@
             })
         }
     })
+</script>
+<script >
+function showHideOptions(){
+        var optionValue = $('#groupSelect').val();                         	  
+        var obj = $.parseJSON(optionValue);
+        var daysArray = ['Воскресенье', 'Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота'];
+        var daysSelected = obj.days.split(",");
+        let indexes = daysSelected.map(function(word) { return daysArray.indexOf(word); })
+        let disabledDays = daysArray.filter( function( el ) {return daysSelected.indexOf( el ) < 0;});
+        let disabledIndexes = disabledDays.map(function(word) { return daysArray.indexOf(word); }); 
+        var date = $("#date").text();
+        $('#datepicker').datepicker({
+            language: "ru",
+            startDate: date,
+            format: "dd.mm.yyyy",
+            weekStart: 1,
+            todayHighlight: true,
+            daysOfWeekDisabled: disabledIndexes,
+            daysOfWeekHighlighted: indexes
+        });
+}
+$(document).ready(function() {
+   showHideOptions();
+$('#groupSelect').on('change',function(){
+    $('#datepicker').datepicker('destroy');
+    $('#datepicker').val('');
+   showHideOptions();
+   });
+ });
+
+</script>
+<script >
+function showPrice(){
+     var optionValueMembership = $('#membershipSelect').val();
+     var objMembership = $.parseJSON(optionValueMembership);
+     $('#price').text(objMembership.price);
+     var prepayment = $('#prepayment').text();
+     var debt = $('#debts').text();
+      console.log(prepayment)
+     if(prepayment !== '' && debt === ''){
+        
+         var toPay = parseInt(objMembership.price) - parseInt(prepayment);
+         $('#toPay').text(toPay);
+     }
+     else if(debt !== '' && prepayment === ''){
+         var toPayWithDebt = parseInt(objMembership.price) + parseInt(prepayment);
+          $('#toPay').text(toPayWithDebt);
+     }
+     else if(debt === '' && prepayment === ''){
+         $('#toPay').text(objMembership.price);
+     }
+}
+$(document).ready(function() {
+   showPrice();
+$('#membershipSelect').on('change',function(){    
+   showPrice();
+   });
+ });
 </script>
