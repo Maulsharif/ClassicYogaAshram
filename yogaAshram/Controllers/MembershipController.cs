@@ -90,7 +90,7 @@ namespace yogaAshram.Controllers
             if (client is null)
                 return NotFound();
             ViewBag.Memberships = await _db.Memberships.ToArrayAsync();
-            ViewBag.Groups = await _db.Groups.ToListAsync();
+            ViewBag.Schedules = await _db.Schedules.ToListAsync();
             ViewBag.Date = Convert.ToDateTime(date);
             return PartialView("PartialViews/ExtendModalPartial" ,new MembershipExtendModelView() { ClientId = client.Id, Client = client });
         }
@@ -122,20 +122,8 @@ namespace yogaAshram.Controllers
                     daysFrozen = 2;
                 else
                     daysFrozen = 0;
-                List<CalendarEvent>calendarEventsNew = 
-                    _db.CalendarEvents.Where(c => c.GroupId == model.GroupId).ToList();
-                List<CalendarEvent> calendarEventsOld =
-                    _db.CalendarEvents.Where(c => c.GroupId == client.GroupId).ToList();
                 
-                bool areTheSame = (calendarEventsNew.Count == calendarEventsOld.Count);
-                Console.WriteLine(areTheSame);
-                List<DateTime> datesOfAttendance;
-                if(areTheSame)
-                  datesOfAttendance = _clientServices.DatesSkipFirst(
-                    model.Date, model.GroupId,
-                    membership.AttendanceDays + daysFrozen);
-                else
-                    datesOfAttendance = _clientServices.DatesForAttendance(
+                List<DateTime> datesOfAttendance = _clientServices.DatesForAttendance(
                         model.Date, model.GroupId,
                         membership.AttendanceDays + daysFrozen);
                 
@@ -146,34 +134,6 @@ namespace yogaAshram.Controllers
                     FrozenTimes = daysFrozen
                 };
                 _db.Entry(attendanceCount).State = EntityState.Added;
-                if(areTheSame)
-                  foreach (var date in datesOfAttendance.Skip(1))
-                  {
-                    Attendance attendance = new Attendance()
-                    {
-                        ClientId = client.Id,
-                        MembershipId = membership.Id,
-                        Date = date,
-                        AttendanceState = AttendanceState.notcheked,
-                        GroupId = model.GroupId,
-                        AttendanceCount = attendanceCount
-                    };
-                    _db.Entry(attendance).State = EntityState.Added;
-                  }
-                else 
-                    foreach (var date in datesOfAttendance)
-                    {
-                        Attendance attendance = new Attendance()
-                        {
-                            ClientId = client.Id,
-                            MembershipId = membership.Id,
-                            Date = date,
-                            AttendanceState = AttendanceState.notcheked,
-                            GroupId = model.GroupId,
-                            AttendanceCount = attendanceCount
-                        };
-                        _db.Entry(attendance).State = EntityState.Added;
-                    }
                 
                 client.MembershipId = membership.Id;
                 client.GroupId = model.GroupId;
@@ -181,14 +141,33 @@ namespace yogaAshram.Controllers
                 client.LessonNumbers = membership.AttendanceDays;
                 _db.Entry(client).State = EntityState.Modified;
                 
+                DateTime endDate = _clientServices.EndDateForClientsMembership(
+                    model.Date, model.GroupId,
+                    membership.AttendanceDays);
                 ClientsMembership clientsMembership = new ClientsMembership()
                 {
                     ClientId = client.Id,
                     MembershipId = membership.Id,
-                    DateOfPurchase = DateTime.Now
+                    DateOfPurchase = DateTime.Now,
+                    DateOfExpiry = endDate
                 };
-                Employee employee = await _userManager.GetUserAsync(User);
                 _db.Entry(clientsMembership).State = EntityState.Added;
+                foreach (var date in datesOfAttendance)
+                {
+                    Attendance attendance = new Attendance()
+                    {
+                        ClientId = client.Id,
+                        MembershipId = membership.Id,
+                        Date = date,
+                        AttendanceState = AttendanceState.notcheked,
+                        GroupId = model.GroupId,
+                        AttendanceCount = attendanceCount,
+                        ClientsMembership = clientsMembership
+                    };
+                    _db.Entry(attendance).State = EntityState.Added;
+                }
+                Employee employee = await _userManager.GetUserAsync(User);
+                
                 await _db.SaveChangesAsync();
                 bool check = await _paymentsService.CreatePayment(model, clientsMembership, client, employee.Id);
                 if (!check)

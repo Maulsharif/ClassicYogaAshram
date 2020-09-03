@@ -7,7 +7,7 @@ namespace yogaAshram.Models
     {
         public long Id { get; set; }
         public DateTime DateOfPurchase { get; set; }
-        
+        public DateTime DateOfExpiry { get; set; }
         public long ClientId { get; set; }
         public virtual Client Client { get; set; }
         

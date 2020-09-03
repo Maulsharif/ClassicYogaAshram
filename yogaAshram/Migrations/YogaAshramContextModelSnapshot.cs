@@ -137,6 +137,9 @@ namespace yogaAshram.Migrations
                     b.Property<long>("ClientId")
                         .HasColumnType("bigint");
 
+                    b.Property<long?>("ClientsMembershipId")
+                        .HasColumnType("bigint");
+
                     b.Property<DateTime>("Date")
                         .HasColumnType("timestamp without time zone");
 
@@ -157,6 +160,8 @@ namespace yogaAshram.Migrations
                     b.HasIndex("AttendanceCountId");
 
                     b.HasIndex("ClientId");
+
+                    b.HasIndex("ClientsMembershipId");
 
                     b.HasIndex("GroupId");
 
@@ -386,6 +391,9 @@ namespace yogaAshram.Migrations
 
                     b.Property<long>("ClientId")
                         .HasColumnType("bigint");
+
+                    b.Property<DateTime>("DateOfExpiry")
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<DateTime>("DateOfPurchase")
                         .HasColumnType("timestamp without time zone");
@@ -964,6 +972,10 @@ namespace yogaAshram.Migrations
                         .HasForeignKey("ClientId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("yogaAshram.Models.ClientsMembership", "ClientsMembership")
+                        .WithMany()
+                        .HasForeignKey("ClientsMembershipId");
 
                     b.HasOne("yogaAshram.Models.Group", "Group")
                         .WithMany()

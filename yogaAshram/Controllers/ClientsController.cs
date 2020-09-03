@@ -314,12 +314,18 @@ namespace yogaAshram.Controllers
 
                 Membership membership =
                     _db.Memberships.FirstOrDefault(m => m.Id == schedule.ClientsCreateModelView.MembershipId);
+                DateTime endDate = _clientServices.EndDateForClientsMembership(
+                    schedule.ClientsCreateModelView.StartDate, 
+                    schedule.ClientsCreateModelView.GroupId,
+                    membership.AttendanceDays);
                 ClientsMembership clientsMembership = new ClientsMembership()
                 {
                     Client = client,
                     MembershipId = membership.Id,
-                    DateOfPurchase = DateTime.Now
+                    DateOfPurchase = DateTime.Now,
+                    DateOfExpiry = endDate
                 };
+                
                 _db.Entry(clientsMembership).State = EntityState.Added;
                 int daysFrozen = 0;
                 if (membership.AttendanceDays == 12)
@@ -348,7 +354,8 @@ namespace yogaAshram.Controllers
                         Date = datesOfAttendance[i],
                         AttendanceState = AttendanceState.notcheked,
                         GroupId = schedule.ClientsCreateModelView.GroupId,
-                        AttendanceCount = attendanceCount
+                        AttendanceCount = attendanceCount,
+                        ClientsMembership = clientsMembership
                     };
                     _db.Entry(attendance).State = EntityState.Added;
                 }
@@ -401,11 +408,16 @@ namespace yogaAshram.Controllers
 
                 Membership membership =
                     _db.Memberships.FirstOrDefault(m => m.Id == schedule.ClientsCreateModelView.MembershipId);
+                DateTime endDate = _clientServices.EndDateForClientsMembership(
+                    schedule.ClientsCreateModelView.StartDate, 
+                    schedule.ClientsCreateModelView.GroupId,
+                    membership.AttendanceDays);
                ClientsMembership clientsMembership = new ClientsMembership()
                {
                    ClientId = client.Id,
                    MembershipId = membership.Id,
-                   DateOfPurchase = DateTime.Now
+                   DateOfPurchase = DateTime.Now,
+                   DateOfExpiry = endDate
                };
                _db.Entry(clientsMembership).State = EntityState.Added;
                 
@@ -437,7 +449,8 @@ namespace yogaAshram.Controllers
                         Date = datesOfAttendance[i],
                         AttendanceState = AttendanceState.notcheked,
                         GroupId = schedule.ClientsCreateModelView.GroupId,
-                        AttendanceCount = attendanceCount
+                        AttendanceCount = attendanceCount,
+                        ClientsMembership = clientsMembership
                     };
                     
                     _db.Entry(attendance).State = EntityState.Added;
@@ -518,15 +531,14 @@ namespace yogaAshram.Controllers
         {
             
 
-            List<Attendance> attendancesToCheckDate = _db.Attendances.Where(a => a.IsChecked)
-                .Where(a => a.ClientId == clientId).ToList();
+            List<Attendance> attendancesToCheckDate = _db.Attendances.Where(a => a.IsChecked 
+                                                                                 && a.ClientId == clientId).ToList();
             if (attendancesToCheckDate.Any(a => a.Date == date))
                 return Content("errorCheckedAlready");
-
-
+            
             Attendance attendance = _db.Attendances
                 .FirstOrDefault(a => a.Id == attendanceId);
-            Console.WriteLine(attendance.ClientId);
+            
             Debug.Assert(attendance != null, nameof(attendance) + " != null");
 
             attendance.IsChecked = true;
@@ -548,6 +560,14 @@ namespace yogaAshram.Controllers
             {
                 attendance.AttendanceCount.FrozenTimes -= 1;
                 attendance.AttendanceCount.AttendingTimes += 1;
+                ClientsMembership clientsMembership = _db.ClientsMemberships
+                    .FirstOrDefault(c => c.Id == attendance.ClientsMembershipId);
+                if (clientsMembership != null)
+                {
+                    DateTime lastDay = clientsMembership.DateOfExpiry;
+                    clientsMembership.DateOfExpiry = _clientServices.DateIfFrozen(lastDay, attendance.GroupId);
+                    _db.Entry(clientsMembership).State = EntityState.Modified;
+                }
             }
             else if(attendance.AttendanceState == AttendanceState.frozen && attendance.AttendanceCount.FrozenTimes == 0)
                 return Content("errorFrozen");

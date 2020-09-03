@@ -20,6 +20,8 @@ namespace yogaAshram.Models
         public virtual Group  Group { get; set; }
         public long? MembershipId { get; set; }
         public virtual Membership Membership { get; set; }
+        public long? ClientsMembershipId { get; set; }
+        public virtual  ClientsMembership ClientsMembership{ get; set; }
         public AttendanceState AttendanceState { get; set; } = Models.AttendanceState.notcheked;
         public bool IsChecked { get; set; } = false;
         public bool IsNotActive { get; set; }
