@@ -11,7 +11,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using yogaAshram.Models;
 using yogaAshram.Services;
-using yogaAshram.Jobs;
+// using yogaAshram.Jobs;
 using yogaAshram.Quartz;
 
 namespace yogaAshram

@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using yogaAshram.Jobs;
+// using yogaAshram.Jobs;
 using yogaAshram.Models;
 using yogaAshram.Quartz;
 using yogaAshram.Services;
