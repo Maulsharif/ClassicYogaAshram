@@ -33,11 +33,11 @@ namespace yogaAshram.Models
             List<Attendance> clients =
                 _db.Attendances.Where(p => p.IsChecked == false && p.Date == DateTime.Today).ToList();
       
-           
-            
             string mes = "";
             if (clients.Count() > 0)
             {
+                
+                mes = "Список неотмеченных клиентов:"+"\n";
                 foreach (var client in clients)
                 {
                     mes += client.Client.NameSurname + " " + client.Group.Name + "\n";

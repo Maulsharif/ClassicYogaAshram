@@ -130,7 +130,7 @@ namespace yogaAshram.Controllers
         public IActionResult CheckAttendanceTrial(long groupId, long clientId, long branchId)
         {
 
-            TrialUsers user = _db.TrialUserses.FirstOrDefault(u => u.ClientId == clientId);
+            TrialUsers user = _db.TrialUserses.FirstOrDefault(u => u.Id == clientId);
 
 
             List<TrialUsers> clients = _db.TrialUserses

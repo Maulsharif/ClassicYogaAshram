@@ -92,7 +92,6 @@
     <ItemGroup>
       <Folder Include="Files" />
       <Folder Include="Views\Employees\PartialViews" />
-      <Folder Include="Workers" />
     </ItemGroup>
 
     <ProjectExtensions><VisualStudio><UserProperties appsettings_1json__JsonSchema="" /></VisualStudio></ProjectExtensions>

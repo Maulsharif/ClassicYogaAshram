@@ -25,8 +25,8 @@ namespace yogaAshram.Quartz
         }
 
         public void ReturnJob(IJob job)
-        {
-            //Do something if need
-        }
+                 {
+                     //Сохранять в базу?
+                 }
     }
 }
