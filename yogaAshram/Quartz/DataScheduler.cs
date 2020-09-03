@@ -20,7 +20,7 @@ namespace yogaAshram.Quartz
                 .StartNow() // if a start time is not given (if this line were omitted), "now" is implied
                 .WithSimpleSchedule(x => x
                     .WithIntervalInSeconds(15)
-                    .WithRepeatCount(10))
+                    .WithRepeatCount(3))
                 .Build();
 
             await scheduler.ScheduleJob(jobDetail, trigger);

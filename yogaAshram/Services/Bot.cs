@@ -29,14 +29,19 @@ namespace yogaAshram.Models
       
         public void StartBot()
         {
-            List<Client> clients = _db.Clients.ToList();
+            //делать выборку 
+            List<Attendance> clients =
+                _db.Attendances.Where(p => p.IsChecked == false && p.Date == DateTime.Today).ToList();
+      
+           
             
             string mes = "";
-            if (clients.Count > 0)
+            if (clients.Count() > 0)
             {
                 foreach (var client in clients)
                 {
-                    mes += client.NameSurname + " " + client.Group.Name + "\n";
+                    mes += client.Client.NameSurname + " " + client.Group.Name + "\n";
+                    Console.WriteLine(mes);
                 }
             }
             else
@@ -54,20 +59,7 @@ namespace yogaAshram.Models
             }
         }
 
-        private  async void OnMessageReceived(object? sender, Telegram.Bot.Args.MessageEventArgs messageEventArgs)
-        {
-            try
-            {
-                Message message = messageEventArgs.Message;
-                string mes = "Надира Маратова";
-                Console.WriteLine(message.Chat.Id);
-                await _bot.SendTextMessageAsync(message.Chat.Id, mes);
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-            }
-        }
+        
     }
    
 }
