@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Hosting;
 using yogaAshram.Models.ModelViews;
 using Microsoft.EntityFrameworkCore;
+using SmartBreadcrumbs.Attributes;
 using yogaAshram.Services;
 
 namespace yogaAshram.Controllers
@@ -29,6 +30,7 @@ namespace yogaAshram.Controllers
             _roleManager = roleManager;
         }        
         [HttpGet]
+        [Breadcrumb("Вход на сайт", FromAction = "Index", FromController = typeof(HomeController))]
         public IActionResult Login(string returnUrl = null)
         {
             return View(new AccountLoginModelView() { ReturnUrl = returnUrl });

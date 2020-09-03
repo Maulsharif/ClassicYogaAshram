@@ -4,14 +4,14 @@
 <table class="table table-bordered" style="margin-left: -125px;">
     <thead>
     <tr>
-        <th scope="col" ><a asp-action="Index" asp-controller="Clients" asp-route-sortOrder="@ViewBag.NameSort">ИФО</a></th>
-        <th scope="col">E-mail</th>
+        <th scope="col" ><a asp-action="Index" asp-controller="Clients" asp-route-sortOrder="@ViewBag.NameSort">ФИО</a></th>
+        <th scope="col">Email</th>
         <th scope="col">Номер телефона</th>
-        <th scope="col">Филиал</th>
+        <th scope="col">Центр</th>
         <th scope="col" ><a asp-action="Index" asp-controller="Clients" asp-route-sortOrder="@ViewBag.GroupSort">Группа</a></th>
         <th scope="col">Инструктор</th>
         <th scope="col">Категория</th>
-        <th scope="col">Комментарий</th>
+        <th scope="col">Комментарии</th>
         <th scope="col" ><a asp-action="Index" asp-controller="Clients" asp-route-sortOrder="@ViewBag.BranchSort">Абонемент</a></th>
         <th scope="col" ><a asp-action="Index" asp-controller="Clients" asp-route-sortOrder="@ViewBag.AttendingTimesSort">Осталось посещений</a></th>
         <th scope="col" ><a asp-action="Index" asp-controller="Clients" asp-route-sortOrder="@ViewBag.AbsenceTimesSort">Пропуски</a></th>
@@ -37,7 +37,7 @@
                 }
                 else
                 {
-                    <td>Комментарий нет</td>
+                    <td>Комментариев нет</td>
                 }
             }
             <td>@clientsMembership.Client.Membership.Name</td>

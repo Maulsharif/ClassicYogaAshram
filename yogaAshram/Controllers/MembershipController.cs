@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using SmartBreadcrumbs.Attributes;
 using yogaAshram.Models;
 using yogaAshram.Models.ModelViews;
 using yogaAshram.Services;
@@ -28,6 +29,7 @@ namespace yogaAshram.Controllers
         }
 
         // GET
+        [Breadcrumb("Абонементы", FromAction = "Index", FromController = typeof(ChiefController))]
         public IActionResult Index()
         {
             List<Membership> model = _db.Memberships.ToList(); 

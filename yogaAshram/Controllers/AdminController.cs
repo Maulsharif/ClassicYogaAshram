@@ -48,7 +48,7 @@ namespace yogaAshram.Controllers
             });
         }
 
-          
+         [Breadcrumb("Календарь")]
          public IActionResult Scheduele(int? month, long? branchId)
          {
              if (_db.CalendarEvents != null || branchId != null) 

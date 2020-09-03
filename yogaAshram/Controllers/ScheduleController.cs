@@ -8,6 +8,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
+using SmartBreadcrumbs.Attributes;
+using SmartBreadcrumbs.Nodes;
 using yogaAshram.Models;
 using yogaAshram.Models.ModelViews;
 
@@ -24,8 +26,20 @@ namespace yogaAshram.Controllers
         }
 
         // GET
+        
+       
+        [Breadcrumb("Календарь")]
         public IActionResult Index(int? month, long? branchId)
         {
+           
+            var childNode1 = new MvcBreadcrumbNode("Index", "Chief", "Личный кабинет директора");
+            var childNode2 = new MvcControllerBreadcrumbNode("Schedule", "Календарь")
+            {
+                OverwriteTitleOnExactMatch = true,
+                Parent = childNode1,
+                RouteValues = $"month={month}&branchId={branchId}"
+            };
+            ViewData["BreadcrumbNode"] = childNode2;
             if (_db.CalendarEvents != null || branchId != null) 
                 ViewBag.Events = _db.CalendarEvents
                 .Where(c => c.BranchId == branchId)
@@ -46,10 +60,34 @@ namespace yogaAshram.Controllers
                 dateTime = new DateTime(dateTime.Year, Convert.ToInt32(month), 1);
             return View(dateTime);
         }
-
+        [Breadcrumb("Расписание группы")]
         public IActionResult Group(long groupId, DateTime date)
         {
             Schedule schedule = _db.Schedules.FirstOrDefault(g => g.GroupId == groupId);
+            MvcBreadcrumbNode childNode1 = new MvcBreadcrumbNode("Index", "Admin", "Личный кабинет администратора");
+            var childNode2 = new MvcBreadcrumbNode("Scheduele", "Admin", "Календарь")
+            {
+                OverwriteTitleOnExactMatch = true,
+                Parent = childNode1,
+                RouteValues = new {month = date.Month, branchId = schedule.BranchId}
+            };
+            if (User.IsInRole("chief"))
+            {
+                childNode1 = new MvcBreadcrumbNode("Index", "Chief", "Личный кабинет директора");
+                childNode2 = new MvcBreadcrumbNode("Index","Schedule", "Календарь")
+                {
+                    OverwriteTitleOnExactMatch = true,
+                    Parent = childNode1,
+                    RouteValues = new {month = date.Month, branchId = schedule.BranchId}
+                };
+            }
+            var childNode3 = new MvcControllerBreadcrumbNode("Schedule", "Расписание группы")
+            {
+                OverwriteTitleOnExactMatch = true,
+                Parent = childNode2
+            };
+            ViewData["BreadcrumbNode"] = childNode3;
+            
             ViewBag.Sicknesses = _db.Sicknesses.ToList();
             if (schedule != null)
             {
