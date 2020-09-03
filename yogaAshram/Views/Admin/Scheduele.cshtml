@@ -7,9 +7,9 @@
     Layout = "_Layout";
 }
 <div class="container">
-    <a class="btn btn-outline-dark mt-1" asp-action="Scheduele" asp-route-month="@Model.AddMonths(-1).Month" asp-route-branchId="@ViewBag.BranchId">Назад</a>
+    <a class="btn btn-outline-dark mt-1" asp-action="Scheduele" asp-route-month="@Model.AddMonths(-1).Month" asp-route-branchId="@ViewBag.BranchId">@Model.AddMonths(-1).ToString("MMMM")</a>
   
-    <a class="btn btn-outline-dark mt-1" asp-action="Scheduele" asp-route-month="@Model.AddMonths(1).Month" asp-route-branchId="@ViewBag.BranchId">Вперед</a>
+    <a class="btn btn-outline-dark mt-1" asp-action="Scheduele" asp-route-month="@Model.AddMonths(1).Month" asp-route-branchId="@ViewBag.BranchId">@Model.AddMonths(1).ToString("MMMM")</a>
    
 	    <calendar month="@Model.Month" year="@Model.Year" events="@ViewBag.Events"/>
 	   <p id="groupIdArray" class="text-hide">@ViewBag.GroupIdArray</p> 
