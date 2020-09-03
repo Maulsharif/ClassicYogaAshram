@@ -69,19 +69,19 @@
 						}
 						else if (@attendance.AttendanceCount.AttendingTimes == 0 && @attendance.IsNotActive == false)
                         {
-                        	<div >	
-                        	<td class="bg-danger">										        
-                        		<button class="getMembershipExtendModal btn btn-primary" clientId="@attendance.ClientId" date="@Model.ChosenDate">Продлить абонемент</button>														        
-                        		</td> 
-                        	</div>	
+	                        <div>	
+		                        <td class="bg-danger">										        
+			                        <button class="getMembershipExtendModal btn btn-primary" clientId="@attendance.ClientId" date="@attendance.ClientsMembership.DateOfExpiry">Продлить абонемент</button>														        
+		                        </td> 
+	                        </div>
                         }
 						else
 						{
-						<div >
-							<td>														        
-								@attendance.AttendanceCount.AttendingTimes													        
-							</td> 
-							</div>	
+							<div>
+								<td>														        
+									@attendance.AttendanceCount.AttendingTimes													        
+								</td> 
+							</div>
 						}
 					
 					<td>
