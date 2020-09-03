@@ -46,6 +46,21 @@
         await Html.RenderPartialAsync("../Employees/PartialViews/GetModalScripts");
     }
     
+   
+        <script>
+         var now = new Date();
+         var millisTill10 = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 18, 41, 0, 0) - now;
+         if (millisTill10 < 0) {
+              millisTill10 += 86400000; 
+         }
+         setTimeout(function(){alert("Отметить пользователей!")}, millisTill10);
+         
+        </script>
+    
+
+    
+    
+    
     <script>
             $('#showIndex').click(function() {
                 $('#showIndex').css('display', 'none');

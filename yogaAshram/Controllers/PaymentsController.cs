@@ -146,9 +146,9 @@ namespace yogaAshram.Controllers
         public async Task<ClientsMembership> GetClientMembership(long clientId, long membershipId)
         {
             ClientsMembership[] clientsMemberships = await _db.ClientsMemberships.ToArrayAsync();
-            for (int i = clientsMemberships.Length - 1; i >= 0; i++)
+            for (int i = clientsMemberships.Length - 1; i >= 0; i--)
             {
-                if (clientsMemberships[i].ClientId == clientId && clientsMemberships[0].MembershipId == membershipId)
+                if (clientsMemberships[i].ClientId == clientId && clientsMemberships[i].MembershipId == membershipId)
                     return clientsMemberships[i];
             }
             return null;

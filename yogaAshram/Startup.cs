@@ -10,8 +10,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using yogaAshram.Jobs;
 using yogaAshram.Models;
+using yogaAshram.Quartz;
 using yogaAshram.Services;
+using yogaAshram.Workers;
 
 namespace yogaAshram
 {
@@ -41,9 +44,13 @@ namespace yogaAshram
                 })
                 .AddEntityFrameworkStores<YogaAshramContext>()
                 .AddDefaultTokenProviders();
-            services.AddTransient<EmailService>();
+           // services.AddTransient<EmailService>();
             services.AddTransient<ClientServices>();
             services.AddTransient<PaymentsService>();     
+            services.AddTransient<JobFactory>();
+            services.AddScoped<DataJob>();
+            services.AddScoped<IBot,Bot>();
+            services.AddScoped<EmailService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -66,6 +73,9 @@ namespace yogaAshram
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
+
+        
+           
 
             app.UseEndpoints(endpoints =>
             {

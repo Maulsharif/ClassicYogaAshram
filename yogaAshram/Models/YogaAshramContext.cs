@@ -31,7 +31,9 @@ namespace yogaAshram.Models
         public YogaAshramContext(DbContextOptions options) : base(options)
         {
         }
-        
+
+    
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
