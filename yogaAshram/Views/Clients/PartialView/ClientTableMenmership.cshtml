@@ -4,18 +4,18 @@
 <table class="table table-bordered">
     <thead>
     <tr>
-        <th scope="col"><a asp-action="Index" asp-controller="Clients" asp-route-sortOrder="@ViewBag.NameSort">ФИО</a></th>
+        <th scope="col"><a asp-action="ClientTableMembership" asp-controller="Clients" asp-route-sortOrder="@ViewBag.NameSort">ФИО</a></th>
         <th scope="col">Email</th>
         <th scope="col">Номер телефона</th>
         <th scope="col">Центр</th>
-        <th scope="col"><a asp-action="Index" asp-controller="Clients" asp-route-sortOrder="@ViewBag.GroupSort">Группа</a></th>
+        <th scope="col"><a asp-action="ClientTableMembership" asp-controller="Clients" asp-route-sortOrder="@ViewBag.GroupSort">Группа</a></th>
         <th scope="col">Инструктор</th>
         <th scope="col">Категория</th>
         <th scope="col">Комментарии</th>
-        <th scope="col" ><a asp-action="Index" asp-controller="Clients" asp-route-sortOrder="@ViewBag.BranchSort">Абонемент</a></th>
-        <th scope="col" ><a asp-action="Index" asp-controller="Clients" asp-route-sortOrder="@ViewBag.AttendingTimesSort">Осталось посещений</a></th>
-        <th scope="col" ><a asp-action="Index" asp-controller="Clients" asp-route-sortOrder="@ViewBag.AbsenceTimesSort">Пропуски</a></th>
-        <th scope="col" ><a asp-action="Index" asp-controller="Clients" asp-route-sortOrder="@ViewBag.ForzenTimesSort" >Осталось заморозок</a></th>
+        <th scope="col" ><a asp-action="ClientTableMembership" asp-controller="Clients" asp-route-sortOrder="@ViewBag.BranchSort">Абонемент</a></th>
+        <th scope="col" ><a asp-action="ClientTableMembership" asp-controller="Clients" asp-route-sortOrder="@ViewBag.AttendingTimesSort">Осталось посещений</a></th>
+        <th scope="col" ><a asp-action="ClientTableMembership" asp-controller="Clients" asp-route-sortOrder="@ViewBag.AbsenceTimesSort">Пропуски</a></th>
+        <th scope="col" ><a asp-action="ClientTableMembership" asp-controller="Clients" asp-route-sortOrder="@ViewBag.ForzenTimesSort" >Осталось заморозок</a></th>
     </tr>
     </thead>
     <tbody>

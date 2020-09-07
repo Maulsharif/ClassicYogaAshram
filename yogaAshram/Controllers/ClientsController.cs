@@ -55,7 +55,7 @@ namespace yogaAshram.Controllers
             _clientServices = clientServices;
         }
         [Breadcrumb("Информация по клиентам", FromAction = "Index", FromController = typeof(ChiefController))]
-        public async Task<IActionResult> Index(SortState sortOrder = SortState.GroupAsc)
+        public async Task<IActionResult> ClientTableMembership(SortState sortOrder = SortState.GroupAsc)
         {
             ViewBag.GroupSort = sortOrder == SortState.GroupAsc ?
                 SortState.GroupDesc : SortState.GroupAsc;
@@ -505,9 +505,9 @@ namespace yogaAshram.Controllers
 
         [Authorize]
         [Breadcrumb("Базовые клиенты", FromAction = "Index", FromController = typeof(AdminController))]
-        public IActionResult RegularClients()
+        public IActionResult RegularClients(long clientId)
         {
-            List<Client> clients = _db.Clients.Where(c => c.ClientType == ClientType.AreEngaged).ToList();
+            List<Client> clients = _db.Clients.Where(c => c.ClientType == ClientType.AreEngaged && c.Id == clientId).ToList();
 
             return View(clients);
         }
