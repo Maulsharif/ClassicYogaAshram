@@ -6,8 +6,7 @@
 	ViewBag.Title = "Расписание группы";
 	Layout = "_Layout";
 }
-
-  <div class="tabs">
+<div class="tabs">
     <input type="radio" name="tab-btn" id="tab-btn-1" value="" checked>
     <label for="tab-btn-1">Группа</label>
     <input type="radio" name="tab-btn" id="tab-btn-2" value="">
@@ -26,9 +25,7 @@
 	  @{
 		  Html.RenderPartial("PartialViews/_AttendanceCheckPartial.cshtml");
 	  }
-	    
   </div>
-  
     <div id="content-3">
 	  
       		<h2>Записать на пробное занятие</h2>
@@ -52,13 +49,10 @@
                         				</select>				
                         			</div>	
 			      <div class="row">
-                  			
-      							
-      			
+				      
       		</div>		
       					<input class="form-control mb-4 w-50" asp-for="@Model.ClientsCreateModelView.StartDate" type="hidden" value="@Model.ChosenDate">
-      			
-      				<button class="btn btn-info mt-3" type="submit">Добавить</button>
+			      <button class="btn btn-info mt-3" type="submit">Добавить</button>
       
       		</form>
    
@@ -86,11 +80,11 @@
 	    <div id="ExistingClient">
 		    <div class="row">
 			     <h5 class="mb-3">Клиент </h5>
-                		    <select id="trialClients" class="form-control statesSelect " style="width: 50%" onchange="openTrialClientForm()">
+                		    <select id="regularClients" class="form-control statesSelect " style="width: 50%" onchange="openRegularClientForm()">
                 			    <option value="">Выберите из списка</option>
                 			    @foreach (Client client in (IEnumerable) @ViewBag.OldClients)
                 			    {
-                				    <option value='{"id":"@client.Id","phone":"@client.PhoneNumber","email":"@client.Email","birthday":"@client.DateOfBirth.ToString("yyyy-MM-dd")","workPlace":"@client.WorkPlace","source":"@client.Source","sickness":"@client.Sickness"}'>@client.NameSurname</option>
+				                    <option value='{"id":"@client.Id","phone":"@client.PhoneNumber","email":"@client.Email","birthday":"@client.DateOfBirth.ToString("yyyy-MM-dd")","workPlace":"@client.WorkPlace","source":"@client.Source","sickness":"@client.Sickness"}'>@client.NameSurname</option>
                 			    }
                 		    </select>
 		    </div>
@@ -174,6 +168,10 @@
 							    </option>
 						    }
 					    </select>
+					  <a id="show" class="btn btn-primary">Другое</a>
+                        
+                        <input id="sicknessInput" name="newSikness"  placeholder="Название болезни" class="form-control">
+                       
 
 
 				    </div>
@@ -189,15 +187,11 @@
 					    <textarea class="form-control mb-4" asp-for="@Model.ClientsCreateModelView.Comment" rows="2"></textArea>
 				    </div>
 			    </div>
-
 			    <button class="btn btn-info mt-2" type="submit">Добавить</button>
 		    </form>
-
 	    </div>
     </div>
-    
   </div>
-
 
 
 @if ( User.IsInRole("seller") ||User.IsInRole("admin") )
@@ -476,6 +470,14 @@
               }                 
     	</script>
 	
+		<script>
+		$(document).ready(function(){
+             $("#sicknessInput").hide();
+          $("#show").click(function(){
+            $("#sicknessInput").show();
+          });
+        });
+    </script>
 	
 }
 

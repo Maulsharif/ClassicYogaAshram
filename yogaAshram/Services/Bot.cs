@@ -37,7 +37,7 @@ namespace yogaAshram.Models
             if (clients.Count() > 0)
             {
                 
-                mes = $"Список неотмеченных клиентов {DateTime.Today.ToShortDateString()}:"+"\n";
+                mes = $"#напоминание Список неотмеченных клиентов {DateTime.Today.ToShortDateString()}:"+"\n";
                 foreach (var client in clients)
                 {
                     mes += client.Client.NameSurname + " " + client.Group.Name + "\n";
