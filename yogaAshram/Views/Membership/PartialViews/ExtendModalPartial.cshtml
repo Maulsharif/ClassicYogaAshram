@@ -146,7 +146,7 @@ function showPrice(){
          $('#toPay').text(toPay);
      }
      else if(debt !== '' && prepayment === ''){
-         var toPayWithDebt = parseInt(objMembership.price) + parseInt(prepayment);
+         var toPayWithDebt = parseInt(objMembership.price) + parseInt(debt);
           $('#toPay').text(toPayWithDebt);
      }
      else if(debt === '' && prepayment === ''){
