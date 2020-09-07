@@ -47,7 +47,7 @@ namespace yogaAshram.Controllers
         private readonly ClientServices _clientServices;
 
         public ClientsController(UserManager<Employee> userManager, SignInManager<Employee> signInManager,
-            YogaAshramContext db, ClientServices clientServices)
+            YogaAshramContext db, ClientServices clientServices, PaymentsService paymentsService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -69,10 +69,16 @@ namespace yogaAshram.Controllers
                 SortState.AttendingTimesDesc : SortState.AttendingTimesAsc;
             ViewBag.ForzenTimesSort = sortOrder == SortState.ForzenTimesAsc ? 
                 SortState.ForzenTimesDesc : SortState.ForzenTimesAsc;
-            
-            List<ClientsMembership> model = _db.ClientsMemberships.ToList(); 
-            
-            switch (sortOrder)
+
+            var model = _db.Clients
+                .Join(_db.Attendances, p => p.Id, n => n.ClientId, 
+                    ((client, attendance) => new ClientTableViewModel() { Client = client, Attendance = attendance }))
+                .ToList();
+            model = model
+                .GroupBy(p => p.Client.Id)
+                .Select(g => g.First())
+                .ToList();
+            /*switch (sortOrder)
             {
                 case SortState.GroupDesc:
                     model = model.OrderByDescending(p => p.Client.Group.Name).ToList();
@@ -110,7 +116,7 @@ namespace yogaAshram.Controllers
                 default:
                     model = model.OrderBy(p => p.Client.Group.Name).ToList();
                     break;
-            }
+            }*/
             
             return View(model);
         }
@@ -303,11 +309,8 @@ namespace yogaAshram.Controllers
             if (ModelState.IsValid)
             {
                 if (newSikness != null)
-                {
-                    
                     _sicknessId=AddSickness(newSikness);
-                }
-
+                
                 _sicknessId = schedule.ClientsCreateModelView.SicknessId;
                 Client client = new Client()
                 {
@@ -319,7 +322,7 @@ namespace yogaAshram.Controllers
                     WorkPlace = schedule.ClientsCreateModelView.WorkPlace,
                     SicknessId = _sicknessId,
                     Source = schedule.ClientsCreateModelView.Source,
-                    Paid = Paid.Не_оплачено,
+                    Paid = Paid.Есть_долг,
                     WhatsAppGroup = WhatsAppGroup.Не_состоит_в_группе,
                     Contract = Contract.Нет_договора,
                     GroupId = schedule.ClientsCreateModelView.GroupId,
@@ -332,7 +335,7 @@ namespace yogaAshram.Controllers
                 if (schedule.ClientsCreateModelView.Comment != null)
                     client.Comments = new List<string>
                         {$"{employee?.UserName}: {schedule.ClientsCreateModelView.Comment}, {DateTime.Now:dd.MM.yyyy}"};
-                _db.Entry(client).State = EntityState.Added;
+               
                 Group group = _db.Groups.FirstOrDefault(g => g.Id == schedule.ClientsCreateModelView.GroupId);
                 if (group != null && group.Clients.Count == 0)
                     group.Clients = new List<Client>()
@@ -389,11 +392,12 @@ namespace yogaAshram.Controllers
                     };
                     _db.Entry(attendance).State = EntityState.Added;
                 }
-
+                client.Balance -= membership.Price;
+                _db.Entry(client).State = EntityState.Added;
                 _db.Entry(group).State = EntityState.Modified;
+                Console.WriteLine($"{client.Balance}");
                 await _db.SaveChangesAsync();
             }
-
             return RedirectToAction("RegularClients", "Clients");
         }
 
@@ -432,8 +436,7 @@ namespace yogaAshram.Controllers
                 client.MembershipId = schedule.ClientsCreateModelView.MembershipId;
                 client.ClientType = ClientType.AreEngaged;
                 client.CreatorId = GetUserId.GetCurrentUserId(this.HttpContext);
-
-                _db.Entry(client).State = EntityState.Modified;
+                
                 Group group = _db.Groups.FirstOrDefault(g => g.Id == schedule.ClientsCreateModelView.GroupId);
                 if (group != null && group.Clients.Count == 0)
                     group.Clients = new List<Client>(){client};
@@ -442,6 +445,9 @@ namespace yogaAshram.Controllers
 
                 Membership membership =
                     _db.Memberships.FirstOrDefault(m => m.Id == schedule.ClientsCreateModelView.MembershipId);
+                client.Balance -= membership.Price;
+                _db.Entry(client).State = EntityState.Modified;
+                
                 DateTime endDate = _clientServices.EndDateForClientsMembership(
                     schedule.ClientsCreateModelView.StartDate, 
                     schedule.ClientsCreateModelView.GroupId,
@@ -647,9 +653,6 @@ namespace yogaAshram.Controllers
                 Console.WriteLine(e.Message);
                 throw;
             }
-                
-          
-            
         }
     }
 }

@@ -11,8 +11,8 @@ using yogaAshram.Models;
 namespace yogaAshram.Migrations
 {
     [DbContext(typeof(YogaAshramContext))]
-    [Migration("20200903093109_Initial")]
-    partial class Initial
+    [Migration("20200904101236_initial")]
+    partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -161,8 +161,7 @@ namespace yogaAshram.Migrations
 
                     b.HasIndex("AttendanceCountId");
 
-                    b.HasIndex("ClientId")
-                        .IsUnique();
+                    b.HasIndex("ClientId");
 
                     b.HasIndex("ClientsMembershipId");
 
@@ -971,8 +970,8 @@ namespace yogaAshram.Migrations
                         .HasForeignKey("AttendanceCountId");
 
                     b.HasOne("yogaAshram.Models.Client", "Client")
-                        .WithOne("Attendances")
-                        .HasForeignKey("yogaAshram.Models.Attendance", "ClientId")
+                        .WithMany()
+                        .HasForeignKey("ClientId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

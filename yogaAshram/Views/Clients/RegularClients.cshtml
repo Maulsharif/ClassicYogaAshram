@@ -33,7 +33,7 @@
         <tr> 
         <th scope="row">@client.NameSurname</th>
         <td>@client.Group.Name</td>
-        <td class="bg-@{string colorDebt = String.Empty;if (@client.Paid == Paid.Не_оплачено){ colorDebt = "danger";}@colorDebt}">@client.Paid.ToString()</td>
+        <td class="bg-@{string colorDebt = String.Empty;if (@client.Paid == Paid.Есть_долг){ colorDebt = "danger";}@colorDebt}">@client.Paid.ToString()</td>
         <td class="bg-@{string colorWhat = String.Empty;if (@client.WhatsAppGroup == WhatsAppGroup.Не_состоит_в_группе){ colorWhat = "success";}@colorWhat}">@client.WhatsAppGroup.ToString()</td>
             <td class="bg-@{string colorCon = String.Empty;if (@client.Contract == Contract.Нет_договора){ colorCon = "warning";}@colorCon}">@client.Contract.ToString()</td>
             <td>@client.Membership.Name</td>
