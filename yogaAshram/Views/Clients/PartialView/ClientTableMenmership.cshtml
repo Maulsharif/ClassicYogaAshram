@@ -1,14 +1,14 @@
-@model List<ClientsMembership>
-
+@model List<ClientTableViewModel>
+<div class="container">
 <h1 class="mt-5 mb-5" style="text-align: center">Таблица информации о клиентах</h1>
-<table class="table table-bordered" style="margin-left: -125px;">
+<table class="table table-bordered">
     <thead>
     <tr>
-        <th scope="col" ><a asp-action="Index" asp-controller="Clients" asp-route-sortOrder="@ViewBag.NameSort">ФИО</a></th>
+        <th scope="col"><a asp-action="Index" asp-controller="Clients" asp-route-sortOrder="@ViewBag.NameSort">ФИО</a></th>
         <th scope="col">Email</th>
         <th scope="col">Номер телефона</th>
         <th scope="col">Центр</th>
-        <th scope="col" ><a asp-action="Index" asp-controller="Clients" asp-route-sortOrder="@ViewBag.GroupSort">Группа</a></th>
+        <th scope="col"><a asp-action="Index" asp-controller="Clients" asp-route-sortOrder="@ViewBag.GroupSort">Группа</a></th>
         <th scope="col">Инструктор</th>
         <th scope="col">Категория</th>
         <th scope="col">Комментарии</th>
@@ -19,32 +19,33 @@
     </tr>
     </thead>
     <tbody>
-    @foreach (var clientsMembership in Model)
+    @foreach (var clients in Model)
     {
         <tr>
-            <td>@clientsMembership.Client.NameSurname</td>
-            <td>@clientsMembership.Client.Email</td>
-            <td>@clientsMembership.Client.PhoneNumber</td>
-            <td>@clientsMembership.Client.Group.Branch.Name</td>
-            <td>@clientsMembership.Client.Group.Name</td>
-            <td>@clientsMembership.Client.Group.Coach.NameSurname</td>
-            <td>@clientsMembership.Client.Membership.Category.Name</td>
-            @foreach (var comment in @clientsMembership.Client.Comments)
+            <td>@clients.Client.NameSurname</td>
+            <td>@clients.Client.Email</td>
+            <td>@clients.Client.PhoneNumber</td>
+            <td>@clients.Client.Group.Branch.Name</td>
+            <td>@clients.Client.Group.Name</td>
+            <td>@clients.Client.Group.Coach.NameSurname</td>
+            <td>@clients.Client.Membership.Category.Name</td>
+            @if (@clients.Client.Comments != null)
             {
-                if (comment != null)
+                @foreach (var comment in @clients.Client.Comments)
                 {
                     <td>@comment</td>
                 }
-                else
-                {
-                    <td>Комментариев нет</td>
-                }
             }
-            <td>@clientsMembership.Client.Membership.Name</td>
-            <td>@clientsMembership.Client.Attendances.AttendanceCount.AttendingTimes</td>
-            <td>@clientsMembership.Client.Attendances.AttendanceCount.AbsenceTimes</td>
-            <td>@clientsMembership.Client.Attendances.AttendanceCount.FrozenTimes</td>
+            else
+            {
+                <td>Комментариев нет</td>
+            }
+            <td>@clients.Client.Membership.Name</td>
+            <td>@clients.Attendance.AttendanceCount.AttendingTimes</td>
+            <td>@clients.Attendance.AttendanceCount.AbsenceTimes</td>
+            <td>@clients.Attendance.AttendanceCount.FrozenTimes</td>
         </tr>
     }
     </tbody>
 </table>
+</div>

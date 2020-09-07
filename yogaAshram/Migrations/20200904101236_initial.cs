@@ -5,7 +5,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace yogaAshram.Migrations
 {
-    public partial class Initial : Migration
+    public partial class initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -660,8 +660,7 @@ namespace yogaAshram.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Attendances_ClientId",
                 table: "Attendances",
-                column: "ClientId",
-                unique: true);
+                column: "ClientId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Attendances_ClientsMembershipId",

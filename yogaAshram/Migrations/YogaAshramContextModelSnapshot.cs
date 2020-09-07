@@ -159,8 +159,7 @@ namespace yogaAshram.Migrations
 
                     b.HasIndex("AttendanceCountId");
 
-                    b.HasIndex("ClientId")
-                        .IsUnique();
+                    b.HasIndex("ClientId");
 
                     b.HasIndex("ClientsMembershipId");
 
@@ -969,8 +968,8 @@ namespace yogaAshram.Migrations
                         .HasForeignKey("AttendanceCountId");
 
                     b.HasOne("yogaAshram.Models.Client", "Client")
-                        .WithOne("Attendances")
-                        .HasForeignKey("yogaAshram.Models.Attendance", "ClientId")
+                        .WithMany()
+                        .HasForeignKey("ClientId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
