@@ -62,6 +62,6 @@ namespace yogaAshram.Models
         public long? SicknessId { get; set; }
         public virtual Sickness Sickness { get; set; }
         public virtual Membership Membership { get; set; }
-        public virtual Attendance Attendances { get; set; }
+       
     }
 }
