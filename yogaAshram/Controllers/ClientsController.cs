@@ -654,5 +654,19 @@ namespace yogaAshram.Controllers
                 throw;
             }
         }
+        public bool GetGroupsLink()
+        {
+            bool res;
+            if (_db.Attendances.Where(p => p.IsChecked == false && p.Date == DateTime.Today).ToList().Count > 0)
+                return true;
+            else
+            {
+                return false;
+            }
+
+            
+        }
+        
+        
     }
 }
