@@ -215,8 +215,58 @@
               $(".statesSelect").select2();
              });
         </script>
-	
-	
+	<script >
+	function attendAndComment(attenId){        
+            var opval = $('#cameOrNot-' + attenId).val(); 
+            if(opval === "2" || opval === "3"){ 
+                $('#attendAndComment-' + attenId).modal("show"); 
+            }        
+    };
+</script>
+	<script type="text/javascript">
+    	function regularAttendAndComment(attenId) {            
+                var state = $('#cameOrNot-' + attenId).val();
+                var date = $('#dateForAttendance').text();
+                var clientName = $('#clientName-' + attenId).text();
+                var attId = $('#inputAttendance-' + attenId).val();
+                var clientId = $('#inputClientId-' + attenId).val();
+                var reason = $('#commentAndAttendInput-' + attenId).val();
+                if(reason !== ''){
+                	$.ajax({
+                    url : '@Url.Action("RegularAttendance", "Clients")',
+                    type : 'POST',
+                    data : {              
+                    'state': state,
+                    'date': date,
+                    'attendanceId': attId,
+                    'clientId': clientId,
+                    'reason': reason                        
+                    },                                                         
+                       success: function (data) {                                 
+                       setTimeout(function(){  
+                       if(data === "errorCheckedAlready"){
+                            $('#log').text(clientName + ' уже отмечен');         
+                       } 
+                       else if(data === "errorAttend"){
+                             $('#log').text(clientName + ' пора обновить абонемент');         
+                       } 
+                       else if(data === "errorFrozen"){
+                             $('#log').text('У ' + clientName + ' использованы все заморозки');         
+                       }
+                       else if (data === "success"){                 
+                             $('#log').text(clientName + ' успешно отмечен');                     
+                             $("#absTimes").load(" #absTimes");
+                       }                                                                                                                
+                       }, 700)                            
+                    },
+                    })
+                  } 
+                else{
+                	$('#log').text('Укажите причину');
+                }
+                }
+                    	  
+    	</script>
 	<script type="text/javascript">
 	 	$(".input").focus(function() {
 	 		$(this).parent().addClass("focus");
@@ -457,7 +507,7 @@
                         type : 'POST',
                         data : {              
                         'comment': comment,
-                        'attendanceCountId': attCountId                                                
+                        'clientId': attCountId                                                                       
                      },                                                         
                     success: function (data) {                                                       
                      setTimeout(function(){  
