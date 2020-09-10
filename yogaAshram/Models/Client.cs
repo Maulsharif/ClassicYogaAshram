@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using yogaAshram.Controllers;
+using yogaAshram.Models.ModelViews;
 
 namespace yogaAshram.Models
 {
@@ -62,6 +64,9 @@ namespace yogaAshram.Models
         public long? SicknessId { get; set; }
         public virtual Sickness Sickness { get; set; }
         public virtual Membership Membership { get; set; }
-       
+        
+        [NotMapped]
+        public virtual ClientsEditModelView ClientsEditModelView { get; set; }
+        
     }
 }

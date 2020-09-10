@@ -54,6 +54,17 @@ namespace yogaAshram.Controllers
             _db = db;
             _clientServices = clientServices;
         }
+        
+        public IActionResult ClientСabinet(long clientId)
+        {
+            var count = _db.AttendanceCounts.ToList();
+            ViewBag.AbsenceCount = count[^1];
+            
+            ViewBag.Sicknesses = _db.Sicknesses.ToList();
+            Client client = _db.Clients.FirstOrDefault(c => c.Id == clientId);
+            return View(client);
+        }
+        
         [Breadcrumb("Информация по клиентам", FromAction = "Index", FromController = typeof(ChiefController))]
         public async Task<IActionResult> Index(SortState sortOrder = SortState.GroupAsc)
         {
@@ -668,5 +679,48 @@ namespace yogaAshram.Controllers
         }
         
         
+        
+        [Authorize]
+        public IActionResult ClientEdit(long id)
+        {
+            Client client = _db.Clients.FirstOrDefault(c => c.Id == id); 
+            ClientsEditModelView model = new ClientsEditModelView()
+            {
+                PhoneNumber = client.PhoneNumber,
+                NameSurname = client.NameSurname,
+                Email = client.Email,
+                DateOfBirth = client.DateOfBirth,
+                Source = client.Source, 
+                WorkPlace = client.WorkPlace,
+                Sickness = client.Sickness,
+            };
+            return View(model);
+        }
+        
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> ClientEdit(ClientsEditModelView model)
+        {
+            Client client = _db.Clients.FirstOrDefault(c => c.Id == model.Id);
+            if (ModelState.IsValid)
+            {
+                if (client != null)
+                {
+                    client.PhoneNumber = model.PhoneNumber;
+                    client.NameSurname = model.NameSurname;
+                    client.Email = model.Email;
+                    client.DateOfBirth = model.DateOfBirth;
+                    client.Source = model.Source;
+                    client.WorkPlace = model.WorkPlace;
+                    client.Sickness = model.Sickness;
+                    
+                    _db.Entry(client).State = EntityState.Modified;
+                    await _db.SaveChangesAsync();
+                    
+                    return RedirectToAction("ClientСabinet", new {clientId = client.Id});
+                }
+            }
+            return RedirectToAction("ClientСabinet", new {clientId = client.Id});
+        }
     }
 }

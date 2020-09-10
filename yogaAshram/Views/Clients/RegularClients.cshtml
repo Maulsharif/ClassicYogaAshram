@@ -31,7 +31,7 @@
     <tbody>
    
         <tr> 
-        <th scope="row">@client.NameSurname</th>
+        <th scope="row"><a asp-action="ClientСabinet" asp-controller="Clients" asp-route-clientId="@client.Id">@client.NameSurname</a></th>
         <td>@client.Group.Name</td>
         <td class="bg-@{string colorDebt = String.Empty;if (@client.Paid == Paid.Есть_долг){ colorDebt = "danger";}@colorDebt}">@client.Paid.ToString()</td>
         <td class="bg-@{string colorWhat = String.Empty;if (@client.WhatsAppGroup == WhatsAppGroup.Не_состоит_в_группе){ colorWhat = "success";}@colorWhat}">@client.WhatsAppGroup.ToString()</td>
