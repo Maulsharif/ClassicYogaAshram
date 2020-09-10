@@ -53,7 +53,7 @@ namespace yogaAshram.Services
             // if (model.CashSum is null)
             //     model.CashSum = 0;
             // if (model.CardSum is null)
-            //     model.CardSum = 0;
+            //model.CardSum = 0;
             int sum = (int)model.CashSum + (int)model.CardSum;
             if (client.Balance < 0 && model.Type == PaymentType.Pay)
                 return false;
@@ -76,17 +76,33 @@ namespace yogaAshram.Services
                 Type = model.Type,
                 BranchId = model.BranchId
             };
-            CurrentSum currentSum = new CurrentSum()
+            CurrentSum currentSum = _db.CurrentSums.FirstOrDefault(p => p.BranchId == model.BranchId);
+            if (currentSum != null)
             {
-                CashSum = model.CashSum,
-                CreditSum = model.CardSum,
-                BranchId = model.BranchId
-            };
+                currentSum.CashSum += model.CashSum;
+                currentSum.CreditSum += model.CashSum;
+                _db.Entry(currentSum).State = EntityState.Modified;
+            }
+            else
+            {
+                CurrentSum NewcurrentSum = new CurrentSum()
+                {
+                    BranchId = model.BranchId,
+                    CashSum = model.CashSum,
+                    CreditSum = model.CashSum
+
+                };
+                
+                
+                _db.Entry(NewcurrentSum).State = EntityState.Added;
+                
+            }
+            
           
             SetParams(ref payment, ref client, debts, model.Type, sum);
             _db.Entry(client).State = EntityState.Modified;
             _db.Entry(payment).State = EntityState.Added; 
-            _db.Entry(currentSum).State = EntityState.Added;
+        
             await _db.SaveChangesAsync();
             return true;
         }

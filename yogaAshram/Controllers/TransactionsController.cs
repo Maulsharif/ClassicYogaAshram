@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using yogaAshram.Models;
+using yogaAshram.Models.ModelViews.Transactions;
 using yogaAshram.Services;
 
 namespace yogaAshram.Controllers
@@ -25,10 +26,20 @@ namespace yogaAshram.Controllers
         // GET
         public IActionResult Index(long branchId)
         {
+            
             List<Payment> payments = _db.Payments.Where(p => p.BranchId == branchId).ToList();
             List<Withdrawal> withdrawals = _db.Withdrawals.Where(p => p.BranchId == branchId).ToList();
+            CurrentSum currentSum = _db.CurrentSums.FirstOrDefault(p => p.BranchId == branchId);
+            TransactionIndexModel model = new TransactionIndexModel()
+            {
+                Payments = payments,
+                Withdrawals = withdrawals,
+                CurrentSum = currentSum,
+                BranchId=branchId
+
+            };
             
-            return View();
+            return View(model);
         }
         
         public IActionResult Withdraw(long branchId)

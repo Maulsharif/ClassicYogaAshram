@@ -76,7 +76,7 @@
                     <a class="btn btn-sm btn-outline-secondary mt-2" type="button" href="#" id="branchButton-@branch.Id" onclick="openBranch('@branch.Id')"> Открыть</a>
                     <a class="btn btn-sm btn-outline-secondary mt-2" type="button" href="#" data-toggle="modal" data-target="#deleteBranch-@branch.Id">Удалить</a>
                     <a class="btn btn-sm btn-outline-secondary mt-2" type="button" asp-action="Index" asp-controller="Schedule" asp-route-branchId="@branch.Id">Календарь</a>
-                     <a class="btn btn-sm btn-outline-secondary mt-2" type="button" asp-action="Withdraw" asp-controller="Transactions" asp-route-branchId="@branch.Id">Снять деньги</a>
+                     <a class="btn btn-sm btn-outline-secondary mt-2" type="button" asp-action="Index" asp-controller="Transactions" asp-route-branchId="@branch.Id">Касса</a>
                     @if (branch.Admin.UserName == "na")
                     {
                         <p class="text-danger">Необходимо добавить администратора! Для этого откройте центр и выберите администратора из выпадающего списка.</p>
