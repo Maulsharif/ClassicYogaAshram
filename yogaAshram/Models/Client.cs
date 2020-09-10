@@ -52,7 +52,7 @@ namespace yogaAshram.Models
         public long  CreatorId { get; set; }
         
         public virtual Employee Creator { get; set; }
-        public List<string> Comments { get; set; }
+        public virtual List<Comment> Comments { get; set; }
 
         public int Balance { get; set; }
         public Paid Paid { get; set; }
