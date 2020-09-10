@@ -573,3 +573,12 @@ tr:last-child td{
     background-color: #fff;
     border-bottom: 1px solid #fff;
 }
+
+.notify-box{
+    padding: 20px 20px 20px 20px;
+    background-color: #ff837b;
+    display: none;
+    width: 330px;
+    border-radius:5px;
+    color:#7a1515;
+}
