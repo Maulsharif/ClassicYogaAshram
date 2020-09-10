@@ -19,10 +19,19 @@ namespace yogaAshram.Models
         public int Debts { get; set; } = 0;
         public int CashSum { get; set; } = 0;
         public int CardSum { get; set; } = 0;
+        public int TotalSum
+        {
+            get
+            {
+                return CashSum + CardSum;
+            }
+        }
         public DateTime CateringDate { get; set; } = DateTime.Now;
         public DateTime LastUpdate { get; set; } = DateTime.Now;
         public virtual ClientsMembership ClientsMembership { get; set; }
         public virtual Employee Creator { get; set; }
         public PaymentType Type { get; set; }
+        public long BranchId { get; set; }
+        public virtual Branch Branch  { get; set; }
     }
 }

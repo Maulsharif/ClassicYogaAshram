@@ -140,9 +140,13 @@ namespace yogaAshram.Controllers
         public async Task<IActionResult> GetCreateModalAjax(long clientId)
         {
             Client client = await _db.Clients.FindAsync(clientId);
+            Employee emp = await _userManager.GetUserAsync(User);
+           Branch branch = _db.Branches.FirstOrDefault(p => p.Admin.Id == emp.Id);
             if (client is null)
                 return NotFound();
-            PaymentCreateModelView model = new PaymentCreateModelView { ClientId = clientId, Client = client };
+            PaymentCreateModelView model = new PaymentCreateModelView { ClientId = clientId, Client = client, BranchId= branch.Id};
+            
+           
             return PartialView("PartialViews/CreatePartial", model);
         }
         public async Task<ClientsMembership> GetClientMembership(long clientId, long membershipId)
@@ -205,5 +209,10 @@ namespace yogaAshram.Controllers
             }
             return BadRequest();
         }
+        
+      
+        
+        
+        
     }
 }

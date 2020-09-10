@@ -101,10 +101,10 @@ namespace yogaAshram.Controllers
         {
             if (ModelState.IsValid)
             {
-                if (model.CardSum is null)
-                    model.CardSum = 0;
-                if (model.CashSum is null)
-                    model.CashSum = 0;
+                // if (model.CardSum is null)
+                //     model.CardSum = 0;
+                // if (model.CashSum is null)
+                //     model.CashSum = 0;
                 Client client = await _db.Clients.FirstOrDefaultAsync(p => p.Id == model.ClientId);
                 if (client.Balance < 0 && -client.Balance > model.CashSum + model.CardSum)
                     return BadRequest();
