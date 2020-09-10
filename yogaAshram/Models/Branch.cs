@@ -9,7 +9,8 @@ namespace yogaAshram.Models
         public string Address { get; set; }
         public string Info { get; set; }
         
-        public long? AdminId { get; set; }
+        public long ?AdminId { get; set; }
         public virtual Employee Admin { get; set; }
+     
     }
 }

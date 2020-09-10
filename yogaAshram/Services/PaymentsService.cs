@@ -49,10 +49,11 @@ namespace yogaAshram.Services
         }
         public async Task<bool> CreatePayment(PaymentCreateModelView model, ClientsMembership clientsMembership, Client client, long employeeId)
         {
-            if (model.CashSum is null)
-                model.CashSum = 0;
-            if (model.CardSum is null)
-                model.CardSum = 0;
+            Console.WriteLine(model.BranchId);
+            // if (model.CashSum is null)
+            //     model.CashSum = 0;
+            // if (model.CardSum is null)
+            //model.CardSum = 0;
             int sum = (int)model.CashSum + (int)model.CardSum;
             if (client.Balance < 0 && model.Type == PaymentType.Pay)
                 return false;
@@ -72,11 +73,36 @@ namespace yogaAshram.Services
                 CreatorId = employeeId,
                 CashSum = (int)model.CashSum,
                 CardSum = (int)model.CardSum,
-                Type = model.Type
+                Type = model.Type,
+                BranchId = model.BranchId
             };
+            CurrentSum currentSum = _db.CurrentSums.FirstOrDefault(p => p.BranchId == model.BranchId);
+            if (currentSum != null)
+            {
+                currentSum.CashSum += model.CashSum;
+                currentSum.CreditSum += model.CashSum;
+                _db.Entry(currentSum).State = EntityState.Modified;
+            }
+            else
+            {
+                CurrentSum NewcurrentSum = new CurrentSum()
+                {
+                    BranchId = model.BranchId,
+                    CashSum = model.CashSum,
+                    CreditSum = model.CashSum
+
+                };
+                
+                
+                _db.Entry(NewcurrentSum).State = EntityState.Added;
+                
+            }
+            
+          
             SetParams(ref payment, ref client, debts, model.Type, sum);
             _db.Entry(client).State = EntityState.Modified;
-            _db.Entry(payment).State = EntityState.Added;
+            _db.Entry(payment).State = EntityState.Added; 
+        
             await _db.SaveChangesAsync();
             return true;
         }

@@ -21,7 +21,8 @@ namespace yogaAshram.Models
         public DbSet<Attendance> Attendances { get; set; }
         public DbSet<Membership> Memberships { get; set; }
         public DbSet<ClientCategory> Categories { get; set; }
-
+        public DbSet<CurrentSum> CurrentSums { get; set; }
+        public DbSet<Withdrawal> Withdrawals { get; set; }
         public DbSet<Payment> Payments { get; set; }
         public DbSet<ClientsMembership> ClientsMemberships { get; set; }
         public DbSet<AttendanceCount> AttendanceCounts { get; set; }

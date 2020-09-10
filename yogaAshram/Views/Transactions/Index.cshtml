@@ -1,0 +1,48 @@
+﻿@model yogaAshram.Models.ModelViews.Transactions.TransactionIndexModel
+
+@{
+    ViewBag.Title = "Касса";
+    Layout = "_Layout";
+}
+<div class="container">
+    <h4>Касса на @DateTime.Today</h4> 
+    <p>На кассе @Model.CurrentSum.Total тг</p>
+    <p>Налл @Model.CurrentSum.CashSum тг</p>
+    <p>Безналл @Model.CurrentSum.CreditSum тг</p>
+ <a class="btn btn-sm btn-outline-secondary mt-2" type="button" asp-action="Withdraw" asp-controller="Transactions" asp-route-branchId="@Model.BranchId">Снять деньги</a>
+    <div class="row">
+        <div class="col-6">
+            <table class="table-bordered table">
+                <tr>
+                    <th>Пополненеи</th>
+                </tr>
+                @foreach (var p in @Model.Payments)
+                {
+                    <tr>
+                        <td> @p.ClientsMembership.Membership.Price</td>
+
+                    </tr>
+                }
+            </table>
+        </div>
+        <div class="col-6">
+            <table class="table-bordered table">
+                <tr>
+                    <th>Cятие</th>
+                </tr>
+                @foreach (var p in @Model.Withdrawals)
+                {
+                    <tr>
+                        <td> @p.Sum</td>
+
+                    </tr>
+                }
+            </table>
+        </div>
+    </div>
+
+</div>
+
+
+
+
