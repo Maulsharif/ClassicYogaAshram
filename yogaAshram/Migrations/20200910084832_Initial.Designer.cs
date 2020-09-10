@@ -11,8 +11,8 @@ using yogaAshram.Models;
 namespace yogaAshram.Migrations
 {
     [DbContext(typeof(YogaAshramContext))]
-    [Migration("20200904101236_initial")]
-    partial class initial
+    [Migration("20200910084832_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
