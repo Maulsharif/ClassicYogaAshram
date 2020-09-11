@@ -14,6 +14,8 @@ namespace yogaAshram.Controllers
 {
     public class PaymentsController : Controller
     {
+        public static string[] months = {"Январь", "Февраль", "Март", "Апрель", "Май", "Июнь",
+        "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"};
         private readonly YogaAshramContext _db;
         private readonly UserManager<Employee> _userManager;
         private readonly PaymentsService _paymentsService;
@@ -95,6 +97,7 @@ namespace yogaAshram.Controllers
         private IQueryable<Payment> GetFilteredByDate(PaymentsDates paymentsDates)
         {
             DateTime now = DateTime.Now;
+
             switch (paymentsDates)
             {
                 case PaymentsDates.AllTime:
@@ -125,13 +128,14 @@ namespace yogaAshram.Controllers
             }
             else
             {
-                if(model.SortSelect != SortPaymentsBy.None)
+                if (model.SortSelect != SortPaymentsBy.None)
                     model = await SortPayments(model, pageTo);
-                else 
+                else
                     model.Payments = await GetFilteredByDate(model.ByDate).Where(p => p.ClientsMembership.Client.NameSurname.Contains(model.FilterByName))
                         .Skip((pageTo - 1) * model.PaymentsLength)
                             .Take(model.PaymentsLength).ToListAsync();
-            }          
+            }
+            ViewBag.Branches = await _db.Branches.ToArrayAsync();
             return View(model);
         }
         [Authorize]
@@ -143,10 +147,228 @@ namespace yogaAshram.Controllers
             PaymentCreateModelView model = new PaymentCreateModelView { ClientId = clientId, Client = client };
             return PartialView("PartialViews/CreatePartial", model);
         }
-        public async Task<ClientsMembership> GetClientMembership(long clientId, long membershipId)
+        public int GetAxisYStep(int max)
+        {
+            if (max % 15 != 0)
+                return max / 10;
+            return max / 15;
+        }
+        public int GetMaxYValue(int maxSum)
+        {
+            string numStr = maxSum.ToString();
+            if (numStr.Length == 1)
+                return 10;
+            decimal num = (decimal)maxSum;
+            int multiplier = 1;
+            for (int i = 0; i < numStr.Length - 1; i++)
+            {
+                num *= (decimal)0.1;
+                multiplier *= 10;
+            }
+            if (numStr.Length < 6 && Convert.ToInt32(numStr[1]) < 5)
+            {
+                return (int)Math.Ceiling(num * 10) * (int)(multiplier * 0.1);
+            }
+            return (int)Math.Ceiling(num) * multiplier;
+        }
+        public LineChartModelView SetChartParams(dynamic sums)
+        {
+            int max = 0;
+            foreach (var item in sums)
+            {
+                if (item.sum > max)
+                    max = item.sum;
+            }
+            LineChartModelView model = new LineChartModelView();
+            model.Data = sums;
+            model.MaxY = GetMaxYValue(max);
+            model.Step = GetAxisYStep(model.MaxY);
+            return model;
+        }
+        public IActionResult GetPaymentsBarChartAjax(long? branchId, DateTime fromDate, DateTime toDate)
+        {
+            object sums;
+            if (branchId is null)
+            {
+                sums = from p in _db.Payments
+                       where p.CateringDate >= fromDate && p.CateringDate <= toDate
+                       group p by new DateTime(p.CateringDate.Year, p.CateringDate.Month, p.CateringDate.Day) into clientsSums
+                       select new BarChartSelector
+                       {
+                           Date = clientsSums.Key,
+                           Sum = clientsSums.Sum(p => p.CardSum + p.CashSum)
+                       };
+            }
+            else
+            {
+                if (!_db.Branches.Any(p => p.Id == branchId))
+                    return NotFound();
+                sums = from p in _db.Payments
+                       where p.CateringDate >= fromDate && p.CateringDate <= toDate && p.ClientsMembership.Client.Group.BranchId == branchId
+                       group p by new DateTime(p.CateringDate.Year, p.CateringDate.Month, p.CateringDate.Day) into clientsSums
+                       select new BarChartSelector
+                       {
+                           Date = clientsSums.Key,
+                           Sum = clientsSums.Sum(p => p.CardSum + p.CashSum)
+                       };
+            }
+            BarChartModelView model = SetBarChartQuery((sums as IEnumerable<BarChartSelector>).ToArray());
+            if (model.Columns.Length == 0)
+                return Json(false);
+            model.From = fromDate;
+            model.To = toDate;
+            int max = 0;
+            foreach (var item in model.Columns)
+            {
+                if (item.Sum > max)
+                    max = item.Sum;
+            }
+            model.MaxY = GetMaxYValue(max);
+            model.Step = GetAxisYStep(model.MaxY);
+            return PartialView("PartialViews/BarChartPartial", model);
+        }
+        private BarChartColumn[] SetColumnsByWeek(BarChartSelector[] sums)
+        {            
+            int days = (sums[sums.Length - 1].Date - sums[0].Date).Days;
+            int weeks = (int)Math.Ceiling((double)days / 7);
+            List<BarChartColumn> columns = new List<BarChartColumn> { };
+            IEnumerable<int> moneys = from s in sums
+                           group s by (s.Date - sums[0].Date).Days / 7 into sumQuery
+                           select sumQuery.Sum(p => p.Sum);
+            var moneysQuery = moneys.ToArray();
+            DateTime firstDate = sums[0].Date;
+            for (int i = 1; i <= weeks; i++)
+            {
+
+                columns.Add(new BarChartColumn()
+                {
+                    Sum = moneysQuery[i],
+                    Date = $"{firstDate.AddDays((double)i * 7).Day} {firstDate.DayOfWeek.ToString()} - {firstDate.AddDays(6).Day} {firstDate.DayOfWeek.ToString()}"
+                }); 
+            }
+            return columns.ToArray();
+        }
+        private BarChartModelView SetBarChartQuery(BarChartSelector[] sums)
+        {
+            if (sums.Length == 0)
+                return new BarChartModelView { Columns = new BarChartColumn[0] { } };           
+            if (sums.Length > 7)
+            {
+                if (sums.Length > 65)
+                {
+                    var query = from s in sums
+                                group s by s.Date.Month into monthSums
+                                select new BarChartColumn()
+                                {
+                                    Date = months[monthSums.Key],
+                                    Sum = monthSums.Sum(p => p.Sum)
+                                };
+                    return new BarChartModelView() { Columns = query.ToArray() }; 
+                }
+                return new BarChartModelView() { Columns = SetColumnsByWeek(sums) };
+            }
+            List<BarChartColumn> columns = new List<BarChartColumn> { };
+            for (int i = 0; i < sums.Length; i++)
+            {
+                columns.Add(new BarChartColumn() { Date = sums[i].Date.ToShortDateString(), Sum = sums[i].Sum });
+            }
+            return new BarChartModelView { Columns = columns.ToArray() };
+        }
+        public IActionResult GetNewClientsChartAjax(long? branchId)
+        {
+            dynamic sums;
+            if (branchId is null)
+            {
+                sums = from p in _db.Clients
+                       where p.DateCreate.Year == DateTime.Now.Year
+                       group p by p.DateCreate.Month into clientsSums
+                       select new
+                       {
+                           month = clientsSums.Key,
+                           sum = clientsSums.Sum(p => 1)
+                       };
+            }
+            else
+            {
+                if (!_db.Branches.Any(p => p.Id == branchId))
+                    return NotFound();
+                sums = from p in _db.Clients
+                       where p.DateCreate.Year == DateTime.Now.Year && p.Group.BranchId == branchId
+                       group p by p.DateCreate.Month into clientsSums
+                       select new
+                       {
+                           month = clientsSums.Key,
+                           sum = clientsSums.Sum(p => 1)
+                       };
+            }            
+            return PartialView("PartialViews/PaymentsSumChart", SetChartParams(sums));
+        }
+
+        public IActionResult GetNewPaymentsChartAjax(long? branchId)
+        {
+            dynamic sums;
+            if (branchId is null)
+            {
+                sums = from p in _db.Payments
+                       where p.ClientsMembership.Client.DateCreate.Year == DateTime.Now.Year 
+                       && p.ClientsMembership.Client.DateCreate.Month == p.CateringDate.Month
+                       group p by p.CateringDate.Month into paymentsSums
+                       select new
+                       {
+                           month = paymentsSums.Key,
+                           sum = paymentsSums.Sum(p => p.CardSum + p.CashSum)
+                       };
+            }
+            else
+            {
+                if (!_db.Branches.Any(p => p.Id == branchId))
+                    return NotFound();
+                sums = from p in _db.Payments
+                       where p.ClientsMembership.Client.DateCreate.Year == DateTime.Now.Year
+                       && p.ClientsMembership.Client.DateCreate.Month == p.CateringDate.Month
+                       && p.ClientsMembership.Client.Group.BranchId == branchId
+                       group p by p.CateringDate.Month into paymentsSums
+                       select new
+                       {
+                           month = paymentsSums.Key,
+                           sum = paymentsSums.Sum(p => p.CardSum + p.CashSum)
+                       };
+            }
+            return PartialView("PartialViews/PaymentsSumChart", SetChartParams(sums));
+        }
+        public IActionResult GetPaymentsChartAjax(long? branchId)
+        {
+            dynamic sums;
+            if (branchId is null)
+            {
+                sums = from p in _db.Payments
+                       where p.CateringDate.Year == DateTime.Now.Year
+                       group p by p.CateringDate.Month into paymentsSums
+                       select new
+                       {
+                           month = paymentsSums.Key,
+                           sum = paymentsSums.Sum(p => p.CardSum + p.CashSum)
+                       };
+            }
+            else
+            {
+                if (!_db.Branches.Any(p => p.Id == branchId))
+                    return NotFound();
+                sums = from p in _db.Payments
+                       where p.CateringDate.Year == DateTime.Now.Year && p.ClientsMembership.Client.Group.BranchId == branchId
+                       group p by p.CateringDate.Month into paymentsSums
+                       select new
+                       {
+                           month = paymentsSums.Key,
+                           sum = paymentsSums.Sum(p => p.CardSum + p.CashSum)
+                       };
+            }
+            return PartialView("PartialViews/PaymentsSumChart", SetChartParams(sums));
+        }
+        private async Task<ClientsMembership> GetClientMembership(long clientId, long membershipId)
         {
             ClientsMembership[] clientsMemberships = await _db.ClientsMemberships.ToArrayAsync();
-            for (int i = clientsMemberships.Length - 1; i >= 0; i++)
+            for (int i = clientsMemberships.Length - 1; i >= 0; i--)
             {
                 if (clientsMemberships[i].ClientId == clientId && clientsMemberships[0].MembershipId == membershipId)
                     return clientsMemberships[i];
