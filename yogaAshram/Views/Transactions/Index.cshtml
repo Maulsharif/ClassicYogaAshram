@@ -5,21 +5,26 @@
     Layout = "_Layout";
 }
 <div class="container">
-    <h4>Касса на @DateTime.Today</h4> 
+    <h4>Касса филиала @Model.CurrentSum.Branch.Name</h4> 
     <p>На кассе @Model.CurrentSum.Total тг</p>
     <p>Налл @Model.CurrentSum.CashSum тг</p>
     <p>Безналл @Model.CurrentSum.CreditSum тг</p>
- <a class="btn btn-sm btn-outline-secondary mt-2" type="button" asp-action="Withdraw" asp-controller="Transactions" asp-route-branchId="@Model.BranchId">Снять деньги</a>
+    <a class="btn btn-sm btn-primary mt-2" type="button" asp-action="Withdraw" asp-controller="Transactions" asp-route-branchId="@Model.BranchId">Снять деньги</a>
+    <br/>
     <div class="row">
         <div class="col-6">
             <table class="table-bordered table">
                 <tr>
                     <th>Пополнение</th>
+                    <th>Сумма</th>
+                     <th>Время</th>
                 </tr>
                 @foreach (var p in @Model.Payments)
                 {
                     <tr>
+                        <td> @p.ClientsMembership.Membership.Name</td>
                         <td> @p.ClientsMembership.Membership.Price</td>
+                        <td> @p.ClientsMembership.DateOfPurchase</td>
 
                     </tr>
                 }
@@ -29,11 +34,23 @@
             <table class="table-bordered table">
                 <tr>
                     <th>Снятие</th>
+                    <th>Сумма</th>
+                    <th>Время</th>
                 </tr>
                 @foreach (var p in @Model.Withdrawals)
                 {
                     <tr>
                         <td> @p.Sum</td>
+                        <td> @if (@p.IsCash == true)
+                             {
+                                 <span>Снятие наличных средств </span>@p.Creator.NameSurname
+                             }
+                             else
+                             {
+                                 <span>Снятие с карты </span>@p.Creator.NameSurname
+                             }
+                        </td>
+                          <td> @p.Date</td>
 
                     </tr>
                 }
