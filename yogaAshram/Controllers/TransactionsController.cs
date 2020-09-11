@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using SmartBreadcrumbs.Attributes;
 using yogaAshram.Models;
 using yogaAshram.Models.ModelViews.Transactions;
 using yogaAshram.Services;
@@ -24,10 +25,12 @@ namespace yogaAshram.Controllers
 
 
         // GET
+        [Breadcrumb("Касса")]
         public IActionResult Index(long branchId)
         {
             
             List<Payment> payments = _db.Payments.Where(p => p.BranchId == branchId).ToList();
+       
             List<Withdrawal> withdrawals = _db.Withdrawals.Where(p => p.BranchId == branchId).ToList();
             CurrentSum currentSum = _db.CurrentSums.FirstOrDefault(p => p.BranchId == branchId);
             TransactionIndexModel model = new TransactionIndexModel()
@@ -38,42 +41,65 @@ namespace yogaAshram.Controllers
                 BranchId=branchId
 
             };
-            
+            if (model.CurrentSum == null) model.CurrentSum = new CurrentSum();
             return View(model);
         }
         
         public IActionResult Withdraw(long branchId)
         {
-           //CurrentSum cs= _db.CurrentSums.FirstOrDefault(p => p.BranchId == branchId);
-           //ViewBag.CurrentSum = cs;
+           CurrentSum cs= _db.CurrentSums.FirstOrDefault(p => p.BranchId == branchId);
+           ViewBag.CurrentSum = cs;
 
             return View(new Withdrawal(){BranchId = branchId});
         }
         [HttpPost]
+        [Breadcrumb("Снятие денег")]
         public async Task<IActionResult> Withdraw(Withdrawal model)
         {
-            CurrentSum cs= _db.CurrentSums.FirstOrDefault(p => p.BranchId == model.BranchId);
+            CurrentSum cs = _db.CurrentSums.FirstOrDefault(p => p.BranchId == model.BranchId);
+            ViewBag.CurrentSum = cs;
             if (ModelState.IsValid)
             {
-                if (model.Sum<= cs.Total)
+                model.CreatorId = GetUserId.GetCurrentUserId(HttpContext);
+                model.Date = DateTime.Now;
+                if (model.IsCash == true)
                 {
-                    model.CreatorId = GetUserId.GetCurrentUserId(HttpContext);
-                    model.Date = DateTime.Now;
-                    _db.Entry(model).State = EntityState.Added;
+                    if(cs.CashSum>=model.Sum)
                     cs.CashSum -= model.Sum;
-                    _db.Entry(cs).State = EntityState.Modified;
-                    await _db.SaveChangesAsync();
-                    return RedirectToAction("Index", new {branchId = model.BranchId});
-                  
+                    else
+                    {
+                        ModelState.AddModelError("Sum","Недостаточно средств для снятия");
+                        return View(model);
+                    }
+                    
                 }
-                ModelState.AddModelError("Sum", "Недастаточно средств на счете");
+                else
+                { if(cs.CreditSum>=model.Sum)
+                    cs.CreditSum -= model.Sum;
+                    else
+                    {
+                        ModelState.AddModelError("Sum","Недостаточно средств для снятия");
+                        return View(model);
+                    }
+                }
+
+                _db.Entry(model).State = EntityState.Added;
+                _db.Entry(cs).State = EntityState.Modified;
+
+
+                await _db.SaveChangesAsync();
+                return RedirectToAction("Index", new {branchId = model.BranchId});
             }
-           
-            return View(model );
+
+            return View(model);
 
 
         }
-
+   
+        
+        
+        
+        
         
     }
 }

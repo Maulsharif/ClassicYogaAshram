@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.AspNetCore.Mvc;
 
 namespace yogaAshram.Models
@@ -8,8 +9,7 @@ namespace yogaAshram.Models
     {
         public long Id { get; set; }
         [Required(ErrorMessage = "Введите сумму")]
-        [Remote(action: "CheckSumOfWithdrawal", controller: "Validation", ErrorMessage = "Нехватает средств для снятия  суммы")]
-
+        [Remote(action: "CheckSumOfWithdrawal", controller: "Validation", ErrorMessage = "Сумма должна быть больше нуля")]
         public int Sum { get; set; }
         public DateTime Date { get; set; }
         public string Comment { get; set; }
@@ -17,5 +17,7 @@ namespace yogaAshram.Models
         public virtual Employee Creator { get; set; }
         public long BranchId { get; set; }
         public virtual Branch  Branch{ get; set; }
+        public bool IsCash { get; set; } 
+
     }
 }
