@@ -40,9 +40,9 @@
             <td>
             @if (@client.Comments != null)
             {
-                @foreach (string comment in @client.Comments)
+                @foreach (Comment comment in @client.Comments)
                 {
-                    <p class="small">@comment</p>
+                    <p class="small">@comment.Text</p>
                 }
             }
             <td>

@@ -24,21 +24,6 @@ using State = yogaAshram.Models.State;
 namespace yogaAshram.Controllers
 {
     
-    public enum SortState
-    {
-        NameAsc,
-        NameDesc,
-        GroupAsc,
-        GroupDesc,
-        AttendingTimesAsc,
-        AttendingTimesDesc,
-        AbsenceTimesAsc,
-        AbsenceTimesDesc,
-        ForzenTimesAsc,
-        ForzenTimesDesc,
-        BranchAsc,
-        BranchDesc
-    }
     public class ClientsController : Controller
     {
         private readonly UserManager<Employee> _userManager;
@@ -66,70 +51,48 @@ namespace yogaAshram.Controllers
         }
         
         [Breadcrumb("Информация по клиентам", FromAction = "Index", FromController = typeof(ChiefController))]
-        public async Task<IActionResult> Index(SortState sortOrder = SortState.GroupAsc)
+        public IActionResult Index(int? membershipLeftDays, int? pageNumber, int? frozenTimes, double? dateFrozen, double? dateAbsent)
         {
-            ViewBag.GroupSort = sortOrder == SortState.GroupAsc ?
-                SortState.GroupDesc : SortState.GroupAsc;
-            ViewBag.BranchSort = sortOrder == SortState.BranchAsc ?
-                SortState.BranchDesc : SortState.BranchAsc;
-            ViewBag.NameSort = sortOrder == SortState.NameAsc ?
-                SortState.NameDesc : SortState.NameAsc;
-            ViewBag.AbsenceTimesSort = sortOrder == SortState.AbsenceTimesAsc ?
-                SortState.AbsenceTimesDesc : SortState.AbsenceTimesAsc;
-            ViewBag.AttendingTimesSort = sortOrder == SortState.AttendingTimesAsc ? 
-                SortState.AttendingTimesDesc : SortState.AttendingTimesAsc;
-            ViewBag.ForzenTimesSort = sortOrder == SortState.ForzenTimesAsc ? 
-                SortState.ForzenTimesDesc : SortState.ForzenTimesAsc;
-
-            var model = _db.Clients
-                .Join(_db.Attendances, p => p.Id, n => n.ClientId, 
-                    ((client, attendance) => new ClientTableViewModel() { Client = client, Attendance = attendance }))
+            var clients = _db.Clients
+                .Join(_db.Attendances, c => c.Id, a => a.ClientId, 
+                    (client, attendance) => new ClientTableViewModel() { Client = client, Attendance = attendance })
                 .ToList();
-            model = model
+            clients = clients
+                .Join(_db.ClientsMemberships, c => c.Client.Id, m => m.ClientId,
+                    ((viewModel, membership) => new ClientTableViewModel()
+                        {Client = viewModel.Client, Attendance = viewModel.Attendance, ClientsMembership = membership}))
+                .ToList();
+            clients = clients
                 .GroupBy(p => p.Client.Id)
-                .Select(g => g.First())
-                .ToList();
-            /*switch (sortOrder)
+                .Select(g => g.Last()).ToList();
+
+            int pageSize = 5;
+            var model = clients.AsQueryable();
+
+            if (membershipLeftDays != null)
             {
-                case SortState.GroupDesc:
-                    model = model.OrderByDescending(p => p.Client.Group.Name).ToList();
-                    break;
-                case SortState.NameAsc:
-                    model = model.OrderBy(p => p.Client.NameSurname).ToList();
-                    break;
-                case SortState.NameDesc:
-                    model = model.OrderByDescending(p => p.Client.NameSurname).ToList();
-                    break;
-                case SortState.BranchAsc:
-                    model = model.OrderBy(p => p.Client.Group.Branch.Name).ToList();
-                    break;
-                case SortState.BranchDesc:
-                    model = model.OrderByDescending(p => p.Client.Group.Branch.Name).ToList();
-                    break;
-                case SortState.AbsenceTimesAsc:
-                    model = model.OrderBy(p => p.Client.Attendances.AttendanceCount.AbsenceTimes).ToList();
-                    break;
-                case SortState.AbsenceTimesDesc:
-                    model = model.OrderByDescending(p => p.Client.Attendances.AttendanceCount.AbsenceTimes).ToList();
-                    break;
-                case SortState.AttendingTimesAsc:
-                    model = model.OrderBy(p => p.Client.Attendances.AttendanceCount.AttendingTimes).ToList();
-                    break;
-                case SortState.AttendingTimesDesc:
-                    model = model.OrderByDescending(p => p.Client.Attendances.AttendanceCount.AttendingTimes).ToList();
-                    break;
-                case SortState.ForzenTimesAsc:
-                    model = model.OrderBy(p => p.Client.Attendances.AttendanceCount.FrozenTimes).ToList();
-                    break;
-                case SortState.ForzenTimesDesc:
-                    model = model.OrderByDescending(p => p.Client.Attendances.AttendanceCount.FrozenTimes).ToList();
-                    break;
-                default:
-                    model = model.OrderBy(p => p.Client.Group.Name).ToList();
-                    break;
-            }*/
-            
-            return View(model);
+                ViewData["CurrentSort"] = membershipLeftDays;
+                model = model
+                    .Where(m => DateTime.Now <= m.ClientsMembership.DateOfExpiry 
+                                && DateTime.Now.AddDays((double) membershipLeftDays) >= m.ClientsMembership.DateOfExpiry);
+            }
+            if (dateFrozen != null)
+            {
+                model = model
+                    .Where(p => p.ClientsMembership.Client.Comments
+                        .Any(x => p.Client.Id == x.Id && x.Reason == Reason.Заморозка && x.Date >= DateTime.Today.AddDays((double) dateFrozen)) );
+            }
+            if (dateAbsent != null)
+            {
+                model = model
+                    .Where(p => p.ClientsMembership.Client.Comments
+                        .Any(x => p.Client.Id == x.Id && x.Reason == Reason.Пропуск && x.Date >= DateTime.Today.AddDays((double) dateAbsent)) );
+            }
+            if (frozenTimes != null)
+            {
+                 model = model.Where(c => c.Attendance.AttendanceCount.FrozenTimes == frozenTimes);
+            }
+            return View(PageViewModel<ClientTableViewModel>.Create(model.AsNoTracking(), pageNumber ?? 1, pageSize));
         }
 
         [HttpPost]
@@ -157,8 +120,15 @@ namespace yogaAshram.Controllers
             Employee employee =
                 _db.Employees.FirstOrDefault(e => e.Id == GetUserId.GetCurrentUserId(this.HttpContext));
             if (schedule.ClientsCreateModelView.Comment != null)
-                client.Comments = new List<string>
-                    {$"{employee?.UserName}: {schedule.ClientsCreateModelView.Comment}, {DateTime.Now:dd.MM.yyyy}"};
+                client.Comments = new List<Comment>
+                {
+                    new Comment()
+                    {
+                        Text = $"{employee?.UserName}: {schedule.ClientsCreateModelView.Comment}, {DateTime.Now:dd.MM.yyyy}",
+                        Reason = Reason.Другое,
+                        Client = client
+                    }
+                };
             _db.Entry(client).State = EntityState.Added;
             await _db.SaveChangesAsync();
             long ClientId = client.Id;
@@ -344,8 +314,16 @@ namespace yogaAshram.Controllers
                 Employee employee =
                     _db.Employees.FirstOrDefault(e => e.Id == GetUserId.GetCurrentUserId(this.HttpContext));
                 if (schedule.ClientsCreateModelView.Comment != null)
-                    client.Comments = new List<string>
-                        {$"{employee?.UserName}: {schedule.ClientsCreateModelView.Comment}, {DateTime.Now:dd.MM.yyyy}"};
+                    client.Comments = new List<Comment>
+                    {
+                        new Comment()
+                        {
+                            Text = $"{employee?.UserName}: {schedule.ClientsCreateModelView.Comment}, {DateTime.Now:dd.MM.yyyy}",
+                            Reason = Reason.Другое,
+                            Client = client
+                        }
+                    };
+                    
                
                 Group group = _db.Groups.FirstOrDefault(g => g.Id == schedule.ClientsCreateModelView.GroupId);
                 if (group != null && group.Clients.Count == 0)
@@ -406,7 +384,6 @@ namespace yogaAshram.Controllers
                 client.Balance -= membership.Price;
                 _db.Entry(client).State = EntityState.Added;
                 _db.Entry(group).State = EntityState.Modified;
-                Console.WriteLine($"{client.Balance}");
                 await _db.SaveChangesAsync();
             }
             return RedirectToAction("RegularClients", "Clients");
@@ -431,13 +408,27 @@ namespace yogaAshram.Controllers
                 Employee employee =
                     _db.Employees.FirstOrDefault(e => e.Id == GetUserId.GetCurrentUserId(this.HttpContext));
                 if (client.Comments is null && schedule.ClientsCreateModelView.Comment != null)
-                    client.Comments = new List<string>
-                                            {$"{employee?.UserName}: {schedule.ClientsCreateModelView.Comment}, {DateTime.Now:dd.MM.yyyy}"};
+                    client.Comments = new List<Comment>
+                    {
+                        new Comment()
+                        {
+                            Text = $"{employee?.UserName}: {schedule.ClientsCreateModelView.Comment}, {DateTime.Now:dd.MM.yyyy}",
+                            Reason = Reason.Другое,
+                            Client = client
+                        }
+                    };
                 else
                 {
                      client.Comments?.Clear();
-                     client.Comments = new List<string>
-                         {$"{employee?.UserName}: {schedule.ClientsCreateModelView.Comment}, {DateTime.Now:dd.MM.yyyy}"};
+                     client.Comments = new List<Comment>
+                     {
+                         new Comment()
+                         {
+                             Text = $"{employee?.UserName}: {schedule.ClientsCreateModelView.Comment}, {DateTime.Now:dd.MM.yyyy}",
+                             Reason = Reason.Другое,
+                             Client = client
+                         }
+                     };
                 }
                 
                 client.Paid = Paid.Не_оплачено;
@@ -560,12 +551,25 @@ namespace yogaAshram.Controllers
             Employee employee =
                 _db.Employees.FirstOrDefault(e => e.Id == GetUserId.GetCurrentUserId(this.HttpContext));
             if (client != null && client.Comments is null)
-                client.Comments = new List<string> {$"{employee?.UserName}: {comment}, {DateTime.Now:dd.MM.yyyy}"};
+                client.Comments = new List<Comment>
+                {
+                    new Comment()
+                    {
+                        Text = $"{employee?.UserName}: {comment}, {DateTime.Now:dd.MM.yyyy}",
+                        Reason = Reason.Другое,
+                        ClientId = client.Id
+                    }
+                };
             else
-                client?.Comments.Add(
-                    $"{employee?.UserName}: {comment}, {DateTime.Now:dd.MM.yyyy}");
-
-
+            {
+                Comment cmt = new Comment()
+                {
+                    Text = $"{employee?.UserName}: {comment}, {DateTime.Now:dd.MM.yyyy}",
+                    Reason = Reason.Другое,
+                    ClientId = client.Id
+                };
+                client?.Comments.Add(cmt);
+            }
             _db.Entry(client).State = EntityState.Modified;
             await _db.SaveChangesAsync();
             return RedirectToAction("RegularClients");
@@ -579,7 +583,7 @@ namespace yogaAshram.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> RegularAttendance(DateTime date, long clientId, int state, long attendanceId)
+        public async Task<IActionResult> RegularAttendance(DateTime date, long clientId, int state, long attendanceId, string reason)
         {
             
 
@@ -624,24 +628,56 @@ namespace yogaAshram.Controllers
             else if(attendance.AttendanceState == AttendanceState.frozen && attendance.AttendanceCount.FrozenTimes == 0)
                 return Content("errorFrozen");
             
+            if (reason != null)
+            {
+                Client client = _db.Clients.FirstOrDefault(c => c.Id == clientId);
+                Comment comment = new Comment();
+                comment.ClientId = clientId;
+                if (attendance.AttendanceState == AttendanceState.frozen)
+                    comment.Reason = Reason.Заморозка;
+                else
+                    comment.Reason = Reason.Пропуск;
+                Employee employee =
+                    _db.Employees.FirstOrDefault(e => e.Id == GetUserId.GetCurrentUserId(this.HttpContext));
+                comment.Text = $"{employee?.UserName}: {reason}, {DateTime.Now:dd.MM.yyyy}";
+                    client?.Comments.Add(comment);
+                    _db.Entry(client).State = EntityState.Modified;
+            }
+
             _db.Entry(attendance).State = EntityState.Modified;
             
             await _db.SaveChangesAsync();
             return Content("success");
         }
         [HttpPost]
-        public async Task<IActionResult> CommentFromAttendance(long attendanceCountId, string comment)
+        public async Task<IActionResult> CommentFromAttendance(long clientId, string comment)
         {
             Employee employee =
                 _db.Employees.FirstOrDefault(e => e.Id == GetUserId.GetCurrentUserId(this.HttpContext));
-            AttendanceCount attendanceCount = _db.AttendanceCounts.FirstOrDefault(a => a.Id == attendanceCountId);
+            Client client = _db.Clients.FirstOrDefault(c => c.Id == clientId);
             
-            if (attendanceCount?.Comments is null)
-                attendanceCount.Comments = new List<string> {$"{employee?.UserName}: {comment}, {DateTime.Now:dd.MM.yyyy}"};
+            if (client != null && client.Comments is null)
+                client.Comments = new List<Comment>
+                {
+                    new Comment()
+                    {
+                        Text = $"{employee?.UserName}: {comment}, {DateTime.Now:dd.MM.yyyy}",
+                        Reason = Reason.Другое,
+                        Client = client
+                    }
+                };
             else
-                attendanceCount?.Comments.Add(
-                    $"{employee?.UserName}: {comment}, {DateTime.Now:dd.MM.yyyy}");
-            _db.Entry(attendanceCount).State = EntityState.Modified;
+            {
+                Comment cmt = new Comment()
+                {
+                    Text = $"{employee?.UserName}: {comment}, {DateTime.Now:dd.MM.yyyy}",
+                    Reason = Reason.Другое,
+                    Client = client
+                };
+                client?.Comments.Add(cmt);
+            }
+                
+            _db.Entry(client).State = EntityState.Modified;
             await _db.SaveChangesAsync();
             return Content("success");
         }
