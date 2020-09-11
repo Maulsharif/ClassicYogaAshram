@@ -122,5 +122,13 @@ namespace yogaAshram.Controllers
         {
             return !_db.Memberships.Any(p => p.Id == membershipId);
         }
+        
+        [Authorize]
+        public bool CheckSumOfWithdrawal( int Sum)
+        {
+            return Sum > 0;
+        }
+        
+        
     }
 }
