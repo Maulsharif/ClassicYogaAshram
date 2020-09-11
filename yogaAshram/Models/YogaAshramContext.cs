@@ -28,6 +28,7 @@ namespace yogaAshram.Models
         public DbSet<AttendanceCount> AttendanceCounts { get; set; }
         
         public DbSet<Sickness> Sicknesses { get; set; }
+        public DbSet<Comment> Comments { get; set; }
 
         public YogaAshramContext(DbContextOptions options) : base(options)
         {
