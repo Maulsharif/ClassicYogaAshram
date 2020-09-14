@@ -50,10 +50,10 @@ namespace yogaAshram.Services
         public async Task<bool> CreatePayment(PaymentCreateModelView model, ClientsMembership clientsMembership, Client client, long employeeId)
         {
             Console.WriteLine(model.BranchId);
-            // if (model.CashSum is null)
-            //     model.CashSum = 0;
-            // if (model.CardSum is null)
-            //model.CardSum = 0;
+            if (model.CashSum is null)
+                model.CashSum = 0;
+            if (model.CardSum is null)
+                model.CardSum = 0;
             int sum = (int)model.CashSum + (int)model.CardSum;
             if (client.Balance < 0 && model.Type == PaymentType.Pay)
                 return false;
@@ -79,8 +79,8 @@ namespace yogaAshram.Services
             CurrentSum currentSum = _db.CurrentSums.FirstOrDefault(p => p.BranchId == model.BranchId);
             if (currentSum != null)
             {
-                currentSum.CashSum += model.CashSum;
-                currentSum.CreditSum += model.CashSum;
+                currentSum.CashSum += (int)model.CashSum;
+                currentSum.CreditSum += (int)model.CashSum;
                 _db.Entry(currentSum).State = EntityState.Modified;
             }
             else
@@ -88,8 +88,8 @@ namespace yogaAshram.Services
                 CurrentSum NewcurrentSum = new CurrentSum()
                 {
                     BranchId = model.BranchId,
-                    CashSum = model.CashSum,
-                    CreditSum = model.CashSum
+                    CashSum = (int)model.CashSum,
+                    CreditSum = (int)model.CashSum
 
                 };
                 
