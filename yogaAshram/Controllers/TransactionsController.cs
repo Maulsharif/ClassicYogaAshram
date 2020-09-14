@@ -25,10 +25,11 @@ namespace yogaAshram.Controllers
 
 
         // GET
+        //
         [Breadcrumb("Касса")]
         public IActionResult Index(long branchId)
         {
-            
+          
             List<Payment> payments = _db.Payments.Where(p => p.BranchId == branchId).ToList();
        
             List<Withdrawal> withdrawals = _db.Withdrawals.Where(p => p.BranchId == branchId).ToList();
