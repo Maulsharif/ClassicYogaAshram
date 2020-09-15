@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.AspNetCore.Identity;
 
 namespace yogaAshram.Models
@@ -16,5 +17,8 @@ namespace yogaAshram.Models
         public bool OnTimePassword { get; set; } = true;
         public PasswordStates PasswordState { get; set; } = PasswordStates.DisposableNew;
         public string Role { get; set; }
+        [NotMapped] 
+        public long CurrentBranchId { get; set; }
+        
     }
 }

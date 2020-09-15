@@ -8,7 +8,7 @@ namespace yogaAshram.Models
     public enum PaymentType
     {
         Pay,
-        Surcharge
+        Surcharge//(Доплата)
     }
     public class Payment
     {

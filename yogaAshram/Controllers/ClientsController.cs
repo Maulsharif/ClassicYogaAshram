@@ -187,7 +187,7 @@ namespace yogaAshram.Controllers
         public IActionResult Trials(DateTime time, long branchId)
         {
             ViewBag.BranchId = branchId;
-            if (time < DateTime.Today)
+            if (time == DateTime.MinValue)
                 return View(_db.TrialUserses.Where(p => p.Group.BranchId == branchId).OrderBy(p => p.LessonTime)
                     .ToList());
             List<TrialUsers> users = _db.TrialUserses.Where(p => p.LessonTime.Date == time.Date).ToList();
