@@ -34,8 +34,19 @@ namespace yogaAshram.Controllers
                 Info = info,
                 Address = address,
                 AdminId = adminId,
+                
             };
             _db.Entry(branch).State = EntityState.Added;
+            await _db.SaveChangesAsync();
+            long branchId = branch.Id;
+            CurrentSum cs = new CurrentSum()
+            {
+                CashSum = 0,
+                CreditSum = 0,
+                BranchId=branchId
+                
+            };
+            _db.Entry(cs).State = EntityState.Added;
             await _db.SaveChangesAsync();
             return RedirectToAction("Index", "Chief");
         }
