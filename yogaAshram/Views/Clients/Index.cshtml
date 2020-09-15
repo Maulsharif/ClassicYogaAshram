@@ -15,14 +15,20 @@
             var nextDisabled = !Model.HasNextPage ? "disabled" : "";
         }
         <a asp-action="Index"
-           asp-route-membershipLeftDays="@ViewData["CurrentSort"]"
-           asp-route-pageNumber="@(Model.PageIndex - 1)"
+           asp-route-membershipLeftDays = "@ViewData["CurrentSort"]"
+           asp-route-frozenTimes = "@ViewData["FrozenTimes"]"
+           asp-route-dateFrozen = "@ViewData["DateFrozen"]"
+           asp-route-dateAbsent = "@ViewData["DateAbsent"]"
+           asp-route-pageNumber = "@(Model.PageIndex - 1)"
            class="btn btn-outline-dark @prevDisabled">
             Назад
         </a>
         <a asp-action="Index"
-           asp-route-membershipLeftDays="@ViewData["CurrentSort"]"
-           asp-route-pageNumber="@(Model.PageIndex + 1)"
+           asp-route-membershipLeftDays = "@ViewData["CurrentSort"]"
+           asp-route-frozenTimes = "@ViewData["FrozenTimes"]"
+           asp-route-dateFrozen = "@ViewData["DateFrozen"]"
+           asp-route-dateAbsent = "@ViewData["DateAbsent"]"
+           asp-route-pageNumber = "@(Model.PageIndex + 1)"
            class="ml-2 btn btn-outline-dark @nextDisabled">
             Вперед
         </a>

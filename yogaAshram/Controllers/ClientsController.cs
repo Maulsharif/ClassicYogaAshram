@@ -78,19 +78,23 @@ namespace yogaAshram.Controllers
             }
             if (dateFrozen != null)
             {
+                ViewData["DateFrozen"] = dateFrozen; 
                 model = model
-                    .Where(p => p.ClientsMembership.Client.Comments
-                        .Any(x => p.Client.Id == x.Id && x.Reason == Reason.Заморозка && x.Date >= DateTime.Today.AddDays((double) dateFrozen)) );
+                    .Where(cl => cl.ClientsMembership.Client.Comments
+                        .Any(com => cl.Client.Id == com.ClientId && com.Reason == Reason.Заморозка && com.Date >= DateTime.Today.AddDays((double) dateFrozen)) );
+                
             }
             if (dateAbsent != null)
             {
+                ViewData["DateAbsent"] = dateAbsent; 
                 model = model
-                    .Where(p => p.ClientsMembership.Client.Comments
-                        .Any(x => p.Client.Id == x.Id && x.Reason == Reason.Пропуск && x.Date >= DateTime.Today.AddDays((double) dateAbsent)) );
+                    .Where(cl => cl.ClientsMembership.Client.Comments
+                        .Any(com => cl.Client.Id == com.ClientId && com.Reason == Reason.Пропуск && com.Date >= DateTime.Today.AddDays((double) dateAbsent)) );
             }
             if (frozenTimes != null)
             {
-                 model = model.Where(c => c.Attendance.AttendanceCount.FrozenTimes == frozenTimes);
+                ViewData["FrozenTimes"] = frozenTimes; 
+                model = model.Where(c => c.Attendance.AttendanceCount.FrozenTimes == frozenTimes);
             }
             return View(PageViewModel<ClientTableViewModel>.Create(model.AsNoTracking(), pageNumber ?? 1, pageSize));
         }
@@ -633,6 +637,7 @@ namespace yogaAshram.Controllers
                 Client client = _db.Clients.FirstOrDefault(c => c.Id == clientId);
                 Comment comment = new Comment();
                 comment.ClientId = clientId;
+                comment.Date = date;
                 if (attendance.AttendanceState == AttendanceState.frozen)
                     comment.Reason = Reason.Заморозка;
                 else
