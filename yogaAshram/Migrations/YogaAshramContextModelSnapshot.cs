@@ -977,6 +977,9 @@ namespace yogaAshram.Migrations
                     b.Property<DateTime>("Date")
                         .HasColumnType("timestamp without time zone");
 
+                    b.Property<bool>("IsCash")
+                        .HasColumnType("boolean");
+
                     b.Property<int>("Sum")
                         .HasColumnType("integer");
 

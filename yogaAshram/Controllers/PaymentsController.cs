@@ -381,6 +381,7 @@ namespace yogaAshram.Controllers
             }
             return null;
         }
+        
         [Authorize]
         [HttpPost]
         public async Task<IActionResult> CreateAjax(PaymentCreateModelView model)

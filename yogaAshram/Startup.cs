@@ -32,6 +32,7 @@ namespace yogaAshram
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
+            services.AddRouting(options => options.LowercaseUrls = true);
             string connection = Configuration.GetConnectionString("DefaultConnection");
             services.AddDbContext<YogaAshramContext>(options => options.UseLazyLoadingProxies().UseNpgsql(connection))
                 .AddIdentity<Employee, Role>(options =>
