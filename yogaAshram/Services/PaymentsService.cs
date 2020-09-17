@@ -85,6 +85,41 @@ namespace yogaAshram.Services
             await _db.SaveChangesAsync();
             return true;
         }
+        public async Task<bool> PayForMembership(PaymentCreateModelView model, ClientsMembership clientsMembership, Client client, long employeeId)
+        {
+            int sum = (int)model.CashSum + (int)model.CardSum;
+            if (client.Membership is null && model.Type == PaymentType.Pay)
+                return false;
+            int balance = client.Balance;
+            if (balance < 0)
+                balance = 0;
+            Membership membership = client.Membership;
+            int debts = membership.Price - sum - balance;
+            if (clientsMembership is null)
+                return false;
+            Payment payment = new Payment()
+            {
+                Comment = model.Comment,
+                ClientsMembershipId = clientsMembership.Id,
+                CreatorId = employeeId,
+                CashSum = (int)model.CashSum,
+                CardSum = (int)model.CardSum,
+                Type = model.Type,
+                BranchId = model.BranchId
+            };
+            CurrentSum currentSum = _db.CurrentSums.FirstOrDefault(p => p.BranchId == model.BranchId);
+           
+            currentSum.CashSum += model.CashSum;
+            currentSum.CreditSum += model.CardSum;
+            _db.Entry(currentSum).State = EntityState.Modified;
+         
+            SetParams(ref payment, ref client, debts, model.Type, sum);
+            _db.Entry(client).State = EntityState.Modified;
+            _db.Entry(payment).State = EntityState.Added; 
+        
+            await _db.SaveChangesAsync();
+            return true;
+        }
         private void SetParams(ref Payment payment, ref Client client, int debts, PaymentType type, int amount)
         {
             if (debts > 0 && type == PaymentType.Pay)

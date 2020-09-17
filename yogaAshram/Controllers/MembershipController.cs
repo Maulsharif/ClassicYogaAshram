@@ -99,22 +99,16 @@ namespace yogaAshram.Controllers
         [HttpPost]
         public async Task<IActionResult> ExtendAjax(MembershipExtendModelView model)
         {
-            if (ModelState.IsValid)
-            {
-                // if (model.CardSum is null)
-                //     model.CardSum = 0;
-                // if (model.CashSum is null)
-                //     model.CashSum = 0;
-                Client client = await _db.Clients.FirstOrDefaultAsync(p => p.Id == model.ClientId);
-                if (client.Balance < 0 && -client.Balance > model.CashSum + model.CardSum)
-                    return BadRequest();
+            Client client = await _db.Clients.FirstOrDefaultAsync(p => p.Id == model.ClientId);
+            if (client.Balance > model.CashSum + model.CardSum)
+                return BadRequest();
 
-                foreach (var attendanceUnActive in _db.Attendances.Where(a => a.ClientId == model.ClientId))
-                {
+            
+            foreach (var attendanceUnActive in _db.Attendances.Where(a => a.ClientId == model.ClientId))
+            {
                     attendanceUnActive.IsNotActive = true;
-                    _db.Entry(attendanceUnActive).State = EntityState.Modified;
-                }
-                Membership membership = await _db.Memberships.FirstOrDefaultAsync(p => p.Id == model.MembershipId);
+            }
+            Membership membership = await _db.Memberships.FirstOrDefaultAsync(p => p.Id == model.MembershipId);
                 
                 _db.Entry(membership).State = EntityState.Modified;
                 int daysFrozen = 0;
@@ -171,12 +165,12 @@ namespace yogaAshram.Controllers
                 Employee employee = await _userManager.GetUserAsync(User);
                 
                 await _db.SaveChangesAsync();
-                bool check = await _paymentsService.CreatePayment(model, clientsMembership, client, employee.Id);
+                model.BranchId = client.Group.BranchId;
+                bool check = await _paymentsService.PayForMembership(model, clientsMembership, client, employee.Id);
                 if (!check)
                     return BadRequest();
                 return Json(true);
-            }
-            return BadRequest();
+            
         }
     }   
 }
