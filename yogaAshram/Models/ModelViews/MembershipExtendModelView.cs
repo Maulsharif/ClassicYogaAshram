@@ -8,7 +8,7 @@ namespace yogaAshram.Models.ModelViews
 {
     public class MembershipExtendModelView : PaymentCreateModelView
     {
-        [Remote(action: "CheckMembershipId", controller: "Validation")]
+      
         public long MembershipId { get; set; }
         public long GroupId { get; set; }
         public DateTime Date { get; set; }
