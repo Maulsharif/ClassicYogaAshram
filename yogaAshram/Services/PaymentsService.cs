@@ -88,15 +88,11 @@ namespace yogaAshram.Services
         public async Task<bool> PayForMembership(PaymentCreateModelView model, ClientsMembership clientsMembership, Client client, long employeeId)
         {
             int sum = (int)model.CashSum + (int)model.CardSum;
-            if (client.Membership is null && model.Type == PaymentType.Pay)
-                return false;
             int balance = client.Balance;
             if (balance < 0)
                 balance = 0;
             Membership membership = client.Membership;
             int debts = membership.Price - sum - balance;
-            if (clientsMembership is null)
-                return false;
             Payment payment = new Payment()
             {
                 Comment = model.Comment,

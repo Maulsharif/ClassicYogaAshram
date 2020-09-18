@@ -163,8 +163,7 @@ namespace yogaAshram.Controllers
                 await _db.SaveChangesAsync();
                 model.BranchId = client.Group.BranchId;
                 bool check = await _paymentsService.PayForMembership(model, clientsMembership, client, employee.Id);
-                if (!check)
-                    return BadRequest();
+                
                 return Content("success");
             
         }
