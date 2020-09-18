@@ -14,13 +14,8 @@ namespace yogaAshram.Controllers
     {
         private readonly UserManager<Employee> _userManager;
 
-        public MarketerController(UserManager<Employee> userManager)
-        {
-            _userManager = userManager;
-        }
-
         // GET
-        [Breadcrumb("Личный кабинет маркетолога")]
+        // [Breadcrumb("Личный кабинет маркетолога")]
         [Authorize]
         public async Task<IActionResult> Details()
         {
