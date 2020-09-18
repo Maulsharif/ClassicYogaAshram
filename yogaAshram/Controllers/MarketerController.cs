@@ -13,12 +13,6 @@ namespace yogaAshram.Controllers
     public class MarketerController : Controller
     {
         private readonly UserManager<Employee> _userManager;
-
-        public MarketerController(UserManager<Employee> userManager)
-        {
-            _userManager = userManager;
-        }
-
         // GET
         [Breadcrumb("Личный кабинет маркетолога")]
         [Authorize]
