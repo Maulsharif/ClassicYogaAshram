@@ -39,9 +39,10 @@
                 @if (Model.Client.Balance > 0)
                 {
                     <p class="text-center">У клиента есть предоплата в размере <span id="prepayment">@(Model.Client.Balance)</span> тг.</p>
-                }
+                } 
                 <p class="text-center"><strong>Цена абонемента:</strong> <span id="price"></span> тг.</p>
                 <p class="text-center"><strong>К оплате:</strong> <span id="toPay"></span> тг.</p>
+                <p class="text-center text-danger" id="errorText"></p>
                 <div class="form-group">
                     <label>Оплата налом</label>
                     <input id="cashSumExtend" type="text" class="form-control">
@@ -93,9 +94,12 @@
                     "Date": $('#datepicker').val()
                 },
                 success: function (data) {
-                    if (data) {
+                    if (data === "success") {
                         $('#extendMembershipModal').modal('hide');
                         document.location.reload();
+                    }
+                    else if(data === "errorNotEnoughSum"){
+                        $('#errorText').text("Необходимо оплатить всю сумму");
                     }
                 }
             })

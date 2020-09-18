@@ -100,18 +100,14 @@ namespace yogaAshram.Controllers
         public async Task<IActionResult> ExtendAjax(MembershipExtendModelView model)
         {
             Client client = await _db.Clients.FirstOrDefaultAsync(p => p.Id == model.ClientId);
-            if (client.Balance > model.CashSum + model.CardSum)
-                return BadRequest();
-
-            
+            Membership membership = await _db.Memberships.FirstOrDefaultAsync(p => p.Id == model.MembershipId);
+            if (-client.Balance + membership.Price > model.CashSum + model.CardSum)
+                return Content("errorNotEnoughSum");
             foreach (var attendanceUnActive in _db.Attendances.Where(a => a.ClientId == model.ClientId))
             {
                     attendanceUnActive.IsNotActive = true;
             }
-            Membership membership = await _db.Memberships.FirstOrDefaultAsync(p => p.Id == model.MembershipId);
-                
-                _db.Entry(membership).State = EntityState.Modified;
-                int daysFrozen = 0;
+            int daysFrozen = 0;
                 if (membership.AttendanceDays == 12)
                     daysFrozen = 3;
                 else if (membership.AttendanceDays == 8)
@@ -169,7 +165,7 @@ namespace yogaAshram.Controllers
                 bool check = await _paymentsService.PayForMembership(model, clientsMembership, client, employee.Id);
                 if (!check)
                     return BadRequest();
-                return Json(true);
+                return Content("success");
             
         }
     }   
