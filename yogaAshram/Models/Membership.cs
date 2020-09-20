@@ -18,9 +18,7 @@ namespace yogaAshram.Models
         public int Price { get; set; }
         [Required(ErrorMessage = "Поле объязательно для заполнения")]
         [Range(1, 20,ErrorMessage = "Кол-во должно быть больше 1")]
-     
         public int AttendanceDays { get; set; }
-     
         public long CategoryId { get; set; }
         public virtual ClientCategory Category { get; set; }
       

@@ -65,30 +65,7 @@ namespace yogaAshram.Controllers
         }
 
         
-        [HttpPost]
-        public async Task<IActionResult> WriteComment(long clientId, string sellerComment)
-        {
-            
-            TrialUsers client = _db.TrialUserses.FirstOrDefault(c => c.Id == clientId);
-            Employee employee =
-                _db.Employees.FirstOrDefault(e => e.Id == GetUserId.GetCurrentUserId(this.HttpContext));
-          
-                client.SellerComments = new List<Comment>
-                {
-                    new Comment()
-                    {
-                        Text = $"{employee?.UserName}: {sellerComment}, {DateTime.Now:dd.MM.yyyy}",
-                        Reason = Reason.Другое,
-                        ClientId = client.Id
-                    }
-                };
-           
-            _db.Entry(client).State = EntityState.Modified;
-            await _db.SaveChangesAsync();
-            
-          return  RedirectToAction("ClientInfo", "Clients" ,new {id= client.ClientId });
-
-        }
+       
         
 
 

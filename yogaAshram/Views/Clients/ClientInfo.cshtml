@@ -58,11 +58,9 @@
 
       <!-- Modal body -->
       <div class="modal-body">
-          <form asp-action="WriteComment" asp-controller="Seller" method="post">
+          <form asp-action="WriteComment" asp-controller="Clients" method="post">
                <input  name="clientId" id="clientId" value="" type="hidden">
-              <textarea name="SellerComment" required cols="40" rows="2" class="form-control">
-        
-               </textarea><br/>
+              <textarea name="SellerComment" required cols="40" rows="2" class="form-control"></textarea><br/>
               <input type="submit" value="Сохранить" class="btn btn-success">
           </form>
 

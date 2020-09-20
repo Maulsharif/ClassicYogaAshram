@@ -31,11 +31,10 @@ namespace yogaAshram.Controllers
         private readonly YogaAshramContext _db;
         private readonly ClientServices _clientServices;
 
-        public ClientsController(UserManager<Employee> userManager, SignInManager<Employee> signInManager,
+        public ClientsController(UserManager<Employee> userManager, 
             YogaAshramContext db, ClientServices clientServices, PaymentsService paymentsService)
         {
             _userManager = userManager;
-            _signInManager = signInManager;
             _db = db;
             _clientServices = clientServices;
         }
@@ -103,7 +102,8 @@ namespace yogaAshram.Controllers
         [Authorize]
         public async Task<IActionResult> CreateClients(Schedule schedule)
         {
-            
+            Employee employee =
+                _db.Employees.FirstOrDefault(e => e.Id == GetUserId.GetCurrentUserId(this.HttpContext));
             Client client = new Client()
             {
                 NameSurname = schedule.ClientsCreateModelView.NameSurname,
@@ -112,17 +112,14 @@ namespace yogaAshram.Controllers
                 Email = schedule.ClientsCreateModelView.Email,
                 Address = schedule.ClientsCreateModelView.Address,
                 WorkPlace = schedule.ClientsCreateModelView.WorkPlace,
-                Sickness = schedule.ClientsCreateModelView.Sickness,
+                SicknessId = schedule.ClientsCreateModelView.SicknessId,
                 Source = schedule.ClientsCreateModelView.Source,
                 GroupId = schedule.ClientsCreateModelView.GroupId,
                 ClientType = ClientType.Probe,
                 LessonNumbers = schedule.ClientsCreateModelView.LessonNumbers,
-                CreatorId = GetUserId.GetCurrentUserId(this.HttpContext)
+                CreatorId = employee.Id
             };
             
-            
-            Employee employee =
-                _db.Employees.FirstOrDefault(e => e.Id == GetUserId.GetCurrentUserId(this.HttpContext));
             if (schedule.ClientsCreateModelView.Comment != null)
                 client.Comments = new List<Comment>
                 {
@@ -144,8 +141,10 @@ namespace yogaAshram.Controllers
                     ClientId = ClientId,
                     State = State.willAttend,
                     Color = "grey",
-                    LessonTime = schedule.ClientsCreateModelView.StartDate
+                    LessonTime = schedule.ClientsCreateModelView.StartDate,
+                    SellerComments = new List<Comment>()
                 };
+                
                 _db.Entry(trialUsers).State = EntityState.Added;
                 List<DateTime> dates = _clientServices.TwoTimesTrial(schedule.ClientsCreateModelView.GroupId,
                     schedule.ClientsCreateModelView.StartDate);
@@ -180,7 +179,29 @@ namespace yogaAshram.Controllers
             await _db.SaveChangesAsync();
             return RedirectToAction("Trials", "Clients", new {branchId = schedule.BranchId});
         }
+        [HttpPost]
+        public async Task<IActionResult> WriteComment(long clientId, string sellerComment)
+        {
+            
+            TrialUsers client = _db.TrialUserses.FirstOrDefault(c => c.Id == clientId);
+            
+            Employee employee =
+                _db.Employees.FirstOrDefault(e => e.Id == GetUserId.GetCurrentUserId(this.HttpContext));
+          
+            client.SellerComments.Add(new Comment()
+            {
+                Text = $"{employee?.UserName}: {sellerComment}, {DateTime.Now:dd.MM.yyyy}",
+                Reason = Reason.Другое,
+                ClientId = client.ClientId
+            });
+               
+           
+            _db.Entry(client).State = EntityState.Modified;
+            await _db.SaveChangesAsync();
+            
+            return  RedirectToAction("ClientInfo", "Clients" ,new {id= client.ClientId });
 
+        }
 
 
         [Breadcrumb("Пробники", FromAction = "Index", FromController = typeof(AdminController))]
@@ -267,8 +288,9 @@ namespace yogaAshram.Controllers
         [Breadcrumb("Информация о пробнике")]
         public IActionResult ClientInfo(long Id)
         {
-            ViewBag.Lessons = _db.TrialUserses.Where(p => p.ClientId == Id);
-            TrialUsers client = _db.TrialUserses.FirstOrDefault(p => p.ClientId == Id);
+          List<TrialUsers> trialUsersesLessons = _db.TrialUserses.Where(p => p.ClientId == Id).ToList();
+          ViewBag.Lessons = trialUsersesLessons;
+          TrialUsers client = trialUsersesLessons[0];
             var childNode1 = new MvcBreadcrumbNode("Index", "Admin", "Личный кабинет администратора");
             
             var childNode2 = new MvcBreadcrumbNode("Trials", "Clients", "Пробники")
@@ -385,7 +407,7 @@ namespace yogaAshram.Controllers
                     };
                     _db.Entry(attendance).State = EntityState.Added;
                 }
-                client.Balance -= membership.Price;
+                
                 _db.Entry(client).State = EntityState.Added;
                 _db.Entry(group).State = EntityState.Modified;
                 await _db.SaveChangesAsync();
@@ -451,7 +473,7 @@ namespace yogaAshram.Controllers
 
                 Membership membership =
                     _db.Memberships.FirstOrDefault(m => m.Id == schedule.ClientsCreateModelView.MembershipId);
-                client.Balance -= membership.Price;
+              
                 _db.Entry(client).State = EntityState.Modified;
                 
                 DateTime endDate = _clientServices.EndDateForClientsMembership(
