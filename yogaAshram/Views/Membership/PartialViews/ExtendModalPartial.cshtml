@@ -74,6 +74,9 @@
         if ($('#debts').val() > $('#cashSumExtend').val() + $('#cardSumExtend').val()) {
             $('#invalidExtendSum').html("Минимальная сумма платежа - " + $('#debts').val() + ' (размер долга)')
         }
+        else if ($('#datepicker').val() === ''){
+            $('#errorText').text('Выберите дату');
+        }
         else {
             var optionValueGroup = $('#groupSelect').val();                         	  
             var objGroup = $.parseJSON(optionValueGroup);
