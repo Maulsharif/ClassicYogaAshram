@@ -25,6 +25,8 @@ namespace yogaAshram.Controllers
             _db = db;
         }
         
+        
+        
         [HttpPost]
         public async Task<IActionResult> CreateBranch(string name, string info, string address, long? adminId)
         {
@@ -36,9 +38,12 @@ namespace yogaAshram.Controllers
                 AdminId = adminId,
                 
             };
+         
             _db.Entry(branch).State = EntityState.Added;
             await _db.SaveChangesAsync();
             long branchId = branch.Id;
+            Employee chief= _db.Employees.FirstOrDefault(p => p.Id == 1);
+            chief.CurrentBranchId = branchId;
             CurrentSum cs = new CurrentSum()
             {
                 CashSum = 0,
@@ -46,6 +51,7 @@ namespace yogaAshram.Controllers
                 BranchId=branchId
                 
             };
+            
             _db.Entry(cs).State = EntityState.Added;
             await _db.SaveChangesAsync();
             return RedirectToAction("Index", "Chief");

@@ -83,7 +83,8 @@
                                                     if (truth) {
                                                         $('#emplCreateModal').modal('hide');
                                                         $.ajax({
-                                                            url: '@Url.Action("CreateAjax", "Employees")',
+                                                            url: '@Url.Action("" +
+                                                                              "CreateAjax", "Employees")',
                                                             type: 'POST',
                                                             datatype: "json",
                                                             cache: false,

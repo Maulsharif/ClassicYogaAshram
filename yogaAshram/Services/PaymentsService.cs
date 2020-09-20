@@ -49,8 +49,8 @@ namespace yogaAshram.Services
         }
         public async Task<bool> CreatePayment(PaymentCreateModelView model, ClientsMembership clientsMembership, Client client, long employeeId)
         {
-           
-            int sum = (int)model.CashSum + (int)model.CardSum;
+            model.BranchId = client.Group.BranchId;
+            int sum = model.CashSum + model.CardSum;
             if (client.Balance < 0 && model.Type == PaymentType.Pay)
                 return false;
             if (client.Membership is null && model.Type == PaymentType.Pay)

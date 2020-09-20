@@ -4,6 +4,12 @@
     ViewBag.Title = "Личный кабинет";
 }
 
+@if (@ViewBag.Branch!= null)
+{
+    <p>Текущий филиал:    @ViewBag.Branch.Name</p>
+}
+
+
 @{
     await Html.RenderPartialAsync("PartialView/WebsiteBar");
 }

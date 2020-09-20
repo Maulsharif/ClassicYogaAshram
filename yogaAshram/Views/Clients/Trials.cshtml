@@ -60,9 +60,9 @@
 
               @if (@client.SellerComments != null)
               {
-                  @foreach (string comment in @client.SellerComments)
+                  @foreach (var comment in @client.SellerComments)
                   {
-                      <p class="small">@comment</p>
+                      <p class="small">@comment.Text</p>
                   }
               }
                     

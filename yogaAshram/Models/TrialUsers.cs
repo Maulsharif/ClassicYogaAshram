@@ -21,8 +21,8 @@ namespace yogaAshram.Models
             public State State { get; set; } = State.willAttend;
             public string Color { get; set; } = "grey";
             public bool IsChecked { get; set; } = false;
-            public List<String> SellerComments { get; set; }
-            public DateTime Commentdate { get; set; }
+            public virtual  List<Comment> SellerComments { get; set; }
+         
             public  int FreeLessons { get; set; }
             public string GetValueOfState()
             {

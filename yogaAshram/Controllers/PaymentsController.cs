@@ -112,6 +112,7 @@ namespace yogaAshram.Controllers
                     return null;
             }
         }
+        
         [Breadcrumb("Касса", FromAction = "Index", FromController = typeof(ChiefController))]
         public async Task<IActionResult> Index(PaymentsIndexModelView model, int pageTo = 1)
         {
@@ -139,6 +140,7 @@ namespace yogaAshram.Controllers
             ViewBag.Branches = await _db.Branches.ToArrayAsync();
             return View(model);
         }
+        
         [Authorize]
         public async Task<IActionResult> GetCreateModalAjax(long clientId)
         {
@@ -384,21 +386,24 @@ namespace yogaAshram.Controllers
         
         [Authorize]
         [HttpPost]
+        //Создание оплаты
         public async Task<IActionResult> CreateAjax(PaymentCreateModelView model)
         {
-            if (ModelState.IsValid)
-            {
+           
                 Client client = await _db.Clients.FirstOrDefaultAsync(p => p.Id == model.ClientId);
+                model.BranchId = client.Group.BranchId;
                 ClientsMembership clientsMembership = await GetClientMembership(client.Id, (long)client.MembershipId);
+                
                 if (clientsMembership is null)
                     return BadRequest();
                 Employee employee = await _userManager.GetUserAsync(User);
+               
                 bool check = await _paymentsService.CreatePayment(model, clientsMembership, client, employee.Id);
                 if (!check)
                     return BadRequest();
                 return Json(true);
-            }
-            return BadRequest();
+            
+         
         }
         public async Task<IActionResult> GetSumAjax(PaymentsDates date)
         {
