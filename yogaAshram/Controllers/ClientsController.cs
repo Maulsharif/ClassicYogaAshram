@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
+
 using Microsoft.EntityFrameworkCore;
 using PdfSharpCore.Drawing;
 using PdfSharpCore.Drawing.Layout;
@@ -48,6 +48,7 @@ namespace yogaAshram.Controllers
             Client client = _db.Clients.FirstOrDefault(c => c.Id == clientId);
             return View(client);
         }
+        
         
         [Breadcrumb("Информация по клиентам", FromAction = "Index", FromController = typeof(ChiefController))]
         public IActionResult Index(int? membershipLeftDays, int? pageNumber, int? frozenTimes, double? dateFrozen, double? dateAbsent)
@@ -99,6 +100,7 @@ namespace yogaAshram.Controllers
         }
 
         [HttpPost]
+        
         [Authorize]
         public async Task<IActionResult> CreateClients(Schedule schedule)
         {
@@ -179,28 +181,23 @@ namespace yogaAshram.Controllers
             await _db.SaveChangesAsync();
             return RedirectToAction("Trials", "Clients", new {branchId = schedule.BranchId});
         }
+        [Authorize]
         [HttpPost]
+        //Комментирование для продовца и админа о пробниках
         public async Task<IActionResult> WriteComment(long clientId, string sellerComment)
         {
-            
             TrialUsers client = _db.TrialUserses.FirstOrDefault(c => c.Id == clientId);
-            
-            Employee employee =
-                _db.Employees.FirstOrDefault(e => e.Id == GetUserId.GetCurrentUserId(this.HttpContext));
-          
+            Employee employee = _db.Employees.FirstOrDefault(e => e.Id == GetUserId.GetCurrentUserId(this.HttpContext));
             client.SellerComments.Add(new Comment()
             {
                 Text = $"{employee?.UserName}: {sellerComment}, {DateTime.Now:dd.MM.yyyy}",
                 Reason = Reason.Другое,
                 ClientId = client.ClientId
             });
-               
-           
+            
             _db.Entry(client).State = EntityState.Modified;
             await _db.SaveChangesAsync();
-            
             return  RedirectToAction("ClientInfo", "Clients" ,new {id= client.ClientId });
-
         }
 
 
@@ -474,6 +471,7 @@ namespace yogaAshram.Controllers
                 Membership membership =
                     _db.Memberships.FirstOrDefault(m => m.Id == schedule.ClientsCreateModelView.MembershipId);
               
+                
                 _db.Entry(client).State = EntityState.Modified;
                 
                 DateTime endDate = _clientServices.EndDateForClientsMembership(

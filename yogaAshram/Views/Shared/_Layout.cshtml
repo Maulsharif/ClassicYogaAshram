@@ -21,6 +21,7 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
 
+
             @if (User.IsInRole("chief"))
             {
                 <input id="search" type="search" class="search-input search-form" placeholder="Поиск сотрудников" name="search" autocomplete="off">
@@ -186,8 +187,12 @@
         </div>
     </nav>
 </header>
+
 <div class="container">
-  <breadcrumb></breadcrumb>  
+    @{
+        await Html.RenderPartialAsync("PartialView/WebsiteBar");
+    }
+    <breadcrumb></breadcrumb>
     <main role="main" class="pb-3">
         @RenderBody()
     </main>

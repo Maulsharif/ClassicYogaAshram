@@ -20,14 +20,14 @@ namespace yogaAshram.Controllers
         private readonly UserManager<Employee> _userManager;
         private readonly SignInManager<Employee> _signInManager;
         private YogaAshramContext _db;
-        private readonly RoleManager<Role> _roleManager;
+    
 
-        public AccountController(UserManager<Employee> userManager, SignInManager<Employee> signInManager, YogaAshramContext db, RoleManager<Role> roleManager)
+        public AccountController(UserManager<Employee> userManager, SignInManager<Employee> signInManager, YogaAshramContext db)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _db = db;
-            _roleManager = roleManager;
+          
         }        
         [HttpGet]
         [Breadcrumb("Вход на сайт", FromAction = "Index", FromController = typeof(HomeController))]
