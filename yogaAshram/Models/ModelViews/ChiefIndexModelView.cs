@@ -9,5 +9,7 @@ namespace yogaAshram.Models.ModelViews
     {
         public Employee Employee { get; set; }
         public CheckPasswordModelView CheckPassword { get; set; } = new CheckPasswordModelView();
+
+        
     }
 }

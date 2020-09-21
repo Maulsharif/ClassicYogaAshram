@@ -41,6 +41,7 @@ namespace yogaAshram.Controllers
             }
             ViewBag.AdminIdArray = String.Join(" ",admins);
             ViewBag.Admin = _db.Employees.Where(e => e.Role == "admin").ToList();
+            ViewBag.Branch = _db.Branches.FirstOrDefault(p => p.Id == empl.CurrentBranchId);
             return View(new ChiefIndexModelView() { Employee = empl });
         }
 

@@ -54,10 +54,10 @@ namespace yogaAshram.Models
         public virtual Employee Creator { get; set; }
         public virtual List<Comment> Comments { get; set; }
 
-        public int Balance { get; set; }
-        public Paid Paid { get; set; }
-        public Contract Contract{ get; set; }
-        public WhatsAppGroup WhatsAppGroup{ get; set; }
+        public int Balance { get; set; } = 0;
+        public Paid Paid { get; set; } = Paid.Не_оплачено;
+        public Contract Contract { get; set; } = Contract.Нет_договора;
+        public WhatsAppGroup WhatsAppGroup{ get; set; }= WhatsAppGroup.Не_состоит_в_группе;
         public DateTime DateCreate { get; set; } = DateTime.Now;
         public long? MembershipId { get; set; }
         
@@ -65,8 +65,11 @@ namespace yogaAshram.Models
         public virtual Sickness Sickness { get; set; }
         public virtual Membership Membership { get; set; }
         
+        
         [NotMapped]
         public virtual ClientsEditModelView ClientsEditModelView { get; set; }
+
         
     }
+    
 }

@@ -24,7 +24,7 @@
         <th>Группа</th>
         <th>Дата урока</th>
         <th>Состояние</th>
-        <th>Посетил  уроков</th>
+     
          @if (User.IsInRole("admin"))
          {
              <th>Отметить</th>
@@ -39,30 +39,27 @@
           <td>@client.Group.Name</td>
           <td>@client.LessonTime.ToShortDateString()</td>
           <td style="background: @client.Color">@client.GetValueOfState()</td>
-           <td style="background: @client.Color">@client.FreeLessons</td>
-          @if (User.IsInRole("admin"))
+          
+          @if (User.IsInRole("admin")||User.IsInRole("chief") || User.IsInRole("manager"))
           {
               @if(@client.IsChecked==false || @client.State==State.willAttend)
               {<td>
-                                 <a asp-action="CheckAttendanceTrial" asp-route-groupId="@client.GroupId" asp-route-clientId="@client.Id" asp-route-branchId="@client.Group.Branch.Id">Отметить</a>
-                             </td>
-                  
+                   <a asp-action="CheckAttendanceTrial" asp-route-groupId="@client.GroupId" asp-route-clientId="@client.Id" asp-route-branchId="@client.Group.Branch.Id">Отметить</a>
+               </td>
               }
               else
               {
                   <td>Отмечено</td>
               }
-                  
-              
           }
         
           <td>
 
               @if (@client.SellerComments != null)
               {
-                  @foreach (string comment in @client.SellerComments)
+                  @foreach (var comment in @client.SellerComments)
                   {
-                      <p class="small">@comment</p>
+                      <p class="small">@comment.Text</p>
                   }
               }
                     
