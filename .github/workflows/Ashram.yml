@@ -29,7 +29,7 @@ jobs:
         HOST: ${{ secrets.HOST }}
         USERNAME: ${{ secrets.USERNAME }}
         PORT: ${{ secrets.PORT }}
-        KEY: ${{ secrets.SSH_KEY }}
+        PASSWORD: ${{ secrets.PASSWORD }}
       with:
         source: "outputDirectory"
         target: "/var/www"
