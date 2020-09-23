@@ -25,7 +25,7 @@ jobs:
       run: dotnet test --no-restore --verbosity normal
     - name: Publish
       run: |
-        dotnet publish 
+        dotnet publish -c Release -o ./yogaAshram
     - name: Push code to Digital Ocean
       uses: appleboy/scp-action@master
       env:
@@ -34,6 +34,5 @@ jobs:
         PORT: ${{ secrets.PORT }}
         PASSWORD: ${{ secrets.PASSWORD }}
       with:
-        
-      
+        source: ./yogaAshram      
         target: "/var/www"
