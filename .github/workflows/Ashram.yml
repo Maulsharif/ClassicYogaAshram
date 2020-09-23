@@ -23,6 +23,9 @@ jobs:
       run: dotnet build --configuration Release --no-restore
     - name: Test
       run: dotnet test --no-restore --verbosity normal
+    - name: Publish
+      run: |
+        dotnet publish --configuration Release -o ./
     - name: Push code to Digital Ocean
       uses: actions/checkout@master
       env:
@@ -32,5 +35,5 @@ jobs:
         PASSWORD: ${{ secrets.PASSWORD }}
       with:
         
-        source: "outputDirectory"
+        source: "./"
         target: "/var/www"
