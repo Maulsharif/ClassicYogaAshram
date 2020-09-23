@@ -31,5 +31,6 @@ jobs:
         PORT: ${{ secrets.PORT }}
         PASSWORD: ${{ secrets.PASSWORD }}
       with:
+        branch: master  
         source: "outputDirectory"
         target: "/var/www"
