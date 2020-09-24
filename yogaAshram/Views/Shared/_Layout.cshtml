@@ -205,7 +205,7 @@
                                     </button>
                                     <div class="dropdown-menu">
                                         <li class="dropdown-item cursor-p">
-                                            <a class="text-decoration-none text-dark" asp-controller="Marketer" asp-action="Index">
+                                            <a class="text-decoration-none text-dark" asp-controller="Marketer" asp-action="Details">
                                                 Мои кабинет
                                             </a>
                                         </li>
@@ -220,6 +220,36 @@
                                         <a class="dropdown-item" asp-action="Index" asp-controller="Payments">
                                             Страница платежей
                                         </a>
+                                        <li class="dropdown-item cursor-p">
+                                            <form method="post" asp-controller="Account" asp-action="Logout" id="my_form">
+                                                <a class="text-decoration-none text-dark" href="javascript:{}" onclick="document.getElementById('my_form').submit(); return false;">
+                                                    Выход
+                                                </a>
+                                            </form>
+                                        </li>
+                                    </div>
+                                </div>
+                            }
+                            else if (User.IsInRole("coach"))
+                            {
+                                <div class="btn-group">
+                                    <button class="btn dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        @User.Identity.Name
+                                    </button>
+                                    <div class="dropdown-menu">
+                                        <li class="dropdown-item cursor-p">
+                                            <a class="text-decoration-none text-dark" asp-controller="Coach" asp-action="Details">
+                                                Мои кабинет
+                                            </a>
+                                        </li>
+                                        <div data-target="editProfileModal" id="@Url.Action("GetEditModalAjax", "Employees")"
+                                             class="getModal dropdown-item cursor-p">
+                                            Редактировать профиль
+                                        </div>
+                                        <div data-target="changePasswordModal" id="@Url.Action("GetChangePasswordModalAjax", "Employees")"
+                                             class="getModal dropdown-item cursor-p">
+                                            Изменить пароль
+                                        </div>
                                         <li class="dropdown-item cursor-p">
                                             <form method="post" asp-controller="Account" asp-action="Logout" id="my_form">
                                                 <a class="text-decoration-none text-dark" href="javascript:{}" onclick="document.getElementById('my_form').submit(); return false;">
