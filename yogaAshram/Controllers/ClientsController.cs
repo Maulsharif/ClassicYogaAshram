@@ -319,6 +319,7 @@ namespace yogaAshram.Controllers
                     _sicknessId=AddSickness(newSikness);
                 
                 _sicknessId = schedule.ClientsCreateModelView.SicknessId;
+                
                 Client client = new Client()
                 {
                     NameSurname = schedule.ClientsCreateModelView.NameSurname,
@@ -535,6 +536,7 @@ namespace yogaAshram.Controllers
         [Breadcrumb("Базовые клиенты", FromAction = "Index", FromController = typeof(AdminController))]
         public IActionResult RegularClients()
         {
+            //Сделать проверку на филиал
             List<Client> clients = _db.Clients.Where(c => c.ClientType == ClientType.AreEngaged).ToList();
 
             return View(clients);
@@ -784,6 +786,19 @@ namespace yogaAshram.Controllers
                 }
             }
             return RedirectToAction("ClientСabinet", new {clientId = client.Id});
+        }
+        
+        
+        
+        
+        
+        public IActionResult AttendanceHistory()
+        {
+            var attendances = _db.Attendances.Where(p=>p.ClientId==3).ToList();
+         
+            
+           
+            return View(attendances);
         }
     }
 }
