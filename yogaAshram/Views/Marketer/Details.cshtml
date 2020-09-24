@@ -1,1 +1,28 @@
-﻿
+﻿@model Employee
+@{
+    ViewBag.Title = "Главная";
+    Layout = "_Layout";
+}
+
+<div class="container">
+
+        <h2 class="ml-4">Маркетолог</h2>
+    <a role="button" class="btn btn-primary" asp-controller="Clients" asp-action="Index">Клиенты</a>
+        <button> <a asp-action="Index" asp-controller="Payments"  class="dropdown-item cursor-p">Касса</a></button>
+
+</div>
+
+<script>
+            $('#showIndex').click(function() {
+                $('#showIndex').css('display', 'none');
+                $('#dataIndex').show();
+                $('#hideIndex').show();
+            });
+
+            $('#hideIndex').click(function() {
+                $('#hideIndex').css('display', 'none');
+                $('#dataIndex').hide();
+                $('#showIndex').show();
+            });
+</script>
+}
