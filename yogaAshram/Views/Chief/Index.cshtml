@@ -197,9 +197,6 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
-    @{
-        await Html.RenderPartialAsync("../Employees/PartialViews/GetModalScripts");
-    }
     <script>
         function openBranch(branchId) {
             $('#branchDetails-' + branchId).toggle('slow', function () {
