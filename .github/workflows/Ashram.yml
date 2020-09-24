@@ -34,5 +34,5 @@ jobs:
         PORT: ${{ secrets.PORT }}
         KEY: ${{ secrets.SSH_KEY }}
       with:
-       source: .yogaAshram/
+       source: ClassicYogaAshram/
        target: "/var/www/"
