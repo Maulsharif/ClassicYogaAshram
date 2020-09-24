@@ -136,6 +136,11 @@ namespace yogaAshram.Controllers
                         .Skip((pageTo - 1) * model.PaymentsLength)
                             .Take(model.PaymentsLength).ToListAsync();
             }
+            if (User.IsInRole("admin"))
+            {
+                Employee employee = await _userManager.GetUserAsync(User);
+                model.Payments = model.Payments.Where(p => p.Branch.AdminId == employee.Id).ToList();
+            }
             ViewBag.Branches = await _db.Branches.ToArrayAsync();
             return View(model);
         }
