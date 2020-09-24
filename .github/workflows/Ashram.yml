@@ -36,3 +36,4 @@ jobs:
       with:
        source: ClassicYogaAshram/yogaAshram/
        target: "/var/www/"
+       strip_components: 1 
