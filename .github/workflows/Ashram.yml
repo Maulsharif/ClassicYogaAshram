@@ -23,9 +23,7 @@ jobs:
       run: dotnet build --configuration Release --no-restore
     - name: Test
       run: dotnet test --no-restore --verbosity normal
-    - name: Publish
-      run: |
-        dotnet publish -c Release -o ./yogaAshram
+    
     - name: Deploy to Digital Ocean
       uses: appleboy/scp-action@master
       env:
@@ -34,6 +32,6 @@ jobs:
         PORT: ${{ secrets.PORT }}
         KEY: ${{ secrets.SSH_KEY }}
       with:
-       source: ClassicYogaAshram/yogaAshram/
+       source: "."
        target: "/var/www/"
-       strip_components: 1 
+       
