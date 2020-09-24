@@ -35,4 +35,4 @@ jobs:
         KEY: ${{ secrets.SSH_KEY }}
       with:
        source: yogaAshram/
-       target: "/var/www/
+       target: "/var/www/"
