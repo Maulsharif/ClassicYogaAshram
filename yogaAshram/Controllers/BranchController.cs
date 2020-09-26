@@ -88,10 +88,12 @@ namespace yogaAshram.Controllers
         {
             Employee empl = await _userManager.GetUserAsync(User);
             Branch branch = _db.Branches.FirstOrDefault(p => p.Id == id);
+            CurrentSum currentSum = _db.CurrentSums.FirstOrDefault(p => p.BranchId == id);
             var result = await _userManager.CheckPasswordAsync(empl, model.Password);;
             if (result == true)
             {
                 _db.Entry(branch).State = EntityState.Deleted;
+                _db.Entry(currentSum).State = EntityState.Deleted;
                 await _db.SaveChangesAsync();
             }
             return RedirectToAction("Index", "Chief");
