@@ -1,0 +1,42 @@
+﻿@inject UserManager<Employee> UserManager
+@using Microsoft.AspNetCore.Identity
+@model ManagerIndexModelView
+@{
+    ViewBag.Title = "Личный кабинет менеджера";
+    Layout = "_Layout";
+}
+<div class="container">
+
+    @{
+        await Html.RenderPartialAsync("PartialView/WebsiteBar");
+    }
+
+    <h2 class="ml-4 mb-3">Старший менеджер</h2>
+
+    @{
+        await Html.RenderPartialAsync("PartialView/IndexCardPartial", @Model.Employee);
+    }
+    
+    <a asp-action="CreateGroup" asp-controller="Group" class="btn btn-dark" style="margin-top: 15px;">Создать группу </a>
+    <a asp-action="CreateClients" asp-controller="Clients" class="btn btn-dark" style="margin-top: 15px; margin-left: 15px;">Добавить клиента</a>
+</div>
+
+@section Scripts{
+    @{
+        await Html.RenderPartialAsync("../Employees/PartialViews/GetModalScripts");
+    }
+
+    <script>
+            $('#showIndex').click(function() {
+                $('#showIndex').css('display', 'none');
+                $('#dataIndex').show();
+                $('#hideIndex').show();
+            });
+                   
+            $('#hideIndex').click(function() {
+                $('#hideIndex').css('display', 'none');
+                $('#dataIndex').hide();
+                $('#showIndex').show();
+            });
+    </script>
+}

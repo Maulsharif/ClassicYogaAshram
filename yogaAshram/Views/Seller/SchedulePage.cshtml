@@ -1,0 +1,111 @@
+﻿
+@using System.Collections
+@model DateTime
+
+@{
+    ViewBag.Title = "Месяц и расписание";
+    Layout = "_Layout";
+}
+<div class="container">
+    <a class="btn btn-outline-dark mt-1" asp-action="SchedulePage" asp-route-month="@Model.AddMonths(-1).Month" asp-route-branchId="@ViewBag.BranchId">Назад</a>
+	<a class="btn btn-outline-dark mt-1" asp-action="SchedulePage" asp-route-month="@Model.AddMonths(1).Month" asp-route-branchId="@ViewBag.BranchId">Вперед</a>
+   
+	    <calendar month="@Model.Month" year="@Model.Year" events="@ViewBag.Events"/>
+	   <p id="groupIdArray" class="text-hide">@ViewBag.GroupIdArray</p> 
+    
+</div>
+
+
+
+@* @section Scripts{ *@
+@* 	<script > *@
+@* 	$("#weekdays").weekLine({ *@
+@*             mousedownSel: false,             *@
+@*             dayLabels: ["Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота", "Воскресенье"],  *@
+@*             onChange: function () { *@
+@*                    $("#dayOfWeekInput").val( *@
+@*                            $(this).weekLine('getSelected') *@
+@*               ); *@
+@*             } *@
+@*      }); *@
+@* 	</script> *@
+@* 	<script>       *@
+@*        var groupsIds =  $('#groupIdArray').text();             *@
+@*        $.each(groupsIds.split(' '), function(index, value) { *@
+@*          $('select > option').filter(function () { *@
+@*          	return $(this).val() == value *@
+@*          }).prop('disabled', true) *@
+@*        });       *@
+@*     </script> *@
+@* 	<script > *@
+@*    *@
+@* </script> *@
+@* 	<script > *@
+@* 	function validateForm() { *@
+@*     *@
+@*         var timeStart = $('#timeInputStart').val(); *@
+@*         var timeFinish = $('#timeInputFinish').val(); *@
+@*         var week = $('#dayOfWeekInput').val(); *@
+@*         var group = $('#selectInput').val(); *@
+@*         *@
+@*             if (week === "") { *@
+@*             $('#error').text('Необходимо выбрать день').show().delay(1500).fadeOut(); *@
+@*             return false; *@
+@*             } *@
+@*             else if (group === "noGroup"){ *@
+@*             $('#error').text('Необходимо выбрать группу').show().delay(1500).fadeOut(); *@
+@*                 return false; *@
+@*             } *@
+@*             else if (timeStart === ""){ *@
+@*             $('#error').text('Необходимо выбрать время начала занятия').show().delay(1500).fadeOut(); *@
+@*                 return false; *@
+@*             } *@
+@*             else if (timeFinish === ""){ *@
+@*             $('#error').text('Необходимо выбрать время окончания занятия').show().delay(1500).fadeOut(); *@
+@*                 return false; *@
+@*             } *@
+@*             else { *@
+@*             	 *@
+@*             	$.ajax({ *@
+@*                 url : '@Url.Action("Create", "Schedule")', *@
+@*                 type : 'POST', *@
+@*                 data : {               *@
+@*                 'groupId' : $("#selectInput").val(), *@
+@*                 'color': $("#selectColor").val(), *@
+@*                 'scheduleTime': timeStart, *@
+@*                 'scheduleFinishTime': timeFinish,  *@
+@*                 'dayOfWeeks': week,       *@
+@*              },                                                          *@
+@*             success: function (data) { *@
+@*              console.log(data); *@
+@*                                                  *@
+@*              setTimeout(function(){   *@
+@*              if(data === "errorTime"){ *@
+@*              $('#error').text('В это время уже есть занятие').show().delay(1500).fadeOut();         *@
+@*              }   *@
+@*              if(data === "errorGroup"){ *@
+@*              $('#error').text('Не найдено ни одной группы').show().delay(1500).fadeOut();         *@
+@*              }  *@
+@*              else if (data === "success"){ *@
+@*               location.reload();               *@
+@*               }                                                                                                                 *@
+@*               }, 500)                             *@
+@*           }, *@
+@*         }) *@
+@*       }           *@
+@*    } *@
+@* 	</script> *@
+@* 	<script > *@
+@* 	$(function () {    *@
+@*         $('#createSchedule').on('submit', function (e) { *@
+@*           e.preventDefault();     *@
+@*           validateForm(); *@
+@*         }); *@
+@*       }); *@
+@* 	</script> *@
+@* 	<script > *@
+@*     	$(document).ready(function(){ *@
+@*           $('[data-toggle="tooltip"]').tooltip(); *@
+@*         }); *@
+@*     </script> *@
+@* } *@
