@@ -32,5 +32,6 @@ namespace yogaAshram.Services
                              $"<p>Переходите по <a href=" + '"' + url  +'"' + ">ссылке</a> для авторизации</p>";
             await SendMessageAsync(email, "Регистрация в Yoga Ashram", message);
         }
+        
     }
 }

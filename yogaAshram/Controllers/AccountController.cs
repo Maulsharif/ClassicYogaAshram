@@ -15,6 +15,7 @@ using yogaAshram.Services;
 
 namespace yogaAshram.Controllers
 {
+    
     public class AccountController : Controller
     {
         private readonly UserManager<Employee> _userManager;

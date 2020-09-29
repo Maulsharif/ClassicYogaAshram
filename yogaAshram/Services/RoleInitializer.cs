@@ -38,5 +38,6 @@ namespace yogaAshram.Services
                     await userManager.AddToRoleAsync(chief, "chief");
             }
         }
+        
     }
 }

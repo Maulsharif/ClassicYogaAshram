@@ -11,6 +11,7 @@ using yogaAshram.Models.ModelViews;
 
 namespace yogaAshram.Controllers
 {
+    
     [Authorize(Roles = "chief")]
     public class BranchController : Controller
     {

@@ -15,6 +15,7 @@ using yogaAshram.Models.ModelViews;
 
 namespace yogaAshram.Controllers
 {
+    
     [Authorize]
     public class ScheduleController : Controller
     {

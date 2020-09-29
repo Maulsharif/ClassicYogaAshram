@@ -9,6 +9,7 @@ using yogaAshram.Services;
 
 namespace yogaAshram.Controllers
 {
+    
     public class HomeController : Controller
     {
         private readonly YogaAshramContext _db;
