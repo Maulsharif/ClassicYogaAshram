@@ -5,7 +5,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace yogaAshram.Migrations
 {
-    public partial class initial : Migration
+    public partial class Initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -400,28 +400,6 @@ namespace yogaAshram.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Comments",
-                columns: table => new
-                {
-                    Id = table.Column<long>(nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Date = table.Column<DateTime>(nullable: false),
-                    Text = table.Column<string>(nullable: true),
-                    Reason = table.Column<int>(nullable: false),
-                    ClientId = table.Column<long>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Comments", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Comments_Clients_ClientId",
-                        column: x => x.ClientId,
-                        principalTable: "Clients",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Payments",
                 columns: table => new
                 {
@@ -622,8 +600,6 @@ namespace yogaAshram.Migrations
                     State = table.Column<int>(nullable: false),
                     Color = table.Column<string>(nullable: true),
                     IsChecked = table.Column<bool>(nullable: false),
-                    SellerComments = table.Column<List<string>>(nullable: true),
-                    Commentdate = table.Column<DateTime>(nullable: false),
                     FreeLessons = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
@@ -641,6 +617,35 @@ namespace yogaAshram.Migrations
                         principalTable: "Groups",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Comments",
+                columns: table => new
+                {
+                    Id = table.Column<long>(nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Date = table.Column<DateTime>(nullable: false),
+                    Text = table.Column<string>(nullable: true),
+                    Reason = table.Column<int>(nullable: false),
+                    ClientId = table.Column<long>(nullable: false),
+                    TrialUsersId = table.Column<long>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Comments", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Comments_Clients_ClientId",
+                        column: x => x.ClientId,
+                        principalTable: "Clients",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Comments_TrialUserses_TrialUsersId",
+                        column: x => x.TrialUsersId,
+                        principalTable: "TrialUserses",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.InsertData(
@@ -806,6 +811,11 @@ namespace yogaAshram.Migrations
                 column: "ClientId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Comments_TrialUsersId",
+                table: "Comments",
+                column: "TrialUsersId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_CurrentSums_BranchId",
                 table: "CurrentSums",
                 column: "BranchId");
@@ -959,9 +969,6 @@ namespace yogaAshram.Migrations
                 name: "Payments");
 
             migrationBuilder.DropTable(
-                name: "TrialUserses");
-
-            migrationBuilder.DropTable(
                 name: "Withdrawals");
 
             migrationBuilder.DropTable(
@@ -969,6 +976,9 @@ namespace yogaAshram.Migrations
 
             migrationBuilder.DropTable(
                 name: "AttendanceCounts");
+
+            migrationBuilder.DropTable(
+                name: "TrialUserses");
 
             migrationBuilder.DropTable(
                 name: "ClientsMemberships");
