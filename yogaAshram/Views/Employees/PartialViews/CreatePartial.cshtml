@@ -11,23 +11,8 @@
             </div>
             <div class="modal-body">
                 <div class="form-group">
-                    <label>Почта нового работника<span class="text-danger">*</span></label>
-                    <input id="emplEmail" type="text" class="form-control">
-                    <p id="invalidEmail" class="text-danger"></p>
-                </div>
-                <div class="form-group">
-                    <label>Имя и фамилия<span class="text-danger">*</span></label>
-                    <input id="emplNameSurname" type="text" class="form-control">
-                    <p id="invalidNameSurname" class="text-danger"></p>
-                </div>
-                <div class="form-group">
-                    <label>Логин<span class="text-danger">*</span></label>
-                    <input id="emplUserName" type="text" class="form-control">
-                    <p id="invalidLogin" class="text-danger"></p>
-                </div>
-                <div class="form-group">
                     <label>Выберите должность<span class="text-danger">*</span></label>
-                    <select class="form-control" id="roleSelect">
+                    <select class="form-control" id="roleSelect" onchange="changeForm()">
                         <option>...</option>
                         @foreach (var item in ViewBag.Roles)
                         {
@@ -36,6 +21,23 @@
                     </select>
                     <p id="invalidRole" class="text-danger"></p>
                 </div>
+                  <div class="form-group">
+                                    <label>Имя и фамилия<span class="text-danger">*</span></label>
+                                    <input id="emplNameSurname" type="text" class="form-control">
+                                    <p id="invalidNameSurname" class="text-danger"></p>
+                                </div>
+                <div class="form-group" id="emailHide">
+                    <label>Почта нового работника<span class="text-danger">*</span></label>
+                    <input id="emplEmail" type="text" class="form-control">
+                    <p id="invalidEmail" class="text-danger"></p>
+                </div>
+              
+                <div class="form-group" id="loginHide">
+                    <label>Логин<span class="text-danger">*</span></label>
+                    <input id="emplUserName" type="text" class="form-control">
+                    <p id="invalidLogin" class="text-danger"></p>
+                </div>
+
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
@@ -129,4 +131,24 @@
 
         }
     })
+</script>
+<script >
+  function changeForm() {
+       let v = document.getElementById("roleSelect").value;
+       let newEmail=(Math.floor(Math.random() * 3000) + 1)+ "t@gmail.com";
+   
+        if(v === "coach"){
+              $('#emplEmail').val(newEmail);
+                          $('#emplUserName').val(newEmail);
+            $('#emailHide').hide();
+              $('#loginHide').hide();
+        }
+        else {
+                $('#emplEmail').val('');
+                                      $('#emplUserName').val('');
+            $('#emailHide').show();
+                         $('#loginHide').show(); 
+        }
+     
+    }
 </script>
