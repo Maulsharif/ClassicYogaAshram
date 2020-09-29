@@ -30,7 +30,8 @@ namespace yogaAshram.Services
                 {
                     Email = dirEmail,
                     UserName = dirUserName,
-                    NameSurname = dirNameSurname
+                    NameSurname = dirNameSurname,
+                    Role="chief"
                 };
                 var result = await userManager.CreateAsync(chief, dirPassword);
                 if (result.Succeeded)
