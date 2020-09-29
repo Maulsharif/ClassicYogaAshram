@@ -11,8 +11,8 @@ using yogaAshram.Models;
 namespace yogaAshram.Migrations
 {
     [DbContext(typeof(YogaAshramContext))]
-    [Migration("20200917100656_initial")]
-    partial class initial
+    [Migration("20200929060615_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -425,9 +425,14 @@ namespace yogaAshram.Migrations
                     b.Property<string>("Text")
                         .HasColumnType("text");
 
+                    b.Property<long?>("TrialUsersId")
+                        .HasColumnType("bigint");
+
                     b.HasKey("Id");
 
                     b.HasIndex("ClientId");
+
+                    b.HasIndex("TrialUsersId");
 
                     b.ToTable("Comments");
                 });
@@ -930,9 +935,6 @@ namespace yogaAshram.Migrations
                     b.Property<string>("Color")
                         .HasColumnType("text");
 
-                    b.Property<DateTime>("Commentdate")
-                        .HasColumnType("timestamp without time zone");
-
                     b.Property<int>("FreeLessons")
                         .HasColumnType("integer");
 
@@ -944,9 +946,6 @@ namespace yogaAshram.Migrations
 
                     b.Property<DateTime>("LessonTime")
                         .HasColumnType("timestamp without time zone");
-
-                    b.Property<List<string>>("SellerComments")
-                        .HasColumnType("text[]");
 
                     b.Property<int>("State")
                         .HasColumnType("integer");
@@ -1139,6 +1138,10 @@ namespace yogaAshram.Migrations
                         .HasForeignKey("ClientId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("yogaAshram.Models.TrialUsers", null)
+                        .WithMany("SellerComments")
+                        .HasForeignKey("TrialUsersId");
                 });
 
             modelBuilder.Entity("yogaAshram.Models.CurrentSum", b =>
