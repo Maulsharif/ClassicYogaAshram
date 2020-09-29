@@ -15,6 +15,7 @@ using yogaAshram.Services;
 
 namespace yogaAshram.Controllers
 {
+    
     [Authorize(Roles = "admin,chief")]
 
     public class AdminController : Controller
