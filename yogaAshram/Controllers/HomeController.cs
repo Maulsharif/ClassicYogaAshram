@@ -24,9 +24,7 @@ namespace yogaAshram.Controllers
         [DefaultBreadcrumb("Главная")]
         public IActionResult Index()
         {
-            List<Payment> payments = _db.Payments
-                .Where(c => c.ClientsMembership.ClientId == 10 && c.CateringDate.Date.Month == DateTime.Now.Month ).ToList();
-         
+           
             return View();
         }
     }
