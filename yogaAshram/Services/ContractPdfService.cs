@@ -73,15 +73,23 @@ namespace yogaAshram.Services
             }
             
             
-            string filename = $"Files/contract.pdf";
-            document.Save(filename);
+            MemoryStream stream = new MemoryStream();
+            document.Save(stream);
+            stream.Position = 0;
+            FileStreamResult fileStreamResult = new FileStreamResult(stream, "application/pdf");
+            fileStreamResult.FileDownloadName = $"{client.NameSurname}.pdf";
+            return fileStreamResult;
+
+            // string filename = $"Files/contract.pdf";
+            // document.Save(filename);
+            //
+            // var fileStream = new FileStream(filename, 
+            //     FileMode.Open,
+            //     FileAccess.Read
+            // );
+            // var fsResult = new FileStreamResult(fileStream, "application/pdf");
+            // return fsResult;
             
-            var fileStream = new FileStream(filename, 
-                FileMode.Open,
-                FileAccess.Read
-            );
-            var fsResult = new FileStreamResult(fileStream, "application/pdf");
-            return fsResult;
         }
     }
 }
