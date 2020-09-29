@@ -1,4 +1,5 @@
 ﻿@using System.Net
+@using yogaAshram.Services
 @using State = yogaAshram.Models.State
 @model System.Collections.Generic.List<yogaAshram.Models.TrialUsers>
 
@@ -38,7 +39,7 @@
           <td><a asp-action="ClientInfo" asp-controller="Clients" asp-route-Id="@client.ClientId">@client.Client.NameSurname</a></td>
           <td>@client.Group.Name</td>
           <td>@client.LessonTime.ToShortDateString()</td>
-          <td style="background: @client.Color">@client.GetValueOfState()</td>
+          <td style="background: @client.Color">@GetEnumDescription.GetDescription(@client.Client.ClientType)</td>
           
           @if (User.IsInRole("admin")||User.IsInRole("chief") || User.IsInRole("manager"))
           {

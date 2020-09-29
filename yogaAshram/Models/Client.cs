@@ -1,15 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations.Schema;
 using yogaAshram.Controllers;
 using yogaAshram.Models.ModelViews;
 
 namespace yogaAshram.Models
 {
+   
+   
+    
+    
+    
+    
     public enum ClientType
-    {
+    {[Description("Пробный")]
         Probe,
+        [Description("Активный")]
         AreEngaged,
+        [Description("Не активный")]
         NotEngaged
     }
     public enum Paid
