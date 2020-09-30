@@ -536,7 +536,9 @@ namespace yogaAshram.Controllers
         [Breadcrumb("Базовые клиенты", FromAction = "Index", FromController = typeof(AdminController))]
         public IActionResult RegularClients()
         {
-            List<Client> clients = _db.Clients.Where(c => c.ClientType == ClientType.AreEngaged).ToList();
+            List<Client> clients = _db.Clients
+                            .Where(c => c.ClientType == ClientType.AreEngaged)
+                            .OrderByDescending(c => c.DateCreate).ToList();
 
             return View(clients);
         }
@@ -639,6 +641,36 @@ namespace yogaAshram.Controllers
             
             if (attendance.AttendanceState == AttendanceState.notattended)
                 attendance.AttendanceCount.AbsenceTimes += 1;
+            else if (attendance.AttendanceState == AttendanceState.cancel)
+            {
+                attendance.AttendanceCount.AttendingTimes += 1;
+                ClientsMembership clientsMembership = _db.ClientsMemberships
+                    .FirstOrDefault(c => c.Id == attendance.ClientsMembershipId);
+                if (clientsMembership != null)
+                {
+                    DateTime lastDay = clientsMembership.DateOfExpiry;
+                    clientsMembership.DateOfExpiry = _clientServices.DateIfFrozen(lastDay, attendance.GroupId);
+                    Attendance att =
+                        _db.Attendances.FirstOrDefault(a => a.AttendanceCountId == attendance.AttendanceCountId && a.Date == clientsMembership.DateOfExpiry);
+                    if (att == null)
+                    {
+                        att = new Attendance()
+                        {
+                            AttendanceCountId = attendance.AttendanceCountId,
+                            Date = clientsMembership.DateOfExpiry,
+                            ClientId = clientId,
+                            GroupId = attendance.GroupId,
+                            MembershipId = attendance.MembershipId,
+                            ClientsMembershipId = attendance.ClientsMembershipId
+                        };
+                        _db.Entry(att).State = EntityState.Added;
+                        
+                    } 
+                    
+                    _db.Entry(clientsMembership).State = EntityState.Modified;      
+                    
+                } 
+            }
             else if (attendance.AttendanceState == AttendanceState.frozen && attendance.AttendanceCount.FrozenTimes > 0)
             {
                 attendance.AttendanceCount.FrozenTimes -= 1;
@@ -663,11 +695,13 @@ namespace yogaAshram.Controllers
                 comment.Date = date;
                 if (attendance.AttendanceState == AttendanceState.frozen)
                     comment.Reason = Reason.Заморозка;
+                else if (attendance.AttendanceState == AttendanceState.cancel)
+                    comment.Reason = Reason.Отмена;
                 else
                     comment.Reason = Reason.Пропуск;
                 Employee employee =
                     _db.Employees.FirstOrDefault(e => e.Id == GetUserId.GetCurrentUserId(this.HttpContext));
-                comment.Text = $"{employee?.UserName}: {reason}, {DateTime.Now:dd.MM.yyyy}";
+                comment.Text = $"{employee?.UserName}: {attendance.AttendanceState}, {reason}, {DateTime.Now:dd.MM.yyyy}";
                     client?.Comments.Add(comment);
                     _db.Entry(client).State = EntityState.Modified;
             }
