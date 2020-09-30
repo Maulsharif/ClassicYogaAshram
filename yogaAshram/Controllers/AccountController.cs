@@ -95,7 +95,7 @@ namespace yogaAshram.Controllers
         public async Task<IActionResult> Logout()
         {
             await _signInManager.SignOutAsync();
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Login", "Account");
         }
         [HttpGet]
         [AllowAnonymous]
@@ -162,6 +162,21 @@ namespace yogaAshram.Controllers
                 return View("ResetPasswordConfirmation");
             }
             return View(model);
+        }
+        
+        
+        [Authorize]
+        public IActionResult RedirectToPage()
+        {
+            if (!User.Identity.IsAuthenticated)
+                return RedirectToAction("Login", "Account");
+            if (User.IsInRole("admin"))
+                return RedirectToAction("Index", "Admin");
+            if(User.IsInRole("chief"))
+                return RedirectToAction("Index", "Chief");
+            if(User.IsInRole("seller"))
+                return RedirectToAction("Index", "Seller");
+            return RedirectToAction("Index", "Manager");
         }
     }
 }

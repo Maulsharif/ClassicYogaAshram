@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations.Schema;
 using yogaAshram.Controllers;
 using yogaAshram.Models.ModelViews;
@@ -7,26 +8,34 @@ using yogaAshram.Models.ModelViews;
 namespace yogaAshram.Models
 {
     public enum ClientType
-    {
+    {[Description("Пробник")]
         Probe,
+        [Description("Активный")]
         AreEngaged,
+        [Description("Не ходит")]
         NotEngaged
     }
     public enum Paid
     {
+        [Description("Оплатил")]
         Оплачено,
+        [Description("Не отплатил")]
         Не_оплачено,
+        [Description("Должник")]
         Есть_долг
     }
     
     public enum WhatsAppGroup
     {
+        [Description("В WA группе")]
         Состоит_в_группе,
+        [Description("Не в WA группе")]
         Не_состоит_в_группе
     }
     public enum Contract
-    {
+    {   [Description("Договор есть")]
         Есть_договор,
+        [Description("Договора нет")]
         Нет_договора
     }
     public class Client

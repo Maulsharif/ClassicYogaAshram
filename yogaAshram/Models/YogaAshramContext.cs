@@ -136,14 +136,15 @@ namespace yogaAshram.Models
             );
             
             modelBuilder.Entity<Sickness>().HasData(
-                new Sickness {Id = Convert.ToInt64(10000), Name = "остеохондроз"},
-                new Sickness {Id = Convert.ToInt64(10001), Name = "грыжа"},
-                new Sickness {Id = Convert.ToInt64(10002), Name = "сколиоз"},
-                new Sickness {Id = Convert.ToInt64(10003), Name = "артрит"},
-                new Sickness {Id = Convert.ToInt64(10004), Name = "гипертония"},
-                new Sickness {Id = Convert.ToInt64(10005), Name = "сахарный диабет"},
-                new Sickness {Id = Convert.ToInt64(10006), Name = "сердечная недостаточность"},
-                new Sickness {Id = Convert.ToInt64(10007), Name = "ожирение"}
+                new Sickness {Id = Convert.ToInt64(10000), Name = "здоров"},
+                new Sickness {Id = Convert.ToInt64(10001), Name = "остеохондроз"},
+                new Sickness {Id = Convert.ToInt64(10002), Name = "грыжа"},
+                new Sickness {Id = Convert.ToInt64(10003), Name = "сколиоз"},
+                new Sickness {Id = Convert.ToInt64(10004), Name = "артрит"},
+                new Sickness {Id = Convert.ToInt64(10005), Name = "гипертония"},
+                new Sickness {Id = Convert.ToInt64(10006), Name = "сахарный диабет"},
+                new Sickness {Id = Convert.ToInt64(10007), Name = "сердечная недостаточность"},
+                new Sickness {Id = Convert.ToInt64(10008), Name = "ожирение"}
             );
         }
     }

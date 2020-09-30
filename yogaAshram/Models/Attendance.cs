@@ -1,14 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace yogaAshram.Models
 {
     public enum AttendanceState
     {
+         [Description("+")]
         attended=1,
+        [Description("н")]
+      
         notattended=2,
+        [Description("з")]
         frozen=3,
+        [Description("н/п")]
         notcheked=4
     }
     public class Attendance

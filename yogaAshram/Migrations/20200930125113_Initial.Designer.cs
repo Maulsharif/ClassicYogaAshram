@@ -11,7 +11,7 @@ using yogaAshram.Models;
 namespace yogaAshram.Migrations
 {
     [DbContext(typeof(YogaAshramContext))]
-    [Migration("20200929142442_Initial")]
+    [Migration("20200930125113_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -883,41 +883,46 @@ namespace yogaAshram.Migrations
                         new
                         {
                             Id = 10000L,
-                            Name = "остеохондроз"
+                            Name = "здоров"
                         },
                         new
                         {
                             Id = 10001L,
-                            Name = "грыжа"
+                            Name = "остеохондроз"
                         },
                         new
                         {
                             Id = 10002L,
-                            Name = "сколиоз"
+                            Name = "грыжа"
                         },
                         new
                         {
                             Id = 10003L,
-                            Name = "артрит"
+                            Name = "сколиоз"
                         },
                         new
                         {
                             Id = 10004L,
-                            Name = "гипертония"
+                            Name = "артрит"
                         },
                         new
                         {
                             Id = 10005L,
-                            Name = "сахарный диабет"
+                            Name = "гипертония"
                         },
                         new
                         {
                             Id = 10006L,
-                            Name = "сердечная недостаточность"
+                            Name = "сахарный диабет"
                         },
                         new
                         {
                             Id = 10007L,
+                            Name = "сердечная недостаточность"
+                        },
+                        new
+                        {
+                            Id = 10008L,
                             Name = "ожирение"
                         });
                 });

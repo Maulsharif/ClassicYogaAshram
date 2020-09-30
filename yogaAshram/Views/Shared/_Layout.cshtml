@@ -1,5 +1,4 @@
-﻿@using System.ComponentModel
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 
     <meta charset="utf-8"/>
@@ -71,14 +70,6 @@
                                             Мои кабинет
                                         </a>
                                     </li>
-                                    <div data-target="editProfileModal" id="@Url.Action("GetEditModalAjax", "Employees")"
-                                         class="getModal dropdown-item cursor-p">
-                                        Редактировать профиль
-                                    </div>
-                                    <div data-target="changePasswordModal" id="@Url.Action("GetChangePasswordModalAjax", "Employees")"
-                                         class="getModal dropdown-item cursor-p">
-                                        Изменить пароль
-                                    </div>
                                     <li class="dropdown-item cursor-p">
                                         <form method="post" asp-controller="Account" asp-action="Logout" id="my_form">
                                             <a class="text-decoration-none text-dark" href="javascript:{}" onclick="document.getElementById('my_form').submit(); return false;">
@@ -161,14 +152,6 @@
                                             Мои кабинет
                                         </a>
                                     </li>
-                                    <div data-target="editProfileModal" id="@Url.Action("GetEditModalAjax", "Employees")"
-                                         class="getModal dropdown-item cursor-p">
-                                        Редактировать профиль
-                                    </div>
-                                    <div data-target="changePasswordModal" id="@Url.Action("GetChangePasswordModalAjax", "Employees")"
-                                         class="getModal dropdown-item cursor-p">
-                                        Изменить пароль
-                                    </div>
                                     <li class="dropdown-item cursor-p">
                                         <form method="post" asp-controller="Account" asp-action="Logout" id="my_form">
                                             <a class="text-decoration-none text-dark" href="javascript:{}" onclick="document.getElementById('my_form').submit(); return false;">
@@ -197,45 +180,49 @@
             <ul class="list-group">
                 <!-- Separator with title -->
                 <li class="list-group-item sidebar-separator-title text-muted d-flex align-items-center menu-collapsed">
-                    <small>MAIN MENU</small>
+                    <small>Меню</small>
                 </li>
                 <!-- /END Separator -->
                 <!-- Menu with submenu -->
+                 <a href="#submenu2" data-toggle="collapse" aria-expanded="false" class="bg-dark list-group-item list-group-item-action flex-column align-items-start">
+                                    <div class="d-flex w-100 justify-content-start align-items-center">
+                                        <span class="fa fa-user fa-fw mr-3"></span>
+                                        <span class="menu-collapsed">Профиль</span>
+                                        <span class="submenu-icon ml-auto"></span>
+                                    </div>
+                                </a>
+                                <!-- Submenu content -->
+                                <div id='submenu2' class="collapse sidebar-submenu">
+                                    <a href="#" class="list-group-item list-group-item-action bg-dark text-white">
+                                        <div data-target="editProfileModal" id="@Url.Action("GetEditModalAjax", "Employees")"
+                                             class="getModal">
+                                            Редактировать профиль
+                                        </div>
+                                        
+                                    </a>
+                                    <a href="#" class="list-group-item list-group-item-action bg-dark text-white">
+                                        <div data-target="changePasswordModal" id="@Url.Action("GetChangePasswordModalAjax", "Employees")"
+                                             class="getModal">
+                                            Изменить пароль
+                                        </div>
+                                        
+                                    </a>
+                                </div>
                 <a href="#submenu1" data-toggle="collapse" aria-expanded="false" class="bg-dark list-group-item list-group-item-action flex-column align-items-start">
                     <div class="d-flex w-100 justify-content-start align-items-center">
-                        <span class="fa fa-dashboard fa-fw mr-3"></span>
-                        <span class="menu-collapsed">Dashboard</span>
+                        <span class="fa fa-users fa-fw mr-3"></span>
+                        <span class="menu-collapsed">Сотрудники</span>
                         <span class="submenu-icon ml-auto"></span>
                     </div>
                 </a>
                 <!-- Submenu content -->
                 <div id='submenu1' class="collapse sidebar-submenu">
                     <a href="#" class="list-group-item list-group-item-action bg-dark text-white">
-                        <span class="menu-collapsed">Charts</span>
+                        <span class="menu-collapsed">Список сотрудников</span>
                     </a>
-                    <a href="#" class="list-group-item list-group-item-action bg-dark text-white">
-                        <span class="menu-collapsed">Reports</span>
-                    </a>
-                    <a href="#" class="list-group-item list-group-item-action bg-dark text-white">
-                        <span class="menu-collapsed">Tables</span>
-                    </a>
+                    <a class=" list-group-item list-group-item-action bg-dark text-white getModal" data-target="emplCreateModal" id="/employees/getcreateemplmodalajax" type="button">Добавить работника</a>
                 </div>
-                <a href="#submenu2" data-toggle="collapse" aria-expanded="false" class="bg-dark list-group-item list-group-item-action flex-column align-items-start">
-                    <div class="d-flex w-100 justify-content-start align-items-center">
-                        <span class="fa fa-user fa-fw mr-3"></span>
-                        <span class="menu-collapsed">Profile</span>
-                        <span class="submenu-icon ml-auto"></span>
-                    </div>
-                </a>
-                <!-- Submenu content -->
-                <div id='submenu2' class="collapse sidebar-submenu">
-                    <a href="#" class="list-group-item list-group-item-action bg-dark text-white">
-                        <span class="menu-collapsed">Settings</span>
-                    </a>
-                    <a href="#" class="list-group-item list-group-item-action bg-dark text-white">
-                        <span class="menu-collapsed">Password</span>
-                    </a>
-                </div>
+               
                 <a href="#" class="bg-dark list-group-item list-group-item-action">
                     <div class="d-flex w-100 justify-content-start align-items-center">
                         <span class="fa fa-tasks fa-fw mr-3"></span>
@@ -282,12 +269,12 @@
         <!-- MAIN -->
         <div class="col">
             
-            <breadcrumb></breadcrumb>
+  <breadcrumb></breadcrumb>  
             <div class="container">
-                <main role="main" class="pb-3">
-                    @RenderBody()
-                </main>
-            </div>
+    <main role="main" class="pb-3">
+        @RenderBody()
+    </main>
+</div>
 
         </div><!-- Main Col END -->
     </div>
@@ -318,6 +305,7 @@ else
 </div>
 
 
+
 <footer class="border-top footer text-muted">
     <div class="container">
         &copy; 2020 - yogaAshram
@@ -329,7 +317,7 @@ else
 <script src="~/js/jquery.weekLine.min.js" asp-append-version="true"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
 <script src="~/lib/bootstrap-datepicker-1.9.0-dist/js/bootstrap-datepicker.min.js"></script>
-<script src="https://kit.fontawesome.com/04079ffe72.js" crossorigin="anonymous"></script> 
+  <script src="https://kit.fontawesome.com/04079ffe72.js" crossorigin="anonymous"></script> 
 
 <script>
 $('#body-row .collapse').collapse('hide'); 
