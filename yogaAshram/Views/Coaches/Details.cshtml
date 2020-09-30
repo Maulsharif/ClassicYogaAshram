@@ -1,0 +1,98 @@
+﻿@model CoachDetailsModelView
+@{
+    ViewBag.Title = "Страница тренера";
+    int wage = 0;
+    foreach (var pay in Model.Payments)
+    {
+        foreach (var item in pay.Payments)
+        {
+            wage += item.CardSum + item.CashSum;
+        }
+    }
+}
+<div class="card">
+    <div class="card-header">
+        <h5 class="text-center pb-2 border-bottom card-title mb-2">@Model.Coach.NameSurname</h5>
+        <form asp-action="Details">
+            <h5 class="card-title text-center mb-2">Выбор даты</h5>
+            <div style="margin:auto; width: 400px;">
+                <div class="form-row ">
+                    <div class="form-group col-md-5 mr-2">
+                        <label>
+                            С
+                            <input type="date" class="form-control" asp-for="From">
+                        </label>
+                    </div>
+                    <div class="form-group col-md-5">
+                        <label>
+                            По
+                            <input type="date" class="form-control" asp-for="To">
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="text-center">
+                <button type="submit" class="btn btn-primary mb-2">Подтвердить</button>
+            </div>
+        </form>
+    </div>
+    <div class="card-body">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">Имя клиента</th>
+                    <th scope="col">Оплаченная сумма</th>
+                    <th scope="col">Стоимость абонемента</th>
+                    <th scope="col">Даты оплат</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Payments)
+                {
+                    <tr>
+                        <th scope="row">@item.Client.NameSurname</th>
+                        <td>
+                            @item.Amount
+                            @if (item.Payments.Length == 0)
+                            {
+                                <span>Абонемент не приобретен</span>
+                            }
+                            else if (item.Client.Paid != Paid.Не_оплачено)
+                            {
+                                @if (item.Client.Paid == Paid.Есть_долг)
+                                {
+                                    <br /><span>Долг в размере @(-item.Client.Balance)</span>
+                                }
+                                else
+                                {
+                                    <br /><span>Оплачено с предоплатой</span>
+                                }
+                            }
+                            else
+                            {
+                                <br /><span>Не оплачено</span>
+                            }
+                        </td>
+                        <td>
+                            @if (item.Payments.Length == 0)
+                            {
+                                <span>не приобретен</span>
+                            }
+                            else
+                            {
+                                <span>@item.Payments[0].ClientsMembership.Membership.Price</span>
+                            }
+                        </td>
+                        <td>
+                            @foreach (var pay in item.Payments)
+                            {
+                                <span>@pay.CateringDate.ToShortDateString()</span><br />
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <p class="text-right card-text text-black-50">Итого - @wage</p>
+    </div>
+</div>
