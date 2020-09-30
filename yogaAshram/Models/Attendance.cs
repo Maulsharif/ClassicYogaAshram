@@ -15,7 +15,9 @@ namespace yogaAshram.Models
         [Description("з")]
         frozen=3,
         [Description("н/п")]
-        notcheked=4
+        notcheked=4,
+        [Description("от")]
+        cancel =5
     }
     public class Attendance
     {
