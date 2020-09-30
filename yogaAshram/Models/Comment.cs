@@ -6,7 +6,8 @@ namespace yogaAshram.Models
     {
         Заморозка,
         Пропуск,
-        Другое
+        Другое,
+        Отмена
     }
     public class Comment
     {

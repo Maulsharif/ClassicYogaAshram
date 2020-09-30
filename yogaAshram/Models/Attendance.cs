@@ -9,7 +9,8 @@ namespace yogaAshram.Models
         attended=1,
         notattended=2,
         frozen=3,
-        notcheked=4
+        notcheked=4,
+        cancel=5
     }
     public class Attendance
     {
