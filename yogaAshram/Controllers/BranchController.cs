@@ -52,7 +52,9 @@ namespace yogaAshram.Controllers
                 BranchId=branchId
                 
             };
-            
+            Employee admin = _db.Employees.FirstOrDefault(e => e.Id == adminId);
+            admin.Branch = branch;
+            _db.Entry(admin).State = EntityState.Modified;
             _db.Entry(cs).State = EntityState.Added;
             await _db.SaveChangesAsync();
             return RedirectToAction("Index", "Chief");
