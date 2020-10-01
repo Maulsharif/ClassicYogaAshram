@@ -10,6 +10,7 @@ namespace yogaAshram.Models.ModelViews
         public string UserName { get; set; }
         public string Email { get; set; }
         public string NameSurname { get; set; }
+        public string Role { get; set; }
         public long Id { get; set; }
     }
 }
