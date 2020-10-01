@@ -1,8 +1,8 @@
 ﻿
 <div id="extendModal"></div>
 <script>
-    var btns = $(".getMembershipExtendModal");
-    for (var i = 0; i < btns.length; i++) {
+    let btns = $(".getMembershipExtendModal");
+    for (let i = 0; i < btns.length; i++) {
         let btn = btns[i];
         $(btn).on('click', function () {
             let clientId = $(btn).attr('clientId');

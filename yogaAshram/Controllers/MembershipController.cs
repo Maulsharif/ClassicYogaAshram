@@ -168,5 +168,24 @@ namespace yogaAshram.Controllers
                 return Content("success");
             
         }
+
+
+        public IActionResult BuyMembership(long clientId)
+        {
+            ViewBag.Schedules =  _db.Schedules.ToList();
+            ViewBag.Groups = _db.Groups.ToList();
+            ViewBag.Memberships = _db.Memberships.ToList();
+            Client client = _db.Clients.FirstOrDefault(p => p.Id == clientId);
+            
+            return View(client);
+        }
+        [HttpPost]
+        public IActionResult BuyMembership(long clientId,long MembershipId, long GroupId, DateTime FirstDay)
+        {
+            
+            Console.WriteLine("nn");
+            
+            return View();
+        }
     }   
 }

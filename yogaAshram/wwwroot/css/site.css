@@ -651,3 +651,6 @@ tr:last-child td{
 .row{
     margin-bottom: -10px;
 }
+.top-right-buttons{
+    margin-right: 10em;
+}

@@ -363,6 +363,8 @@ namespace yogaAshram.Controllers
 
                 Membership membership =
                     _db.Memberships.FirstOrDefault(m => m.Id == schedule.ClientsCreateModelView.MembershipId);
+                
+                
                 DateTime endDate = _clientServices.EndDateForClientsMembership(
                     schedule.ClientsCreateModelView.StartDate, 
                     schedule.ClientsCreateModelView.GroupId,
