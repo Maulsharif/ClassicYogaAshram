@@ -272,5 +272,14 @@ namespace yogaAshram.Controllers
             await _db.SaveChangesAsync();
             return RedirectToAction("Index", "Chief");
         }
+      
+        [ActionName("ListEmployee")]
+        public async Task<IActionResult> ListEmployee(long emplId)
+        {
+            Employee employee = _db.Employees.FirstOrDefault(e => e.Id == emplId);
+            ViewBag.Employees = _db.Employees.ToList();
+
+            return View(employee);
+        }
     }
 }
