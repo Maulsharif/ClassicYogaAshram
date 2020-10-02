@@ -11,7 +11,7 @@
 <p>Группа: @Model.Client.Group.Name</p>
 <p> Создал: @Model.Client.Creator.NameSurname</p>
 <p> Количестов занятии: @Model.Client.LessonNumbers</p>
-<a asp-action="BuyMembership" asp-controller="Membership" asp-route-clientId="@Model.Client.Id">Купить абонемент</a>
+<a asp-action="BuyMembership" asp-controller="Membership" asp-route-clientId="@Model.Client.Id" class="btn btn-primary">Сделать активным</a>
 <table class="table" id="customers">
     <tr>
       

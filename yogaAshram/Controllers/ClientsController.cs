@@ -483,6 +483,7 @@ namespace yogaAshram.Controllers
                     schedule.ClientsCreateModelView.StartDate, 
                     schedule.ClientsCreateModelView.GroupId,
                     membership.AttendanceDays);
+                Console.WriteLine(endDate);
                ClientsMembership clientsMembership = new ClientsMembership()
                {
                    ClientId = client.Id,

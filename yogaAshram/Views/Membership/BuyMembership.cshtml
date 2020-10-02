@@ -63,11 +63,11 @@
                 $('#errorText').text('Выберите дату');
             }
             else {
-                var optionValueGroup = $('#groupSelect').val();                         	  
-                var objGroup = $.parseJSON(optionValueGroup);
+                const optionValueGroup = $('#groupSelect').val();                         	  
+                let objGroup = $.parseJSON(optionValueGroup);
              
-                var optionValueMembership = $('#membershipSelect').val();
-                var objMembership = $.parseJSON(optionValueMembership);
+                const optionValueMembership = $('#membershipSelect').val();
+                const objMembership = $.parseJSON(optionValueMembership);
                    console.log(objGroup);
                 $.ajax({
                     url: '@Url.Action("BuyMembership", "Membership")',
@@ -79,21 +79,15 @@
                         "MembershipId": objMembership,
                         "GroupId": objGroup.group,
                         "FirstDay": $('#datepicker').val()
-                    },
-                    success: function (data) {
-                        if (data === "success") {
-                            $('#extendMembershipModal').modal('hide');
-                            document.location.reload();
-                        }
-                      
                     }
+                   
                 })
             }
         })
     </script>
     <script >
     function showHideOptions(){
-            var optionValue = $('#groupSelect').val();                         	  
+            const optionValue = $('#groupSelect').val();                         	  
             var obj = $.parseJSON(optionValue);
             var daysArray = ['Воскресенье', 'Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота'];
             var daysSelected = obj.days.split(",");
@@ -102,7 +96,7 @@
             let disabledIndexes = disabledDays.map(function(word) { return daysArray.indexOf(word); });
             var today = new Date();
            
-            var date = today;
+            let date = today;
             $('#datepicker').datepicker({
                 language: "ru",
                 startDate: date,
