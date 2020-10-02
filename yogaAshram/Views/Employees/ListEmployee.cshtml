@@ -83,8 +83,14 @@
                     </td>
 
                     <td>
-                        <a asp-action="Delete" asp-controller="Employees" asp-route-emplId="@employee.Id">Удалить</a>
-                        <a asp-action="Edit" asp-controller="Employees" asp-route-emplId="@employee.Id">Изменить</a>
+                        @if (@employee.Role == "chief"){
+                            <a asp-action="Edit" asp-controller="Employees" asp-route-emplId="@employee.Id">Изменить</a>
+                        }
+                        else
+                        {
+                            <a asp-action="Delete" asp-controller="Employees" asp-route-emplId="@employee.Id">Удалить</a>
+                            <a asp-action="Edit" asp-controller="Employees" asp-route-emplId="@employee.Id">Изменить</a>
+                        }
                     </td>
                 </tr>
             }
