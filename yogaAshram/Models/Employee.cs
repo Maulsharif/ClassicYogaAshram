@@ -17,10 +17,7 @@ namespace yogaAshram.Models
         public bool OnTimePassword { get; set; } = true;
         public PasswordStates PasswordState { get; set; } = PasswordStates.DisposableNew;
         public string Role { get; set; }
-        [NotMapped] 
-        public long CurrentBranchId { get; set; }
-        [NotMapped] 
-        public Branch Branch { get; set; }
+       
         
         
     }

@@ -1,0 +1,25 @@
+﻿@model yogaAshram.Models.HelperModels.AttendanceHistoryShow
+
+@{
+    ViewBag.Title = "title";
+    Layout = "_Layout";
+}
+
+<table >
+    <tr>
+        <th>
+            @Model.Name 
+        </th>
+        <th>
+            @Model.Group            
+        </th>
+       
+        @foreach (int a in @Model.Days)
+        { <th>
+              @a
+          </th> 
+        }
+       
+        
+    </tr>
+</table>

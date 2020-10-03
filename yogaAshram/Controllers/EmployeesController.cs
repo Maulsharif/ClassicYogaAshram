@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.Eventing.Reader;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
 using yogaAshram.Models;
@@ -272,5 +274,17 @@ namespace yogaAshram.Controllers
             await _db.SaveChangesAsync();
             return RedirectToAction("Index", "Chief");
         }
+        
+        
+        
+        [Authorize]
+        public IActionResult RedirectToChoose()
+        {
+            List<Branch> branches = _db.Branches.ToList();
+            return View(branches);
+
+
+        }
+        
     }
 }

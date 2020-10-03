@@ -15,7 +15,6 @@ using Group = System.Text.RegularExpressions.Group;
 
 namespace yogaAshram.Controllers
 {
-    
     public class MembershipController : Controller
     { 
         private readonly UserManager<Employee> _userManager;
@@ -30,7 +29,8 @@ namespace yogaAshram.Controllers
             _clientServices = clientServices;
         }
 
-        // GET
+        
+        // Таблица с абонементами
         [Breadcrumb("Абонементы", FromAction = "Index", FromController = typeof(ChiefController))]
         public IActionResult Index()
         {
@@ -38,7 +38,8 @@ namespace yogaAshram.Controllers
             return View(model);
         }
 
-
+        
+        // Добавление и редактриование абонемента 
         public async Task<IActionResult> AddOrEdit(long id = 0)
         {
           
@@ -55,6 +56,8 @@ namespace yogaAshram.Controllers
             }
         }
 
+        
+        // Добавление и редактриование абонемента 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddOrEdit(long id, Membership membershipModel)
@@ -63,10 +66,8 @@ namespace yogaAshram.Controllers
             {
                 if (id == 0)
                 {
-                    
                     _db.Entry(membershipModel).State = EntityState.Added;
                     await _db.SaveChangesAsync();
-
                 }
                 else
                 {
@@ -87,6 +88,9 @@ namespace yogaAshram.Controllers
             }
             return Json(new { isValid = false, html = Helper.RenderRazorViewToString(this, "AddOrEdit", membershipModel) });
         }
+
+
+        //Вызов модалки для продления абонемента
         [HttpGet]
         public async Task<IActionResult> GetExtendModalAjax(long clientId, string date)
         {
@@ -96,8 +100,12 @@ namespace yogaAshram.Controllers
             ViewBag.Memberships = await _db.Memberships.ToArrayAsync();
             ViewBag.Schedules = await _db.Schedules.ToListAsync();
             ViewBag.Date = Convert.ToDateTime(date);
-            return PartialView("PartialViews/ExtendModalPartial" ,new MembershipExtendModelView() { ClientId = client.Id, Client = client });
+            return PartialView("PartialViews/ExtendModalPartial",
+                new MembershipExtendModelView() {ClientId = client.Id, Client = client});
         }
+        
+        
+        // Продления абонемента
         [HttpPost]
         public async Task<IActionResult> ExtendAjax(MembershipExtendModelView model)
         {
@@ -169,113 +177,109 @@ namespace yogaAshram.Controllers
                 return Content("success");
             
         }
-        
-        
-           [HttpGet]
 
-        public IActionResult BuyMembership(long clientId)
+
+        // Добавление пробника в группу 
+        [HttpGet]
+        public async Task<IActionResult> BuyMembership(long clientId, long branchId)
         {
-            ViewBag.Schedules =  _db.Schedules.ToList();
-            ViewBag.Groups = _db.Groups.ToList();
+            if (User.IsInRole("admin"))
+            {
+                Employee user = await _userManager.GetUserAsync(User);
+                branchId = _db.Branches.FirstOrDefault(p => p.AdminId == user.Id).Id;
+            }
+
+            ViewBag.Schedules = _db.Schedules.Where(p => p.BranchId == branchId).ToList();
             ViewBag.Memberships = _db.Memberships.ToList();
             Client client = _db.Clients.FirstOrDefault(p => p.Id == clientId);
-            
+            ViewBag.Groups = _db.Groups.Where(p => p.BranchId == branchId).ToList();
             return View(client);
         }
+
+        // Добавление пробника в группу    
         [HttpPost]
-        public async Task<IActionResult> BuyMembership(long clientId,long membershipId, long groupId, string firstDay)
-        {
+        public async Task<IActionResult> BuyMembership(long clientId, long membershipId, long groupId, string firstDay)
+        {    Client client = _db.Clients.FirstOrDefault(p => p.Id == clientId);
             if (clientId != 0 && membershipId != 0 && groupId != 0 && firstDay != null)
             {
-               Console.WriteLine(groupId);
-            DateTime startDate = DateTime.Parse(firstDay).Date;
-            Console.WriteLine(startDate);
-          
-            
-                 Client client = _db.Clients.FirstOrDefault(p => p.Id == clientId);
-             client.Paid = Paid.Есть_долг;
-             client.GroupId = groupId;
-             client.MembershipId = membershipId;
-             client.ClientType = ClientType.AreEngaged;
-             client.CreatorId = GetUserId.GetCurrentUserId(this.HttpContext);
-             
-             Models.Group group = _db.Groups.FirstOrDefault(g => g.Id == groupId);
-             if (group != null && group.Clients.Count == 0)
-                 group.Clients = new List<Client>()
-                 {
-                     client
-                 };
-             else
-                 group?.Clients.Add(client);
-            
-            Membership membership = _db.Memberships.FirstOrDefault(m => m.Id == membershipId);
+                Console.WriteLine(groupId);
+                DateTime startDate = DateTime.Parse(firstDay).Date;
+                Console.WriteLine(startDate);
+              
+                client.Paid = Paid.Есть_долг;
+                client.GroupId = groupId;
+                client.MembershipId = membershipId;
+                client.ClientType = ClientType.AreEngaged;
+                client.CreatorId = GetUserId.GetCurrentUserId(this.HttpContext);
 
-            DateTime endDate = _clientServices.EndDateForClientsMembership(
-                startDate,
-                group.Id,
-                membership.AttendanceDays);
+                Models.Group group = _db.Groups.FirstOrDefault(g => g.Id == groupId);
+                if (group != null && group.Clients.Count == 0)
+                    group.Clients = new List<Client>()
+                    {
+                        client
+                    };
+                else
+                    group?.Clients.Add(client);
 
-            Console.WriteLine(endDate);
+                Membership membership = _db.Memberships.FirstOrDefault(m => m.Id == membershipId);
 
-            ClientsMembership clientsMembership = new ClientsMembership()
-            {
-                Client = client,
-                MembershipId = membership.Id,
-                DateOfPurchase = DateTime.Now,
-                DateOfExpiry = endDate
-            };
+                DateTime endDate = _clientServices.EndDateForClientsMembership(
+                    startDate,
+                    group.Id,
+                    membership.AttendanceDays);
 
-            _db.Entry(clientsMembership).State = EntityState.Added;
-            int daysFrozen = 0;
-            if (membership.AttendanceDays == 12)
-                daysFrozen = 3;
-            else if (membership.AttendanceDays == 8)
-                daysFrozen = 2;
-            else
-                daysFrozen = 0;
-            var datesOfAttendance = _clientServices.DatesForAttendance(
-                startDate, groupId,
-                membership.AttendanceDays + daysFrozen);
-            AttendanceCount attendanceCount = new AttendanceCount()
-            {
-                AttendingTimes = membership.AttendanceDays,
-                AbsenceTimes = 0,
-                FrozenTimes = daysFrozen
-            };
-            _db.Entry(attendanceCount).State = EntityState.Added;
-            for (int i = 0; i < membership?.AttendanceDays + daysFrozen; i++)
-            {
-                Attendance attendance = new Attendance()
+                Console.WriteLine(endDate);
+
+                ClientsMembership clientsMembership = new ClientsMembership()
                 {
                     Client = client,
                     MembershipId = membership.Id,
-                    Date = datesOfAttendance[i],
-                    AttendanceState = AttendanceState.notcheked,
-                    GroupId = groupId,
-                    AttendanceCount = attendanceCount,
-                    ClientsMembership = clientsMembership
+                    DateOfPurchase = DateTime.Now,
+                    DateOfExpiry = endDate
                 };
-                _db.Entry(attendance).State = EntityState.Added;
+
+                _db.Entry(clientsMembership).State = EntityState.Added;
+                int daysFrozen = 0;
+                if (membership.AttendanceDays == 12)
+                    daysFrozen = 3;
+                else if (membership.AttendanceDays == 8)
+                    daysFrozen = 2;
+                else
+                    daysFrozen = 0;
+                var datesOfAttendance = _clientServices.DatesForAttendance(
+                    startDate, groupId,
+                    membership.AttendanceDays + daysFrozen);
+                AttendanceCount attendanceCount = new AttendanceCount()
+                {
+                    AttendingTimes = membership.AttendanceDays,
+                    AbsenceTimes = 0,
+                    FrozenTimes = daysFrozen
+                };
+                _db.Entry(attendanceCount).State = EntityState.Added;
+                for (int i = 0; i < membership?.AttendanceDays + daysFrozen; i++)
+                {
+                    Attendance attendance = new Attendance()
+                    {
+                        Client = client,
+                        MembershipId = membership.Id,
+                        Date = datesOfAttendance[i],
+                        AttendanceState = AttendanceState.notcheked,
+                        GroupId = groupId,
+                        AttendanceCount = attendanceCount,
+                        ClientsMembership = clientsMembership
+                    };
+                    _db.Entry(attendance).State = EntityState.Added;
+                }
+
+                _db.Entry(client).State = EntityState.Modified;
+                await _db.SaveChangesAsync();
+                _db.Entry(group).State = EntityState.Modified;
+                await _db.SaveChangesAsync();
             }
+            else Console.WriteLine("Ошибка");
 
-            _db.Entry(client).State = EntityState.Modified;
-            await _db.SaveChangesAsync();
-            _db.Entry(group).State = EntityState.Modified;
-            await _db.SaveChangesAsync(); 
-            }
-            else
-            {
-                Console.WriteLine("Ошибка");
-            }
-            
-
-            return RedirectToAction("RegularClients", "Clients", new{branchId=1});
-
-
-
-
+            return RedirectToAction("RegularClients", "Clients", new {branchId =client.Group.BranchId });
         }
-        
         
     }   
 }

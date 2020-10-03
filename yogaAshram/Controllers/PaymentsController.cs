@@ -143,14 +143,19 @@ namespace yogaAshram.Controllers
         }
         
         [Authorize]
-        public async Task<IActionResult> GetCreateModalAjax(long clientId)
+        public async Task<IActionResult> GetCreateModalAjax(long clientId, long branchId)
         {
+            if (User.IsInRole("admin"))
+            {  Employee user=await _userManager.GetUserAsync(User);
+                branchId = _db.Branches.FirstOrDefault(p=>p.AdminId==user.Id).Id;
+            }
+
             Client client = await _db.Clients.FindAsync(clientId);
             Employee emp = await _userManager.GetUserAsync(User);
-           Branch branch = _db.Branches.FirstOrDefault(p => p.Admin.Id == emp.Id);
+        
             if (client is null)
                 return NotFound();
-            PaymentCreateModelView model = new PaymentCreateModelView { ClientId = clientId, Client = client, BranchId= branch.Id};
+            PaymentCreateModelView model = new PaymentCreateModelView { ClientId = clientId, Client = client, BranchId= branchId};
             
            
             return PartialView("PartialViews/CreatePartial", model);

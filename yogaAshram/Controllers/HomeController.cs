@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using SmartBreadcrumbs.Attributes;
 using yogaAshram.Models;
+using yogaAshram.Models.HelperModels;
 using yogaAshram.Services;
 
 namespace yogaAshram.Controllers
@@ -25,8 +26,19 @@ namespace yogaAshram.Controllers
         [DefaultBreadcrumb("Главная")]
         public IActionResult Index()
         {
-           
-            return View();
+            AttendanceHistoryShow list = new AttendanceHistoryShow();
+        
+            List<int> primeNumbers = new List<int>();
+            primeNumbers.Add(1); // adding elements using add() method
+            primeNumbers.Add(3);
+            primeNumbers.Add(5);
+            primeNumbers.Add(7);
+            list.Days = primeNumbers;
+            list.Name = "anna";
+            list.Group = "Gh-1";
+            
+          
+            return View(list);
         }
     }
 }

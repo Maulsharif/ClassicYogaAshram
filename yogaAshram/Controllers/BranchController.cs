@@ -44,7 +44,7 @@ namespace yogaAshram.Controllers
             await _db.SaveChangesAsync();
             long branchId = branch.Id;
             Employee chief= _db.Employees.FirstOrDefault(p => p.Id == 1);
-            chief.CurrentBranchId = branchId;
+         
             CurrentSum cs = new CurrentSum()
             {
                 CashSum = 0,

@@ -52,8 +52,14 @@ namespace yogaAshram.Controllers
         }
 
          [Breadcrumb("Календарь")]
-         public IActionResult Scheduele(int? month, long? branchId)
+         public async Task<IActionResult> Scheduele(int? month, long? branchId)
          {
+             if (User.IsInRole("admin"))
+             {  Employee user=await _userManager.GetUserAsync(User);
+                 branchId = _db.Branches.FirstOrDefault(p=>p.AdminId==user.Id).Id;
+             }
+             
+             
              if (_db.CalendarEvents != null || branchId != null) 
                  ViewBag.Events = _db.CalendarEvents
                      .Where(c => c.BranchId == branchId)
