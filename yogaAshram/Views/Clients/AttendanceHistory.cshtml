@@ -1,45 +1,25 @@
-﻿
-@model System.Collections.Generic.List<yogaAshram.Models.Attendance>
+﻿@model yogaAshram.Models.HelperModels.AttendanceHistoryShow
 
 @{
-    ViewBag.Title = "Истор ";
+    ViewBag.Title = "title";
     Layout = "_Layout";
 }
 
-<div class="container-xl mt-n2 mb-3">
- <table class="table table-bordered ">
-         
-         
-         
-                 <tr>
-         
-                     <th>@Model[0].Client.NameSurname</th>
-         
-                     @foreach (var att in @Model)
-                     {
-         
-                         <td>
-                             @att.Date
-                         </td>
-         
-                     }
-                 </tr>
-         
-         
-                 <tr>
-                     <th>@Model[0].Group.Name</th>
-                     @foreach (var att in @Model)
-                     {
-         
-                         <td>
-                             @att.AttendanceState
-                         </td>
-         
-                     }
-                 </tr>
-         
-             </table>
-</div>
-
-
-
+<table >
+    <tr>
+        <th>
+            @Model.Name 
+        </th>
+        <th>
+            @Model.Group            
+        </th>
+       
+        @foreach (int a in @Model.Days)
+        { <th>
+              @a
+          </th> 
+        }
+       
+        
+    </tr>
+</table>

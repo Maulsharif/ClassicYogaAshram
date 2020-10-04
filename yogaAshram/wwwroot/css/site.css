@@ -654,3 +654,6 @@ tr:last-child td{
 .top-right-buttons{
     margin-right: 10em;
 }
+.separate{
+    padding-bottom: 20px;
+}

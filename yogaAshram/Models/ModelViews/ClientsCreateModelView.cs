@@ -5,14 +5,17 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using yogaAshram.Controllers;
 
+
 namespace yogaAshram.Models.ModelViews
 {
     public class ClientsCreateModelView
     {
         [Required(ErrorMessage = "Введите Ф.И.О")]
+       
         public string NameSurname { get; set; }
         
         [Required(ErrorMessage = "Введите номер телефона")]
+     
         [Remote(action: "ClientPhoneNumber", controller: "Validation", ErrorMessage = "Ранее использовался этот номер")]
         public string PhoneNumber { get; set; }
         public long GroupId { get; set; }

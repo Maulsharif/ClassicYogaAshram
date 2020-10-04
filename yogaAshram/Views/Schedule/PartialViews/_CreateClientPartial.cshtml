@@ -16,42 +16,80 @@
       
       			<input type="hidden" class="form-control mb-4 w-50" value="@Model.GroupId" asp-for="@Model.ClientsCreateModelView.GroupId">
       			
-      			<input type="hidden" asp-for="@Model.ClientsCreateModelView.StartDate" value="@Model.ChosenDate">
+<input type="hidden" asp-for="@Model.ClientsCreateModelView.StartDate" value="@Model.ChosenDate">
+<div class="separate">
+	
+</div>
       			<div class="row">
-      				<div class="col-sm-6">
-      					
-      				   <span asp-validation-for="@Model.ClientsCreateModelView.NameSurname"></span>
-	                    <input class="form-control mb-4" asp-for="@Model.ClientsCreateModelView.NameSurname" placeholder="Ф.И.О"/>
+	                <div class="col-sm-6">
+		                <label >
+			                ФИО<span class="text-danger">*</span>
+		                </label>
+		                <span asp-validation-for="@Model.ClientsCreateModelView.NameSurname"></span>
+		                <input class="form-control mb-4" asp-for="@Model.ClientsCreateModelView.NameSurname" placeholder="Ф.И.О"/>
 	                 
-      				</div>
-      				<div class="col-sm-6">
-      				
-	                    <span asp-validation-for="@Model.ClientsCreateModelView.DateOfBirth"></span>
-	                    <input  type="text"  class="form-control mb-4"  asp-for="@Model.ClientsCreateModelView.DateOfBirth" placeholder="Дата рождения"  onfocus="(this.type='date')"/>
-
-                    </div>
+	                </div>
+	                <div class="col-sm-6">
+		                <label >
+			                Элекронная почта
+		                </label>
+		                <span asp-validation-for="@Model.ClientsCreateModelView.Email"></span>
+		                <input class="form-control mb-4" asp-for="@Model.ClientsCreateModelView.Email" placeholder="Еmаil"/>
+                    
+	                </div>
+	                
+	               
       			</div>
       			<div class="row">
-      				<div class="col-sm-6">
-      					     <span asp-validation-for="@Model.ClientsCreateModelView.PhoneNumber"></span>
-      					<input class="form-control mb-4" asp-for="@Model.ClientsCreateModelView.PhoneNumber" placeholder="Номер телефона"/>
-	               
-      				</div>
+	                <div class="col-sm-6">
+		                <label >
+			                Номер телефона<span class="text-danger">*</span>
+		                </label>
+		                <span asp-validation-for="@Model.ClientsCreateModelView.PhoneNumber"></span>
+		                <input class="form-control mb-4" asp-for="@Model.ClientsCreateModelView.PhoneNumber" id="phone-mask2"  placeholder="8777777777"/>
+	                </div>
+	                <div class="col-sm-6">
+		                <label >
+			                Дата рождения<span class="text-danger">*</span>
+		                </label>
+
+		                <span asp-validation-for="@Model.ClientsCreateModelView.DateOfBirth"></span>
+		                <input type="text" class="form-control mb-4" asp-for="@Model.ClientsCreateModelView.DateOfBirth" placeholder="Дата рождения" onfocus="(this.type='date')"/>
+
+	                </div>
       
-      				<div class="col-sm-6">
-	                      <span asp-validation-for="@Model.ClientsCreateModelView.Email"></span>
-	                    <input class="form-control mb-4" asp-for="@Model.ClientsCreateModelView.Email" placeholder="Еmаil"/>
-	                  
-      				</div>
+	              
       			</div>
       
       			    <div class="row">
-      	                        
+      	                         <div class="col-sm-6">
+                                      		                        <label>Наличие заболеваний</label>
+                                	                                <select class="form-control mb-4" asp-for="@Model.ClientsCreateModelView.SicknessId">			                        
+                                		                                @foreach (Sickness sickness in  @ViewBag.Sicknesses)
+                                		                                {
+                                			                                <option value="@sickness.Id">
+                                				                                @sickness.Name
+                                			                                </option>
+                                		                                }
+                                	                                </select>
+                                	                                <button id="show2" type="button" class="btn btn-outline-secondary">Добавить другое</button>
+                                	                                <div class="input-group mb-3" id="showAddinialField2">
+                                		                                <input type="text" class="form-control" id="sicknessInput" name="newSikness" placeholder="Название болезни" aria-describedby="basic-addon2">
+                                		                                <div class="input-group-append">
+                                			                                <span class="input-group-text" id="basic-addon2">
+                                				                                <a onclick="hideAdditinal2()">
+                                					                                <i class="fa fa-times" aria-hidden="true"></i>
+                                				                                </a>
+                                			                                </span>
+                                		                                </div>
+                                	                                </div>
+                                	                                	                 
+                                      	                        </div>
       	                        <div class="col-sm-6">
       		                      
-      		                        <label>Откуда вы о нас узнали?</label><br/>
+      		                        <label>Откуда вы о нас узнали?<span class="text-danger">*</span></label><br/>
 	                                <select class="form-control mb-4" asp-for="ClientsCreateModelView.Source">
-		                                  <option >...</option>   
+		                                  <option  value="">...</option>   
 		                                <option value="Инстаграм страница">Инстаграм страница</option>
 		                                <option value="Таргет в инстаграмме">Таргет в инстаграмме</option>
 		                                <option value="Инстаграм страница">Инстаграм страница</option>
@@ -66,19 +104,7 @@
 	                                </select>   
 	                                  <span asp-validation-for="@Model.ClientsCreateModelView.Source"></span>
                                 </div>	                        
-      	                        <div class="col-sm-6">
-      		                        <label>Наличие заболеваний</label>
-	                                <select class="form-control mb-4" asp-for="@Model.ClientsCreateModelView.SicknessId">			                        
-		                                @foreach (Sickness sickness in  @ViewBag.Sicknesses)
-		                                {
-			                                <option value="@sickness.Id">
-				                                @sickness.Name
-			                                </option>
-		                                }
-	                                </select>
-	                                 
-                                    	                 
-      	                        </div>
+      	                       
                               </div> 	
                            <div class="row">   
       	                     <div class="col-sm-6">
@@ -91,6 +117,33 @@
       			                     
       			                     <textarea class="form-control mb-4" asp-for="@Model.ClientsCreateModelView.Comment" rows="2" placeholder="Коментарии"></textArea>
       		                     </div>
-      	                 </div>   
-<br/>
+</div>   
 
+@section Scripts
+{<script>
+ 	function hideAdditinal2() {
+ 	    
+ 	    $("#sicknessInput").val("");
+ 	        $("#showAddinialField2").hide();
+ 	  
+ 	}
+ 	</script>
+ <script>
+     	let phoneMask = IMask(
+           document.getElementById('phone-mask2'), {
+             mask: '+{7}(700)000-00-00'
+           });
+     	</script>
+ 	<script>
+ 		$(document).ready(function(){
+              $("#showAddinialField2").hide();
+           $("#show2").click(function(){
+             $("#showAddinialField2").show();
+           });
+         });
+     </script>
+
+	
+	
+	
+}

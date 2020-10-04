@@ -6,10 +6,14 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using SmartBreadcrumbs.Attributes;
 using SmartBreadcrumbs.Nodes;
 using yogaAshram.Models;
+using yogaAshram.Models.HelperModels;
 using yogaAshram.Models.ModelViews;
 using yogaAshram.Services;
 using State = yogaAshram.Models.State;
@@ -96,8 +100,11 @@ namespace yogaAshram.Controllers
         //Добавление пробника 
         [HttpPost]
         [Authorize]
-        public async Task<IActionResult> CreateClients(Schedule schedule)
+        public async Task<IActionResult> CreateClients(Schedule schedule, string newSikness)
         {
+            long _sicknessId;
+            if (newSikness != null) _sicknessId = AddSickness(newSikness);
+            else _sicknessId = schedule.ClientsCreateModelView.SicknessId;
             Employee employee =
                 _db.Employees.FirstOrDefault(e => e.Id == GetUserId.GetCurrentUserId(this.HttpContext));
             Client client = new Client()
@@ -108,7 +115,7 @@ namespace yogaAshram.Controllers
                 Email = schedule.ClientsCreateModelView.Email,
                 Address = schedule.ClientsCreateModelView.Address,
                 WorkPlace = schedule.ClientsCreateModelView.WorkPlace,
-                SicknessId = schedule.ClientsCreateModelView.SicknessId,
+                SicknessId = _sicknessId,
                 Source = schedule.ClientsCreateModelView.Source,
                 GroupId = schedule.ClientsCreateModelView.GroupId,
                 ClientType = ClientType.Probe,
@@ -323,13 +330,14 @@ namespace yogaAshram.Controllers
         [HttpPost]
         public async Task<IActionResult> NewClientRegister(Schedule schedule, string newSikness)
         {
-            long _sicknessId;
+            
             if (ModelState.IsValid)
             {
-                if (newSikness != null)
-                    _sicknessId=AddSickness(newSikness);
+                long _sicknessId;
+                if (newSikness != null) _sicknessId = AddSickness(newSikness);
+                else _sicknessId = schedule.ClientsCreateModelView.SicknessId;
                 
-                _sicknessId = schedule.ClientsCreateModelView.SicknessId;
+             
                 Client client = new Client()
                 {
                     NameSurname = schedule.ClientsCreateModelView.NameSurname,
@@ -438,8 +446,6 @@ namespace yogaAshram.Controllers
         {Client client = _db.Clients.FirstOrDefault(c => c.Id == clientId);
             if (ModelState.IsValid)
             {
-                
-
                 Debug.Assert(client != null, nameof(client) + " != null");
                 client.NameSurname = schedule.ClientsCreateModelView.NameSurname;
                 client.PhoneNumber = schedule.ClientsCreateModelView.PhoneNumber;
@@ -793,6 +799,7 @@ namespace yogaAshram.Controllers
                 };
 
                 _db.Entry(sickness).State = EntityState.Added;
+                _db.SaveChanges();
                 return sickness.Id;
             }
             catch (Exception e)
@@ -859,5 +866,38 @@ namespace yogaAshram.Controllers
             }
             return RedirectToAction("ClientСabinet", new {clientId = client.Id});
         }
+
+
+        public IActionResult AttendanceHistory()
+        {
+
+
+            List<Attendance> attendances = _db.Attendances.Where(p => p.GroupId == 1).ToList();
+
+              
+            
+            AttendanceHistoryShow list = new AttendanceHistoryShow();
+        
+            List<int> primeNumbers = new List<int>();
+            primeNumbers.Add(1); // adding elements using add() method
+            primeNumbers.Add(3);
+            primeNumbers.Add(5);
+            primeNumbers.Add(7);
+            list.Days = primeNumbers;
+            list.Name = "anna";
+            list.Group = "Gh-1";
+
+
+            return View(list);
+        }
+
+
+
+
+
+
+
+
+
     }
 }
