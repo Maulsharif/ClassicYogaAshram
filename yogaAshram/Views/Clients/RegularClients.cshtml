@@ -1,4 +1,5 @@
 ﻿
+@using yogaAshram.Services
 @model System.Collections.Generic.List<yogaAshram.Models.Client>
 
 @{
@@ -12,13 +13,14 @@
 	<button type="button" class="btn btn-warning btn-filter" data-target="Нет_договора">Нет договора</button>
 	<button type="button" class="btn btn-success btn-filter" data-target="Не_состоит_в_группе">Не состоит Whatsapp группе</button>
     <button type="button" class="btn btn-primary btn-filter" data-target="all">Все</button>
-    <input type="text" id="filter" class="form-control w-25 ml-1" placeholder="Группа, имя, статус">
+    <input type="text" id="filter" class="form-control w-25 ml-1" placeholder="Группа, имя, тренер">
 </div>
 <table class="table" id="example-table">
 <thead class="thead-dark">
 <tr>
     <th scope="col"><p class="text-hide">LineToShow</p>Клиент</th>
     <th scope="col">Группа</th>
+    
     <th scope="col">Оплата</th>
     <th scope="col">Whatsapp группа</th>
     <th scope="col">Договор</th>
@@ -34,7 +36,8 @@
         <tr> 
         <th scope="row"><a asp-action="ClientСabinet" asp-controller="Clients" asp-route-clientId="@client.Id">@client.NameSurname</a></th>
         <td>@client.Group.Name</td>
-        <td class="bg-@{string colorDebt = String.Empty;if (@client.Paid == Paid.Есть_долг){ colorDebt = "danger";}@colorDebt}">@client.Paid.ToString()</td>
+        
+            <td class="bg-@{string colorDebt = String.Empty;if (@client.Paid == Paid.Есть_долг){ colorDebt = "danger";}@colorDebt}">@client.Paid.ToString()</td>
         <td class="bg-@{string colorWhat = String.Empty;if (@client.WhatsAppGroup == WhatsAppGroup.Не_состоит_в_группе){ colorWhat = "success";}@colorWhat}">@client.WhatsAppGroup.ToString()</td>
             <td class="bg-@{string colorCon = String.Empty;if (@client.Contract == Contract.Нет_договора){ colorCon = "warning";}@colorCon}">@client.Contract.ToString()</td>
             <td>@client.Membership.Name</td>
@@ -52,8 +55,11 @@
                         Действия
                     </button>
                     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                        <button class="dropdown-item getPaymentCreateModal" clientId="@client.Id" >Провести платеж</button>
-                        @if (@client.WhatsAppGroup == WhatsAppGroup.Не_состоит_в_группе)
+                    @if (client.Paid != Paid.Оплачено)
+                    {
+                        <button class="dropdown-item getPaymentCreateModal" clientId="@client.Id">Провести платеж</button>
+                    } 
+                    @if (@client.WhatsAppGroup == WhatsAppGroup.Не_состоит_в_группе)
                     {
                         <button class="dropdown-item" data-toggle="modal" data-target="#groupInW-@client.Id">В гр. Whatsapp</button>
                     }
