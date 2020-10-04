@@ -352,7 +352,8 @@ namespace yogaAshram.Controllers
                     GroupId = schedule.ClientsCreateModelView.GroupId,
                     MembershipId = schedule.ClientsCreateModelView.MembershipId,
                     ClientType = ClientType.AreEngaged,
-                    CreatorId = GetUserId.GetCurrentUserId(this.HttpContext)
+                    CreatorId = GetUserId.GetCurrentUserId(this.HttpContext),
+                    HasMembership = true
                 };
                 Employee employee =
                     _db.Employees.FirstOrDefault(e => e.Id == GetUserId.GetCurrentUserId(this.HttpContext));
@@ -379,7 +380,7 @@ namespace yogaAshram.Controllers
 
                 Membership membership =
                     _db.Memberships.FirstOrDefault(m => m.Id == schedule.ClientsCreateModelView.MembershipId);
-                
+                client.Balance = -membership.Price;
                 
                 DateTime endDate = _clientServices.EndDateForClientsMembership(
                     schedule.ClientsCreateModelView.StartDate, 
@@ -497,7 +498,8 @@ namespace yogaAshram.Controllers
 
                 Membership membership =
                     _db.Memberships.FirstOrDefault(m => m.Id == schedule.ClientsCreateModelView.MembershipId);
-              
+                client.Balance -= membership.Price;
+                client.HasMembership = true;
                 _db.Entry(client).State = EntityState.Modified;
                 
                 DateTime endDate = _clientServices.EndDateForClientsMembership(
@@ -567,7 +569,7 @@ namespace yogaAshram.Controllers
                 branchId = _db.Branches.FirstOrDefault(p=>p.AdminId==user.Id).Id;
             }
             
-            List<Client> clients = _db.Clients.Where(c=>c.Group.BranchId==branchId && c.ClientType==ClientType.AreEngaged).OrderBy(p=>p.DateCreate).ToList();
+            List<Client> clients = _db.Clients.Where(c=>c.Group.BranchId==branchId).OrderByDescending(p=>p.DateCreate).ToList();
 
             return View(clients);
         }
@@ -670,6 +672,9 @@ namespace yogaAshram.Controllers
             attendance.AttendanceCount.AttendingTimes -= 1;
             if (attendance.AttendanceCount.AttendingTimes == 0)
             {
+                Client client = _db.Clients.FirstOrDefault(c => c.Id == clientId);
+                client.HasMembership = false;
+                _db.Entry(client).State = EntityState.Modified;
                 foreach (var attendanceDays in _db.Attendances.Where(a => a.ClientId == clientId && a.Date > date))
                 {
                     _db.Entry(attendanceDays).State = EntityState.Deleted;
