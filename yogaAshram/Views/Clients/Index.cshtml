@@ -20,6 +20,7 @@
            asp-route-frozenTimes = "@ViewData["FrozenTimes"]"
            asp-route-dateFrozen = "@ViewData["DateFrozen"]"
            asp-route-dateAbsent = "@ViewData["DateAbsent"]"
+           asp-route-coachId="@ViewData["Coach"]"
            asp-route-pageNumber = "@(Model.PageIndex - 1)"
            class="btn btn-outline-dark @prevDisabled">
             Назад
@@ -29,6 +30,7 @@
            asp-route-frozenTimes = "@ViewData["FrozenTimes"]"
            asp-route-dateFrozen = "@ViewData["DateFrozen"]"
            asp-route-dateAbsent = "@ViewData["DateAbsent"]"
+           asp-route-coachId="@ViewData["Coach"]"
            asp-route-pageNumber = "@(Model.PageIndex + 1)"
            class="ml-2 btn btn-outline-dark @nextDisabled">
             Вперед
