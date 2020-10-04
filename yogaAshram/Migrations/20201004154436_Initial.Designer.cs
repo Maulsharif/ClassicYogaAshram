@@ -11,8 +11,8 @@ using yogaAshram.Models;
 namespace yogaAshram.Migrations
 {
     [DbContext(typeof(YogaAshramContext))]
-    [Migration("20201004092211_initial")]
-    partial class initial
+    [Migration("20201004154436_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -213,8 +213,6 @@ namespace yogaAshram.Migrations
                         .HasColumnType("text");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("AdminId");
 
                     b.ToTable("Branches");
                 });
@@ -477,6 +475,9 @@ namespace yogaAshram.Migrations
                         .IsConcurrencyToken()
                         .HasColumnType("text");
 
+                    b.Property<long?>("CurrentBranchId")
+                        .HasColumnType("bigint");
+
                     b.Property<string>("Email")
                         .HasColumnType("character varying(256)")
                         .HasMaxLength(256);
@@ -530,6 +531,9 @@ namespace yogaAshram.Migrations
                         .HasMaxLength(256);
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CurrentBranchId")
+                        .IsUnique();
 
                     b.HasIndex("NormalizedEmail")
                         .HasName("EmailIndex");
@@ -1079,13 +1083,6 @@ namespace yogaAshram.Migrations
                         .HasForeignKey("MembershipId");
                 });
 
-            modelBuilder.Entity("yogaAshram.Models.Branch", b =>
-                {
-                    b.HasOne("yogaAshram.Models.Employee", "Admin")
-                        .WithMany()
-                        .HasForeignKey("AdminId");
-                });
-
             modelBuilder.Entity("yogaAshram.Models.CalendarEvent", b =>
                 {
                     b.HasOne("yogaAshram.Models.Branch", "Branch")
@@ -1157,6 +1154,13 @@ namespace yogaAshram.Migrations
                     b.HasOne("yogaAshram.Models.Branch", "Branch")
                         .WithMany()
                         .HasForeignKey("BranchId");
+                });
+
+            modelBuilder.Entity("yogaAshram.Models.Employee", b =>
+                {
+                    b.HasOne("yogaAshram.Models.Branch", "Branch")
+                        .WithOne("Admin")
+                        .HasForeignKey("yogaAshram.Models.Employee", "CurrentBranchId");
                 });
 
             modelBuilder.Entity("yogaAshram.Models.Group", b =>
