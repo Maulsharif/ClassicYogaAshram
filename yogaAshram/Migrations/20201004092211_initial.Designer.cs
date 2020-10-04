@@ -11,8 +11,8 @@ using yogaAshram.Models;
 namespace yogaAshram.Migrations
 {
     [DbContext(typeof(YogaAshramContext))]
-    [Migration("20201003092223_Initial")]
-    partial class Initial
+    [Migration("20201004092211_initial")]
+    partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -295,6 +295,9 @@ namespace yogaAshram.Migrations
 
                     b.Property<long>("GroupId")
                         .HasColumnType("bigint");
+
+                    b.Property<bool>("HasMembership")
+                        .HasColumnType("boolean");
 
                     b.Property<int>("LessonNumbers")
                         .HasColumnType("integer");

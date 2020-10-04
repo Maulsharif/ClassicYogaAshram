@@ -294,6 +294,9 @@ namespace yogaAshram.Migrations
                     b.Property<long>("GroupId")
                         .HasColumnType("bigint");
 
+                    b.Property<bool>("HasMembership")
+                        .HasColumnType("boolean");
+
                     b.Property<int>("LessonNumbers")
                         .HasColumnType("integer");
 
