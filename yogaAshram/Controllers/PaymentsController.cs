@@ -404,12 +404,8 @@ namespace yogaAshram.Controllers
                     return BadRequest();
                 Employee employee = await _userManager.GetUserAsync(User);
                
-                bool check = await _paymentsService.CreatePayment(model, clientsMembership, client, employee.Id);
-                if (!check)
-                    return BadRequest();
-                return Json(true);
-            
-         
+                string check = await _paymentsService.CreatePayment(model, clientsMembership, client, employee.Id);
+                return Content(check);
         }
         public async Task<IActionResult> GetSumAjax(PaymentsDates date)
         {
