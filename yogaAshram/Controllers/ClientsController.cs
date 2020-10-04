@@ -44,8 +44,9 @@ namespace yogaAshram.Controllers
         
         //Информация о клиентах по пропускам итд 
         [Breadcrumb("Информация по клиентам", FromAction = "Index", FromController = typeof(ChiefController))]
-        public IActionResult Index(int? membershipLeftDays, int? pageNumber, int? frozenTimes, double? dateFrozen, double? dateAbsent)
+        public IActionResult Index(int? membershipLeftDays, int? pageNumber, int? frozenTimes, double? dateFrozen, double? dateAbsent, long? coachId)
         {
+            ViewBag.Coaches = _db.Groups.ToList();
             var clients = _db.Clients
                 .Join(_db.Attendances, c => c.Id, a => a.ClientId, 
                     (client, attendance) => new ClientTableViewModel() { Client = client, Attendance = attendance })
@@ -88,6 +89,11 @@ namespace yogaAshram.Controllers
             {
                 ViewData["FrozenTimes"] = frozenTimes; 
                 model = model.Where(c => c.Attendance.AttendanceCount.FrozenTimes == frozenTimes);
+            }
+            if (coachId != null)
+            {
+                ViewData["Coach"] = coachId; 
+                model = model.Where(c => c.Client.Group.CoachId == coachId);
             }
             return View(PageViewModel<ClientTableViewModel>.Create(model.AsNoTracking(), pageNumber ?? 1, pageSize));
         }
