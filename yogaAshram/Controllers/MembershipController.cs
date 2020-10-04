@@ -111,7 +111,7 @@ namespace yogaAshram.Controllers
         {
             Client client = await _db.Clients.FirstOrDefaultAsync(p => p.Id == model.ClientId);
             Membership membership = await _db.Memberships.FirstOrDefaultAsync(p => p.Id == model.MembershipId);
-            if (-client.Balance + membership.Price > model.CashSum + model.CardSum)
+            if (-client.Balance > model.CashSum + model.CardSum)
                 return Content("errorNotEnoughSum");
             foreach (var attendanceUnActive in _db.Attendances.Where(a => a.ClientId == model.ClientId))
             {
@@ -141,6 +141,7 @@ namespace yogaAshram.Controllers
                 client.GroupId = model.GroupId;
                 client.Membership = membership;
                 client.LessonNumbers = membership.AttendanceDays;
+                client.HasMembership = true;
                 _db.Entry(client).State = EntityState.Modified;
                 
                 DateTime endDate = _clientServices.EndDateForClientsMembership(
@@ -173,7 +174,8 @@ namespace yogaAshram.Controllers
                 await _db.SaveChangesAsync();
                 model.BranchId = client.Group.BranchId;
                 bool check = await _paymentsService.PayForMembership(model, clientsMembership, client, employee.Id);
-                
+                if(!check)
+                    return Content("error");
                 return Content("success");
             
         }
