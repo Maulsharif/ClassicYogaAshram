@@ -47,6 +47,14 @@
 
             <button type="submit" class="col-md-3 ml-5 mt-4 btn-1 btn btn-success" id="btn_modal_window" style="margin-bottom: 30px">Редактировать</button>
         </div>
+        @if (Model.Balance < 0)
+        {
+            <p>Присутствует задолженность в размере @(-Model.Balance)</p>
+        }
+        else if (Model.Balance > 0)
+        {
+            <p>Имеется переплата в размере @Model.Balance</p>
+        }
     </div>
 </div>
 
