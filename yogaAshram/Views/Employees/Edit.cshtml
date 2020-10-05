@@ -37,6 +37,10 @@
                         <p class="text-danger" id="invalidNameSurname"></p>
                     </div>
                 }
+                <div class="form-group">
+                    <label>Роль</label>
+                    <input readonly="readonly" asp-for="Role" value="@Model.Role" class="form-control">
+                </div>
                 <input id="employeeId" type="hidden" asp-for="Id" value="@Model.Id" />
                 <button type="button" id="submitButton" class="btn btn-primary mt-3">Сохранить изменения</button>
             </form>
