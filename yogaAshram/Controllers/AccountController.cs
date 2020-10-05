@@ -97,7 +97,7 @@ namespace yogaAshram.Controllers
         public async Task<IActionResult> Logout()
         {
             await _signInManager.SignOutAsync();
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Login", "Account");
         }
         [HttpGet]
         [AllowAnonymous]
@@ -167,7 +167,7 @@ namespace yogaAshram.Controllers
         }
         
         
-        
+        [Authorize]
         public IActionResult RedirectToPage()
         {
             if (!User.Identity.IsAuthenticated)

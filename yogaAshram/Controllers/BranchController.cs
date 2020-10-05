@@ -44,7 +44,7 @@ namespace yogaAshram.Controllers
             await _db.SaveChangesAsync();
             long branchId = branch.Id;
             Employee chief= _db.Employees.FirstOrDefault(p => p.Id == 1);
-            chief.CurrentBranchId = branchId;
+         
             CurrentSum cs = new CurrentSum()
             {
                 CashSum = 0,
@@ -52,7 +52,9 @@ namespace yogaAshram.Controllers
                 BranchId=branchId
                 
             };
-            
+            Employee admin = _db.Employees.FirstOrDefault(e => e.Id == adminId);
+            admin.Branch = branch;
+            _db.Entry(admin).State = EntityState.Modified;
             _db.Entry(cs).State = EntityState.Added;
             await _db.SaveChangesAsync();
             return RedirectToAction("Index", "Chief");

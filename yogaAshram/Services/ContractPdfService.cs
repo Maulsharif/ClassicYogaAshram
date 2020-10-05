@@ -72,6 +72,7 @@ namespace yogaAshram.Services
                 gfx.DrawString($"Нет никакого клиента", font, XBrushes.Black, x, y);
             }
             
+            
             MemoryStream stream = new MemoryStream();
             document.Save(stream);
             stream.Position = 0;

@@ -20,7 +20,7 @@ namespace yogaAshram.Models.ModelViews
         public ClientType ClientType { get; set; }
         [Required(ErrorMessage = "Поле обязательно для заполнения")]
         public int LessonNumbers  { get; set; }
-      
+        public string Color { get; set; }
         [Required(ErrorMessage = "Поле обязательно для заполнения")]
 
         [Remote(action: "CheckDate", controller: "Validation", ErrorMessage = "Некоректная дата")]
@@ -32,19 +32,20 @@ namespace yogaAshram.Models.ModelViews
         
         [Required(ErrorMessage = "Поле обязательно для заполнения")]
         public string Source { get; set; }
-    
-      
+        public bool Contract { get; set; }
+        public bool WhatsAppGroup { get; set; }
+   
         [RegularExpression (@"[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4}", ErrorMessage = "Некорректный email")]
         public string Email { get; set; }
         public string Address { get; set; }
-        [Required(ErrorMessage = "Поле обязательно для заполнения")]
+      
         public string WorkPlace { get; set; }
         [Required(ErrorMessage = "Поле обязательно для заполнения")]
         public DateTime DateOfBirth { get; set; }
 
         public long MembershipId { get; set; }
         
-      
+        public virtual Client Client { get; set; }
         
     }
 }

@@ -8,7 +8,6 @@
       <_ContentIncludedByDefault Remove="Views\Home\Index.cshtml" />
       <_ContentIncludedByDefault Remove="Views\Home\Privacy.cshtml" />
       <_ContentIncludedByDefault Remove="Views\Seller\PartialViews\PasswordChangePartial.cshtml" />
-      <_ContentIncludedByDefault Remove="Views\Shared\Partial\_PartialLeftNavbar.cshtml" />
     </ItemGroup>
 
     <ItemGroup>
@@ -473,6 +472,7 @@
 
     <ItemGroup>
       <Folder Include="Files" />
+      <Folder Include="Views\Employees\PartialViews" />
     </ItemGroup>
 
     <ProjectExtensions><VisualStudio><UserProperties appsettings_1json__JsonSchema="" /></VisualStudio></ProjectExtensions>

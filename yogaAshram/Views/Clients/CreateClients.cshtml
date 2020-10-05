@@ -19,7 +19,7 @@
             <div>
                 <span asp-validation-for="PhoneNumber"></span>
                 <label>Номер телефона</label><br/>
-                <input class="form-control mb-4" asp-for="PhoneNumber"  id="PhoneNumber">
+                <input class="form-control mb-4" asp-for="PhoneNumber"/>
             </div>
             <div>
                 <label>Группы</label>
@@ -31,9 +31,9 @@
                     else
                     {
                         @foreach (Group group in (IEnumerable) @ViewBag.Groups)
-                        {
-                            <option value="@group.Id">@group.Name</option>
-                        }
+                                                 {
+                                                     <option value="@group.Id">@group.Name</option>
+                                                 }
                     }
                 </select>
             </div>
@@ -74,13 +74,7 @@
 </div>
 @section Scripts
 {
-   
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
-    
-    
-   
-    
-   
 }

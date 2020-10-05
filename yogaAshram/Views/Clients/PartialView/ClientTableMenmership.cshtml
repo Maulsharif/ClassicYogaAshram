@@ -1,9 +1,10 @@
 
+@using System.Collections
 @model PageViewModel<ClientTableViewModel>
 
     <h3 class="text-center">Таблица о клиентах</h3>
    
-<div class="row justify-content-end">
+<div class="row justify-content-end mb-1">
     <div class="dropdown w-50 mb-2 col-sm">
         <button class="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             По сроку абонемента
@@ -45,6 +46,19 @@
                 <a class="dropdown-item bg-light" asp-controller="Clients" asp-action="Index" asp-route-dateAbsent="-7">За неделю</a>
                 <a class="dropdown-item bg-light" asp-controller="Clients" asp-action="Index" asp-route-dateAbsent="-14">За 14 дней</a>
             </li>
+        </ul>
+    </div>
+    <div class="dropdown w-50 mb-2 col-sm">
+        <button class="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            По инструкторам
+            <span class="caret"></span></button>
+        <ul class="dropdown-menu">
+            @foreach (Group group in (IEnumerable) @ViewBag.Coaches)
+            {
+                <li>
+                    <a class="dropdown-item bg-light" asp-controller="Clients" asp-action="Index" asp-route-coachId="@group.CoachId">@group.Coach.NameSurname</a>
+                </li>
+            }            
         </ul>
     </div>
     <div class="col-sm">

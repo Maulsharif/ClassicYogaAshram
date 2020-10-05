@@ -7,35 +7,35 @@ using yogaAshram.Models.ModelViews;
 
 namespace yogaAshram.Models
 {
-   
-   
-    
-    
-    
-    
     public enum ClientType
-    {[Description("Пробный")]
+    {[Description("Пробник")]
         Probe,
         [Description("Активный")]
         AreEngaged,
-        [Description("Не активный")]
+        [Description("Не ходит")]
         NotEngaged
     }
     public enum Paid
     {
+        [Description("Оплатил")]
         Оплачено,
+        [Description("Не отплатил")]
         Не_оплачено,
+        [Description("Должник")]
         Есть_долг
     }
     
     public enum WhatsAppGroup
     {
+        [Description("В WA группе")]
         Состоит_в_группе,
+        [Description("Не в WA группе")]
         Не_состоит_в_группе
     }
     public enum Contract
-    {
+    {   [Description("Договор есть")]
         Есть_договор,
+        [Description("Договора нет")]
         Нет_договора
     }
     public class Client
@@ -44,7 +44,7 @@ namespace yogaAshram.Models
         
         public string NameSurname { get; set; }
         public DateTime DateOfBirth { get; set; }
-
+        public bool HasMembership { get; set; }
         public string PhoneNumber { get; set; }
         public string Email { get; set; }
         public string Address { get; set; }

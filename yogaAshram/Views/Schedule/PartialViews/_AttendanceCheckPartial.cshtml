@@ -88,6 +88,7 @@
 							<option value="1">Пришел</option>
 							<option value="2">Не пришел</option>
 							<option value="3">Заморозка</option>
+							<option value="5">Отмена/Выходной</option>
 						</select>
 					</td>
 					<td>
@@ -127,7 +128,7 @@
 							</div>
 							<div class="modal-footer">
 								<button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="sendComment('@attendance.Id')">Отправить</button>
-								<button type="button" class="btn btn-primary">Закрыть</button>
+								<button type="button" class="btn btn-primary" data-dismiss="modal">Закрыть</button>
 							</div>
 						</div>
 					</div>
@@ -146,7 +147,7 @@
 							</div>
 							<div class="modal-footer">
 								<button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="regularAttendAndComment('@attendance.Id')">Отметить</button>
-								<button type="button" class="btn btn-primary">Закрыть</button>
+								<button type="button" class="btn btn-primary" data-dismiss="modal">Закрыть</button>
 							</div>
 						</div>
 					</div>

@@ -17,8 +17,7 @@ namespace yogaAshram.Controllers
 {
     
     [Authorize]
-    public class 
-        ScheduleController : Controller
+    public class ScheduleController : Controller
     {
         private YogaAshramContext _db;
 

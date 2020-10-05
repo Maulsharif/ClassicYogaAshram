@@ -212,8 +212,6 @@ namespace yogaAshram.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AdminId");
-
                     b.ToTable("Branches");
                 });
 
@@ -293,6 +291,9 @@ namespace yogaAshram.Migrations
 
                     b.Property<long>("GroupId")
                         .HasColumnType("bigint");
+
+                    b.Property<bool>("HasMembership")
+                        .HasColumnType("boolean");
 
                     b.Property<int>("LessonNumbers")
                         .HasColumnType("integer");
@@ -472,6 +473,9 @@ namespace yogaAshram.Migrations
                         .IsConcurrencyToken()
                         .HasColumnType("text");
 
+                    b.Property<long?>("CurrentBranchId")
+                        .HasColumnType("bigint");
+
                     b.Property<string>("Email")
                         .HasColumnType("character varying(256)")
                         .HasMaxLength(256);
@@ -525,6 +529,9 @@ namespace yogaAshram.Migrations
                         .HasMaxLength(256);
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CurrentBranchId")
+                        .IsUnique();
 
                     b.HasIndex("NormalizedEmail")
                         .HasName("EmailIndex");
@@ -881,41 +888,46 @@ namespace yogaAshram.Migrations
                         new
                         {
                             Id = 10000L,
-                            Name = "остеохондроз"
+                            Name = "здоров"
                         },
                         new
                         {
                             Id = 10001L,
-                            Name = "грыжа"
+                            Name = "остеохондроз"
                         },
                         new
                         {
                             Id = 10002L,
-                            Name = "сколиоз"
+                            Name = "грыжа"
                         },
                         new
                         {
                             Id = 10003L,
-                            Name = "артрит"
+                            Name = "сколиоз"
                         },
                         new
                         {
                             Id = 10004L,
-                            Name = "гипертония"
+                            Name = "артрит"
                         },
                         new
                         {
                             Id = 10005L,
-                            Name = "сахарный диабет"
+                            Name = "гипертония"
                         },
                         new
                         {
                             Id = 10006L,
-                            Name = "сердечная недостаточность"
+                            Name = "сахарный диабет"
                         },
                         new
                         {
                             Id = 10007L,
+                            Name = "сердечная недостаточность"
+                        },
+                        new
+                        {
+                            Id = 10008L,
                             Name = "ожирение"
                         });
                 });
@@ -1069,13 +1081,6 @@ namespace yogaAshram.Migrations
                         .HasForeignKey("MembershipId");
                 });
 
-            modelBuilder.Entity("yogaAshram.Models.Branch", b =>
-                {
-                    b.HasOne("yogaAshram.Models.Employee", "Admin")
-                        .WithMany()
-                        .HasForeignKey("AdminId");
-                });
-
             modelBuilder.Entity("yogaAshram.Models.CalendarEvent", b =>
                 {
                     b.HasOne("yogaAshram.Models.Branch", "Branch")
@@ -1147,6 +1152,13 @@ namespace yogaAshram.Migrations
                     b.HasOne("yogaAshram.Models.Branch", "Branch")
                         .WithMany()
                         .HasForeignKey("BranchId");
+                });
+
+            modelBuilder.Entity("yogaAshram.Models.Employee", b =>
+                {
+                    b.HasOne("yogaAshram.Models.Branch", "Branch")
+                        .WithOne("Admin")
+                        .HasForeignKey("yogaAshram.Models.Employee", "CurrentBranchId");
                 });
 
             modelBuilder.Entity("yogaAshram.Models.Group", b =>

@@ -149,6 +149,7 @@ namespace yogaAshram.Controllers
                 UserName = employee.UserName,
                 Email = employee.Email,
                 NameSurname = employee.NameSurname,
+                Role = employee.Role,
                 Id = employee.Id
             });
         }
@@ -165,6 +166,7 @@ namespace yogaAshram.Controllers
             employee.NameSurname = model.NameSurname;
             employee.UserName = model.UserName;
             employee.Email = model.Email;
+            employee.Role = model.Role;
             _db.Entry(employee).State = EntityState.Modified;
             await _db.SaveChangesAsync();
             return RedirectToAction("Index", new { employeeId = employee.Id });
@@ -272,5 +274,23 @@ namespace yogaAshram.Controllers
             await _db.SaveChangesAsync();
             return RedirectToAction("Index", "Chief");
         }
+      
+        [ActionName("ListEmployee")]
+        public async Task<IActionResult> ListEmployee(long emplId)
+        {
+            Employee employee = _db.Employees.FirstOrDefault(e => e.Id == emplId);
+            ViewBag.Employees = _db.Employees.ToList();
+
+            return View(employee);
+        }
+        
+        [Authorize]
+        public IActionResult RedirectToChoose()
+        {
+            List<Branch> branches = _db.Branches.ToList();
+            return View(branches);
+
+        }
+        
     }
 }

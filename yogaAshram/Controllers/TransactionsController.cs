@@ -28,9 +28,15 @@ namespace yogaAshram.Controllers
         // GET
         //
         [Breadcrumb("Касса")]
-        public IActionResult Index(long branchId)
+        public async Task<IActionResult> Index(long branchId)
         {
+            
+                
           
+            if (User.IsInRole("admin"))
+            {  Employee user=await _userManager.GetUserAsync(User);
+                branchId = _db.Branches.FirstOrDefault(p=>p.AdminId==user.Id).Id;
+          }
             List<Payment> payments = _db.Payments.Where(p => p.BranchId == branchId).ToList();
        
             List<Withdrawal> withdrawals = _db.Withdrawals.Where(p => p.BranchId == branchId).ToList();

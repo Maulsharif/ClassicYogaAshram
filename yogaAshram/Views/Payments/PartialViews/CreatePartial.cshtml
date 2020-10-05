@@ -71,12 +71,21 @@
                   "BranchId": @Model.BranchId
             },
             success: function (data) {
-                if (data) {
-                    $('#paymentCreateModal').modal('hide');
-                    $("#commentPayment").val();
-                    document.location.reload();
-                }
-            }
+               if (data === "success") {
+                      alert("Оплата проведена успешно")
+                      $('#paymentCreateModal').modal('hide');
+                      $("#commentPayment").val();
+                      window.location.href = '@Url.Action("Index", "Payments")';
+                      }
+                  else if (data === "negativeOrZero"){
+                      alert("Введенная сумма не может быть 0 или отрицательной")
+                         
+                      }
+                  else{
+                       alert("Ошибка. Попробуйте еще раз");
+                      }    
+                  }
+              
         })
     })
 </script>

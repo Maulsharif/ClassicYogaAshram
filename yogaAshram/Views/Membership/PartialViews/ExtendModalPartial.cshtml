@@ -103,7 +103,10 @@
                         document.location.reload();
                     }
                     else if(data === "errorNotEnoughSum"){
-                        $('#errorText').text("Необходимо оплатить всю сумму");
+                        $('#errorText').text("Есть долг за прошлый абонемент");
+                    }
+                    else {
+                         $('#errorText').text("Ошибка. Попробуйте еще раз");
                     }
                 }
             })

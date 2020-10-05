@@ -1,19 +1,12 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
-using System.Threading.Channels;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using PdfSharpCore.Drawing;
-using PdfSharpCore.Drawing.Layout;
-using PdfSharpCore.Pdf;
 using SmartBreadcrumbs.Attributes;
 using SmartBreadcrumbs.Nodes;
 using yogaAshram.Models;
@@ -23,16 +16,13 @@ using State = yogaAshram.Models.State;
 
 namespace yogaAshram.Controllers
 {
-    
-    
     public class ClientsController : Controller
     {
         private readonly UserManager<Employee> _userManager;
-        private readonly SignInManager<Employee> _signInManager;
         private readonly YogaAshramContext _db;
         private readonly ClientServices _clientServices;
 
-        public ClientsController(UserManager<Employee> userManager, 
+        public ClientsController(UserManager<Employee> userManager,
             YogaAshramContext db, ClientServices clientServices, PaymentsService paymentsService)
         {
             _userManager = userManager;
@@ -40,6 +30,7 @@ namespace yogaAshram.Controllers
             _clientServices = clientServices;
         }
         
+        //Подробная информация об активном клиенте
         public IActionResult ClientСabinet(long clientId)
         {
             var count = _db.AttendanceCounts.ToList();
@@ -50,9 +41,12 @@ namespace yogaAshram.Controllers
             return View(client);
         }
         
+        
+        //Информация о клиентах по пропускам итд 
         [Breadcrumb("Информация по клиентам", FromAction = "Index", FromController = typeof(ChiefController))]
-        public IActionResult Index(int? membershipLeftDays, int? pageNumber, int? frozenTimes, double? dateFrozen, double? dateAbsent)
+        public IActionResult Index(int? membershipLeftDays, int? pageNumber, int? frozenTimes, double? dateFrozen, double? dateAbsent, long? coachId)
         {
+            ViewBag.Coaches = _db.Groups.ToList();
             var clients = _db.Clients
                 .Join(_db.Attendances, c => c.Id, a => a.ClientId, 
                     (client, attendance) => new ClientTableViewModel() { Client = client, Attendance = attendance })
@@ -96,9 +90,16 @@ namespace yogaAshram.Controllers
                 ViewData["FrozenTimes"] = frozenTimes; 
                 model = model.Where(c => c.Attendance.AttendanceCount.FrozenTimes == frozenTimes);
             }
+            if (coachId != null)
+            {
+                ViewData["Coach"] = coachId; 
+                model = model.Where(c => c.Client.Group.CoachId == coachId);
+            }
             return View(PageViewModel<ClientTableViewModel>.Create(model.AsNoTracking(), pageNumber ?? 1, pageSize));
         }
 
+        
+        //Добавление пробника 
         [HttpPost]
         [Authorize]
         public async Task<IActionResult> CreateClients(Schedule schedule)
@@ -180,6 +181,9 @@ namespace yogaAshram.Controllers
             await _db.SaveChangesAsync();
             return RedirectToAction("Trials", "Clients", new {branchId = schedule.BranchId});
         }
+        
+        
+        //Добавление комментария пробникам 
         [HttpPost]
         public async Task<IActionResult> WriteComment(long clientId, string sellerComment)
         {
@@ -204,10 +208,16 @@ namespace yogaAshram.Controllers
 
         }
 
-
+        
+        //Таблица с пробниками 
         [Breadcrumb("Пробники", FromAction = "Index", FromController = typeof(AdminController))]
-        public IActionResult Trials(DateTime time, long branchId)
+        public async Task<IActionResult> Trials(DateTime time, long branchId)
         {
+            if (User.IsInRole("admin"))
+            {  Employee user=await _userManager.GetUserAsync(User);
+                branchId = _db.Branches.FirstOrDefault(p=>p.AdminId==user.Id).Id;
+            }
+            
             ViewBag.BranchId = branchId;
             if (time == DateTime.MinValue)
                 return View(_db.TrialUserses.Where(p => p.Group.BranchId == branchId).OrderBy(p => p.LessonTime)
@@ -216,6 +226,9 @@ namespace yogaAshram.Controllers
 
             return View(users.Where(p => p.Group.BranchId == branchId).ToList());
         }
+        
+        
+        //Отметка посещаемости пробников
         [Breadcrumb("Посещаемость пробников")]
         [HttpGet]
         public IActionResult CheckAttendanceTrial(long groupId, long clientId, long branchId)
@@ -244,7 +257,8 @@ namespace yogaAshram.Controllers
             return View(clients);
         }
 
-        //Отметка пробников
+        
+        //Отметка  посещаемости пробников
         [HttpPost]
         public async Task<IActionResult> CheckAttendanceTrial(long[] arrayOfCustomerID, int[] arrayOfState,
             long HbranchId)
@@ -309,7 +323,9 @@ namespace yogaAshram.Controllers
             return View(client);
 
         }
-
+        
+        
+        //Добавление нового клиента 
         [HttpPost]
         public async Task<IActionResult> NewClientRegister(Schedule schedule, string newSikness)
         {
@@ -320,7 +336,6 @@ namespace yogaAshram.Controllers
                     _sicknessId=AddSickness(newSikness);
                 
                 _sicknessId = schedule.ClientsCreateModelView.SicknessId;
-                
                 Client client = new Client()
                 {
                     NameSurname = schedule.ClientsCreateModelView.NameSurname,
@@ -337,7 +352,8 @@ namespace yogaAshram.Controllers
                     GroupId = schedule.ClientsCreateModelView.GroupId,
                     MembershipId = schedule.ClientsCreateModelView.MembershipId,
                     ClientType = ClientType.AreEngaged,
-                    CreatorId = GetUserId.GetCurrentUserId(this.HttpContext)
+                    CreatorId = GetUserId.GetCurrentUserId(this.HttpContext),
+                    HasMembership = true
                 };
                 Employee employee =
                     _db.Employees.FirstOrDefault(e => e.Id == GetUserId.GetCurrentUserId(this.HttpContext));
@@ -364,6 +380,8 @@ namespace yogaAshram.Controllers
 
                 Membership membership =
                     _db.Memberships.FirstOrDefault(m => m.Id == schedule.ClientsCreateModelView.MembershipId);
+                client.Balance = -membership.Price;
+                
                 DateTime endDate = _clientServices.EndDateForClientsMembership(
                     schedule.ClientsCreateModelView.StartDate, 
                     schedule.ClientsCreateModelView.GroupId,
@@ -413,16 +431,21 @@ namespace yogaAshram.Controllers
                 _db.Entry(client).State = EntityState.Added;
                 _db.Entry(group).State = EntityState.Modified;
                 await _db.SaveChangesAsync();
+                return RedirectToAction("RegularClients", "Clients", new{branchId=client.Group.BranchId});
             }
-            return RedirectToAction("RegularClients", "Clients");
-        }
 
+            return BadRequest();
+        }
+        
+        
+        
+        //Добавление в группу старого клиента 
         [HttpPost]
         public async Task<IActionResult> OldClientRegister(Schedule schedule, long clientId)
-        {
+        {Client client = _db.Clients.FirstOrDefault(c => c.Id == clientId);
             if (ModelState.IsValid)
             {
-                Client client = _db.Clients.FirstOrDefault(c => c.Id == clientId);
+                
 
                 Debug.Assert(client != null, nameof(client) + " != null");
                 client.NameSurname = schedule.ClientsCreateModelView.NameSurname;
@@ -475,13 +498,15 @@ namespace yogaAshram.Controllers
 
                 Membership membership =
                     _db.Memberships.FirstOrDefault(m => m.Id == schedule.ClientsCreateModelView.MembershipId);
-              
+                client.Balance -= membership.Price;
+                client.HasMembership = true;
                 _db.Entry(client).State = EntityState.Modified;
                 
                 DateTime endDate = _clientServices.EndDateForClientsMembership(
                     schedule.ClientsCreateModelView.StartDate, 
                     schedule.ClientsCreateModelView.GroupId,
                     membership.AttendanceDays);
+                Console.WriteLine(endDate);
                ClientsMembership clientsMembership = new ClientsMembership()
                {
                    ClientId = client.Id,
@@ -530,19 +555,27 @@ namespace yogaAshram.Controllers
                 await _db.SaveChangesAsync();
             }
 
-            return RedirectToAction("RegularClients", "Clients");
+            return RedirectToAction("RegularClients", "Clients",new{branchId=client.Group.BranchId});
         }
 
+        
+        //Список активных  клиентов 
         [Authorize]
         [Breadcrumb("Базовые клиенты", FromAction = "Index", FromController = typeof(AdminController))]
-        public IActionResult RegularClients()
+        public async Task<IActionResult> RegularClients(long branchId)
         {
-            //Сделать проверку на филиал
-            List<Client> clients = _db.Clients.Where(c => c.ClientType == ClientType.AreEngaged).ToList();
+            if (User.IsInRole("admin"))
+            {  Employee user=await _userManager.GetUserAsync(User);
+                branchId = _db.Branches.FirstOrDefault(p=>p.AdminId==user.Id).Id;
+            }
+            
+            List<Client> clients = _db.Clients.Where(c=>c.Group.BranchId==branchId).OrderByDescending(p=>p.DateCreate).ToList();
 
             return View(clients);
         }
-
+        
+        
+        //Сделать клиента не активным
         [HttpPost]
         public async Task<IActionResult> MakeClientUnActive(long? clientId)
         {
@@ -550,9 +583,11 @@ namespace yogaAshram.Controllers
             if (client != null) client.ClientType = ClientType.NotEngaged;
             _db.Entry(client).State = EntityState.Modified;
             await _db.SaveChangesAsync();
-            return RedirectToAction("RegularClients");
+            return RedirectToAction("RegularClients", new{branchId=client.Group.BranchId});
         }
 
+        
+        //Добавить клиента в группу WA
         [HttpPost]
         public async Task<IActionResult> MakeClientJoinInWhatsAppGroup(long? clientId)
         {
@@ -560,9 +595,11 @@ namespace yogaAshram.Controllers
             if (client != null) client.WhatsAppGroup = WhatsAppGroup.Состоит_в_группе;
             _db.Entry(client).State = EntityState.Modified;
             await _db.SaveChangesAsync();
-            return RedirectToAction("RegularClients");
+            return RedirectToAction("RegularClients", new{branchId=client.Group.BranchId});
         }
-
+        
+        
+        //Подписал договор
         [HttpPost]
         public async Task<IActionResult> ClientSignedContract(long? clientId)
         {
@@ -570,9 +607,11 @@ namespace yogaAshram.Controllers
             if (client != null) client.Contract = Contract.Есть_договор;
             _db.Entry(client).State = EntityState.Modified;
             await _db.SaveChangesAsync();
-            return RedirectToAction("RegularClients");
+            return RedirectToAction("RegularClients", new{branchId=client.Group.BranchId});
         }
         
+        
+        //Написать коментарии
         [HttpPost]
         public async Task<IActionResult> Comment(long? clientId, string comment)
         {
@@ -601,9 +640,10 @@ namespace yogaAshram.Controllers
             }
             _db.Entry(client).State = EntityState.Modified;
             await _db.SaveChangesAsync();
-            return RedirectToAction("RegularClients");
+            return RedirectToAction("RegularClients", new{branchId=client.Group.BranchId});
         }
         
+        //Скачивание договора 
         public IActionResult GetPdfDocument(long? clientId)
         {
             Client client = _db.Clients.FirstOrDefault(c => c.Id == clientId);
@@ -611,11 +651,12 @@ namespace yogaAshram.Controllers
             return contractPdf.RenderPdfDocument(client.Id);
         }
 
+        
+        //Отметка клиентов в  группе
         [HttpPost]
         public async Task<IActionResult> RegularAttendance(DateTime date, long clientId, int state, long attendanceId, string reason)
         {
             
-
             List<Attendance> attendancesToCheckDate = _db.Attendances.Where(a => a.IsChecked 
                                                                                  && a.ClientId == clientId).ToList();
             if (attendancesToCheckDate.Any(a => a.Date == date))
@@ -631,6 +672,9 @@ namespace yogaAshram.Controllers
             attendance.AttendanceCount.AttendingTimes -= 1;
             if (attendance.AttendanceCount.AttendingTimes == 0)
             {
+                Client client = _db.Clients.FirstOrDefault(c => c.Id == clientId);
+                client.HasMembership = false;
+                _db.Entry(client).State = EntityState.Modified;
                 foreach (var attendanceDays in _db.Attendances.Where(a => a.ClientId == clientId && a.Date > date))
                 {
                     _db.Entry(attendanceDays).State = EntityState.Deleted;
@@ -641,6 +685,36 @@ namespace yogaAshram.Controllers
             
             if (attendance.AttendanceState == AttendanceState.notattended)
                 attendance.AttendanceCount.AbsenceTimes += 1;
+            else if (attendance.AttendanceState == AttendanceState.cancel)
+            {
+                attendance.AttendanceCount.AttendingTimes += 1;
+                ClientsMembership clientsMembership = _db.ClientsMemberships
+                    .FirstOrDefault(c => c.Id == attendance.ClientsMembershipId);
+                if (clientsMembership != null)
+                {
+                    DateTime lastDay = clientsMembership.DateOfExpiry;
+                    clientsMembership.DateOfExpiry = _clientServices.DateIfFrozen(lastDay, attendance.GroupId);
+                    Attendance att =
+                        _db.Attendances.FirstOrDefault(a => a.AttendanceCountId == attendance.AttendanceCountId && a.Date == clientsMembership.DateOfExpiry);
+                    if (att == null)
+                    {
+                        att = new Attendance()
+                        {
+                            AttendanceCountId = attendance.AttendanceCountId,
+                            Date = clientsMembership.DateOfExpiry,
+                            ClientId = clientId,
+                            GroupId = attendance.GroupId,
+                            MembershipId = attendance.MembershipId,
+                            ClientsMembershipId = attendance.ClientsMembershipId
+                        };
+                        _db.Entry(att).State = EntityState.Added;
+                        
+                    } 
+                    
+                    _db.Entry(clientsMembership).State = EntityState.Modified;      
+                    
+                } 
+            }
             else if (attendance.AttendanceState == AttendanceState.frozen && attendance.AttendanceCount.FrozenTimes > 0)
             {
                 attendance.AttendanceCount.FrozenTimes -= 1;
@@ -665,11 +739,13 @@ namespace yogaAshram.Controllers
                 comment.Date = date;
                 if (attendance.AttendanceState == AttendanceState.frozen)
                     comment.Reason = Reason.Заморозка;
+                else if(attendance.AttendanceState == AttendanceState.cancel)
+                    comment.Reason = Reason.Отмена;
                 else
                     comment.Reason = Reason.Пропуск;
                 Employee employee =
                     _db.Employees.FirstOrDefault(e => e.Id == GetUserId.GetCurrentUserId(this.HttpContext));
-                comment.Text = $"{employee?.UserName}: {reason}, {DateTime.Now:dd.MM.yyyy}";
+                comment.Text = $"{employee?.UserName}: {attendance.AttendanceState} {reason}, {DateTime.Now:dd.MM.yyyy}";
                     client?.Comments.Add(comment);
                     _db.Entry(client).State = EntityState.Modified;
             }
@@ -679,6 +755,9 @@ namespace yogaAshram.Controllers
             await _db.SaveChangesAsync();
             return Content("success");
         }
+        
+        
+        //Комментирование посещаемости 
         [HttpPost]
         public async Task<IActionResult> CommentFromAttendance(long clientId, string comment)
         {
@@ -711,7 +790,9 @@ namespace yogaAshram.Controllers
             await _db.SaveChangesAsync();
             return Content("success");
         }
-
+        
+        
+        //Добавить болезнь 
         [HttpPost]
         public long AddSickness(string sicknessName)
         {
@@ -731,21 +812,20 @@ namespace yogaAshram.Controllers
                 throw;
             }
         }
+        
+        
+        //Проверка неотмеченных клиентов для уведомления
         public bool GetGroupsLink()
         {
             bool res;
             if (_db.Attendances.Where(p => p.IsChecked == false && p.Date == DateTime.Today).ToList().Count > 0)
                 return true;
             else
-            {
                 return false;
-            }
-
-            
         }
         
         
-        
+        //Редактирование клиента
         [Authorize]
         public IActionResult ClientEdit(long id)
         {
@@ -763,6 +843,8 @@ namespace yogaAshram.Controllers
             return View(model);
         }
         
+        
+        //Редактирование клиента 
         [HttpPost]
         [Authorize]
         public async Task<IActionResult> ClientEdit(ClientsEditModelView model)
@@ -787,19 +869,6 @@ namespace yogaAshram.Controllers
                 }
             }
             return RedirectToAction("ClientСabinet", new {clientId = client.Id});
-        }
-        
-        
-        
-        
-        
-        public IActionResult AttendanceHistory()
-        {
-            var attendances = _db.Attendances.Where(p=>p.ClientId==3).ToList();
-         
-            
-           
-            return View(attendances);
         }
     }
 }
