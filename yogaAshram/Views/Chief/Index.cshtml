@@ -5,7 +5,7 @@
     ViewBag.Title = "Личный кабинет";
 }
 
-@if (@ViewBag.Branch!= null)
+@if (@ViewBag.Branch != null)
 {
     <p>Текущий филиал:    @ViewBag.Branch.Name</p>
 }
@@ -40,7 +40,7 @@
                         <label for="">Выберете администратора:</label>
                         <select class="form-control mb-2" name="adminId" onchange="validateAdminIds()" id="adminId">
                             <option selected value="no">Выберите администратора</option>
-                            @foreach (Employee admin in (IEnumerable) @ViewBag.Admin)
+                            @foreach (Employee admin in (IEnumerable)@ViewBag.Admin)
                             {
                                 <option value="@admin.Id">@admin.UserName</option>
                             }
@@ -75,7 +75,7 @@
         }
         else
         {
-            @foreach (Branch branch in (IEnumerable) @ViewBag.Branches)
+            @foreach (Branch branch in (IEnumerable)@ViewBag.Branches)
             {
                 <p>
                     <hr>
@@ -178,7 +178,7 @@
                                 <div class="row m-1">
                                     <select id="adminId-@branch.Id" name="adminId" class="form-control w-75 mb-1" onchange="validateAdmin('@branch.Id')">
                                         <option value="no" selected="">Выберите администратора</option>
-                                        @foreach (Employee admin in (IEnumerable) @ViewBag.Admin)
+                                        @foreach (Employee admin in (IEnumerable)@ViewBag.Admin)
                                         {
                                             <option value="@admin.Id">@admin.UserName</option>
                                         }
@@ -189,8 +189,8 @@
                         </div>
                     }
                 </div>
-            }
-        }
+                                            }
+                                            }
     </div>
     <div class="card-footer text-muted">
 
@@ -203,9 +203,6 @@
 @section Scripts{
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
-    @{
-        await Html.RenderPartialAsync("../Employees/PartialViews/GetModalScripts");
     }
     <script>
         function openBranch(branchId) {
