@@ -13,15 +13,15 @@
     
     @if (@Model.Branch != null)
     {
-        <h2 class="ml-4">Админ</h2>
-        <h3 class="ml-4 mb-3" >Филиал : <b>@Model.Branch.Name</b></h3>
+        <h5 class="mb-2 mt-2">Добро пожаловать, @Model.Employee.UserName!</h5>
+        <h5 class="mb-4">Центр: @Model.Branch.Name</h5>
                                                                  
         await Html.RenderPartialAsync("PartialView/IndexCardPartial", @Model.Employee);
         
-        <button><a asp-action="Scheduele" asp-controller="Admin" asp-route-branchId="@Model.Branch.Id" class="dropdown-item cursor-p">Календарь</a></button> 
-        <button> <a asp-action="Trials" asp-controller="Clients" asp-route-branchId="@Model.Branch.Id" class="dropdown-item cursor-p">Пробники</a></button>
-        <button> <a asp-action="RegularClients" asp-controller="Clients" asp-route-branchId="@Model.Branch.Id" class="dropdown-item cursor-p">Клиенты</a></button>
-        <button> <a   asp-action="Index" asp-controller="Transactions" asp-route-branchId="@Model.Branch.Id" class="dropdown-item cursor-p">Касса</a></button>
+        <a asp-action="Scheduele" asp-controller="Admin" asp-route-branchId="@Model.Branch.Id" class="btn btn-outline-dark">Календарь</a> 
+        <a asp-action="Trials" asp-controller="Clients" asp-route-branchId="@Model.Branch.Id" class="btn btn-outline-dark">Пробники</a>
+        <a asp-action="RegularClients" asp-controller="Clients" asp-route-branchId="@Model.Branch.Id" class="btn btn-outline-dark">Клиенты</a>
+        <a asp-action="Index" asp-controller="Transactions" asp-route-branchId="@Model.Branch.Id" class="btn btn-outline-dark">Касса</a>
        
     }
     else
@@ -40,6 +40,7 @@
         </p>
     }
 </div>
+@section Scripts{
     <script>
             $('#showIndex').click(function() {
                 $('#showIndex').css('display', 'none');

@@ -63,7 +63,7 @@
 <a asp-action="Index" asp-controller="Membership" class="btn btn-dark" style="margin-top: 15px; margin-left: 15px;">Абонементы</a>
 <a asp-action="Index" asp-controller="Clients" class="btn btn-dark" style="margin-top: 15px; margin-left: 15px;">Список клиентов</a>
 <a asp-action="ListEmployee" asp-controller="Employees" class="btn btn-dark" style="margin-top: 15px; margin-left: 15px;">Список сотрудников</a>
-<div class="card text-center mt-4">
+<div class="card  mt-4">
     <div class="card-header">
     </div>
     <div class="card-body">
@@ -80,7 +80,7 @@
                     <hr>
                     Центр йоги : <b>@branch.Name</b> <br>
                     <a class="btn btn-sm btn-outline-secondary mt-2" type="button" href="#" id="branchButton-@branch.Id" onclick="openBranch('@branch.Id')"> Открыть</a>
-                    <a class="btn btn-sm btn-outline-secondary mt-2" type="button" href="#" data-toggle="modal" data-target="#deleteBranch-@branch.Id">Удалить</a>
+                  <!--  <a class="btn btn-sm btn-outline-secondary mt-2" type="button" href="#" data-toggle="modal" data-target="#deleteBranch-@branch.Id">Удалить</a> -->
                     <a class="btn btn-sm btn-outline-secondary mt-2" type="button" asp-action="Index" asp-controller="Schedule" asp-route-branchId="@branch.Id">Календарь</a>
                      <a class="btn btn-sm btn-outline-secondary mt-2" type="button" asp-action="Index" asp-controller="Transactions" asp-route-branchId="@branch.Id">Касса</a>
                     @if (branch.Admin.UserName == "na")
@@ -128,9 +128,9 @@
                             </a>
                         </p>
                         <div id="divName-@branch.Id" class="inputName">
-                            <div class="row">
-                                <input type="text" class="form-control w-50 mr-2 ml-2" id="nameInput-@branch.Id">
-                                <button class="btn btn-outline-dark" onclick="editName('@branch.Id')">Изменить</button>
+                            <div>
+                                <input type="text" class="form-control w-50 mr-2 mb-1" id="nameInput-@branch.Id">
+                                <button class="btn btn-outline-dark mb-2" onclick="editName('@branch.Id')">Изменить</button>
                             </div>
                         </div>
                     </div>
@@ -142,9 +142,9 @@
                             </a>
                         </p>
                         <div id="divAddress-@branch.Id" class="inputAddress">
-                            <div class="row">
-                                <input type="text" class="form-control w-50 mr-2 ml-2" id="addressInput-@branch.Id">
-                                <button class="btn btn-outline-dark" onclick="editAddress('@branch.Id')">Изменить</button>
+                            <div>
+                                <input type="text" class="form-control w-50 mr-2 mb-1" id="addressInput-@branch.Id">
+                                <button class="btn btn-outline-dark mb-2" onclick="editAddress('@branch.Id')">Изменить</button>
                             </div>
                         </div>
                     </div>
@@ -157,9 +157,9 @@
                             </a>
                         </p>
                         <div id="divInfo-@branch.Id" class="inputInfo">
-                            <div class="row">
-                                <input type="text" class="form-control w-50 mr-2 ml-2" id="infoInput-@branch.Id">
-                                <button class="btn btn-outline-dark" onclick="editInfo('@branch.Id')">Изменить</button>
+                            <div>
+                                <input type="text" class="form-control w-50 mr-2 mb-1" id="infoInput-@branch.Id">
+                                <button class="btn btn-outline-dark mb-2" onclick="editInfo('@branch.Id')">Изменить</button>
                             </div>
                         </div>
                     </div>
@@ -174,22 +174,25 @@
                                 </a>
                             </p>
                             <div id="divAdmin-@branch.Id" class="inputAdmin">
-                                <div class="row m-1">
-                                    <select id="adminId-@branch.Id" name="adminId" class="form-control w-75 mb-1" onchange="validateAdmin('@branch.Id')">
-                                        <option value="no" selected="">Выберите администратора</option>
-                                        @foreach (Employee admin in (IEnumerable)@ViewBag.Admin)
-                                        {
-                                            <option value="@admin.Id">@admin.UserName</option>
-                                        }
-                                    </select>
-                                    <button class="ml-2 btn btn-outline-dark" onclick="editSeller('@branch.Id')" id="submitBtn-@branch.Id">Выбрать</button>
-                                </div>
+                                
+                                    <div>
+                                        <select id="adminId-@branch.Id" name="adminId" class="form-control mb-1 w-25" onchange="validateAdmin('@branch.Id')">
+                                            <option value="no" selected="">Выберите администратора</option>
+                                            @foreach (Employee admin in (IEnumerable)@ViewBag.Admin)
+                                            {
+                                                <option value="@admin.Id">@admin.UserName</option>
+                                            }
+                                        </select>
+                                        <button class="btn btn-outline-dark" onclick="editSeller('@branch.Id')" id="submitBtn-@branch.Id">Выбрать</button>
+                                    </div>
+                               
                             </div>
                         </div>
                     }
                 </div>
-                                            }
-                                            }
+            }
+        }
+        
     </div>
     <div class="card-footer text-muted">
 
