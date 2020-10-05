@@ -61,7 +61,7 @@ namespace yogaAshram.Services
                 y += 5 + 2 * ls;
                 gfx.DrawString($"E-mail: {client.Email}", font, XBrushes.Black, x, y);
                 y += 5 + 2 * ls;
-                gfx.DrawString($"Наличие заболеваний: {client.Sickness}", font, XBrushes.Black, x, y);
+                gfx.DrawString($"Наличие заболеваний: {client.Sickness.Name}", font, XBrushes.Black, x, y);
                 y += 20 + 2 * ls;
                 gfx.DrawString($"Дата: {client.DateCreate.ToString("dd MM yyyy")}", font, XBrushes.Black, x, y);
                 gfx.DrawString("Подпись: ", font, XBrushes.Black, x += 300, y);
@@ -72,16 +72,24 @@ namespace yogaAshram.Services
                 gfx.DrawString($"Нет никакого клиента", font, XBrushes.Black, x, y);
             }
             
+            MemoryStream stream = new MemoryStream();
+            document.Save(stream);
+            stream.Position = 0;
+            FileStreamResult fileStreamResult = new FileStreamResult(stream, "application/pdf");
+            fileStreamResult.FileDownloadName = $"{client.NameSurname}.pdf";
+            return fileStreamResult;
+
             
-            string filename = $"Files/contract.pdf";
-            document.Save(filename);
+            // string filename = $"Files/contract.pdf";
+            // document.Save(filename);
+            //
+            // var fileStream = new FileStream(filename, 
+            //     FileMode.Open,
+            //     FileAccess.Read
+            // );
+            // var fsResult = new FileStreamResult(fileStream, "application/pdf");
+            // return fsResult;
             
-            var fileStream = new FileStream(filename, 
-                FileMode.Open,
-                FileAccess.Read
-            );
-            var fsResult = new FileStreamResult(fileStream, "application/pdf");
-            return fsResult;
         }
     }
 }

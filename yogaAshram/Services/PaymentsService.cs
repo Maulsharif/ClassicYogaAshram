@@ -49,8 +49,12 @@ namespace yogaAshram.Services
         }
         public async Task<bool> CreatePayment(PaymentCreateModelView model, ClientsMembership clientsMembership, Client client, long employeeId)
         {
+            if (model.CashSum is null)
+                model.CashSum = 0;
+            if (model.CardSum is null)
+                model.CardSum = 0;
             model.BranchId = client.Group.BranchId;
-            int sum = model.CashSum + model.CardSum;
+            int sum = (int)model.CashSum + (int)model.CardSum;
             if (client.Balance < 0 && model.Type == PaymentType.Pay)
                 return false;
             if (client.Membership is null && model.Type == PaymentType.Pay)
@@ -74,8 +78,8 @@ namespace yogaAshram.Services
             };
             CurrentSum currentSum = _db.CurrentSums.FirstOrDefault(p => p.BranchId == model.BranchId);
            
-                currentSum.CashSum += model.CashSum;
-                currentSum.CreditSum += model.CardSum;
+                currentSum.CashSum += (int)model.CashSum;
+                currentSum.CreditSum += (int)model.CardSum;
                 _db.Entry(currentSum).State = EntityState.Modified;
          
             SetParams(ref payment, ref client, debts, model.Type, sum);
@@ -87,6 +91,10 @@ namespace yogaAshram.Services
         }
         public async Task<bool> PayForMembership(PaymentCreateModelView model, ClientsMembership clientsMembership, Client client, long employeeId)
         {
+            if (model.CashSum is null)
+                model.CashSum = 0;
+            if (model.CardSum is null)
+                model.CardSum = 0;
             int sum = (int)model.CashSum + (int)model.CardSum;
             int balance = client.Balance;
             if (balance < 0)
@@ -105,8 +113,8 @@ namespace yogaAshram.Services
             };
             CurrentSum currentSum = _db.CurrentSums.FirstOrDefault(p => p.BranchId == model.BranchId);
            
-            currentSum.CashSum += model.CashSum;
-            currentSum.CreditSum += model.CardSum;
+            currentSum.CashSum += (int)model.CashSum;
+            currentSum.CreditSum += (int)model.CardSum;
             _db.Entry(currentSum).State = EntityState.Modified;
          
             SetParams(ref payment, ref client, debts, model.Type, sum);
@@ -148,5 +156,6 @@ namespace yogaAshram.Services
                 }
             }
         }
+        
     }
 }

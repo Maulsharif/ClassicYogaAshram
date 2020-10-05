@@ -8,6 +8,7 @@
       <_ContentIncludedByDefault Remove="Views\Home\Index.cshtml" />
       <_ContentIncludedByDefault Remove="Views\Home\Privacy.cshtml" />
       <_ContentIncludedByDefault Remove="Views\Seller\PartialViews\PasswordChangePartial.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Shared\Partial\_PartialLeftNavbar.cshtml" />
     </ItemGroup>
 
     <ItemGroup>
@@ -15,7 +16,7 @@
       <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="3.1.6" />
       <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.1.6" />
       <PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="3.1.6" />
-      <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.3" />
+      <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.4" />
       <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="3.1.4" />
       <PackageReference Include="PdfSharpCore" Version="1.2.5" />
       <PackageReference Include="Quartz" Version="3.1.0" />
@@ -472,7 +473,6 @@
 
     <ItemGroup>
       <Folder Include="Files" />
-      <Folder Include="Views\Employees\PartialViews" />
     </ItemGroup>
 
     <ProjectExtensions><VisualStudio><UserProperties appsettings_1json__JsonSchema="" /></VisualStudio></ProjectExtensions>

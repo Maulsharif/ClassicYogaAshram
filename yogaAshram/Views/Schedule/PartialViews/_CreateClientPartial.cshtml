@@ -1,5 +1,6 @@
 ﻿@model Schedule
 
+
 <div class="row">
       			<div class="col-sm-6">
       				<label class="form-control">
@@ -33,7 +34,7 @@
       			<div class="row">
       				<div class="col-sm-6">
       					     <span asp-validation-for="@Model.ClientsCreateModelView.PhoneNumber"></span>
-      					<input class="form-control mb-4" asp-for="@Model.ClientsCreateModelView.PhoneNumber" placeholder="Номер телефона"/>
+      					<input class="form-control mb-4" id="PhoneNumber" asp-for="@Model.ClientsCreateModelView.PhoneNumber"  type="text" >
 	               
       				</div>
       
@@ -93,3 +94,16 @@
       	                 </div>   
 <br/>
 
+@section Scripts{
+	
+  <script>
+     
+        $(document).ready(function (){
+        
+           $('#PhoneNumber').mask("+7 (999) 999-9999");
+        })      
+        
+     </script>
+     
+
+}

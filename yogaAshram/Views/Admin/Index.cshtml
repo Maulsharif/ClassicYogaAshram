@@ -1,4 +1,5 @@
-﻿@inject UserManager<Employee> UserManager
+﻿
+@inject UserManager<Employee> UserManager
 @using Microsoft.AspNetCore.Identity
 @model AdminIndexModel
 
@@ -42,22 +43,6 @@
         </p>
     }
 </div>
-
-
-
-
-@section Scripts{
-    @{
-        await Html.RenderPartialAsync("../Employees/PartialViews/GetModalScripts");
-    }
-   
-    
-   
-        
-
-    
-    
-    
     <script>
             $('#showIndex').click(function() {
                 $('#showIndex').css('display', 'none');

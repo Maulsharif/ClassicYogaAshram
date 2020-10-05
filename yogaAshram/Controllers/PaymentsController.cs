@@ -13,6 +13,7 @@ using yogaAshram.Services;
 
 namespace yogaAshram.Controllers
 {
+    
     public class PaymentsController : Controller
     {
         public static string[] months = {"Январь", "Февраль", "Март", "Апрель", "Май", "Июнь",
@@ -136,6 +137,11 @@ namespace yogaAshram.Controllers
                     model.Payments = await GetFilteredByDate(model.ByDate).Where(p => p.ClientsMembership.Client.NameSurname.Contains(model.FilterByName))
                         .Skip((pageTo - 1) * model.PaymentsLength)
                             .Take(model.PaymentsLength).ToListAsync();
+            }
+            if (User.IsInRole("admin"))
+            {
+                Employee employee = await _userManager.GetUserAsync(User);
+                model.Payments = model.Payments.Where(p => p.Branch.AdminId == employee.Id).ToList();
             }
             ViewBag.Branches = await _db.Branches.ToArrayAsync();
             return View(model);

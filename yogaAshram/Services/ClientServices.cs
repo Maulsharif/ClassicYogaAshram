@@ -5,6 +5,7 @@ using yogaAshram.Models;
 
 namespace yogaAshram.Services
 {
+    
     public class ClientServices
     {
         private readonly YogaAshramContext _db;

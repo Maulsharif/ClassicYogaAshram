@@ -2,6 +2,7 @@
 @using Microsoft.AspNetCore.Identity
 @model SellerIndexModel
 
+
 @{
     ViewBag.Title = "Главная";
     Layout = "_Layout";
@@ -37,11 +38,6 @@
 </div>
 
 @section Scripts{
-    
-    @{
-        await Html.RenderPartialAsync("../Employees/PartialViews/GetModalScripts");
-    }
-
     <script>
         $('#showIndex').click(function() {
             $('#showIndex').css('display', 'none');
