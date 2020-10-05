@@ -37,7 +37,21 @@ namespace yogaAshram.Controllers
             List<Membership> model = _db.Memberships.ToList(); 
             return View(model);
         }
-
+        public async Task<IActionResult> MembershipExtension(long clientId, string date)
+        {
+            Client client = await _db.Clients.FindAsync(clientId);
+            if (client is null)
+                return NotFound();
+            ViewBag.Memberships = await _db.Memberships.ToArrayAsync();
+            ViewBag.Schedules = await _db.Schedules.ToListAsync();
+            ViewBag.Date = Convert.ToDateTime(date);
+            if (date is null)
+            {
+                ClientsMembership clientsMembership = _db.ClientsMemberships.ToList().Last(c => c.ClientId == clientId);
+                ViewBag.Date = clientsMembership.DateOfExpiry;
+            }
+            return PartialView(new MembershipExtendModelView() {ClientId = client.Id, Client = client});
+        }
         
         // Добавление и редактриование абонемента 
         public async Task<IActionResult> AddOrEdit(long id = 0)

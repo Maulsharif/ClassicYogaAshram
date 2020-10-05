@@ -279,7 +279,7 @@ namespace yogaAshram.Controllers
         public async Task<IActionResult> ListEmployee(long emplId)
         {
             Employee employee = _db.Employees.FirstOrDefault(e => e.Id == emplId);
-            ViewBag.Employees = _db.Employees.ToList();
+            ViewBag.Employees = _db.Employees.Where(e => e.Role != "chief").ToList();
 
             return View(employee);
         }

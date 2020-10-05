@@ -70,8 +70,16 @@
                         <button class="dropdown-item" data-toggle="modal" data-target="#contract-@client.Id">Подписал договор</button>
                         <a class="dropdown-item" asp-action="GetPdfDocument" asp-controller="Clients" asp-route-clientId="@client.Id">PDF Договор</a>
                     }
-                      <button class="dropdown-item" data-toggle="modal" data-target="#comment-@client.Id">Оставить комментарий</button>
-                    <button class="dropdown-item" data-toggle="modal" data-target="#makeClientUnactive-@client.Id">Сделать неактивным</button>
+                    <button class="dropdown-item" data-toggle="modal" data-target="#comment-@client.Id">Оставить комментарий</button>
+                    @if (@client.ClientType == ClientType.AreEngaged)
+                    {
+                      <button class="dropdown-item" data-toggle="modal" data-target="#makeClientUnactive-@client.Id">Сделать неактивным</button>
+                    }  
+                    @if (@client.HasMembership)
+                    {
+                        <button class="dropdown-item" data-toggle="modal" data-target="#extendMembership-@client.Id">Продлить абонемент</button>
+                        
+                    }
                   </div>
                 </div>
             </td>
@@ -170,6 +178,28 @@
                        <button type="submit" class="btn btn-outline-dark">Да</button>
                        </form>                                       
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Еще нет</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="extendMembership-@client.Id" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle"></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <h5 class="text-center">Вы уверены что хотите продлить абонемент клиента @client.NameSurname?</h5>
+                    <p class="text-center">Если у данного клиента будут отменены занятия (выходные) или использованы заморозки, то могут возникнуть ошибки. 
+                        Продлевайте абонемент только в том случае, если уже известна дата первого занятия</p>
+                    
+                </div>
+                <div class="modal-footer">
+                    <a class="btn btn-secondary" asp-action="MembershipExtension" asp-controller="Membership" asp-route-clientId="@client.Id">Перейти на страницу продления абонемента</a>                                      
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
                 </div>
             </div>
         </div>
