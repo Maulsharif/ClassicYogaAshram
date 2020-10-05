@@ -17,6 +17,11 @@
                         <label>Имя и фамилия</label>
                         <input id="nameSurnameInput" class="form-control" asp-for="NameSurname">
                         <p class="text-danger" id="invalidNameSurname"></p>
+                        <input type="hidden" id="emailInput" class="form-control" asp-for="Email">
+                                                <p class="text-danger" id="invalidEmail"></p>
+                        <input type="hidden" id="userNameInput" class="form-control" asp-for="UserName">
+                                                 <p class="text-danger" id="invalidUserName"></p>
+                        
                     </div>
                 }
                 else
