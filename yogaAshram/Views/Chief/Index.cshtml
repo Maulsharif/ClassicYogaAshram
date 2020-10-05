@@ -78,7 +78,9 @@
             {
                 <p>
                     <hr>
-                    Центр йоги : <b>@branch.Name</b> <br>
+                   
+                    Центр йоги : <b id="centerReload-@branch.Id">@branch.Name</b> <br>
+                   
                     <a class="btn btn-sm btn-outline-secondary mt-2" type="button" href="#" id="branchButton-@branch.Id" onclick="openBranch('@branch.Id')"> Открыть</a>
                   <!--  <a class="btn btn-sm btn-outline-secondary mt-2" type="button" href="#" data-toggle="modal" data-target="#deleteBranch-@branch.Id">Удалить</a> -->
                     <a class="btn btn-sm btn-outline-secondary mt-2" type="button" asp-action="Index" asp-controller="Schedule" asp-route-branchId="@branch.Id">Календарь</a>
@@ -239,6 +241,7 @@
             success: setTimeout(function(){
                 $("#nameReload-" + postId).load(" #nameReload-" + postId);
                 $("#namePosition-" + postId).load(" #namePosition-" + postId);
+                $("#centerReload-" + postId).load(" #centerReload-" + postId);
                }, 900)
                })
            }
