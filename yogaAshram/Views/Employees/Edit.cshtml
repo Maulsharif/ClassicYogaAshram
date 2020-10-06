@@ -11,20 +11,40 @@
         <div class="card-body">
             <form asp-action="Edit" id="editEmployeeForm" method="post" asp-antiforgery="true" style="position:relative;">
                 <div asp-validation-summary="ModelOnly"></div>
+                @if (Model.Role == "coach")
+                {
+                    <div class="form-group">
+                        <label>Имя и фамилия</label>
+                        <input id="nameSurnameInput" class="form-control" asp-for="NameSurname">
+                        <p class="text-danger" id="invalidNameSurname"></p>
+                        <input type="hidden" id="emailInput" class="form-control" asp-for="Email">
+                                                <p class="text-danger" id="invalidEmail"></p>
+                        <input type="hidden" id="userNameInput" class="form-control" asp-for="UserName">
+                                                 <p class="text-danger" id="invalidUserName"></p>
+                        
+                    </div>
+                }
+                else
+                {
+                    <div class="form-group">
+                        <label>Электронная почта</label>
+                        <input id="emailInput" class="form-control" asp-for="Email">
+                        <p class="text-danger" id="invalidEmail"></p>
+                    </div>
+                    <div class="form-group">
+                        <label>Логин</label>
+                        <input id="userNameInput" class="form-control" asp-for="UserName">
+                        <p class="text-danger" id="invalidUserName"></p>
+                    </div>
+                    <div class="form-group">
+                        <label>Имя и фамилия</label>
+                        <input id="nameSurnameInput" class="form-control" asp-for="NameSurname">
+                        <p class="text-danger" id="invalidNameSurname"></p>
+                    </div>
+                }
                 <div class="form-group">
-                    <label>Электронная почта</label>
-                    <input id="emailInput" class="form-control" asp-for="Email">
-                    <p class="text-danger" id="invalidEmail"></p>
-                </div>
-                <div class="form-group">
-                    <label>Логин</label>
-                    <input id="userNameInput" class="form-control" asp-for="UserName">
-                    <p class="text-danger" id="invalidUserName"></p>
-                </div>
-                <div class="form-group">
-                    <label>Имя и фамилия</label>
-                    <input id="nameSurnameInput" class="form-control" asp-for="NameSurname">
-                    <p class="text-danger" id="invalidNameSurname"></p>
+                    <label>Роль</label>
+                    <input readonly="readonly" asp-for="Role" value="@Model.Role" class="form-control">
                 </div>
                 <input id="employeeId" type="hidden" asp-for="Id" value="@Model.Id" />
                 <button type="button" id="submitButton" class="btn btn-primary mt-3">Сохранить изменения</button>

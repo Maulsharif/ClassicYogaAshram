@@ -67,7 +67,7 @@
                         {
 	                        <div>	
 		                        <td class="bg-danger">										        
-			                        <button class="getMembershipExtendModal btn btn-primary" clientId="@attendance.ClientId" date="@attendance.ClientsMembership.DateOfExpiry">Продлить абонемент</button>														        
+			                        <a class="btn btn-primary" asp-action="MembershipExtension" asp-controller="Membership" asp-route-clientId="@attendance.ClientId" asp-route-date="@attendance.ClientsMembership.DateOfExpiry">Продлить абонемент</a>														        
 		                        </td> 
 	                        </div>
                         }

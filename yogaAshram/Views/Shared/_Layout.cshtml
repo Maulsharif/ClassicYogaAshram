@@ -85,6 +85,10 @@
                                      class="getModal dropdown-item cursor-p">
                                     Изменить пароль
                                 </div>
+                                
+                                  <a class=" list-group-item list-group-item-action bg-dark text-white getModal" data-target="emplCreateModal" id="/employees/getcreateemplmodalajax" type="button">Добавить работника</a>
+                                
+                                
                                 <li class="dropdown-item cursor-p">
                                     <form method="post" asp-controller="Account" asp-action="Logout" id="my_form">
                                         <a class="text-decoration-none text-dark" href="javascript:{}" onclick="document.getElementById('my_form').submit(); return false;">
@@ -239,9 +243,9 @@
                             </button>
                             <div class="dropdown-menu">
                                 <li class="dropdown-item cursor-p">
-                                    <a class="text-decoration-none text-dark" asp-controller="Coach" asp-action="Details">
+                                   
                                         Мои кабинет
-                                    </a>
+                                  
                                 </li>
                                 <div data-target="editProfileModal" id="@Url.Action("GetEditModalAjax", "Employees")"
                                      class="getModal dropdown-item cursor-p">
@@ -496,18 +500,4 @@ setTimeout(function(){
 @RenderSection("Scripts", required: false)
 
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
