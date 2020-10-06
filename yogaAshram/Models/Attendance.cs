@@ -22,6 +22,7 @@ namespace yogaAshram.Models
     public class Attendance
     {
         public long Id { get; set; }
+        
         public long  ClientId  { get; set; }
         public virtual Client  Client { get; set; }
         public long  GroupId  { get; set; }
@@ -36,5 +37,22 @@ namespace yogaAshram.Models
         public DateTime Date { get; set; }
         public long? AttendanceCountId { get; set; }
         public virtual AttendanceCount AttendanceCount { get; set; }
+
+        public string GetColor()
+        {
+            string res = "";
+            if (this.AttendanceState == AttendanceState.notattended)
+                res = "red";
+            else if (this.AttendanceState == AttendanceState.attended)
+                res = "green";
+            else if (this.AttendanceState == AttendanceState.frozen)
+                res = "#55b5e2";
+            
+            else if (this.AttendanceState == AttendanceState.notcheked)
+                res = "grey";
+            else if (this.AttendanceState == AttendanceState.cancel)
+                res = "purple";
+            return res;
+        }
     }
 }

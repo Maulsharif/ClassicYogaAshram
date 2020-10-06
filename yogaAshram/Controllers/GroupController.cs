@@ -62,5 +62,39 @@ namespace yogaAshram.Controllers
             return RedirectToAction("Index", "Manager");
         }
        
+        
+        
+        public IActionResult History()
+        {
+            List<List<Attendance>> res=new List<List<Attendance>>();
+            List< Attendance> attendance =
+                _db.Attendances.Where(p=>p.GroupId==1).ToList();
+            List<long?> Ids=attendance.Select(att => att.ClientsMembershipId).Distinct().ToList();
+            for (int i = 0; i < Ids.Count; i++)
+            {
+                res.Add(new List<Attendance>());
+            }
+            
+            for (int i = 0; i < attendance.Count; i++)
+            {
+                for (int j = 0; j < Ids.Count; j++)
+                {
+                     if(attendance[i].ClientsMembershipId==Ids[j])
+                         res[j].Add(attendance[i]);
+                }
+                
+               
+            }
+
+
+            Console.WriteLine(res.Count);
+          
+        
+            return View(res);
+        }
+        
+        
+        
+       
     }
 }
