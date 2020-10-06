@@ -169,7 +169,7 @@ namespace yogaAshram.Controllers
             employee.Role = model.Role;
             _db.Entry(employee).State = EntityState.Modified;
             await _db.SaveChangesAsync();
-            return RedirectToAction("Index", new { employeeId = employee.Id });
+            return RedirectToAction("ListEmployee");
         }
         [Authorize]
         public async Task<IActionResult> GetEditModalAjax()
