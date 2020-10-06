@@ -36,7 +36,7 @@ namespace yogaAshram.Controllers
                                    select new CoachSelector()
                                    {
                                        Coach = e,
-                                       Groups = (from g in _db.Groups where g.CoachId == e.Id select g).ToArray()
+                                       Group = (from g in _db.Groups where g.CoachId == e.Id select g).ToArray()[0]
                                    }).ToArrayAsync();
             return View(model);
         }
@@ -58,21 +58,16 @@ namespace yogaAshram.Controllers
             }
             else
                 return NotFound();
-            model.Groups = await _db.Groups.Where(g => g.CoachId == (long)coachId).ToListAsync();
-            if (model.GroupId is null)
-            {
-                Group group = model.Groups.Where(g => g.CoachId == (long)coachId).FirstOrDefault();
-                if (group != null)
-                    model.GroupId = group.Id;
-            }
             model.Coach = coach;
             model.Payments = await (from c in _db.Clients
-                                    where c.Group.CoachId == coachId && c.Group.Id == model.GroupId
+                                    where c.Group.CoachId == coachId
                                     select new PaymentSelector()
                                     {
                                         Client = c,
-                                        Payments = _db.Payments.Where(pay => pay.ClientsMembership.ClientId == c.Id).ToArray()
-                                    }.SetAmount()).ToArrayAsync();            
+                                        Payments = _db.Payments.Where(pay => pay.ClientsMembership.ClientId == c.Id
+                                            && pay.CateringDate >= model.From
+                                            && pay.CateringDate <= model.To).ToArray()
+                                    }.SetAmount()).ToArrayAsync();
             return View(model);
         }
     }
