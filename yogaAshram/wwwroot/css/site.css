@@ -24,9 +24,7 @@ a {
   background-color: #1b6ec2;
   border-color: #1861ac;
 }
-.attendanceHistory{
-    font-size: small;
-}
+
 /* Sticky footer styles
 -------------------------------------------------- */
 html {
@@ -586,8 +584,6 @@ tr:last-child td{
 .input-validation-error{
      border-color: red;
 }
-
-
 /*Sidebarstyles*/
 #body-row {
     margin-left:0;
@@ -652,4 +648,12 @@ tr:last-child td{
     text-align: right;
     padding-left: 10px;
 }
-
+.row{
+    margin-bottom: -10px;
+}
+.top-right-buttons{
+    margin-right: 10em;
+}
+.ashramLogo{
+    width: 40px;
+}
