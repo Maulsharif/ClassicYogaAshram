@@ -102,16 +102,14 @@
                             <input placeholder="Поиск клиента по имени" type="text" class="form-control mb-2" asp-for="FilterByName">
                         </div>
                         <div class="col-auto">
-                            <label>
-                                С
-                                <input type="date" class="form-control mb-2" asp-for="From">
-                            </label>
-                        </div>
-                        <div class="col-auto">
-                            <label>
-                                По
-                                <input type="date" class="form-control mb-2" asp-for="To">
-                            </label>
+                            <div class="form-group">
+                                <select asp-for="ByDate" class="form-control">
+                                    <option value="@PaymentsDates.AllTime">За все время</option>
+                                    <option value="@PaymentsDates.LastDay">За последний день</option>
+                                    <option value="@PaymentsDates.LastWeek">За последнюю неделю</option>
+                                    <option value="@PaymentsDates.LastMonth">За последний месяц</option>
+                                </select>
+                            </div>
                         </div>
                         <div class="col-auto">
                             <button type="submit" class="btn btn-primary mb-2">Фильтровать</button>
@@ -136,18 +134,12 @@
                         </div>
                         <div class="col-auto">
                             <div class="form-group">
-                                <label>
-                                    С
-                                    <input type="date" class="form-control" asp-for="From">
-                                </label>
-                            </div>
-                        </div>
-                        <div class="col-auto">
-                            <div class="form-group">
-                                <label>
-                                    По
-                                    <input type="date" class="form-control" asp-for="To">
-                                </label>
+                                <select asp-for="ByDate" class="form-control">
+                                    <option value="@PaymentsDates.AllTime">За все время</option>
+                                    <option value="@PaymentsDates.LastDay">За последний день</option>
+                                    <option value="@PaymentsDates.LastWeek">За последнюю неделю</option>
+                                    <option value="@PaymentsDates.LastMonth">За последний месяц</option>
+                                </select>
                             </div>
                         </div>
                         <div class="col-auto">
@@ -162,8 +154,24 @@
                             <button type="submit" class="btn btn-primary mb-2">Сортировать</button>
                         </div>
                     </div>
-</form>
-                <p id="paymentsSum" class="mt-3">Общая сумма - @(Model.CashSum + Model.CardSum).Нал - @Model.CashSum, безнал - @Model.CardSum</p>
+                </form>
+                <div class="form-row align-items-center">
+                    <div class="col-auto">
+                        <div class="form-group col-md-12">
+                            <label>Получить сумму</label>
+                            <select id="getSumDates" asp-for="ByDate" class="form-control">
+                                <option value="@PaymentsDates.AllTime">За все время</option>
+                                <option value="@PaymentsDates.LastDay">За последний день</option>
+                                <option value="@PaymentsDates.LastWeek">За последнюю неделю</option>
+                                <option value="@PaymentsDates.LastMonth">За последний месяц</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        <button id="getSumBtn" type="button" class="btn btn-primary">Получить</button>
+                    </div>
+                </div>
+                <p id="paymentsSum" class="mt-3"></p>
             </div>
         </div>
         <div class="card-body">
@@ -267,6 +275,13 @@
         }
         </script>
     }
+    <script>
+        $('#getSumBtn').on('click', function myfunction() {
+            $.get('@Url.Action("GetSumAjax", "Payments")/?date=' + $('#getSumDates').val(), function (data) {
+                $('#paymentsSum').html('Общая сумма - ' + data);
+            })
+        })
+    </script>
     <script>
         $('#chartsTab').on('click', function () {
             $("#paymentTableTab").removeClass("tabActive");
