@@ -26,7 +26,7 @@ namespace yogaAshram.Controllers
         [DefaultBreadcrumb("Главная")]
         public IActionResult Index()
         {
-            AttendanceHistoryShow list = new AttendanceHistoryShow();
+           
         
           
             return View();

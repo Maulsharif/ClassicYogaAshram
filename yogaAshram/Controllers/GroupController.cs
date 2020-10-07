@@ -63,12 +63,22 @@ namespace yogaAshram.Controllers
         }
        
         
+        [Authorize]
         
-        public IActionResult History(long ?branchId, long groupId, int month, int year)
+        public async Task<IActionResult> History(long ?branchId, long groupId, int month, int year)
         {
+            if (User.IsInRole("admin"))
+            {  Employee user=await _userManager.GetUserAsync(User);
+                branchId = _db.Branches.FirstOrDefault(p=>p.AdminId==user.Id).Id;
+            }
+            
+          
+            ViewBag.Groups = _db.Groups.Where(p => p.Id == branchId);
+            
+            
             List<List<Attendance>> res=new List<List<Attendance>>();
             List< Attendance> attendance =
-                _db.Attendances.Where(p=>p.GroupId==2).ToList();
+                _db.Attendances.Where(p=>p.GroupId==groupId && p.ClientsMembership.DateOfPurchase.Month==month && p.ClientsMembership.DateOfPurchase.Year==year).ToList();
             List<long?> Ids=attendance.Select(att => att.ClientsMembershipId).Distinct().ToList();
             for (int i = 0; i < Ids.Count; i++)
             {
@@ -86,7 +96,7 @@ namespace yogaAshram.Controllers
                
             }
 
-
+            res.Sort((a,b) => b.Count - a.Count);
             Console.WriteLine(res.Count);
           
         

@@ -293,11 +293,13 @@ namespace yogaAshram.Controllers
                 _db.Entry(client).State = EntityState.Modified;
                 await _db.SaveChangesAsync();
                 _db.Entry(group).State = EntityState.Modified;
-                await _db.SaveChangesAsync();
+                await _db.SaveChangesAsync();     
+                await Task.Delay(500);
+                return RedirectToAction("RegularClients", "Clients", new {branchId =client.Group.BranchId });
             }
             else Console.WriteLine("");
                 
-
+            await Task.Delay(500);
             return RedirectToAction("RegularClients", "Clients", new {branchId =client.Group.BranchId });
         }
         

@@ -43,9 +43,9 @@
             <div class="dropdown-menu" aria-labelledby="dropdown10">
 
                 <a class="dropdown-item" asp-action="Index" asp-controller="Clients">Отчет по клиентам</a>
-                <a class="dropdown-item" asp-action="History" asp-controller="Group">
-                    История посещения клиентов
-                </a>
+                    <a class="nav-link " asp-action="RedirectToChoose" asp-controller="Employees"> История посещения клиентов</a>
+                   
+            
             </div>
         </li>
           <li class="nav-item">
@@ -98,9 +98,7 @@ else if (User.IsInRole("manager"))
             <div class="dropdown-menu" aria-labelledby="dropdown10">
 
                 <a class="dropdown-item" asp-action="Index" asp-controller="Clients">Отчет по клиентам</a>
-                <a class="dropdown-item" asp-action="History" asp-controller="Group">
-                    История посещения клиентов
-                </a>
+                     <a class="nav-link " asp-action="RedirectToChoose" asp-controller="Employees"> История посещения клиентов</a>
             </div>
         </li>
     </ul>
@@ -120,13 +118,13 @@ else if (User.IsInRole("manager"))
             <a class="nav-link " asp-action="Index" asp-controller="Payments">Платежи</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link " asp-action="RedirectToChoose" asp-controller="Employees">Касса</a>
+            <a class="nav-link " asp-action="Index" asp-controller="Transactions">Касса</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link " asp-action="RedirectToChoose" asp-controller="Employees">Активные клиенты</a>
+            <a class="nav-link " asp-action="Regularclients" asp-controller="Clients">Активные клиенты</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link " asp-action="RedirectToChoose" asp-controller="Employees">Пробные клиенты</a>
+            <a class="nav-link " asp-action="trials" asp-controller="Clients">Пробные клиенты</a>
         </li>
        
         <li class="nav-item dropdown">

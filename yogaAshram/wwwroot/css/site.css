@@ -623,3 +623,12 @@ tr:last-child td{
 .navbar-nav {
     padding-left: 16px;
 }
+tr:last-child td {
+    border: 1px solid #dee2e6;
+}
+.table_wrapper{
+    position: absolute;
+    left:0;
+ 
+    
+}
