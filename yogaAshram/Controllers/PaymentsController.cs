@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using SmartBreadcrumbs.Attributes;
 using yogaAshram.Models;
 using yogaAshram.Models.ModelViews;
 using yogaAshram.Services;
@@ -108,7 +107,7 @@ namespace yogaAshram.Controllers
             }
         }
 
-        [Breadcrumb("Касса", FromAction = "Index", FromController = typeof(ChiefController))]
+        
         public async Task<IActionResult> Index(PaymentsIndexModelView model, int pageTo = 1)
         {
             

@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using SmartBreadcrumbs.Extensions;
+
 // using yogaAshram.Jobs;
 using yogaAshram.Models;
 using yogaAshram.Quartz;
@@ -53,7 +53,7 @@ namespace yogaAshram
             services.AddScoped<DataJob>();
             services.AddScoped<IBot,Bot>();
             services.AddScoped<EmailService>();
-            services.AddBreadcrumbs(GetType().Assembly);
+            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

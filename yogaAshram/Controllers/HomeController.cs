@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using SmartBreadcrumbs.Attributes;
 using yogaAshram.Models;
 using yogaAshram.Models.HelperModels;
 using yogaAshram.Services;
@@ -23,7 +22,7 @@ namespace yogaAshram.Controllers
         }
 
         // GET
-        [DefaultBreadcrumb("Главная")]
+      
         public IActionResult Index()
         {
             AttendanceHistoryShow list = new AttendanceHistoryShow();

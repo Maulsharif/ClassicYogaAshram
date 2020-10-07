@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using SmartBreadcrumbs.Attributes;
+
 using yogaAshram.Models;
 using yogaAshram.Models.ModelViews;
 using yogaAshram.Services;
@@ -27,7 +27,7 @@ namespace yogaAshram.Controllers
             _signInManager = signInManager;
             _db = db;
         }
-        [Breadcrumb("Личный кабинет директора")]
+     
         public async Task<IActionResult> Index()
         {
             Employee empl = await _userManager.GetUserAsync(User);
