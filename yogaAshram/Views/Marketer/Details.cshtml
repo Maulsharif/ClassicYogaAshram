@@ -6,12 +6,12 @@
 
 <div class="container">
 
-    <h2 class="ml-4">Маркетолог</h2>
-    <a role="button" class="btn btn-primary" asp-controller="Clients" asp-action="Index">Клиенты</a>
-    <button> <a asp-action="Index" asp-controller="Payments" class="dropdown-item cursor-p">Касса</a></button>
+     <h5 class="mb-2 mt-2">Добро пожаловать, @Model.UserName!</h5>
+    
 
 </div>
-
+@section Scripts
+{
 <script>
             $('#showIndex').click(function() {
                 $('#showIndex').css('display', 'none');
@@ -24,4 +24,4 @@
                 $('#showIndex').show();
             });
 </script>
-
+}

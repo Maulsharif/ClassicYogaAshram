@@ -82,14 +82,14 @@
                               </div> 	
                            <div class="row">   
       	                     <div class="col-sm-6">
-      		                     <label>Место работы и должность</label><br/>
-      		                     <textarea class="form-control mb-4" rows="2" asp-for="@Model.ClientsCreateModelView.WorkPlace"></textarea>  
+      		                     
+      		                     <textarea class="form-control mb-4" rows="2" asp-for="@Model.ClientsCreateModelView.WorkPlace" placeholder="Место работы"></textarea>  
       	                     </div>
       	    
       		                     <div class="col-sm-6">
       			                     <span asp-validation-for="@Model.ClientsCreateModelView.Comment"></span>
       			                     
-      			                     <textarea class="form-control mb-4" asp-for="@Model.ClientsCreateModelView.Comment" rows="2" placeholder="Коментарии"></textArea>
+      			                     <textarea class="form-control mb-4" asp-for="@Model.ClientsCreateModelView.Comment" rows="2" placeholder="Комментарии"></textArea>
       		                     </div>
       	                 </div>   
 <br/>
