@@ -43,7 +43,20 @@ namespace yogaAshram.Controllers
             if (client is null)
                 return NotFound();
             ViewBag.Memberships = await _db.Memberships.ToArrayAsync();
-            ViewBag.Schedules = await _db.Schedules.ToListAsync();
+            if (User.IsInRole("admin"))
+            {
+                Employee employee = await _userManager.GetUserAsync(User);
+                if (employee != null)
+                    ViewBag.Schedules =
+                        await _db.Schedules.Where(s => s.BranchId == employee.CurrentBranchId).ToListAsync();
+                else
+                    return NotFound();
+            }
+            else if (User.IsInRole("chief") || User.IsInRole("manager"))
+                ViewBag.Schedules = await _db.Schedules.ToListAsync();
+            else
+                return NotFound();
+            
             ViewBag.Date = Convert.ToDateTime(date);
             if (date is null)
             {

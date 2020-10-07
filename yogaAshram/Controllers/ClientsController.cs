@@ -573,7 +573,7 @@ namespace yogaAshram.Controllers
                 branchId = _db.Branches.FirstOrDefault(p=>p.AdminId==user.Id).Id;
             }
             
-            List<Client> clients = _db.Clients.Where(c=>c.Group.BranchId==branchId && c.HasMembership==true).OrderByDescending(p=>p.DateCreate).ToList();
+            List<Client> clients = _db.Clients.Where(c=>c.Group.BranchId==branchId && c.ClientType == ClientType.AreEngaged).OrderByDescending(p=>p.DateCreate).ToList();
 
             return View(clients);
         }

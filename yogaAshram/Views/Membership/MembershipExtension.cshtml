@@ -10,56 +10,69 @@
 
     <p class="text-hide" id="date">@ViewBag.Date.AddDays(1).ToString("dd.MM.yyyy")</p>
           
-    <div class="form-group">
-        <label>Выберите тип абонемента</label>
-        <select class="form-control w-50" id="membershipSelect">
-            @foreach (Membership membership in (IEnumerable) @ViewBag.Memberships)
-            {
-                <option value='{"membershipId":"@membership.Id", "price":"@membership.Price"}'>@membership.Name</option>
-            }
-        </select>
+    <div class="row">
+                  <div class="col-sm-6">
+                      <div class="form-group">
+                          <label>Выберите тип абонемента</label>
+                          <select class="form-control" id="membershipSelect">
+                              @foreach (Membership membership in (IEnumerable) @ViewBag.Memberships)
+                              {
+                                  <option value='{"membershipId":"@membership.Id", "price":"@membership.Price"}'>@membership.Name</option>
+                              }
+                          </select>
+                      </div>
+                  </div>
+                  <div class="col-sm-6">
+                      <div class="form-group">
+                          <label>Выберите группу</label>
+                          <select class="form-control" id="groupSelect">
+                              @foreach (var schedule in ViewBag.Schedules)
+                              {
+                                  <option value='{"group":"@schedule.GroupId", "days":@{ string result = String.Join(",", @schedule.DayOfWeeksString);}"@result"}'>@schedule.Group.Name</option>
+                              }
+                          </select>
+                      </div>
+                  </div>
+              </div>
+        
+    <hr>
+        @if (Model.Client.Paid == Paid.Есть_долг)
+        {
+            <p>Есть долг в размере <span id="debts">@(-Model.Client.Balance)</span> тг.</p>
+        }
+        @if (Model.Client.Balance > 0)
+        {
+            <p>У клиента есть предоплата в размере <span id="prepayment">@(Model.Client.Balance)</span> тг.</p>
+        } 
+        <p><strong>Цена абонемента:</strong> <span id="price"></span> тг.</p>
+        <p><strong>К оплате:</strong> <span id="toPay"></span> тг.</p>
+        <p class="text-danger" id="errorText"></p>
+        <hr>
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label>Оплата налом</label>
+                    <input id="cashSumExtend" type="number" placeholder="0" value="0" class="form-control">
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label>Безнал</label>
+                    <input id="cardSumExtend" type="number" placeholder="0" value="0" class="form-control">
+                    <p id="invalidExtendSum" class="text-danger"></p>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label>Добавьте комментарий</label>
+            <textarea id="commentPayment" type="text" class="form-control" rows="2"></textarea>
+        </div>
+        <div class="form-group">
+            <label>Выберите дату</label>
+            <input type="text" id="datepicker" class="form-control w-25" autocomplete="off" required>
+        </div>
+        <button id="submitPaymentCreate" type="button" class="btn btn-outline-dark">Продлить</button>
     </div>
-    <div class="form-group">
-        <label>Выберите группу</label>
-        <select class="form-control w-50" id="groupSelect">
-            @foreach (var schedule in ViewBag.Schedules)
-            {
-                <option value='{"group":"@schedule.GroupId", "days":@{ string result = String.Join(",", @schedule.DayOfWeeksString);}"@result"}'>@schedule.Group.Name</option>
-            }
-        </select>
-    </div>
-    
-
-    @if (Model.Client.Paid == Paid.Есть_долг)
-    {
-        <p>Есть долг в размере <span id="debts">@(-Model.Client.Balance)</span> тг.</p>
-    }
-    @if (Model.Client.Balance > 0)
-    {
-        <p>У клиента есть предоплата в размере <span id="prepayment">@(Model.Client.Balance)</span> тг.</p>
-    } 
-    <p><strong>Цена абонемента:</strong> <span id="price"></span> тг.</p>
-    <p><strong>К оплате:</strong> <span id="toPay"></span> тг.</p>
-    <p class="text-danger" id="errorText"></p>
-    <div class="form-group">
-        <label>Оплата налом</label>
-        <input id="cashSumExtend" type="number"  placeholder="0" value="0" class="form-control w-50">
-    </div>
-    <div class="form-group">
-        <label>Безнал</label>
-        <input id="cardSumExtend" type="number"  placeholder="0" value="0" class="form-control w-50">
-        <p id="invalidExtendSum" class="text-danger"></p>
-    </div>
-    <div class="form-group">
-        <label>Добавьте комментарий</label>
-        <textarea id="commentPayment" type="text" class="form-control w-50" rows="2"></textarea>
-    </div>
-    <div class="form-group">
-        <label>Выберите дату</label>
-        <input type="text" id="datepicker" class="form-control w-25" autocomplete="off" required>
-    </div>
-    <button id="submitPaymentCreate" type="button" class="btn btn-outline-dark">Продлить</button>
-</div>
 
 @section Scripts
 {
