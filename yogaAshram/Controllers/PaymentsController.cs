@@ -127,12 +127,23 @@ namespace yogaAshram.Controllers
             }
             else
             {
-                if(model.SortSelect != SortPaymentsBy.None)
+                if (model.SortSelect != SortPaymentsBy.None)
                     model = await SortPayments(model, pageTo);
-                else 
+                else
+                {
+                    if (model.SicknessId != null)
+                    {
+                        Sickness sickness = await _db.Sicknesses.FindAsync(model.SicknessId);
+                        if (sickness is null)
+                            return NotFound();
+                        model.Payments = await GetFilteredByDate(model.From, model.To)
+                            .Where(p => p.ClientsMembership.Client.NameSurname.Contains(model.FilterByName) 
+                                && p.ClientsMembership.Client.SicknessId == sickness.Id)
+                            .Skip((pageTo - 1) * model.PaymentsLength).Take(model.PaymentsLength).ToListAsync();
+                    }
                     model.Payments = await GetFilteredByDate(model.From, model.To).Where(p => p.ClientsMembership.Client.NameSurname.Contains(model.FilterByName))
-                        .Skip((pageTo - 1) * model.PaymentsLength)
-                            .Take(model.PaymentsLength).ToListAsync();
+                        .Skip((pageTo - 1) * model.PaymentsLength).Take(model.PaymentsLength).ToListAsync();
+                }
             }
             if (User.IsInRole("admin"))
             {
@@ -140,6 +151,7 @@ namespace yogaAshram.Controllers
                 model.Payments = model.Payments.Where(p => p.Branch.AdminId == employee.Id).ToList();
             }
             ViewBag.Branches = await _db.Branches.ToArrayAsync();
+            ViewBag.Sicknesses = await _db.Sicknesses.ToArrayAsync();
             model.SetAmount();
             return View(model);
         }

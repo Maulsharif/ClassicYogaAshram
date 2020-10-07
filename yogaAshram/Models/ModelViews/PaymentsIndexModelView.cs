@@ -21,6 +21,7 @@ namespace yogaAshram.Models.ModelViews
     {
         public List<Payment> Payments { get; set; }
         public string FilterByName { get; set; }
+        public long? SicknessId { get; set; }
         public bool SortReverse { get; set; } = false;
         public SortPaymentsBy SortSelect { get; set; }
         public DateTime From { get; set; }
