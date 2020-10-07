@@ -111,11 +111,13 @@ namespace yogaAshram.Controllers
         [Breadcrumb("Касса", FromAction = "Index", FromController = typeof(ChiefController))]
         public async Task<IActionResult> Index(PaymentsIndexModelView model, int pageTo = 1)
         {
+            
             var payments =
                 _db.Payments;
             if (payments.Count() > pageTo * model.PaymentsLength)
                 model.IsNextPage = true;
-            if (String.IsNullOrEmpty(model.FilterByName)
+            if (String.IsNullOrEmpty(model.FilterByName) 
+                && model.SicknessId is null
                 && model.SortSelect == SortPaymentsBy.None
                 && (model.From == new DateTime() || model.To == new DateTime()))
             {
@@ -125,8 +127,14 @@ namespace yogaAshram.Controllers
                             .Take(model.PaymentsLength).OrderBy(p => p.CateringDate).ToListAsync()
                 };
             }
+            else if (model.SortSelect != SortPaymentsBy.None)
+            {
+                model = await SortPayments(model, pageTo);
+            }
             else
             {
+                if(model.FilterByName is null)
+                    model.FilterByName = String.Empty;
                 if (model.SicknessId != null)
                 {
                     Sickness sickness = await _db.Sicknesses.FindAsync(model.SicknessId);
@@ -137,7 +145,8 @@ namespace yogaAshram.Controllers
                             && p.ClientsMembership.Client.SicknessId == sickness.Id)
                         .Skip((pageTo - 1) * model.PaymentsLength).Take(model.PaymentsLength).ToListAsync();
                 }
-                model.Payments = await GetFilteredByDate(model.From, model.To).Where(p => p.ClientsMembership.Client.NameSurname.Contains(model.FilterByName))
+                else
+                   model.Payments = await GetFilteredByDate(model.From, model.To).Where(p => p.ClientsMembership.Client.NameSurname.Contains(model.FilterByName))
                     .Skip((pageTo - 1) * model.PaymentsLength).Take(model.PaymentsLength).ToListAsync();
             }
             if (User.IsInRole("admin"))
