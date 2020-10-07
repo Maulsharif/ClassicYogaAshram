@@ -30,7 +30,7 @@ namespace yogaAshram.Controllers
         }
         private async Task<PaymentsIndexModelView> SortPayments(PaymentsIndexModelView model, int pageTo)
         {
-            var payments = GetFilteredByDate(model.ByDate);
+            var payments = GetFilteredByDate(model.From, model.To);
             switch (model.SortSelect)
             {
                 case SortPaymentsBy.None:
@@ -96,24 +96,18 @@ namespace yogaAshram.Controllers
             }
             return model;
         }
-        private IQueryable<Payment> GetFilteredByDate(PaymentsDates paymentsDates)
+        private IQueryable<Payment> GetFilteredByDate(DateTime from, DateTime to)
         {
-            DateTime now = DateTime.Now;
-            switch (paymentsDates)
+            if (from == new DateTime() || to == new DateTime())
             {
-                case PaymentsDates.AllTime:
-                    return _db.Payments;
-                case PaymentsDates.LastMonth:
-                    return _db.Payments.Where(p => p.CateringDate >= now.AddMonths(-1) && p.CateringDate <= now);
-                case PaymentsDates.LastWeek:
-                    return _db.Payments.Where(p => p.CateringDate >= now.AddDays(-7) && p.CateringDate <= now);
-                case PaymentsDates.LastDay:
-                    return _db.Payments.Where(p => p.CateringDate >= now.AddDays(-1) && p.CateringDate <= now);
-                default:
-                    return null;
+                return _db.Payments;
+            }
+            else
+            {
+                return _db.Payments.Where(p => p.CateringDate >= from && p.CateringDate <= to).AsQueryable();
             }
         }
-        
+
         [Breadcrumb("Касса", FromAction = "Index", FromController = typeof(ChiefController))]
         public async Task<IActionResult> Index(PaymentsIndexModelView model, int pageTo = 1)
         {
@@ -121,7 +115,9 @@ namespace yogaAshram.Controllers
                 _db.Payments;
             if (payments.Count() > pageTo * model.PaymentsLength)
                 model.IsNextPage = true;
-            if (String.IsNullOrEmpty(model.FilterByName) && model.SortSelect == SortPaymentsBy.None && model.ByDate == PaymentsDates.AllTime)
+            if (String.IsNullOrEmpty(model.FilterByName)
+                && model.SortSelect == SortPaymentsBy.None
+                && (model.From == new DateTime() || model.To == new DateTime()))
             {
                 model = new PaymentsIndexModelView()
                 {
@@ -131,12 +127,18 @@ namespace yogaAshram.Controllers
             }
             else
             {
-                if(model.SortSelect != SortPaymentsBy.None)
-                    model = await SortPayments(model, pageTo);
-                else 
-                    model.Payments = await GetFilteredByDate(model.ByDate).Where(p => p.ClientsMembership.Client.NameSurname.Contains(model.FilterByName))
-                        .Skip((pageTo - 1) * model.PaymentsLength)
-                            .Take(model.PaymentsLength).ToListAsync();
+                if (model.SicknessId != null)
+                {
+                    Sickness sickness = await _db.Sicknesses.FindAsync(model.SicknessId);
+                    if (sickness is null)
+                        return NotFound();
+                    model.Payments = await GetFilteredByDate(model.From, model.To)
+                        .Where(p => p.ClientsMembership.Client.NameSurname.Contains(model.FilterByName)
+                            && p.ClientsMembership.Client.SicknessId == sickness.Id)
+                        .Skip((pageTo - 1) * model.PaymentsLength).Take(model.PaymentsLength).ToListAsync();
+                }
+                model.Payments = await GetFilteredByDate(model.From, model.To).Where(p => p.ClientsMembership.Client.NameSurname.Contains(model.FilterByName))
+                    .Skip((pageTo - 1) * model.PaymentsLength).Take(model.PaymentsLength).ToListAsync();
             }
             if (User.IsInRole("admin"))
             {
@@ -144,6 +146,8 @@ namespace yogaAshram.Controllers
                 model.Payments = model.Payments.Where(p => p.Branch.AdminId == employee.Id).ToList();
             }
             ViewBag.Branches = await _db.Branches.ToArrayAsync();
+            model.SetAmount();
+            ViewBag.Sicknesses = await _db.Sicknesses.ToArrayAsync();
             return View(model);
         }
         
@@ -411,10 +415,6 @@ namespace yogaAshram.Controllers
                
                 string check = await _paymentsService.CreatePayment(model, clientsMembership, client, employee.Id);
                 return Content(check);
-        }
-        public async Task<IActionResult> GetSumAjax(PaymentsDates date)
-        {
-            return Json(await GetFilteredByDate(date).SumAsync(p => p.CashSum + p.CardSum));
         }
         [Authorize(Roles = "chief")]
         public async Task<IActionResult> GetEditModalAjax(long paymentId)
