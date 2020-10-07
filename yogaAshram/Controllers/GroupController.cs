@@ -73,7 +73,7 @@ namespace yogaAshram.Controllers
             }
             
           
-            ViewBag.Groups = _db.Groups.Where(p => p.Id == branchId);
+            ViewBag.Groups = _db.Groups.Where(p => p.BranchId == branchId);
             
             
             List<List<Attendance>> res=new List<List<Attendance>>();

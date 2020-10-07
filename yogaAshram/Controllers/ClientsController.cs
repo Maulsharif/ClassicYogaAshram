@@ -43,6 +43,7 @@ namespace yogaAshram.Controllers
         //Информация о клиентах по пропускам итд 
         public IActionResult Index(int? membershipLeftDays, int? pageNumber, int? frozenTimes, double? dateFrozen, double? dateAbsent, long? coachId)
         {
+            
             ViewBag.Coaches = _db.Groups.ToList();
             var clients = _db.Clients
                 .Join(_db.Attendances, c => c.Id, a => a.ClientId, 
@@ -59,6 +60,15 @@ namespace yogaAshram.Controllers
 
             int pageSize = 5;
             var model = clients.AsQueryable();
+            
+            if (User.IsInRole("admin"))
+            {
+                long employeeId = GetUserId.GetCurrentUserId(this.HttpContext);
+                long branchId = _db.Branches.FirstOrDefault(b => b.AdminId == employeeId).Id;
+                if (branchId != null)
+                    model = clients.Where(c => c.Client.Group.BranchId == branchId).AsQueryable();
+                
+            }
 
             if (membershipLeftDays != null)
             {
