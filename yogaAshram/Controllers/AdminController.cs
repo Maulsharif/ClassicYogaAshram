@@ -6,9 +6,6 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Internal;
-using SmartBreadcrumbs.Attributes;
 using yogaAshram.Models;
 using yogaAshram.Models.ModelViews;
 using yogaAshram.Services;
@@ -33,7 +30,7 @@ namespace yogaAshram.Controllers
         }
 
         [Authorize ]
-        [Breadcrumb("Личный кабинет администратора")]
+       
           public async Task<IActionResult> Index()
         {
             Employee empl = await _userManager.GetUserAsync(User);
@@ -51,7 +48,7 @@ namespace yogaAshram.Controllers
             });
         }
 
-         [Breadcrumb("Календарь")]
+        
          public async Task<IActionResult> Scheduele(int? month, long? branchId)
          {
              if (User.IsInRole("admin"))

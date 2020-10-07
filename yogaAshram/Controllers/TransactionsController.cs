@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using SmartBreadcrumbs.Attributes;
 using yogaAshram.Models;
 using yogaAshram.Models.ModelViews.Transactions;
 using yogaAshram.Services;
@@ -27,7 +26,7 @@ namespace yogaAshram.Controllers
 
         // GET
         //
-        [Breadcrumb("Касса")]
+       
         public async Task<IActionResult> Index(long branchId)
         {
             
@@ -61,7 +60,7 @@ namespace yogaAshram.Controllers
             return View(new Withdrawal(){BranchId = branchId});
         }
         [HttpPost]
-        [Breadcrumb("Снятие денег")]
+        
         public async Task<IActionResult> Withdraw(Withdrawal model)
         {
             CurrentSum cs = _db.CurrentSums.FirstOrDefault(p => p.BranchId == model.BranchId);

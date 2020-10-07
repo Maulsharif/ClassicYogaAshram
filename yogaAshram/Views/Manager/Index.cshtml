@@ -8,15 +8,15 @@
 }
 <div class="container">
 
-    @{
-        await Html.RenderPartialAsync("PartialView/WebsiteBar");
-    }
+   
 
     <h2 class="ml-4 mb-3">Старший менеджер</h2>
 
     
    
 </div>
+@section Scripts
+{
     <script>
             $('#showIndex').click(function() {
                 $('#showIndex').css('display', 'none');

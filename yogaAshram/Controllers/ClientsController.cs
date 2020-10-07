@@ -7,8 +7,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using SmartBreadcrumbs.Attributes;
-using SmartBreadcrumbs.Nodes;
 using yogaAshram.Models;
 using yogaAshram.Models.ModelViews;
 using yogaAshram.Services;
@@ -43,7 +41,6 @@ namespace yogaAshram.Controllers
         
         
         //Информация о клиентах по пропускам итд 
-        [Breadcrumb("Информация по клиентам", FromAction = "Index", FromController = typeof(ChiefController))]
         public IActionResult Index(int? membershipLeftDays, int? pageNumber, int? frozenTimes, double? dateFrozen, double? dateAbsent, long? coachId)
         {
             ViewBag.Coaches = _db.Groups.ToList();
@@ -214,7 +211,7 @@ namespace yogaAshram.Controllers
 
         
         //Таблица с пробниками 
-        [Breadcrumb("Пробники", FromAction = "Index", FromController = typeof(AdminController))]
+     
         public async Task<IActionResult> Trials(DateTime time, long branchId)
         {
             if (User.IsInRole("admin"))
@@ -233,23 +230,11 @@ namespace yogaAshram.Controllers
         
         
         //Отметка посещаемости пробников
-        [Breadcrumb("Посещаемость пробников")]
+       
         [HttpGet]
         public IActionResult CheckAttendanceTrial(long groupId, long clientId, long branchId)
         {
-            var childNode1 = new MvcBreadcrumbNode("Index", "Admin", "Личный кабинет администратора");
-            var childNode2 = new MvcBreadcrumbNode("Trials", "Clients", "Пробники")
-            {
-                OverwriteTitleOnExactMatch = true,
-                Parent = childNode1,
-                RouteValues = new {branchId = branchId}
-            };
-            var childNode3 = new MvcBreadcrumbNode("CheckAttendanceTrial", "Admin", "Посещаемость пробников")
-            {
-                OverwriteTitleOnExactMatch = true,
-                Parent = childNode2,
-            };
-            ViewData["BreadcrumbNode"] = childNode3;
+            
             
             //исправлено 
             TrialUsers user = _db.TrialUserses.FirstOrDefault(u => u.Id == clientId);
@@ -304,26 +289,14 @@ namespace yogaAshram.Controllers
             return RedirectToAction("Trials", "Clients", new {branchId = HbranchId});
         }
 
-        [Breadcrumb("Информация о пробнике")]
+       
         public IActionResult ClientInfo(long Id)
         {
           List<TrialUsers> trialUsersesLessons = _db.TrialUserses.Where(p => p.ClientId == Id).ToList();
           ViewBag.Lessons = trialUsersesLessons;
           TrialUsers client = trialUsersesLessons[0];
-            var childNode1 = new MvcBreadcrumbNode("Index", "Admin", "Личный кабинет администратора");
             
-            var childNode2 = new MvcBreadcrumbNode("Trials", "Clients", "Пробники")
-            {
-                OverwriteTitleOnExactMatch = true,
-                Parent = childNode1,
-                RouteValues = new {branchId = client?.Group.BranchId}
-            };
-            var childNode3 = new MvcBreadcrumbNode("ClientInfo", "Admin", "Информация о пробнике")
-            {
-                OverwriteTitleOnExactMatch = true,
-                Parent = childNode2,
-            };
-            ViewData["BreadcrumbNode"] = childNode3;
+           
             return View(client);
 
         }
@@ -565,7 +538,7 @@ namespace yogaAshram.Controllers
         
         //Список активных  клиентов 
         [Authorize]
-        [Breadcrumb("Базовые клиенты", FromAction = "Index", FromController = typeof(AdminController))]
+        
         public async Task<IActionResult> RegularClients(long branchId)
         {
             if (User.IsInRole("admin"))
@@ -573,7 +546,7 @@ namespace yogaAshram.Controllers
                 branchId = _db.Branches.FirstOrDefault(p=>p.AdminId==user.Id).Id;
             }
             
-            List<Client> clients = _db.Clients.Where(c=>c.Group.BranchId==branchId && c.HasMembership==true).OrderByDescending(p=>p.DateCreate).ToList();
+            List<Client> clients = _db.Clients.Where(c=>c.Group.BranchId==branchId && c.ClientType == ClientType.AreEngaged).OrderByDescending(p=>p.DateCreate).ToList();
 
             return View(clients);
         }

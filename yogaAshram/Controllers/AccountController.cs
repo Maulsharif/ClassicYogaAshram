@@ -10,7 +10,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Hosting;
 using yogaAshram.Models.ModelViews;
 using Microsoft.EntityFrameworkCore;
-using SmartBreadcrumbs.Attributes;
 using yogaAshram.Services;
 
 namespace yogaAshram.Controllers

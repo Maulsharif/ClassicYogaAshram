@@ -19,7 +19,6 @@
       <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="3.1.4" />
       <PackageReference Include="PdfSharpCore" Version="1.2.5" />
       <PackageReference Include="Quartz" Version="3.1.0" />
-      <PackageReference Include="SmartBreadcrumbs" Version="3.5.1" />
       <PackageReference Include="Telegram.Bot" Version="15.7.1" />
     </ItemGroup>
 
@@ -469,6 +468,10 @@
         <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       </Content>
       <Content Update="Views\Membership\MembershipExtension.cshtml">
+        <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+        <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      </Content>
+      <Content Update="Views\Account\Login.cshtml">
         <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
         <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       </Content>

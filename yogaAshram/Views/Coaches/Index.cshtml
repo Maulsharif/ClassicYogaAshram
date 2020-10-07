@@ -37,15 +37,15 @@
                 <tr>
                     <th scope="col">Имя тренера</th>
                     <th scope="col">Почта</th>
-                    <th scope="col">Филиал</th>
-                    <th scope="col">Группа</th>
+                    <th scope="col">Группы</th>
                     <th scope="col"></th>
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    @foreach (var item in Model.Coaches)
-                    {
+
+                @foreach (var item in Model.Coaches)
+                {
+                    <tr>
                         <td scope="row">
                             <span>
                                 @item.Coach.NameSurname
@@ -57,22 +57,21 @@
                             </span>
                         </td>
                         <td>
-                            <span>
-                                @item.Group.Branch.Name
-                            </span>
-                        </td>
-                        <td>
-                            <span>
-                                @item.Group.Name
-                            </span>
+                            @foreach (var group in item.Groups)
+                            {
+                                <span>
+                                    @group.Name, центр @group.Branch.Name
+                                </span><br>
+                            }
                         </td>
                         <td>
                             <a asp-action="Details" asp-route-coachId="@item.Coach.Id" role="button" class="btn btn-primary">
                                 Подробнее
                             </a>
                         </td>
-                    }
-                </tr>
+                    </tr>
+                }
+
             </tbody>
         </table>
     </div>
