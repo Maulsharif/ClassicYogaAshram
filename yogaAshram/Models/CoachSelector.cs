@@ -8,6 +8,6 @@ namespace yogaAshram.Models
     public class CoachSelector
     {
         public Employee Coach { get; set; }
-        public Group Group { get; set; }
+        public Group[] Groups { get; set; }
     }
 }
