@@ -10,7 +10,10 @@
     <p>На кассе @Model.CurrentSum.Total тг</p>
     <p>Налл @Model.CurrentSum.CashSum тг</p>
     <p>Безналл @Model.CurrentSum.CreditSum тг</p>
-    <a class="btn btn-sm btn-primary mt-2" type="button" asp-action="Withdraw" asp-controller="Transactions" asp-route-branchId="@Model.BranchId">Снять деньги</a>
+    @if (User.IsInRole("chief"))
+    {
+        <a class="btn btn-sm btn-primary mt-2" type="button" asp-action="Withdraw" asp-controller="Transactions" asp-route-branchId="@Model.BranchId">Снять деньги</a> 
+    }
     <br/>
     <div class="row">
         <div class="col-6">
