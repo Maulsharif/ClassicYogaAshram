@@ -194,8 +194,9 @@ namespace yogaAshram.Controllers
             
         }
 
-
-        // Добавление пробника в группу 
+        
+        
+         // Добавление пробника в группу 
         [HttpGet]
         public async Task<IActionResult> BuyMembership(long clientId, long branchId)
         {
@@ -227,6 +228,8 @@ namespace yogaAshram.Controllers
                 client.MembershipId = membershipId;
                 client.ClientType = ClientType.AreEngaged;
                 client.CreatorId = GetUserId.GetCurrentUserId(this.HttpContext);
+                client.HasMembership = true;
+                //изменили !! важно
 
                 Models.Group group = _db.Groups.FirstOrDefault(g => g.Id == groupId);
                 if (group != null && group.Clients.Count == 0)
@@ -238,7 +241,7 @@ namespace yogaAshram.Controllers
                     group?.Clients.Add(client);
 
                 Membership membership = _db.Memberships.FirstOrDefault(m => m.Id == membershipId);
-
+                client.Balance = -membership.Price;
                 DateTime endDate = _clientServices.EndDateForClientsMembership(
                     startDate,
                     group.Id,
@@ -292,10 +295,12 @@ namespace yogaAshram.Controllers
                 _db.Entry(group).State = EntityState.Modified;
                 await _db.SaveChangesAsync();
             }
-            else Console.WriteLine("Ошибка");
+            else Console.WriteLine("");
+                
 
             return RedirectToAction("RegularClients", "Clients", new {branchId =client.Group.BranchId });
         }
+        
         
     }   
 }

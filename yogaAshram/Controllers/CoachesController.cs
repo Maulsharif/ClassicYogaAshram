@@ -40,7 +40,7 @@ namespace yogaAshram.Controllers
                                    }).ToArrayAsync();
             return View(model);
         }
-        [Authorize(Roles = "chief, manager, coach")]
+        [Authorize(Roles = "chief, manager, admin")]
         public async Task<IActionResult> Details(long? coachId, CoachDetailsModelView model)
         {
             if (model is null)

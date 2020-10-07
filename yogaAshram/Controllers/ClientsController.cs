@@ -102,10 +102,14 @@ namespace yogaAshram.Controllers
         //Добавление пробника 
         [HttpPost]
         [Authorize]
-        public async Task<IActionResult> CreateClients(Schedule schedule)
+        public async Task<IActionResult> CreateClients(Schedule schedule, string newSikness)
         {
+            long _sicknessId;
+            if (newSikness != null) _sicknessId = AddSickness(newSikness);
+            else _sicknessId = schedule.ClientsCreateModelView.SicknessId;
             Employee employee =
                 _db.Employees.FirstOrDefault(e => e.Id == GetUserId.GetCurrentUserId(this.HttpContext));
+           
             Client client = new Client()
             {
                 NameSurname = schedule.ClientsCreateModelView.NameSurname,
@@ -114,7 +118,7 @@ namespace yogaAshram.Controllers
                 Email = schedule.ClientsCreateModelView.Email,
                 Address = schedule.ClientsCreateModelView.Address,
                 WorkPlace = schedule.ClientsCreateModelView.WorkPlace,
-                SicknessId = schedule.ClientsCreateModelView.SicknessId,
+                SicknessId = _sicknessId,
                 Source = schedule.ClientsCreateModelView.Source,
                 GroupId = schedule.ClientsCreateModelView.GroupId,
                 ClientType = ClientType.Probe,
@@ -569,7 +573,7 @@ namespace yogaAshram.Controllers
                 branchId = _db.Branches.FirstOrDefault(p=>p.AdminId==user.Id).Id;
             }
             
-            List<Client> clients = _db.Clients.Where(c=>c.Group.BranchId==branchId).OrderByDescending(p=>p.DateCreate).ToList();
+            List<Client> clients = _db.Clients.Where(c=>c.Group.BranchId==branchId && c.HasMembership==true).OrderByDescending(p=>p.DateCreate).ToList();
 
             return View(clients);
         }
@@ -804,6 +808,7 @@ namespace yogaAshram.Controllers
                 };
 
                 _db.Entry(sickness).State = EntityState.Added;
+                _db.SaveChanges();
                 return sickness.Id;
             }
             catch (Exception e)

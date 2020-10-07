@@ -18,8 +18,7 @@ namespace yogaAshram.Controllers
             _userManager = userManager;
         }
 
-        // GET
-        // [Breadcrumb("Личный кабинет маркетолога")]
+       
         [Authorize]
         public async Task<IActionResult> Details()
         {

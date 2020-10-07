@@ -4,7 +4,7 @@
 
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>@ViewData["Title"] - yogaAshram</title>
+<title>@ViewData["Title"] - YogaAshram</title>
 <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
 <link rel="stylesheet" href="~/css/site.css" />
 <link rel="stylesheet" href="~/css/cleanslate.css">
@@ -61,14 +61,7 @@
                 {
                     if (User.IsInRole("chief"))
                     {
-                        <button class="list-group-item list-group-item-action bg-dark text-white" data-toggle="modal" data-target="#addBranch" onclick="validateAdminIds()">
-                            <div class="d-flex w-100 justify-content-start align-items-center">
-                                <span class="fa fa-th fa-fw mr-3"></span>
-                                <span class="menu-collapsed">Добавить филиал</span>
-                            </div>
-                        </button>
-                    
-                    
+                       
                         <div class="btn-group top-right-buttons">
                             <button class="btn dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <span class="text-white">@User.Identity.Name</span>
@@ -79,12 +72,7 @@
                                         Мои кабинет
                                     </a>
                                 </li>
-                                <a class="dropdown-item" asp-action="Index" asp-controller="Payments">
-                                    Страница платежей
-                                </a>
-                                <a class="dropdown-item" asp-action="Index" asp-controller="Coaches">
-                                    Список тренеров
-                                </a>
+                                
                                 <div data-target="editProfileModal" id="@Url.Action("GetEditModalAjax", "Employees")"
                                      class="getModal dropdown-item cursor-p">
                                     Редактировать профиль
@@ -93,9 +81,6 @@
                                      class="getModal dropdown-item cursor-p">
                                     Изменить пароль
                                 </div>
-                                
-                                  <a class=" list-group-item list-group-item-action bg-dark text-white getModal" data-target="emplCreateModal" id="/employees/getcreateemplmodalajax" type="button">Добавить работника</a>
-                                
                                 
                                 <li class="dropdown-item cursor-p">
                                     <form method="post" asp-controller="Account" asp-action="Logout" id="my_form">
@@ -119,12 +104,8 @@
                                         Мои кабинет
                                     </a>
                                 </li>
-                                <a class="dropdown-item" asp-action="Index" asp-controller="Payments">
-                                    Страница платежей
-                                </a>
-                                <a class="dropdown-item" asp-action="Index" asp-controller="Coaches">
-                                    Список тренеров
-                                </a>
+                             
+                             
                                 <div data-target="editProfileModal" id="@Url.Action("GetEditModalAjax", "Employees")"
                                      class="getModal dropdown-item cursor-p">
                                     Редактировать профиль
@@ -145,7 +126,10 @@
                     }
                     else if (User.IsInRole("admin"))
                     {
-                        <p id="notify" class="notify-box"></p>
+                        <div>
+                              <p id="notify" class="notify-box"></p>
+                        </div>
+                      
                         <div class="btn-group top-right-buttons">
                             <button class="btn dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <span class="text-white">@User.Identity.Name</span>
@@ -156,9 +140,7 @@
                                         Мои кабинет
                                     </a>
                                 </li>
-                                <a class="dropdown-item" asp-action="Index" asp-controller="Payments">
-                                    Страница платежей
-                                </a>
+                           
                                 <div data-target="editProfileModal" id="@Url.Action("GetEditModalAjax", "Employees")"
                                      class="getModal dropdown-item cursor-p">
                                     Редактировать профиль
@@ -189,9 +171,7 @@
                                         Мои кабинет
                                     </a>
                                 </li>
-                                <a class="dropdown-item" asp-action="Index" asp-controller="Payments">
-                                    Страница платежей
-                                </a>
+                              
                                 <div data-target="editProfileModal" id="@Url.Action("GetEditModalAjax", "Employees")"
                                      class="getModal dropdown-item cursor-p">
                                     Редактировать профиль
@@ -222,9 +202,7 @@
                                         Мои кабинет
                                     </a>
                                 </li>
-                                <a class="dropdown-item" asp-action="Index" asp-controller="Payments">
-                                    Страница платежей
-                                </a>
+                              
                                 <div data-target="editProfileModal" id="@Url.Action("GetEditModalAjax", "Employees")"
                                      class="getModal dropdown-item cursor-p">
                                     Редактировать профиль
@@ -243,7 +221,7 @@
                             </div>
                         </div>
                     }
-                    else if (User.IsInRole("coach"))
+                    else if (User.IsInRole("marketer"))
                     {
                         <div class="btn-group">
                             <button class="btn dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -283,24 +261,26 @@
 </header>
 @if (User.Identity.IsAuthenticated)
 {
-    <!-- Bootstrap row -->
-    <div class="row" id="body-row">
-        <!-- Sidebar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light rounded">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExample10" aria-controls="navbarsExample10" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse " id="navbarsExample10">
         @{
-                 await Html.RenderPartialAsync("PartialView/_sidebarContent");
-             }
-        <!-- MAIN -->
-        <div class="col">
-
-            <breadcrumb></breadcrumb>
-            <div class="container">
-                <main role="main" class="pb-3">
-                    @RenderBody()
-                </main>
-            </div>
-
-        </div><!-- Main Col END -->
+                      await Html.RenderPartialAsync("PartialView/WebsiteBar");
+                  }
+        </div>
+    </nav>
+    
+  
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
     </div>
+    
+     
 }
 else
 {
@@ -340,42 +320,14 @@ else
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
 <script src="~/lib/bootstrap-datepicker-1.9.0-dist/js/bootstrap-datepicker.min.js"></script>
 <script src="https://kit.fontawesome.com/04079ffe72.js" crossorigin="anonymous"></script>
+@* маска для тел номера  *@
+<script src="https://unpkg.com/imask"></script>
+
 @{
     await Html.RenderPartialAsync("../Employees/PartialViews/GetModalScripts");
 }
+
 <script>
-    $('#body-row .collapse').collapse('hide');
-
-    // Collapse/Expand icon
-    $('#collapse-icon').addClass('fa-angle-double-left');
-
-    // Collapse click
-    $('[data-toggle=sidebar-colapse]').click(function () {
-        SidebarCollapse();
-    });
-
-    function SidebarCollapse() {
-        $('.menu-collapsed').toggleClass('d-none');
-        $('.sidebar-submenu').toggleClass('d-none');
-        $('.submenu-icon').toggleClass('d-none');
-        $('#sidebar-container').toggleClass('sidebar-expanded sidebar-collapsed');
-
-        // Treating d-flex/d-none on separators with title
-        var SeparatorTitle = $('.sidebar-separator-title');
-        if (SeparatorTitle.hasClass('d-flex')) {
-            SeparatorTitle.removeClass('d-flex');
-        } else {
-            SeparatorTitle.addClass('d-flex');
-        }
-
-        // Collapse/Expand icon
-        $('#collapse-icon').toggleClass('fa-angle-double-left fa-angle-double-right');
-    }
-</script>
-<script>
-
-
-
 
     $(document).ready(function() {
              $("#search").keyup(function(event) {
@@ -403,7 +355,7 @@ else
 </script>
 <script>
 var now = new Date();
-var millisTill10 = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 9, 27, 0, 0) - now;
+var millisTill10 = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 14, 31, 0, 0) - now;
 if (millisTill10 < 0) {
     millisTill10 += 86400000;
 }

@@ -6,50 +6,55 @@
     ViewBag.Title = "title";
     Layout = "_Layout";
 }
-<p> history</p>
 
 
-<table class="table-bordered small">
 
 
-    <tr>
-        <th>
-            ФИО клиента
-        </th>
-        <th>
-            Дата абонемента
-        </th>
 
-        @for (int i=1; i<  @Model[0].Count+1; i++) 
-        {
-            <th>
-                @i
+<p> История посещения  </p>
 
-            </th>
-        }
-        
-    </tr>
+<table class="table-striped small">
+                              
+                              
+                                  <tr>
+                                      <th>
+                                          ФИО клиента
+                                      </th>
+                                      <th>
+                                          Дата абонемента
+                                      </th>
+                              
+                                      @for (int i=1; i<  @Model[0].Count+1; i++) 
+                                      {
+                                          <th>
+                                              @i
+                              
+                                          </th>
+                                      }
+                                      
+                                  </tr>
+                              
+                              
+                                  @foreach (var att in @Model)
+                                  {
+                                      <tr>
+                                          <td>
+                                              @att[0].Client.NameSurname
+                                          </td>
+                                          <td>
+                                              @att[0].ClientsMembership.DateOfPurchase.ToShortDateString() - @att[0].ClientsMembership.DateOfExpiry.ToShortDateString()
+                                          </td>
+                                          @foreach (var a in @att.OrderBy(p => p.Date))
+                                          {
+                                              
+                                              <td style="background-color: @a.GetColor()">
+                                                  @a.Date.ToShortDateString()<br/>
+                                                  @GetEnumDescription.GetDescription(a.AttendanceState)
+                                              </td>
+                                          }
+                              
+                                      </tr>
+                                  }
+                              
+                              </table>
 
-
-    @foreach (var att in @Model)
-    {
-        <tr>
-            <td>
-                @att[0].Client.NameSurname
-            </td>
-            <td>
-                @att[0].ClientsMembership.DateOfPurchase.ToShortDateString() - @att[0].ClientsMembership.DateOfExpiry.ToShortDateString()
-            </td>
-            @foreach (var a in @att.OrderBy(p => p.Date))
-            {
-                
-                <td style="background-color: @a.GetColor()">
-                    @a.Date.ToShortDateString()<br/>
-                    @GetEnumDescription.GetDescription(a.AttendanceState)
-                </td>
-            }
-
-        </tr>
-    }
-
-</table>

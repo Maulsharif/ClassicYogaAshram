@@ -31,7 +31,7 @@ namespace yogaAshram.Controllers
             _roleManager = roleManager;
         }        
         [HttpGet]
-        [Breadcrumb("Вход на сайт", FromAction = "Index", FromController = typeof(HomeController))]
+    
         public IActionResult Login(string returnUrl = null)
         {
             return View(new AccountLoginModelView() { ReturnUrl = returnUrl });
@@ -82,8 +82,8 @@ namespace yogaAshram.Controllers
                             return RedirectToAction("Index", "Admin");
                         else if(role == "seller")
                             return RedirectToAction("Index", "Seller");
-                        else if (role == "coach")
-                            return RedirectToAction("Details", "Coaches");
+                        else if (role == "marketer")
+                            return RedirectToAction("Details", "Marketer");
                     }
                     return RedirectToAction("Index", "Employees");
                 }
@@ -178,6 +178,8 @@ namespace yogaAshram.Controllers
                 return RedirectToAction("Index", "Chief");
             if(User.IsInRole("seller"))
                 return RedirectToAction("Index", "Seller");
+            if(User.IsInRole("marketer"))
+                return RedirectToAction("Details", "Marketer");
             return RedirectToAction("Index", "Manager");
         }
     }

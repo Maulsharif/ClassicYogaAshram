@@ -14,12 +14,8 @@
 
     <h2 class="ml-4 mb-3">Старший менеджер</h2>
 
-    @{
-        await Html.RenderPartialAsync("PartialView/IndexCardPartial", @Model.Employee);
-    }
     
-    <a asp-action="CreateGroup" asp-controller="Group" class="btn btn-dark" style="margin-top: 15px;">Создать группу </a>
-    <a asp-action="CreateClients" asp-controller="Clients" class="btn btn-dark" style="margin-top: 15px; margin-left: 15px;">Добавить клиента</a>
+   
 </div>
     <script>
             $('#showIndex').click(function() {

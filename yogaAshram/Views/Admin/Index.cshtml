@@ -16,7 +16,7 @@
         <h5 class="mb-2 mt-2">Добро пожаловать, @Model.Employee.UserName!</h5>
         <h5 class="mb-4">Центр: @Model.Branch.Name</h5>
                                                                  
-        await Html.RenderPartialAsync("PartialView/IndexCardPartial", @Model.Employee);
+  
         
         <a asp-action="Scheduele" asp-controller="Admin" asp-route-branchId="@Model.Branch.Id" class="btn btn-outline-dark">Календарь</a> 
         <a asp-action="Trials" asp-controller="Clients" asp-route-branchId="@Model.Branch.Id" class="btn btn-outline-dark">Пробники</a>

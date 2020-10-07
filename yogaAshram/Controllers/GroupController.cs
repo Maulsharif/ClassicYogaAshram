@@ -64,11 +64,11 @@ namespace yogaAshram.Controllers
        
         
         
-        public IActionResult History()
+        public IActionResult History(long ?branchId, long groupId, int month, int year)
         {
             List<List<Attendance>> res=new List<List<Attendance>>();
             List< Attendance> attendance =
-                _db.Attendances.Where(p=>p.GroupId==1).ToList();
+                _db.Attendances.Where(p=>p.GroupId==2).ToList();
             List<long?> Ids=attendance.Select(att => att.ClientsMembershipId).Distinct().ToList();
             for (int i = 0; i < Ids.Count; i++)
             {
