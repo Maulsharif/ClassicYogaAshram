@@ -179,7 +179,8 @@ namespace yogaAshram.Controllers
                     ClientId = client.Id,
                     MembershipId = membership.Id,
                     DateOfPurchase = DateTime.Now,
-                    DateOfExpiry = endDate
+                    DateOfExpiry = endDate,
+                    FirstDateOfLesson =    model.Date
                 };
                 _db.Entry(clientsMembership).State = EntityState.Added;
                 foreach (var date in datesOfAttendance)
@@ -267,7 +268,8 @@ namespace yogaAshram.Controllers
                     Client = client,
                     MembershipId = membership.Id,
                     DateOfPurchase = DateTime.Now,
-                    DateOfExpiry = endDate
+                    DateOfExpiry = endDate,
+                    FirstDateOfLesson = startDate
                 };
 
                 _db.Entry(clientsMembership).State = EntityState.Added;

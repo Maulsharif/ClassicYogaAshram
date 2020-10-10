@@ -79,8 +79,8 @@ namespace yogaAshram.Controllers
             List<List<Attendance>> res = new List<List<Attendance>>();
             List<Attendance> attendance =
                 _db.Attendances.Where(p =>
-                    p.GroupId == groupId && p.Date.Month == start.Month &&
-                    p.ClientsMembership.DateOfPurchase.Year == start.Year).ToList();
+                    p.GroupId == groupId && p.ClientsMembership.FirstDateOfLesson.Month== start.Month &&
+                    p.ClientsMembership.FirstDateOfLesson.Year == start.Year).ToList();
             List<long?> Ids = attendance.Select(att => att.ClientsMembershipId).Distinct().ToList();
             for (int i = 0; i < Ids.Count; i++)
             {

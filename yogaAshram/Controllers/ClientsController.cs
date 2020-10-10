@@ -378,7 +378,8 @@ namespace yogaAshram.Controllers
                     Client = client,
                     MembershipId = membership.Id,
                     DateOfPurchase = DateTime.Now,
-                    DateOfExpiry = endDate
+                    DateOfExpiry = endDate,
+                    FirstDateOfLesson =   schedule.ClientsCreateModelView.StartDate
                 };
                 
                 _db.Entry(clientsMembership).State = EntityState.Added;
@@ -499,7 +500,8 @@ namespace yogaAshram.Controllers
                    ClientId = client.Id,
                    MembershipId = membership.Id,
                    DateOfPurchase = DateTime.Now,
-                   DateOfExpiry = endDate
+                   DateOfExpiry = endDate,
+                   FirstDateOfLesson =   schedule.ClientsCreateModelView.StartDate
                };
                _db.Entry(clientsMembership).State = EntityState.Added;
                 
@@ -556,7 +558,7 @@ namespace yogaAshram.Controllers
                 branchId = _db.Branches.FirstOrDefault(p=>p.AdminId==user.Id).Id;
             }
             
-            List<Client> clients = _db.Clients.Where(c=>c.Group.BranchId==branchId && c.ClientType == ClientType.AreEngaged).OrderByDescending(p=>p.DateCreate).ToList();
+            List<Client> clients = _db.Clients.Where(c=>c.Group.BranchId==branchId && c.ClientType != ClientType.Probe ).OrderByDescending(p=>p.DateCreate).ToList();
 
             return View(clients);
         }
