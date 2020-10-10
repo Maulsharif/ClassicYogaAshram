@@ -66,6 +66,7 @@ namespace yogaAshram.Controllers
         [Authorize]
         public async Task<IActionResult> History(long? branchId, long groupId, DateTime start)
         {
+            ViewBag.BranchId = branchId;
             if (User.IsInRole("admin"))
             {
                 Employee user = await _userManager.GetUserAsync(User);

@@ -13,7 +13,8 @@
 
 <form method="get">
     <div class="form-inline form-group">
-       <label class="p-2 font-weight-bold"> Месяц </label>
+        <label class="p-2 font-weight-bold"> Месяц </label>
+          <input  value="@ViewBag.BranchId" name="branchId"  hidden="hidden" />
         <input type="month" id="start" name="start"
                min="2019-10" value="2020-8" class="form-control mb-2 mr-sm-2"> 
        <label class="p-2 font-weight-bold ">Группа </label>
@@ -25,7 +26,7 @@
             }
         </select>
        
-        <input type="submit" value="Фильтр" class="btn btn-primary mb-2" />
+        <input type="submit" value="Поиск" class="btn btn-primary mb-2" />
     </div>
 </form>
 

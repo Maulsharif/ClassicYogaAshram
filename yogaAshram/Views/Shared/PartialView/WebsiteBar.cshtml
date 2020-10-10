@@ -1,13 +1,19 @@
+@inject YogaAshramContext _db;
+@{
+    
+    List<Branch> branches = _db.Branches.ToList();
+}
+
 @if (User.IsInRole("chief"))
 {
     <ul class="navbar-nav">
         <li class="nav-item active">
-            <a class="nav-link" asp-controller="Chief" asp-action="Index">Главная</a>
+            <a class="nav-link" asp-controller="Chief" asp-action="Index"> <span class="fa  fa-home fa-fw mr-3"></span></a>
         </li>
         <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" id="dropdown10" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Сотрудники</a>
             <div class="dropdown-menu" aria-labelledby="dropdown10">
-                <button class="dropdown-item btn btn-sm btn-outline-secondary getModal" data-target="emplCreateModal" id="@Url.Action("GetCreateEmplModalAjax", "Employees")" type="button">Добавить работника</button>
+                <button class="dropdown-item  getModal" data-target="emplCreateModal" id="@Url.Action("GetCreateEmplModalAjax", "Employees")" type="button">Добавить работника</button>
                 <a class="dropdown-item" asp-action="ListEmployee" asp-controller="Employees">Список сотрудников</a>
                 <a class="dropdown-item" asp-action="Index" asp-controller="Coaches">
                     Список тренеров
@@ -17,40 +23,62 @@
 
         <li class="nav-item">
             <a class="nav-link" type="button" data-toggle="modal" data-target="#addBranch" onclick="validateAdminIds()">Добавить центр</a>
-
         </li>
         <li class="nav-item">
             <a class="nav-link " asp-action="CreateGroup" asp-controller="Group">Создать группу</a>
         </li>
-        <li class="nav-item">
-            <a class="nav-link " asp-action="RedirectToChoose" asp-controller="Employees">Календарь</a>
+
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" id="dropdown10" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Календарь</a>
+            <div class="dropdown-menu" aria-labelledby="dropdown10">
+
+                @foreach (var b in branches)
+                {
+                    <a class="dropdown-item" asp-action="Index" asp-controller="Schedule" asp-route-branchId="@b.Id">@b.Name</a>
+                }
+            </div>
         </li>
         <li class="nav-item">
             <a class="nav-link " asp-action="Index" asp-controller="Payments">Платежи</a>
         </li>
-        <li class="nav-item">
-            <a class="nav-link " asp-action="RedirectToChoose" asp-controller="Employees">Касса</a>
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" id="dropdown10" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Касса</a>
+            <div class="dropdown-menu" aria-labelledby="dropdown10">
+                @foreach (var b in branches)
+                {
+                    <a class="dropdown-item" asp-action="Index" asp-controller="Transactions" asp-route-branchId="@b.Id">@b.Name</a>
+                }
+            </div>
         </li>
-        <li class="nav-item">
-            <a class="nav-link " asp-action="RedirectToChoose" asp-controller="Employees">Активные клиенты</a>
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" id="dropdown10" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Активные клиенты</a>
+            <div class="dropdown-menu" aria-labelledby="dropdown10">
+                @foreach (var b in branches)
+                {<a class="dropdown-item" asp-action="RegularClients" asp-controller="Clients" asp-route-branchId="@b.Id">@b.Name</a>}
+            </div>
         </li>
-        <li class="nav-item">
-            <a class="nav-link " asp-action="RedirectToChoose" asp-controller="Employees">Пробные клиенты</a>
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" id="dropdown10" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Пробники</a>
+            <div class="dropdown-menu" aria-labelledby="dropdown10">
+                @foreach (var b in branches)
+                {<a class="dropdown-item" asp-action="Trials" asp-controller="Clients" asp-route-branchId="@b.Id">@b.Name</a>}
+            </div>
         </li>
-      
+
         <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" id="dropdown10" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Таблицы</a>
             <div class="dropdown-menu" aria-labelledby="dropdown10">
-
                 <a class="dropdown-item" asp-action="Index" asp-controller="Clients">Отчет по клиентам</a>
-                    <a class="nav-link " asp-action="RedirectToChoose" asp-controller="Employees"> История посещения клиентов</a>
-                   
-            
+                   <a class="nav-link " asp-action="RedirectToChoose" asp-controller="Employees">История</a>
             </div>
         </li>
-          <li class="nav-item">
-                    <a class="nav-link " asp-action="Index" asp-controller="Membership">Абонементы</a>
-                </li>
+        <li class="nav-item">
+            <a class="nav-link " asp-action="Index" asp-controller="Membership">Абонементы</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" >Табоица</a>
+        </li>
+        
     </ul>
 }
 else if (User.IsInRole("manager"))
@@ -93,14 +121,18 @@ else if (User.IsInRole("manager"))
         <li class="nav-item">
             <a class="nav-link " asp-action="Index" asp-controller="Membership">Абонементы</a>
         </li>
-        <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" id="dropdown10" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Таблицы</a>
-            <div class="dropdown-menu" aria-labelledby="dropdown10">
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" id="dropdown10" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Таблицы</a>
+                <div class="dropdown-menu" aria-labelledby="dropdown10">
 
-                <a class="dropdown-item" asp-action="Index" asp-controller="Clients">Отчет по клиентам</a>
-                     <a class="nav-link " asp-action="RedirectToChoose" asp-controller="Employees"> История посещения клиентов</a>
-            </div>
-        </li>
+                    <a class="dropdown-item" asp-action="Index" asp-controller="Clients">Отчет по клиентам</a>
+                    <a class="nav-link " asp-action="RedirectToChoose" asp-controller="Employees"> История посещения клиентов</a>
+                </div>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " asp-action="Index" asp-controller="">JJJJ</a>
+            </li>
+            
     </ul>
      
 }

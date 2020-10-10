@@ -2,6 +2,7 @@
 @inject YogaAshramContext _db;
 @{
     ViewBag.Admin=_db.Employees.Where(p => p.Role == "admin"&& p.CurrentBranchId==null).ToList();
+    
 }
 <!DOCTYPE html>
 <html lang="en">
@@ -18,7 +19,7 @@
 
 <header>
 
-    <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark" style="background-color: #008080;">
+    <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark" style="background-color: #14474ce6;">
 
         <a class="navbar-brand ml-5" href="https://www.classicalyoga.kz/"><img class="ashramLogo ml-5" src="/Images/SiteImages/ashram.png" alt="logo"></a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
@@ -88,9 +89,9 @@
                                 
                                 <li class="dropdown-item cursor-p">
                                     <form method="post" asp-controller="Account" asp-action="Logout" id="my_form">
-                                        <a class="text-decoration-none text-dark" href="javascript:{}" onclick="document.getElementById('my_form').submit(); return false;">
+                                        <button class="text-decoration-none text-dark btn btn-prime p-0" href="javascript:{}" onclick="document.getElementById('my_form').submit(); return false;">
                                             Выход
-                                        </a>
+                                        </button>
                                     </form>
                                 </li>
                             </div>
@@ -120,9 +121,9 @@
                                 </div>
                                 <li class="dropdown-item cursor-p">
                                     <form method="post" asp-controller="Account" asp-action="Logout" id="my_form">
-                                        <a class="text-decoration-none text-dark" href="javascript:{}" onclick="document.getElementById('my_form').submit(); return false;">
+                                        <button class="text-decoration-none text-dark" href="javascript:{}" onclick="document.getElementById('my_form').submit(); return false;">
                                             Выход
-                                        </a>
+                                        </button>
                                     </form>
                                 </li>
                             </div>
