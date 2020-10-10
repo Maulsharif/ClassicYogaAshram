@@ -64,42 +64,40 @@ namespace yogaAshram.Controllers
        
         
         [Authorize]
-        
-        public async Task<IActionResult> History(long ?branchId, long groupId, int month, int year)
+        public async Task<IActionResult> History(long? branchId, long groupId, DateTime start)
         {
             if (User.IsInRole("admin"))
-            {  Employee user=await _userManager.GetUserAsync(User);
-                branchId = _db.Branches.FirstOrDefault(p=>p.AdminId==user.Id).Id;
+            {
+                Employee user = await _userManager.GetUserAsync(User);
+                branchId = _db.Branches.FirstOrDefault(p => p.AdminId == user.Id).Id;
             }
-            
-          
+
+
             ViewBag.Groups = _db.Groups.Where(p => p.BranchId == branchId);
             
-            
-            List<List<Attendance>> res=new List<List<Attendance>>();
-            List< Attendance> attendance =
-                _db.Attendances.Where(p=>p.GroupId==groupId && p.ClientsMembership.DateOfPurchase.Month==month && p.ClientsMembership.DateOfPurchase.Year==year).ToList();
-            List<long?> Ids=attendance.Select(att => att.ClientsMembershipId).Distinct().ToList();
+            List<List<Attendance>> res = new List<List<Attendance>>();
+            List<Attendance> attendance =
+                _db.Attendances.Where(p =>
+                    p.GroupId == groupId && p.Date.Month == start.Month &&
+                    p.ClientsMembership.DateOfPurchase.Year == start.Year).ToList();
+            List<long?> Ids = attendance.Select(att => att.ClientsMembershipId).Distinct().ToList();
             for (int i = 0; i < Ids.Count; i++)
             {
                 res.Add(new List<Attendance>());
             }
-            
+
             for (int i = 0; i < attendance.Count; i++)
             {
                 for (int j = 0; j < Ids.Count; j++)
                 {
-                     if(attendance[i].ClientsMembershipId==Ids[j])
-                         res[j].Add(attendance[i]);
+                    if (attendance[i].ClientsMembershipId == Ids[j])
+                        res[j].Add(attendance[i]);
                 }
-                
-               
             }
 
-            res.Sort((a,b) => b.Count - a.Count);
+            res.Sort((a, b) => b.Count - a.Count);
             Console.WriteLine(res.Count);
-          
-        
+            
             return View(res);
         }
         

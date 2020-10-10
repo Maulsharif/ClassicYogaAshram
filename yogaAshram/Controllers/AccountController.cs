@@ -167,7 +167,7 @@ namespace yogaAshram.Controllers
         
         
         [Authorize]
-        public IActionResult RedirectToPage()
+        public IActionResult Index()
         {
             if (!User.Identity.IsAuthenticated)
                 return RedirectToAction("Login", "Account");

@@ -14,9 +14,9 @@ namespace yogaAshram.Models
         notattended=2,
         [Description("з")]
         frozen=3,
-        [Description("н/п")]
+        [Description("#")]
         notcheked=4,
-        [Description("от")]
+        [Description("c")]
         cancel =5
     }
     public class Attendance
@@ -42,16 +42,16 @@ namespace yogaAshram.Models
         {
             string res = "";
             if (this.AttendanceState == AttendanceState.notattended)
-                res = "red";
+                res = "#d65050";
             else if (this.AttendanceState == AttendanceState.attended)
-                res = "green";
+                res = "#4ec953";
             else if (this.AttendanceState == AttendanceState.frozen)
                 res = "#55b5e2";
             
             else if (this.AttendanceState == AttendanceState.notcheked)
-                res = "grey";
+                res = "#dadada";
             else if (this.AttendanceState == AttendanceState.cancel)
-                res = "purple";
+                res = "#8657fdf7";
             return res;
         }
     }

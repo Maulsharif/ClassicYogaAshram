@@ -13,33 +13,18 @@
 
 <form method="get">
     <div class="form-inline form-group">
-        <label class="control-label">Группа </label> <span> </span>
-       <select name="groupId" id="" class="form-control mb-2 mr-sm-2">
-       @foreach (var gr in @ViewBag.Groups)
-       {
-           <option value="@gr.Id"> @gr.Name</option>
-       }
-       </select>
-        <label class="control-label">Месяц </label><span> </span>
-        <select name="month" id="" class="form-control mb-2 mr-sm-2">
-       
-            <option value="1">Январь</option>
-            <option value="2">Февраль</option>
-            <option value="3">Март</option>
-            <option value="4">Апрель</option>
-            <option value="5">Май</option>
-            <option value="6">Июнь</option>
-            <option value="7">Июль</option>
-            <option value="8">Август</option>
-            <option value="9">Сентярь</option>
-            <option value="10">Октябрь</option>
-            <option value="11">Ноябрь</option>
-            <option value="12">Декабрь</option>
-        
+       <label class="p-2 font-weight-bold"> Месяц </label>
+        <input type="month" id="start" name="start"
+               min="2019-10" value="2020-8" class="form-control mb-2 mr-sm-2"> 
+       <label class="p-2 font-weight-bold ">Группа </label>
+        <select name="groupId" id="" class="form-control mb-2 mr-sm-2">
             
-        }   </select>
-        <label class="control-label">Год </label><span> </span>
-        <input name="year" type="number" min="2019"  max="2050"  class="form-control mb-2 mr-sm-2" placeholder="2020"/>
+            @foreach (var gr in @ViewBag.Groups)
+            {
+                <option value="@gr.Id"> @gr.Name</option>
+            }
+        </select>
+       
         <input type="submit" value="Фильтр" class="btn btn-primary mb-2" />
     </div>
 </form>
@@ -50,7 +35,9 @@
 
 @if(@Model.Count>0)
 {
-    <p> Список посещении центра @Model[0][0].Group.Branch.Name </p>
+    <h3> Список посещении центра @Model[0][0].Group.Branch.Name </h3>
+    <h4> Тренер @Model[0][0].Group.Coach.NameSurname </h4>
+                                                               
  <div class="table-responsive">
     <table class=" table table-bordered small">
     
