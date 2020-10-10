@@ -1,4 +1,8 @@
 ﻿@using System.ComponentModel
+@inject YogaAshramContext _db;
+@{
+    ViewBag.Admin=_db.Employees.Where(p => p.Role == "admin"&& p.CurrentBranchId==null).ToList();
+}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -291,6 +295,10 @@ else
     </div>
 }
 
+@* Модалка для добавления филиала *@
+@{
+    await Html.RenderPartialAsync("PartialView/_BranchCreatePartial");
+}
 
 <div class="modal" tabindex="-1" role="dialog" id="form-modal2">
     <div class="modal-dialog" role="document">
@@ -307,52 +315,6 @@ else
         </div>
     </div>
 </div>
-@* Модалка для добавления филиала *@
-<div class="modal fade" id="addBranch" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLongTitle">Добавить центр йоги</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body" id="addBranchReload">
-                <form asp-action="CreateBranch" asp-controller="Branch">
-                    <input name="name" type="text" class="form-control mb-2" placeholder="Название" required>
-                    <input name="info" type="text" class="form-control mb-2" placeholder="Информация о центре">
-                    <input name="address" type="text" class="form-control mb-2" placeholder="Адрес">
-                    @if (ViewBag.Admin==null)
-                    {
-                        <p>Не найдено ни одного администратора .</p>
-                    }
-                    else
-                    {
-                        <label for="">Выберете администратора:</label>
-                        <select class="form-control mb-2" name="adminId" onchange="validateAdminIds()" id="adminId">
-                            <option selected value="no">Выберите администратора</option>
-                            @foreach (Employee admin in @ViewBag.Admin)
-                            {
-                                <option value="@admin.Id">@admin.UserName</option>
-                            }
-                        </select>
-
-                        <input type="submit" class="btn btn-secondary" value="Добавить" id="send">
-                    }
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-outline-dark" data-dismiss="modal">Закрыть</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-
-
-
-
-
 
 
 <footer class="border-top footer text-muted">
