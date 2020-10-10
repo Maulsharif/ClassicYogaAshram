@@ -75,11 +75,7 @@
                     {
                       <button class="dropdown-item" data-toggle="modal" data-target="#makeClientUnactive-@client.Id">Сделать неактивным</button>
                     }  
-                    @if (@client.HasMembership)
-                    {
-                        <button class="dropdown-item" data-toggle="modal" data-target="#extendMembership-@client.Id">Продлить абонемент</button>
-                        
-                    }
+                    <button class="dropdown-item" data-toggle="modal" data-target="#extendMembership-@client.Id">Продлить абонемент</button>
                   </div>
                 </div>
             </td>
