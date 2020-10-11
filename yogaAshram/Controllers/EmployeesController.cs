@@ -274,13 +274,27 @@ namespace yogaAshram.Controllers
             await _db.SaveChangesAsync();
             return RedirectToAction("Index", "Chief");
         }
-      
+        [Authorize]
         [ActionName("ListEmployee")]
         public async Task<IActionResult> ListEmployee(long emplId)
         {
             Employee employee = _db.Employees.FirstOrDefault(e => e.Id == emplId);
-            ViewBag.Employees = _db.Employees.Where(e => e.Role != "chief" && e.UserName != "na").ToList();
-
+            
+            List<Employee> employees = _db.Employees.Where(e => e.Role != "chief" && e.UserName != "na").ToList();
+            List<Branch> branches = _db.Branches.Where(b => b.Admin != null).ToList();
+            
+            var empl = employees
+                .Join(branches, e => e.Id, b => b.AdminId,
+                    (employ, branch) => new EmployeesModelView() {Employee = employ, Branch = branch}).ToList();
+            var empl2 = new List<EmployeesModelView>();
+            foreach (var em in employees)
+            {
+                empl2.Add(new EmployeesModelView() {Employee = em});
+            }
+            empl2.AddRange(empl);
+            empl2 = empl2.GroupBy(elem=>elem.Employee.Id).Select(group=>group.Last()).ToList();
+            
+            ViewBag.Employees = empl2;
             return View(employee);
         }
         
