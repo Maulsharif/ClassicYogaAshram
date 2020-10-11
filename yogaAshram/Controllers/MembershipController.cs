@@ -46,9 +46,11 @@ namespace yogaAshram.Controllers
             if (User.IsInRole("admin"))
             {
                 Employee employee = await _userManager.GetUserAsync(User);
+                Branch branch = await _db.Branches.FirstOrDefaultAsync(b => b.AdminId == employee.Id);
                 if (employee != null)
                     ViewBag.Schedules =
-                        await _db.Schedules.Where(s => s.BranchId == employee.CurrentBranchId).ToListAsync();
+                        await _db.Schedules.Where(s => s.BranchId == branch.Id).ToListAsync();
+                
                 else
                     return NotFound();
             }
