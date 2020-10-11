@@ -1,8 +1,16 @@
 ﻿@using System.ComponentModel
 @inject YogaAshramContext _db;
 @{
-    ViewBag.Admin=_db.Employees.Where(p => p.Role == "admin").ToList();
-    
+    List<Employee> employees = _db.Employees.Where(p => p.Role == "admin").ToList();
+    List<Branch> branches = _db.Branches.Where(b => b.Admin != null).ToList();
+    var empl = employees
+        .Join(branches, e => e.Id, b => b.AdminId,
+            (employ, branch) => new Employee {Id = employ.Id, UserName = employ.UserName, Branch = branch}).ToList();
+    foreach (var em in empl)
+    {
+        employees.RemoveAll(e => e.Id == em.Id);
+    }
+    ViewBag.Admin = employees;
 }
 <!DOCTYPE html>
 <html lang="en">
