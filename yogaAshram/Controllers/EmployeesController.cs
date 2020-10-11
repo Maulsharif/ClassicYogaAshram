@@ -209,7 +209,7 @@ namespace yogaAshram.Controllers
                         }
                         search = search.ToUpper();
                         List<Employee> employees = _db.Employees
-                            .Where(e => e.Id != GetUserId.GetCurrentUserId(this.HttpContext))
+                            .Where(e => e.Id != GetUserId.GetCurrentUserId(this.HttpContext) && e.UserName != "na")
                             .Where(p => p.UserName.ToUpper().Contains(search)
                                         || p.NameSurname.ToUpper().Contains(search))
                             .ToList();
@@ -279,7 +279,7 @@ namespace yogaAshram.Controllers
         public async Task<IActionResult> ListEmployee(long emplId)
         {
             Employee employee = _db.Employees.FirstOrDefault(e => e.Id == emplId);
-            ViewBag.Employees = _db.Employees.Where(e => e.Role != "chief").ToList();
+            ViewBag.Employees = _db.Employees.Where(e => e.Role != "chief" && e.UserName != "na").ToList();
 
             return View(employee);
         }

@@ -179,4 +179,60 @@
                 $('#showIndex').show();
             });
     </script>
+    <script >
+    function editName(postId) {
+        $.ajax({
+            url : '@Url.Action("Edit", "Branch")',
+            type : 'POST',
+            data : {
+                'id' : postId,
+                'name' : $("#nameInput-" + postId).val()
+            },
+            success: setTimeout(function(){
+                $("#nameReload-" + postId).load(" #nameReload-" + postId);
+                $("#namePosition-" + postId).load(" #namePosition-" + postId);
+                $("#centerReload-" + postId).load(" #centerReload-" + postId);
+            }, 900)
+        })
+    }
+    function editAddress(postId) {
+        $.ajax({
+            url : '@Url.Action("Edit", "Branch")',
+            type : 'POST',
+            data : {
+                'id' : postId,
+                'address' : $("#addressInput-" + postId).val()
+            },
+            success: setTimeout(function(){
+                $("#addressReload-" + postId).load(" #addressReload-" + postId);
+            }, 900)
+        })
+    }
+    function editInfo(postId) {
+        $.ajax({
+            url : '@Url.Action("Edit", "Branch")',
+            type : 'POST',
+            data : {
+                'id' : postId,
+                'info' : $("#infoInput-" + postId).val()
+            },
+            success: setTimeout(function(){
+                $("#infoReload-" + postId).load(" #infoReload-" + postId);
+            }, 900)
+        })
+    }
+    function editSeller(postId) {
+        $.ajax({
+            url : '@Url.Action("Edit", "Branch")',
+            type : 'POST',
+            data : {
+                'id' : postId,
+                'adminId' : $("#adminId-" + postId).val()
+            },
+            success: setTimeout(function(){
+                $("#adminReload-" + postId).load(" #adminReload-" + postId);
+            }, 900)
+        })
+    }
+    </script>
 }
