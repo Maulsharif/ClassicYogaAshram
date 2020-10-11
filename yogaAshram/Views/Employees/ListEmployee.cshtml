@@ -21,17 +21,17 @@
         </tr>
         </thead>
         <tbody>
-        @foreach (Employee employee in (IEnumerable) ViewBag.Employees)
+        @foreach (var employee in ViewBag.Employees)
         {
-            @if (@employee.Role == "coach")
+            @if (@employee.Employee.Role == "coach")
             {
                 <tr>
-                    <td>@employee.NameSurname</td>
+                    <td>@employee.Employee.NameSurname</td>
                     <td>Нет</td>
                     <td>Нет</td>
                     <td>Инструктор</td>
                     <td>
-                        @employee.Branch
+                        @employee.Branch.Name
                     </td>
                     <td>
                         <a asp-action="Delete" asp-controller="Employees" asp-route-emplId="@employee.Id">Удалить</a>
@@ -42,34 +42,34 @@
             else
             {
                 <tr>
-                    <td>@employee.NameSurname</td>
-                    <td>@employee.Email</td>
-                    <td>@employee.UserName</td>
+                    <td>@employee.Employee.NameSurname</td>
+                    <td>@employee.Employee.Email</td>
+                    <td>@employee.Employee.UserName</td>
                     <td>
-                        @if (@employee.Role == "admin")
+                        @if (@employee.Employee.Role == "admin")
                         {
                             <p>Администратор</p>
                         }
-                        else if (@employee.Role == "manager")
+                        else if (@employee.Employee.Role == "manager")
                         {
                             <p>Старший менеджнер</p>
                         }
-                        else if (@employee.Role == "chief")
+                        else if (@employee.Employee.Role == "chief")
                         {
                             <p>Директор</p>
                         }
-                        else if (@employee.Role == "marketer")
+                        else if (@employee.Employee.Role == "marketer")
                         {
                             <p>Маркетолог</p>
                         }
-                        else if (@employee.Role == "seller")
+                        else if (@employee.Employee.Role == "seller")
                         {
                             <p>Менеджер по продажам</p>
                         }
                     </td>
 
                     <td>
-                        @if (@employee.Role == "admin")
+                        @if (@employee.Employee.Role == "admin")
                         {
                             @if (@employee.Branch != null)
                             {
@@ -83,13 +83,13 @@
                     </td>
 
                     <td>
-                        @if (@employee.Role == "chief"){
-                            <a asp-action="Edit" asp-controller="Employees" asp-route-emplId="@employee.Id">Изменить</a>
+                        @if (@employee.Employee.Role == "chief"){
+                            <a asp-action="Edit" asp-controller="Employees" asp-route-emplId="@employee.Employee.Id">Изменить</a>
                         }
                         else
                         {
-                            <a asp-action="Delete" asp-controller="Employees" asp-route-emplId="@employee.Id">Удалить</a>
-                            <a asp-action="Edit" asp-controller="Employees" asp-route-emplId="@employee.Id">Изменить</a>
+                            <a asp-action="Delete" asp-controller="Employees" asp-route-emplId="@employee.Employee.Id">Удалить</a>
+                            <a asp-action="Edit" asp-controller="Employees" asp-route-emplId="@employee.Employee.Id">Изменить</a>
                         }
                     </td>
                 </tr>
