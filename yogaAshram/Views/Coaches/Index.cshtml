@@ -8,6 +8,7 @@
 <div class="card">
     <div class="card-header">
         <h5 class="text-center pb-2 border-bottom card-title mb-2">Список тренеров</h5>
+        
         <form asp-action="Index">
             <h5 class="card-title mb-2 text-center">Фильтровать тренеров</h5>
             <div style="margin:auto; width: 740px;">
@@ -36,7 +37,7 @@
             <thead>
                 <tr>
                     <th scope="col">Имя тренера</th>
-                    <th scope="col">Почта</th>
+                    
                     <th scope="col">Группы</th>
                     <th scope="col"></th>
                 </tr>
@@ -51,11 +52,7 @@
                                 @item.Coach.NameSurname
                             </span>
                         </td>
-                        <td>
-                            <span>
-                                @item.Coach.Email
-                            </span>
-                        </td>
+                        
                         <td>
                             @foreach (var group in item.Groups)
                             {
