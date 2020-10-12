@@ -156,7 +156,7 @@ namespace yogaAshram.Controllers
                 
                 List<DateTime> datesOfAttendance = _clientServices.DatesForAttendance(
                         model.Date, model.GroupId,
-                        membership.AttendanceDays + daysFrozen);
+                        membership.AttendanceDays);
                 
                 AttendanceCount attendanceCount = new AttendanceCount()
                 {
