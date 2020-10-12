@@ -401,7 +401,7 @@ namespace yogaAshram.Controllers
                     
                 };
                 _db.Entry(attendanceCount).State = EntityState.Added;
-                for (int i = 0; i < membership?.AttendanceDays + daysFrozen; i++)
+                for (int i = 0; i < membership?.AttendanceDays; i++)
                 {
                     Attendance attendance = new Attendance()
                     {
@@ -524,7 +524,7 @@ namespace yogaAshram.Controllers
                     
                 };
                 _db.Entry(attendanceCount).State = EntityState.Added;
-                for (int i = 0; i < membership?.AttendanceDays + daysFrozen; i++)
+                for (int i = 0; i < membership?.AttendanceDays; i++)
                 {
                     Attendance attendance = new Attendance()
                     {
@@ -714,6 +714,22 @@ namespace yogaAshram.Controllers
                 {
                     DateTime lastDay = clientsMembership.DateOfExpiry;
                     clientsMembership.DateOfExpiry = _clientServices.DateIfFrozen(lastDay, attendance.GroupId);
+                    Attendance att =
+                        _db.Attendances.FirstOrDefault(a => a.AttendanceCountId == attendance.AttendanceCountId && a.Date == clientsMembership.DateOfExpiry);
+                    if (att == null)
+                    {
+                        att = new Attendance()
+                        {
+                            AttendanceCountId = attendance.AttendanceCountId,
+                            Date = clientsMembership.DateOfExpiry,
+                            ClientId = clientId,
+                            GroupId = attendance.GroupId,
+                            MembershipId = attendance.MembershipId,
+                            ClientsMembershipId = attendance.ClientsMembershipId
+                        };
+                        _db.Entry(att).State = EntityState.Added;
+                        
+                    } 
                     _db.Entry(clientsMembership).State = EntityState.Modified;
                 }
             }
