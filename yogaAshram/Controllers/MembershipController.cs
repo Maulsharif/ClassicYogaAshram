@@ -42,6 +42,7 @@ namespace yogaAshram.Controllers
             Client client = await _db.Clients.FindAsync(clientId);
             if (client is null)
                 return NotFound();
+            long branchId = client.Group.BranchId;
             ViewBag.Memberships = await _db.Memberships.ToArrayAsync();
             if (User.IsInRole("admin"))
             {
@@ -65,7 +66,7 @@ namespace yogaAshram.Controllers
                 ClientsMembership clientsMembership = _db.ClientsMemberships.ToList().Last(c => c.ClientId == clientId);
                 ViewBag.Date = clientsMembership.DateOfExpiry;
             }
-            return PartialView(new MembershipExtendModelView() {ClientId = client.Id, Client = client});
+            return PartialView(new MembershipExtendModelView() {ClientId = client.Id, Client = client, BranchId = branchId});
         }
         
         // Добавление и редактриование абонемента 

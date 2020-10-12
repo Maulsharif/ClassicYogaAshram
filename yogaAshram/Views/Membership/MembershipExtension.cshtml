@@ -106,7 +106,7 @@
                 success: function (data) {
                     if (data === "success") { 
                         alert("Абонемент продлен успешно!");
-                        window.location.href = '@Url.Action("Index", "Payments")';                 
+                        window.location.href = '@Url.Action("Index", "Payments", new {branchId = @Model.BranchId})';                 
                     }
                     else if(data === "errorNotEnoughSum"){
                         $('#errorText').text("Есть долг за прошлый абонемент");
