@@ -75,7 +75,7 @@
                       alert("Оплата проведена успешно")
                       $('#paymentCreateModal').modal('hide');
                       $("#commentPayment").val();
-                      window.location.href = '@Url.Action("Index", "Payments")';
+                      window.location.href = '@Url.Action("Index", "Payments", new {branchId = @Model.BranchId})';
                       }
                   else if (data === "negativeOrZero"){
                       alert("Введенная сумма не может быть 0 или отрицательной")
