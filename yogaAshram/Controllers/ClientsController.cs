@@ -650,7 +650,11 @@ namespace yogaAshram.Controllers
                                                                                  && a.ClientId == clientId).ToList();
             if (attendancesToCheckDate.Any(a => a.Date == date))
                 return Content("errorCheckedAlready");
-            
+            List<Attendance> attendancesToCheckPrev = _db.Attendances
+                .Where(a => a.ClientId == clientId && a.IsChecked == false)
+                .ToList();
+            if(attendancesToCheckPrev.Any(a => a.Date < date))
+                return Content("errorNeedToCheckPrev");
             Attendance attendance = _db.Attendances
                 .FirstOrDefault(a => a.Id == attendanceId);
             

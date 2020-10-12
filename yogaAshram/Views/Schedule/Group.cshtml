@@ -342,6 +342,9 @@
                        if(data === "errorCheckedAlready"){
                             $('#log').text(clientName + ' уже отмечен');         
                        } 
+                       else if(data === "errorNeedToCheckPrev"){
+                            $('#log').text('У ' + clientName + ' есть неотмеченные занятия :)');         
+                       }
                        else if(data === "errorAttend"){
                              $('#log').text(clientName + ' пора обновить абонемент');         
                        } 
@@ -577,6 +580,9 @@
                  setTimeout(function(){  
                  if(data === "errorCheckedAlready"){
                  $('#log').text(clientName + ' уже отмечен');         
+                 } 
+                 else if(data === "errorNeedToCheckPrev"){
+                 $('#log').text('У ' + clientName + ' есть неотмеченные занятия :)');         
                  } 
                  else if(data === "errorAttend"){
                  $('#log').text(clientName + ' пора обновить абонемент');         
