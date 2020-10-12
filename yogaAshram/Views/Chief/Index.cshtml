@@ -40,11 +40,13 @@
                     <a class="btn btn-sm btn-outline-secondary mt-2" type="button" href="#" id="branchButton-@branch.Id" onclick="openBranch('@branch.Id')"> Открыть</a>
                   <!--  <a class="btn btn-sm btn-outline-secondary mt-2" type="button" href="#" data-toggle="modal" data-target="#deleteBranch-@branch.Id">Удалить</a> -->
                     <a class="btn btn-sm btn-outline-secondary mt-2" type="button" asp-action="Index" asp-controller="Schedule" asp-route-branchId="@branch.Id">Календарь</a>
-                     <a class="btn btn-sm btn-outline-secondary mt-2" type="button" asp-action="Index" asp-controller="Transactions" asp-route-branchId="@branch.Id">Касса</a>
+                    <a class="btn btn-sm btn-outline-secondary mt-2" type="button" asp-action="Index" asp-controller="Transactions" asp-route-branchId="@branch.Id">Касса</a>
+                    <div id="messageReload-@branch.Id">
                     @if (branch.Admin.UserName == "na")
                     {
                         <p class="text-danger">Необходимо добавить администратора! Для этого откройте центр и выберите администратора из выпадающего списка.</p>
                     }
+                    </div>
                     <hr>
                 </p>
                 <!-- Modal -->
@@ -231,6 +233,7 @@
             },
             success: setTimeout(function(){
                 $("#adminReload-" + postId).load(" #adminReload-" + postId);
+                $("#messageReload-" + postId).load(" #messageReload-" + postId);
             }, 900)
         })
     }
