@@ -20,6 +20,8 @@ namespace yogaAshram.Models.ModelViews
     public class PaymentsIndexModelView
     {
         public List<Payment> Payments { get; set; }
+        public Employee[] Coaches { get; set; }
+        public long? CoachId { get; set; }
         public string FilterByName { get; set; }
         public bool SortReverse { get; set; } = false;
         public SortPaymentsBy SortSelect { get; set; }
@@ -31,6 +33,7 @@ namespace yogaAshram.Models.ModelViews
         public int PaymentsLength { get; set; } = 20;
         public int CashSum { get; set; } = 0;
         public int CardSum { get; set; }
+        public Branch Branch { get; set; }
         public void SetAmount()
         {
             foreach (var item in Payments)
