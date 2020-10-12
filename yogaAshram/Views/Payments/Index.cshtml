@@ -97,7 +97,7 @@
     <div id="paymentTable">
         <div class="card-header">
             <div style="margin-left:150px; margin-right:150px">
-                <form class="mb-3 border-bottom" asp-action="Index">
+                <form asp-route-branchId="@Model.Branch.Id" class="mb-3 border-bottom" asp-action="Index">
                     <div class="form-row align-items-center">
                         <div class="col-auto">
                             <label>
@@ -146,7 +146,7 @@
                         </div>
                     </div>
                 </form>
-                <form asp-action="Index" class="mt-3">
+                <form asp-route-branchId="@Model.Branch.Id" asp-action="Index" class="mt-3">
                     <div class="form-row align-items-center">
                         <div class="col-auto">
                             <div class="form-group">
