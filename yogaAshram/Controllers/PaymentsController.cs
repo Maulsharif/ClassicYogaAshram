@@ -176,14 +176,16 @@ namespace yogaAshram.Controllers
         }
         
         [Authorize]
-        public async Task<IActionResult> GetCreateModalAjax(long clientId, long branchId)
+        public async Task<IActionResult> GetCreateModalAjax(long clientId)
         {
+            Client client = await _db.Clients.FindAsync(clientId);
+            long branchId = client.Group.BranchId;
             if (User.IsInRole("admin"))
             {  Employee user=await _userManager.GetUserAsync(User);
                 branchId = _db.Branches.FirstOrDefault(p=>p.AdminId==user.Id).Id;
             }
 
-            Client client = await _db.Clients.FindAsync(clientId);
+            
             Employee emp = await _userManager.GetUserAsync(User);
         
             if (client is null)
