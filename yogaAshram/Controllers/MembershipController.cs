@@ -56,7 +56,7 @@ namespace yogaAshram.Controllers
                     return NotFound();
             }
             else if (User.IsInRole("chief") || User.IsInRole("manager"))
-                ViewBag.Schedules = await _db.Schedules.ToListAsync();
+                ViewBag.Schedules = await _db.Schedules.Where(s => s.BranchId == branchId).ToListAsync();
             else
                 return NotFound();
             
