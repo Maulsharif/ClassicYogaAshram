@@ -45,7 +45,7 @@
             </p>
 
 
-            <button type="submit" class="col-md-3 ml-5 mt-4 btn-1 btn btn-success" id="btn_modal_window" style="margin-bottom: 30px">Редактировать</button>
+            <button type="submit" class="col-md-3 ml-5 mt-4 btn-1 btn btn-outline-dark" id="btn_modal_window" style="margin-bottom: 30px">Редактировать</button>
         </div>
         @if (Model.Balance < 0)
         {
@@ -133,7 +133,7 @@
                     <span asp-validation-for="@Model.ClientsEditModelView.Source"></span>
                 </div>
                 <input type="hidden" asp-for="Id" value="@Model.Id">
-                <input type="submit" value="Сохранить" class="btn btn-outline-dark">
+                <input style="margin-left: 180px;" type="submit" value="Сохранить" class="btn btn-outline-dark">
             </form>
         </div>
     </div>

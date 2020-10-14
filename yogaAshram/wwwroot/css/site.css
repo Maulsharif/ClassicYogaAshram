@@ -65,7 +65,7 @@ body {
 }
 .footer {
   position: absolute;
-  bottom: 0;
+  bottom: -50px;
   width: 100%;
   white-space: nowrap;
   line-height: 25px; /* Vertically center the text there */
@@ -775,4 +775,21 @@ tr:last-child td{
 }
 .yogaLogo{
     height: 35px;
+}
+
+
+body {
+    margin: 0;
+    background-color: #EDEEF0;
+}
+
+.preloader {
+    position: fixed;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    overflow: hidden;
+    background: #fff;
+    z-index: 1001;
 }

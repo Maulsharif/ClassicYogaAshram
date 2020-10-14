@@ -117,7 +117,7 @@
 					    }
 				    </select>
 				    
-				    <button  id="show" type="button" class="btn btn-outline-secondary">Добавить другое</button> 
+				    <button  id="show" type="button" class="btn btn-light mb-2">Добавить другое</button> 
 				    <div class="input-group mb-3"  id="showAddinialField" >
 					    <input type="text" class="form-control" id="sicknessInput" name="newSikness" placeholder="Название болезни"  aria-describedby="basic-addon2">
 					    <div class="input-group-append">
@@ -146,7 +146,7 @@
 			    </div>
       		</div>		
       					<input class="form-control mb-4 w-50" asp-for="@Model.ClientsCreateModelView.StartDate" type="hidden" value="@Model.ChosenDate">
-			      <button class="btn btn-info mt-3" type="submit">Добавить</button>
+			      <button class="btn btn-light mt-3" type="submit">Добавить</button>
       		</form>
    
     </div>
@@ -164,7 +164,7 @@
 	            @{
                		  Html.RenderPartial("PartialViews/_CreateClientPartial.cshtml");
                	  }
-      			                <button class="btn btn-info" type="submit">Добавить</button>
+      			                <button class="btn btn-light" type="submit">Добавить</button>
                   	    </form>                			
       			
     </div>
@@ -277,7 +277,7 @@
 					    <textarea class="form-control mb-4" asp-for="@Model.ClientsCreateModelView.Comment" rows="2"></textArea>
 				    </div>
 			    </div>
-			    <button class="btn btn-info mt-2" type="submit">Добавить</button>
+			    <button class="btn btn-light mt-2" type="submit">Добавить</button>
 		    </form>
 	    </div>
     </div>

@@ -17,7 +17,7 @@
 
 @if (@Model.Client.ClientType == ClientType.Probe)
 {
-    <a asp-action="BuyMembership" asp-controller="Membership" asp-route-clientId="@Model.Client.Id" asp-route-branchId="@Model.Group.BranchId" class="btn btn-primary">Сделать активным</a>
+    <a asp-action="BuyMembership" asp-controller="Membership" asp-route-clientId="@Model.Client.Id" asp-route-branchId="@Model.Group.BranchId" class="btn btn-secondary mb-3">Сделать активным</a>
 }
 
 <table class="table" id="customers">
@@ -45,7 +45,7 @@
               
             </td>
             <td>
-                <a type="button" class="open-AddBookDialog btn btn-primary" data-toggle="modal" data-target="#sendComment" data-id="@client.Id">
+                <a type="button" class="open-AddBookDialog btn btn-secondary" data-toggle="modal" data-target="#sendComment" data-id="@client.Id">
                     Коментировать
                 </a>
             </td>
@@ -71,14 +71,14 @@
           <form asp-action="WriteComment" asp-controller="Clients" method="post">
                <input  name="clientId" id="clientId" value="" type="hidden">
               <textarea name="SellerComment" required cols="40" rows="2" class="form-control"></textarea><br/>
-              <input type="submit" value="Сохранить" class="btn btn-success">
+              <input type="submit" value="Сохранить" class="btn btn-outline-secondary">
           </form>
 
       </div>
 
       <!-- Modal footer -->
       <div class="modal-footer">
-        <button type="button" class="btn btn-danger" data-dismiss="modal">Закрыть</button>
+        <button type="button" class="btn btn-outline-dark" data-dismiss="modal">Закрыть</button>
       </div>
 
     </div>

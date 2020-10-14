@@ -97,7 +97,7 @@
                 <div class="modal-footer">
                     <form method="post" asp-controller="Clients" asp-action="MakeClientJoinInWhatsAppGroup">
                         <input type="hidden" value="@client.Id" name="clientId">
-                        <button type="submit" class="btn btn-outline-dark">Да</button>
+                        <button type="submit" class="btn btn-dark">Да</button>
                     </form>
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Еще нет</button>
                     
@@ -173,7 +173,7 @@
                        <input type="hidden" value="@client.Id" name="clientId">
                        <button type="submit" class="btn btn-outline-dark">Да</button>
                        </form>                                       
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Еще нет</button>
+                    <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Еще нет</button>
                 </div>
             </div>
         </div>
@@ -195,7 +195,7 @@
                 </div>
                 <div class="modal-footer">
                     <a class="btn btn-secondary" asp-action="MembershipExtension" asp-controller="Membership" asp-route-clientId="@client.Id">Перейти на страницу продления абонемента</a>                                      
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+                    <button type="button" class="btn btn-dark" data-dismiss="modal">Закрыть</button>
                 </div>
             </div>
         </div>
