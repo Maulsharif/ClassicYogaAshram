@@ -40,7 +40,7 @@ namespace yogaAshram.Models.ModelViews
         public string Address { get; set; }
       
         public string WorkPlace { get; set; }
-        [Required(ErrorMessage = "Поле обязательно для заполнения")]
+      
         public DateTime DateOfBirth { get; set; }
 
         public long MembershipId { get; set; }
