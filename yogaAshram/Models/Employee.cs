@@ -19,5 +19,7 @@ namespace yogaAshram.Models
         public string Role { get; set; }
         [NotMapped]
         public Branch Branch { get; set; }
+
+       
     }
 }

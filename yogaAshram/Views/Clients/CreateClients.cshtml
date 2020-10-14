@@ -11,16 +11,8 @@
     <div class="col-md-6">
         <h2>Добавить клиента</h2>
         <form method="post" asp-controller="Clients" asp-action="CreateClients">
-            <div>
-                <span asp-validation-for="NameSurname"></span>
-                <label>Ф.И.О</label><br/>
-                <input class="form-control mb-4" asp-for="NameSurname"/>
-            </div>
-            <div>
-                <span asp-validation-for="PhoneNumber"></span>
-                <label>Номер телефона</label><br/>
-                <input class="form-control mb-4" asp-for="PhoneNumber"/>
-            </div>
+            
+            <
             <div>
                 <label>Группы</label>
                 <select class="form-control mb-4" asp-for="GroupId">

@@ -482,6 +482,10 @@
       <Folder Include="Views\Employees\PartialViews" />
     </ItemGroup>
 
+    <ItemGroup>
+      <UpToDateCheckInput Remove="Views\Home\Index.cshtml" />
+    </ItemGroup>
+
     <ProjectExtensions><VisualStudio><UserProperties appsettings_1json__JsonSchema="" /></VisualStudio></ProjectExtensions>
 
 </Project>

@@ -76,6 +76,10 @@ namespace yogaAshram.Controllers
         {
             return !_db.Employees.Any(p => p.UserName == userName);
         }
+        public bool CheckClientName(string nameSurname)
+        {
+            return !_db.Clients.Any(p => p.NameSurname == nameSurname);
+        }
         public bool CheckEmailCreate(string email)
         {
             return !_db.Employees.Any(p => p.Email == email);
