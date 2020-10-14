@@ -20,8 +20,8 @@
       			<div class="row">
       				<div class="col-sm-6">
       					
-      				   <span asp-validation-for="@Model.ClientsCreateModelView.NameSurname"></span>
-	                    <input class="form-control mb-4" asp-for="@Model.ClientsCreateModelView.NameSurname" placeholder="Ф.И.О"/>
+      				   <span asp-validation-for="@Model.NameSurname"></span>
+	                    <input class="form-control mb-4" asp-for="@Model.NameSurname" placeholder="Ф.И.О"/>
 	                 
       				</div>
       				<div class="col-sm-6">
@@ -33,8 +33,8 @@
       			</div>
       			<div class="row">
       				<div class="col-sm-6">
-      					     <span asp-validation-for="@Model.ClientsCreateModelView.PhoneNumber"></span>
-      					<input class="form-control mb-4" asp-for="@Model.ClientsCreateModelView.PhoneNumber" placeholder="Номер телефона"/>
+      					     <span asp-validation-for="@Model.PhoneNumber"></span>
+      					<input class="form-control mb-4"   id="phone-mask2" asp-for="@Model.PhoneNumber" placeholder="8777777777"  />
 	               
       				</div>
       
@@ -51,7 +51,7 @@
       		                      
       		                        <label>Откуда вы о нас узнали?</label><br/>
 	                                <select class="form-control mb-4" asp-for="ClientsCreateModelView.Source">
-		                                  <option >...</option>   
+		                                  <option  value="">...</option>   
 		                                <option value="Инстаграм страница">Инстаграм страница</option>
 		                                <option value="Таргет в инстаграмме">Таргет в инстаграмме</option>
 		                                <option value="Инстаграм страница">Инстаграм страница</option>
@@ -94,3 +94,8 @@
       	                 </div>   
 <br/>
 
+@{
+	await Html.RenderPartialAsync("_ValidationScriptsPartial");
+	
+	
+}

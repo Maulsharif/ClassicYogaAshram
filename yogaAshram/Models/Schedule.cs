@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.AspNetCore.Mvc;
 using yogaAshram.Models.ModelViews;
 
 
@@ -24,6 +25,14 @@ namespace yogaAshram.Models
             public DateTime ChosenDate { get; set; }
             [NotMapped] 
             public List<Attendance> Attendances { get; set; }
+            [NotMapped] 
+            [Required(ErrorMessage = "Введите Ф.И.О")]
+            [Remote(action: "CheckClientName", controller: "Validation", ErrorMessage = "Клиент с таким ФИО уже есть")]
+            public string NameSurname { get; set; }
+            [NotMapped] 
+            [Required(ErrorMessage = "Введите номер телефона")]
+            [Remote(action: "ClientPhoneNumber", controller: "Validation", ErrorMessage = "Ранее использовался этот номер")]
+            public string PhoneNumber { get; set; }
          }
     }
 

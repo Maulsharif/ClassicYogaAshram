@@ -7,7 +7,7 @@
  <h4>Добавить в группу</h4> 
 <hr />
  <div class="row"> 
-     <div class="col-md-4"> 
+     <div class="col-md-8"> 
        <form method="post" > 
           
            <div class="form-group"> 
@@ -29,7 +29,7 @@
            <div class="form-group"> 
                <label  class="control-label">Выберите абонемент:</label> 
                                            
-               <select name="MembershipId" id="membershipSelect">
+               <select name="MembershipId" id="membershipSelect" class="form-control">
                    @foreach (Membership membership in  @ViewBag.Memberships)
                    {
                        <option value="@membership.Id">@membership.Name</option>

@@ -119,8 +119,8 @@ namespace yogaAshram.Controllers
            
             Client client = new Client()
             {
-                NameSurname = schedule.ClientsCreateModelView.NameSurname,
-                PhoneNumber = schedule.ClientsCreateModelView.PhoneNumber,
+                NameSurname = schedule.NameSurname,
+                PhoneNumber = schedule.PhoneNumber,
                 DateOfBirth = schedule.ClientsCreateModelView.DateOfBirth,
                 Email = schedule.ClientsCreateModelView.Email,
                 Address = schedule.ClientsCreateModelView.Address,
@@ -325,8 +325,8 @@ namespace yogaAshram.Controllers
                 _sicknessId = schedule.ClientsCreateModelView.SicknessId;
                 Client client = new Client()
                 {
-                    NameSurname = schedule.ClientsCreateModelView.NameSurname,
-                    PhoneNumber = schedule.ClientsCreateModelView.PhoneNumber,
+                    NameSurname = schedule.NameSurname,
+                    PhoneNumber = schedule.PhoneNumber,
                     DateOfBirth = schedule.ClientsCreateModelView.DateOfBirth,
                     Email = schedule.ClientsCreateModelView.Email,
                     Address = schedule.ClientsCreateModelView.Address,
@@ -436,8 +436,8 @@ namespace yogaAshram.Controllers
                 
 
                 Debug.Assert(client != null, nameof(client) + " != null");
-                client.NameSurname = schedule.ClientsCreateModelView.NameSurname;
-                client.PhoneNumber = schedule.ClientsCreateModelView.PhoneNumber;
+                client.NameSurname = schedule.NameSurname;
+                client.PhoneNumber = schedule.PhoneNumber;
                 client.DateOfBirth = schedule.ClientsCreateModelView.DateOfBirth;
                 client.Email = schedule.ClientsCreateModelView.Email;
                 client.Address = schedule.ClientsCreateModelView.Address;
