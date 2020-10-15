@@ -17,7 +17,7 @@
 
 @if (@Model.Client.ClientType == ClientType.Probe)
 {
-    <a asp-action="BuyMembership" asp-controller="Membership" asp-route-clientId="@Model.Client.Id" asp-route-branchId="@Model.Group.BranchId" class="btn btn-primary">Сделать активным</a>
+    <a asp-action="BuyMembership" asp-controller="Membership" asp-route-clientId="@Model.Client.Id" asp-route-branchId="@Model.Group.BranchId" class="btn btn-secondary mb-3">Сделать активным</a>
 }
 
 <table class="table" id="customers">

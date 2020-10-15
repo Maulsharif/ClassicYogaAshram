@@ -11,6 +11,7 @@ namespace yogaAshram.Models
         
         public long ?AdminId { get; set; }
         public virtual Employee Admin { get; set; }
+        
      
     }
 }

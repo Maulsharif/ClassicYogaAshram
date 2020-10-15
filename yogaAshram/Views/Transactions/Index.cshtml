@@ -12,7 +12,7 @@
     <p>Безналл @Model.CurrentSum.CreditSum тг</p>
     @if (User.IsInRole("chief"))
     {
-        <a class="btn btn-sm btn-primary mt-2" type="button" asp-action="Withdraw" asp-controller="Transactions" asp-route-branchId="@Model.BranchId">Снять деньги</a> 
+        <a class="btn btn-secondary mb-4 mt-2" type="button" asp-action="Withdraw" asp-controller="Transactions" asp-route-branchId="@Model.BranchId">Снять деньги</a> 
     }
     <br/>
     <div class="row">
