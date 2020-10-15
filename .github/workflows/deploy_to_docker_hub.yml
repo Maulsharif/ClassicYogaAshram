@@ -27,8 +27,8 @@ jobs:
         name: Build and push
         uses: docker/build-push-action@v2
         with:
-          context: ./ClassicYogaAshram/yogaAshram/
-          file: ./ClassicYogaAshram/yogaAshram/Dockerfile
+          context: ./yogaAshram/
+          file: ./yogaAshram/Dockerfile
           platforms: windows/amd64
           push: true
           name: yogaashram
