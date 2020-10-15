@@ -29,7 +29,7 @@ jobs:
         with:
           context: .
           file: ./
-          platforms: linux/amd64,linux/arm64,linux/386
+          platforms: windows/amd64
           push: true
           name: yogaashram
           tags: nurakmed/yogaashram:latest
