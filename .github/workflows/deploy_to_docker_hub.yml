@@ -29,9 +29,9 @@ jobs:
         with:
           context: ./yogaAshram/
           file: ./yogaAshram/Dockerfile
-          platforms: windows/amd64
+          
           push: true
-          name: yogaashram
+          
           tags: nurakmed/yogaashram:latest
   
 
