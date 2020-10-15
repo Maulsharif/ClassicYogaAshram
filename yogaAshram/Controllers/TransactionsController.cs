@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -26,16 +27,14 @@ namespace yogaAshram.Controllers
 
         // GET
         //
-       
+        [Authorize]
         public async Task<IActionResult> Index(long branchId)
         {
-            
-                
-          
             if (User.IsInRole("admin"))
-            {  Employee user=await _userManager.GetUserAsync(User);
-                branchId = _db.Branches.FirstOrDefault(p=>p.AdminId==user.Id).Id;
-          }
+            {
+                Employee user = await _userManager.GetUserAsync(User);
+                branchId = _db.Branches.FirstOrDefault(p => p.AdminId == user.Id).Id;
+            }
             List<Payment> payments = _db.Payments.Where(p => p.BranchId == branchId).ToList();
        
             List<Withdrawal> withdrawals = _db.Withdrawals.Where(p => p.BranchId == branchId).ToList();
@@ -52,6 +51,7 @@ namespace yogaAshram.Controllers
             return View(model);
         }
         
+        [Authorize]
         public IActionResult Withdraw(long branchId)
         {
            CurrentSum cs= _db.CurrentSums.FirstOrDefault(p => p.BranchId == branchId);
@@ -59,8 +59,9 @@ namespace yogaAshram.Controllers
 
             return View(new Withdrawal(){BranchId = branchId});
         }
-        [HttpPost]
         
+        [Authorize (Roles = "chief")]
+        [HttpPost]
         public async Task<IActionResult> Withdraw(Withdrawal model)
         {
             CurrentSum cs = _db.CurrentSums.FirstOrDefault(p => p.BranchId == model.BranchId);
@@ -71,42 +72,31 @@ namespace yogaAshram.Controllers
                 model.Date = DateTime.Now;
                 if (model.IsCash == true)
                 {
-                    if(cs.CashSum>=model.Sum)
-                    cs.CashSum -= model.Sum;
+                    if (cs.CashSum >= model.Sum)
+                        cs.CashSum -= model.Sum;
                     else
                     {
-                        ModelState.AddModelError("Sum","Недостаточно средств для снятия");
+                        ModelState.AddModelError("Sum", "Недостаточно средств для снятия");
                         return View(model);
                     }
-                    
                 }
                 else
-                { if(cs.CreditSum>=model.Sum)
-                    cs.CreditSum -= model.Sum;
+                {
+                    if (cs.CreditSum >= model.Sum)
+                        cs.CreditSum -= model.Sum;
                     else
                     {
-                        ModelState.AddModelError("Sum","Недостаточно средств для снятия");
+                        ModelState.AddModelError("Sum", "Недостаточно средств для снятия");
                         return View(model);
                     }
                 }
-
                 _db.Entry(model).State = EntityState.Added;
                 _db.Entry(cs).State = EntityState.Modified;
-
-
                 await _db.SaveChangesAsync();
                 return RedirectToAction("Index", new {branchId = model.BranchId});
             }
-
             return View(model);
-
-
         }
-   
-        
-        
-        
-        
         
     }
 }

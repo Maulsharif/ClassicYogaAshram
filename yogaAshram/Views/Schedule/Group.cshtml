@@ -9,15 +9,24 @@
 }
 <div class="tabs">
     <input type="radio" name="tab-btn" id="tab-btn-1" value="" checked>
-    <label for="tab-btn-1">Группа</label>
-    <input type="radio" name="tab-btn" id="tab-btn-2" value="">
-    <label for="tab-btn-2">Отметить</label>
+<label for="tab-btn-1">Группа</label>
+@if (User.IsInRole("chief") || User.IsInRole("manager") || User.IsInRole("admin"))
+{
+	 <input type="radio" name="tab-btn" id="tab-btn-2" value="">
+        <label for="tab-btn-2">Отметить</label>
+}
+   
     <input type="radio" name="tab-btn" id="tab-btn-3" value="">
-    <label for="tab-btn-3">Добавить пробника</label>
-    <input type="radio" name="tab-btn" id="tab-btn-4" value="">
-    <label for="tab-btn-4">Добавить нового клиента</label>
-    <input type="radio" name="tab-btn" id="tab-btn-5" value="">
-        <label for="tab-btn-5">Добавить существующего клиента </label>
+<label for="tab-btn-3">Добавить пробника</label>
+@if (User.IsInRole("chief") || User.IsInRole("manager") || User.IsInRole("admin"))
+{
+	<input type="radio" name="tab-btn" id="tab-btn-4" value="">
+     <label for="tab-btn-4">Добавить нового клиента</label>
+     <input type="radio" name="tab-btn" id="tab-btn-5" value="">
+         <label for="tab-btn-5">Добавить существующего клиента </label>
+	
+}
+    
     <div id="content-1">
 	    @{ Html.RenderPartial("PartialViews/_GroupInfoPartialView.cshtml");
 	    }

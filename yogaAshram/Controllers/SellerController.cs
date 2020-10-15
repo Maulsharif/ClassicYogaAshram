@@ -28,7 +28,8 @@ namespace yogaAshram.Controllers
         }
 
         // GET
-      
+    
+      [Authorize(Roles = "seller")]
         public async Task<IActionResult> Index()
         {
             Employee empl = await _userManager.GetUserAsync(User);
@@ -40,29 +41,7 @@ namespace yogaAshram.Controllers
                 Clients = _db.Clients.ToList()
             });
         }
-        
-        public IActionResult SchedulePage(int? month, long? branchId)
-        {
-            if (_db.CalendarEvents != null || branchId != null) 
-                ViewBag.Events = _db.CalendarEvents
-                    .Where(c => c.BranchId == branchId)
-                    .ToList();
-            ViewBag.Groups = _db.Groups.Where(g => g.BranchId == branchId).ToList();
-            List<Schedule> schedules = _db.Schedules.Where(s => s.BranchId == branchId).ToList();
-            long[] groupIdArray = new long[schedules.Count];
-            for (int i = 0; i < schedules.Count; i++)
-            {
-                groupIdArray[i] = schedules[i].GroupId;
-            }
-            ViewBag.BranchId = branchId;
-            ViewBag.GroupIdArray = String.Join(" ", groupIdArray);
-            
-            DateTime dateTime = DateTime.Today;
-            if (month != null)
-                dateTime = new DateTime(dateTime.Year, Convert.ToInt32(month), 1);
-            return View(dateTime);
-        }
-
+      
         
        
         

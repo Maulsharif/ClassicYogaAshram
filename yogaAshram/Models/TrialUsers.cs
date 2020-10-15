@@ -30,7 +30,7 @@ namespace yogaAshram.Models
                 switch (State)
                 {
                     case State.willAttend:
-                        res= "придет";
+                        res= "не проверено";
                         break;
       
                     case State.notattended:
@@ -43,6 +43,20 @@ namespace yogaAshram.Models
 
                 return res;
             }
+            
+            
+            public string GetColorTrial()
+            {
+                string res = "";
+                if (this.State == State.willAttend)
+                    res = "grey";
+                else if (this.State == State.attended)
+                    res = "#4ec953";
+                else if (this.State == State.notattended)
+                    res = "#e2556a";
+                return res;
+            }
+            
 
         
     }

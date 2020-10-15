@@ -40,7 +40,8 @@ namespace yogaAshram.Models
                 mes = $"#напоминание Список неотмеченных клиентов {DateTime.Today.ToShortDateString()}:"+"\n";
                 foreach (var client in clients)
                 {
-                    mes += client.Client.NameSurname + " " + client.Group.Name + "\n";
+                    
+                    mes += "Филиал: "+ client.Group.Branch.Name + " " + "Группа: "+ client.Group.Name + " " +  client.Client.NameSurname + "\n";
                     Console.WriteLine(mes);
                 }
             }

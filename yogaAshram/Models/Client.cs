@@ -78,6 +78,21 @@ namespace yogaAshram.Models
         [NotMapped]
         public virtual ClientsEditModelView ClientsEditModelView { get; set; }
 
+        public string GetColorOfState()
+        {
+            string res = "";
+            if (this.ClientType == ClientType.Probe)
+                res = "#66b4cf";
+            else if (this.ClientType == ClientType.AreEngaged)
+                res = "#f0f67a";
+            else if (this.ClientType == ClientType.NotEngaged)
+                res = "#7a0589";
+            return res;
+        }
+
+        
+        
+        
         
     }
     

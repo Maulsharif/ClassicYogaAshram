@@ -17,14 +17,15 @@
 
 @if (@Model.Client.ClientType == ClientType.Probe)
 {
-    <a asp-action="BuyMembership" asp-controller="Membership" asp-route-clientId="@Model.Client.Id" asp-route-branchId="@Model.Group.BranchId" class="btn btn-secondary mb-3">Сделать активным</a>
+    <a asp-action="BuyMembership" asp-controller="Membership" asp-route-clientId="@Model.Client.Id" asp-route-branchId="@Model.Group.BranchId" class="btn btn-primary mb-2">Сделать активным</a>
 }
 
 <table class="table" id="customers">
     <tr>
       
         <th>Дата пробного</th>
-        <th>Состояние</th>
+        <th>Посещение</th>
+         <th>Статус</th>
         <th>Коментарии</th>
           <th></th>
     </tr>
@@ -33,7 +34,9 @@
         <tr>
            
             <td>@client.LessonTime</td>
-            <td style="background: @client.Color"> @client.GetValueOfState()</td>
+            
+            <td style="background: @client.GetColorTrial()"> @client.GetValueOfState()</td>   
+            <td style="background: @client.Client.GetColorOfState()">@GetEnumDescription.GetDescription(@client.Client.ClientType)</td>
             <td>
                 @if (@client.SellerComments != null)
                              {

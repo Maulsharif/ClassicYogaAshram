@@ -32,6 +32,8 @@ namespace yogaAshram.Controllers
         
         // Таблица с абонементами
      
+      
+        
         public IActionResult Index()
         {
             List<Membership> model = _db.Memberships.ToList(); 

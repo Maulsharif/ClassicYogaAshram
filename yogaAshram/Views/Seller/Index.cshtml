@@ -23,7 +23,7 @@
             @foreach (var branch in @Model.Branches)
             {
                 <p>Центр йоги : <b>@branch.Name</b></p>
-                <a class="btn btn-sm btn-outline-secondary mb-3" type="button" asp-action="SchedulePage" asp-controller="Seller" asp-route-branchId="@branch.Id">Календарь</a>
+                <a class="btn btn-sm btn-outline-secondary mb-3" type="button" asp-action="Index" asp-controller="Schedule" asp-route-branchId="@branch.Id">Календарь</a>
                 <a class="btn btn-sm btn-outline-secondary mb-3" type="button" asp-action="Trials" asp-controller="Clients" asp-route-branchId="@branch.Id">Пробники</a>
             }
         </div>
