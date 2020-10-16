@@ -1,34 +1,32 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Gulnaz\\RiderProjects\\Master_14\\yogaAshram.Moq\\yogaAshram.Moq.csproj": {}
+    "C:\\csharp\\ESDP\\ClassicYogaAshram\\yogaAshram.Moq\\yogaAshram.Moq.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Gulnaz\\RiderProjects\\Master_14\\yogaAshram.Moq\\yogaAshram.Moq.csproj": {
+    "C:\\csharp\\ESDP\\ClassicYogaAshram\\yogaAshram.Moq\\yogaAshram.Moq.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Gulnaz\\RiderProjects\\Master_14\\yogaAshram.Moq\\yogaAshram.Moq.csproj",
+        "projectUniqueName": "C:\\csharp\\ESDP\\ClassicYogaAshram\\yogaAshram.Moq\\yogaAshram.Moq.csproj",
         "projectName": "yogaAshram.Moq",
-        "projectPath": "C:\\Users\\Gulnaz\\RiderProjects\\Master_14\\yogaAshram.Moq\\yogaAshram.Moq.csproj",
-        "packagesPath": "C:\\Users\\Gulnaz\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Gulnaz\\RiderProjects\\Master_14\\yogaAshram.Moq\\obj\\",
+        "projectPath": "C:\\csharp\\ESDP\\ClassicYogaAshram\\yogaAshram.Moq\\yogaAshram.Moq.csproj",
+        "packagesPath": "C:\\Users\\user\\.nuget\\packages\\",
+        "outputPath": "C:\\csharp\\ESDP\\ClassicYogaAshram\\yogaAshram.Moq\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\Gulnaz\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+          "C:\\Users\\user\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "netcoreapp3.1"
         ],
         "sources": {
-          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "netcoreapp3.1": {
             "projectReferences": {
-              "C:\\Users\\Gulnaz\\RiderProjects\\Master_14\\yogaAshram\\yogaAshram.csproj": {
-                "projectPath": "C:\\Users\\Gulnaz\\RiderProjects\\Master_14\\yogaAshram\\yogaAshram.csproj"
+              "C:\\csharp\\ESDP\\ClassicYogaAshram\\yogaAshram\\yogaAshram.csproj": {
+                "projectPath": "C:\\csharp\\ESDP\\ClassicYogaAshram\\yogaAshram\\yogaAshram.csproj"
               }
             }
           }
@@ -101,24 +99,22 @@
         }
       }
     },
-    "C:\\Users\\Gulnaz\\RiderProjects\\Master_14\\yogaAshram\\yogaAshram.csproj": {
+    "C:\\csharp\\ESDP\\ClassicYogaAshram\\yogaAshram\\yogaAshram.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Gulnaz\\RiderProjects\\Master_14\\yogaAshram\\yogaAshram.csproj",
+        "projectUniqueName": "C:\\csharp\\ESDP\\ClassicYogaAshram\\yogaAshram\\yogaAshram.csproj",
         "projectName": "yogaAshram",
-        "projectPath": "C:\\Users\\Gulnaz\\RiderProjects\\Master_14\\yogaAshram\\yogaAshram.csproj",
-        "packagesPath": "C:\\Users\\Gulnaz\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Gulnaz\\RiderProjects\\Master_14\\yogaAshram\\obj\\",
+        "projectPath": "C:\\csharp\\ESDP\\ClassicYogaAshram\\yogaAshram\\yogaAshram.csproj",
+        "packagesPath": "C:\\Users\\user\\.nuget\\packages\\",
+        "outputPath": "C:\\csharp\\ESDP\\ClassicYogaAshram\\yogaAshram\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\Gulnaz\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+          "C:\\Users\\user\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "netcoreapp3.1"
         ],
         "sources": {
-          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
