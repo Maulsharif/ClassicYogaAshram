@@ -27,6 +27,8 @@ namespace yogaAshram.Controllers
             _userManager = userManager;
             _paymentsService = paymentsService;
         }
+        
+        [Authorize]
         private async Task<PaymentsIndexModelView> SortPayments(PaymentsIndexModelView model, int pageTo, long branchId)
         {
             var payments = GetFilteredByDate(model.From, model.To, branchId);
