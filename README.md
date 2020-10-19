@@ -1,5 +1,5 @@
 
-# ClassicYogaAshram [В разработке]
+# ClassicYogaAshram
 Веб приложение с использованием CRM системы для внутреннего использования для студии Classical Yoga Ashram
 
 ## Используются:
@@ -9,10 +9,15 @@
 *	Lazy-loading proxies
 *	Identity
 * MailKit
+* PdfSharpCore
+* Quartz
+* coverlet.collector
+* Telegram.bot
 ## Использование библиотек:
 *	jquery
 *	bootstrap
-
+* bootsrap datepicker
+* Chart
 ## Быстрый запуск:
 ```
 # склонируйте репозиторий 
