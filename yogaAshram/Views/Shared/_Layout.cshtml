@@ -373,7 +373,7 @@ else
 </script>
 <script>
 var now = new Date();
-var millisTill10 = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 20, 31, 0, 0) - now;
+var millisTill10 = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 20, 30, 0, 0) - now;
 if (millisTill10 < 0) {
     millisTill10 += 86400000;
 }
@@ -383,7 +383,7 @@ setTimeout(function(){
         url: ('@Url.Action("GetGroupsLink", "Clients")'),
         success: function (res) {
             if(res===true)
-                $('#notify').html('<i class="far fa-bell"></i> У вас есть неотмеченные клиенты').show().delay(3000).fadeOut();
+                $('#notify').html('<i class="far fa-bell"></i> У вас есть неотмеченные клиенты').show().delay(6000).fadeOut();
             else
                 $('#notify').html('Все клиенты отмечены').show().delay(3000).fadeOut();
         }

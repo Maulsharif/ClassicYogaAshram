@@ -28,16 +28,20 @@ namespace yogaAshram.Controllers
         // GET
         //
         [Authorize]
-        public async Task<IActionResult> Index(long branchId)
+        public async Task<IActionResult> Index(long branchId, DateTime start)
         {
+            if(start==DateTime.MinValue)
+                start=DateTime.Now;
+            
+            ViewBag.BranchId = branchId;
             if (User.IsInRole("admin"))
             {
                 Employee user = await _userManager.GetUserAsync(User);
                 branchId = _db.Branches.FirstOrDefault(p => p.AdminId == user.Id).Id;
             }
-            List<Payment> payments = _db.Payments.Where(p => p.BranchId == branchId).ToList();
+            List<Payment> payments = _db.Payments.Where(p => p.BranchId == branchId && p.CateringDate.Date==start.Date).ToList();
        
-            List<Withdrawal> withdrawals = _db.Withdrawals.Where(p => p.BranchId == branchId).ToList();
+            List<Withdrawal> withdrawals = _db.Withdrawals.Where(p => p.BranchId == branchId && p.Date.Date==start.Date).ToList();
             CurrentSum currentSum = _db.CurrentSums.FirstOrDefault(p => p.BranchId == branchId);
             TransactionIndexModel model = new TransactionIndexModel()
             {
@@ -51,7 +55,7 @@ namespace yogaAshram.Controllers
             return View(model);
         }
         
-        [Authorize]
+        [Authorize (Roles = "chief")]
         public IActionResult Withdraw(long branchId)
         {
            CurrentSum cs= _db.CurrentSums.FirstOrDefault(p => p.BranchId == branchId);

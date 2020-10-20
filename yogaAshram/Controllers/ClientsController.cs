@@ -111,7 +111,7 @@ namespace yogaAshram.Controllers
         [Authorize]
         public async Task<IActionResult> CreateClients(Schedule schedule, string newSikness)
         {
-            long _sicknessId;
+            long _sicknessId=0;
             if (newSikness != null) _sicknessId = AddSickness(newSikness);
             else _sicknessId = schedule.ClientsCreateModelView.SicknessId;
             Employee employee =

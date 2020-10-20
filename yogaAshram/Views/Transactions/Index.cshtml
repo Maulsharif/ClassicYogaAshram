@@ -5,6 +5,21 @@
     ViewBag.Title = "Касса";
     Layout = "_Layout";
 }
+
+<form method="get">
+    <div class="form-inline form-group">
+        <label class="p-2 font-weight-bold"> Месяц </label>
+          <input  value="@ViewBag.BranchId" name="branchId"  hidden="hidden" />
+        <input type="date" id="start" name="start"
+                value="@DateTime.Now" class="form-control mb-2 mr-sm-2"> 
+      
+       
+        <input type="submit" value="Поиск" class="btn btn-secondary mb-2" />
+    </div>
+</form>
+
+
+
 <div class="container">
     <h4>Касса филиала @Model.CurrentSum.Branch.Name</h4> 
     <p>На кассе @Model.CurrentSum.Total тг</p>
@@ -26,8 +41,9 @@
                 @foreach (var p in @Model.Payments)
                 {
                     <tr>
-                        <td> @p.ClientsMembership.Membership.Name</td>
-                        <td> @p.ClientsMembership.Membership.Price</td>
+                     <td> @p.ClientsMembership.Client.NameSurname<br/> @p.ClientsMembership.Membership.Name</td>
+                   
+                        <td> @p.TotalSum</td>
                         <td> @p.ClientsMembership.DateOfPurchase</td>
 
                     </tr>

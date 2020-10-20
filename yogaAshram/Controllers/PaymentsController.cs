@@ -427,9 +427,10 @@ namespace yogaAshram.Controllers
             return null;
         }
         
+        
+        //Создание оплаты
         [Authorize]
         [HttpPost]
-        //Создание оплаты
         public async Task<IActionResult> CreateAjax(PaymentCreateModelView model)
         {
            
@@ -444,6 +445,9 @@ namespace yogaAshram.Controllers
                 string check = await _paymentsService.CreatePayment(model, clientsMembership, client, employee.Id);
                 return Content(check);
         }
+        
+        
+        
         [Authorize(Roles = "chief")]
         public async Task<IActionResult> GetEditModalAjax(long paymentId)
         {

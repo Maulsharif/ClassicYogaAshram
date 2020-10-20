@@ -16,7 +16,7 @@
         <label class="p-2 font-weight-bold"> Месяц </label>
           <input  value="@ViewBag.BranchId" name="branchId"  hidden="hidden" />
         <input type="month" id="start" name="start"
-               min="2019-10" value="2020-8" class="form-control mb-2 mr-sm-2"> 
+               min="2019-10" value="@DateTime.Now"  class="form-control mb-2 mr-sm-2"> 
        <label class="p-2 font-weight-bold ">Группа </label>
         <select name="groupId" id="" class="form-control mb-2 mr-sm-2">
             
@@ -71,7 +71,7 @@
                          @att[0].Client.NameSurname
                      </td>
                      <td>
-                         @att[0].ClientsMembership.DateOfPurchase.ToShortDateString() - @att[0].ClientsMembership.DateOfExpiry.ToShortDateString()
+                         @att[0].ClientsMembership.FirstDateOfLesson.ToShortDateString() - @att[0].ClientsMembership.DateOfExpiry.ToShortDateString()
                      </td>
                      @foreach (var a in @att.OrderBy(p => p.Date))
                      {

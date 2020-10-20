@@ -66,6 +66,8 @@ namespace yogaAshram.Controllers
         [Authorize]
         public async Task<IActionResult> History(long? branchId, long groupId, DateTime start)
         {
+            if(start==DateTime.MinValue)
+                start=DateTime.Now;
             ViewBag.BranchId = branchId;
             if (User.IsInRole("admin"))
             {
