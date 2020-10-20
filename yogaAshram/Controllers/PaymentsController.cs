@@ -113,7 +113,7 @@ namespace yogaAshram.Controllers
         
         public async Task<IActionResult> Index(PaymentsIndexModelView model, long? branchId, int pageTo = 1)
         {            
-            var payments = _db.Payments;
+            var payments = _db.Payments.AsQueryable();
             Branch branch = new Branch();
             if (User.IsInRole("admin"))
             {
@@ -126,7 +126,10 @@ namespace yogaAshram.Controllers
             else if (!_db.Branches.Any(p => p.Id == branchId))
                 return NotFound();
             else
+            {
                 branch = await _db.Branches.FirstOrDefaultAsync(b => b.Id == branchId);
+                payments = payments.Where(p => p.ClientsMembership.Client.Group.BranchId == branchId);
+            }
             if (payments.Count() > pageTo * model.PaymentsLength)
                 model.IsNextPage = true;
             if (String.IsNullOrEmpty(model.FilterByName) 
