@@ -479,7 +479,7 @@ namespace yogaAshram.Controllers
                      };
                 }
                 
-                client.Paid = Paid.Не_оплачено;
+                client.Paid = Paid.Есть_долг;
                 client.WhatsAppGroup = WhatsAppGroup.Не_состоит_в_группе;
                 client.Contract = Contract.Нет_договора;
                 client.GroupId = schedule.ClientsCreateModelView.GroupId;
