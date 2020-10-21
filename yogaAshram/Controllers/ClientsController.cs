@@ -381,7 +381,16 @@ namespace yogaAshram.Controllers
                     DateOfExpiry = endDate,
                     FirstDateOfLesson =   schedule.ClientsCreateModelView.StartDate
                 };
-                
+                Payment payment = new Payment()
+                {
+                    Debts = membership.Price,
+                    ClientsMembership = clientsMembership,
+                    Type = PaymentType.Pay,
+                    CreatorId = employee.Id,
+                    BranchId = group.BranchId,
+                    Comment = "Платеж при создании клиента"
+                };
+                _db.Entry(payment).State = EntityState.Added;
                 _db.Entry(clientsMembership).State = EntityState.Added;
                 int daysFrozen = 0;
                 if (membership.AttendanceDays == 12)
@@ -503,7 +512,17 @@ namespace yogaAshram.Controllers
                    DateOfExpiry = endDate,
                    FirstDateOfLesson =   schedule.ClientsCreateModelView.StartDate
                };
-               _db.Entry(clientsMembership).State = EntityState.Added;
+                Payment payment = new Payment()
+                {
+                    Debts = membership.Price,
+                    ClientsMembership = clientsMembership,
+                    Type = PaymentType.Pay,
+                    CreatorId = employee.Id,
+                    BranchId = group.BranchId,
+                    Comment = "Платеж при создании клиента"
+                };
+                _db.Entry(payment).State = EntityState.Added;
+                _db.Entry(clientsMembership).State = EntityState.Added;
                 
                 int daysFrozen = 0;
                 if (membership.AttendanceDays == 12)
