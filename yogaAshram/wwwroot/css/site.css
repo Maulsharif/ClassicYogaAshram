@@ -637,7 +637,7 @@ tr:last-child td{
     height: 100%;
 }
 #login-container{
-    width: 450px;
+    max-width: 450px;
     max-height: 400px;
     background-color: #00796b;
     border-radius: 10px;
