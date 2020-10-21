@@ -97,6 +97,11 @@
 else{
     <p> Список пуст </p>
 }
-
+@section Scripts
+{
+    <script>
+    document.getElementById("start").value = '@DateTime.Now.Year-@DateTime.Now.Month';
+    </script>
+}
 
  
