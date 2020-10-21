@@ -584,11 +584,15 @@ namespace yogaAshram.Controllers
         
         
         //Сделать клиента не активным
+        [ValidateAntiForgeryToken]
         [HttpPost]
         public async Task<IActionResult> MakeClientUnActive(long? clientId)
         {
             Client client = _db.Clients.FirstOrDefault(c => c.Id == clientId);
-            if (client != null) client.ClientType = ClientType.NotEngaged;
+            if (client != null && client.ClientType == ClientType.AreEngaged) 
+                client.ClientType = ClientType.NotEngaged;
+            else if (client != null && client.ClientType == ClientType.NotEngaged)
+                client.ClientType = ClientType.AreEngaged;
             _db.Entry(client).State = EntityState.Modified;
             await _db.SaveChangesAsync();
             return RedirectToAction("RegularClients", new{branchId=client.Group.BranchId});
@@ -596,11 +600,15 @@ namespace yogaAshram.Controllers
 
         
         //Добавить клиента в группу WA
+        [ValidateAntiForgeryToken]
         [HttpPost]
         public async Task<IActionResult> MakeClientJoinInWhatsAppGroup(long? clientId)
         {
             Client client = _db.Clients.FirstOrDefault(c => c.Id == clientId);
-            if (client != null) client.WhatsAppGroup = WhatsAppGroup.Состоит_в_группе;
+            if (client != null && client.WhatsAppGroup == WhatsAppGroup.Не_состоит_в_группе) 
+                client.WhatsAppGroup = WhatsAppGroup.Состоит_в_группе;
+            else if (client != null && client.WhatsAppGroup == WhatsAppGroup.Состоит_в_группе)
+                client.WhatsAppGroup = WhatsAppGroup.Не_состоит_в_группе;
             _db.Entry(client).State = EntityState.Modified;
             await _db.SaveChangesAsync();
             return RedirectToAction("RegularClients", new{branchId=client.Group.BranchId});
