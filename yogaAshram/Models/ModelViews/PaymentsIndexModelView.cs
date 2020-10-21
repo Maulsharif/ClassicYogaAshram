@@ -25,8 +25,8 @@ namespace yogaAshram.Models.ModelViews
         public string FilterByName { get; set; }
         public bool SortReverse { get; set; } = false;
         public SortPaymentsBy SortSelect { get; set; }
-        public DateTime From { get; set; }
-        public DateTime To { get; set; }
+        public DateTime From { get; set; } = GetNowTime();
+        public DateTime To { get; set; } = GetNowTime();
         public long? SicknessId { get; set; }
         public int CurrentPage { get; set; } = 1;
         public bool IsNextPage { get; set; } = false;
@@ -41,6 +41,17 @@ namespace yogaAshram.Models.ModelViews
                 CashSum += item.CashSum;
                 CardSum += item.CardSum;
             }
+        }
+        public void SetPagination(int allElements, int currentPage)
+        {
+            int currentElements = currentPage * this.PaymentsLength;
+            this.IsNextPage = currentElements < allElements;
+            this.CurrentPage = currentPage;
+        }
+        public static DateTime GetNowTime()
+        {
+            DateTime now = DateTime.Now;
+            return new DateTime(year: now.Year, day: now.Day, month: now.Month);
         }
     }
 }
