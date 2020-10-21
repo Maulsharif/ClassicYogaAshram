@@ -110,7 +110,7 @@ namespace yogaAshram.Controllers
             }
         }
 
-        
+        [Authorize]
         public async Task<IActionResult> Index(PaymentsIndexModelView model, long? branchId, int pageTo = 1)
         {            
             var payments = _db.Payments.AsQueryable();
