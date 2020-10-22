@@ -486,6 +486,13 @@
       <UpToDateCheckInput Remove="Views\Home\Index.cshtml" />
     </ItemGroup>
 
+    <ItemGroup>
+      <None Remove="fonts\arial\arialbd.ttf" />
+      <EmbeddedResource Include="fonts\arial\arialbd.ttf" />
+      <None Remove="fonts\arial\arial.ttf" />
+      <EmbeddedResource Include="fonts\arial\arial.ttf" />
+    </ItemGroup>
+
     <ProjectExtensions><VisualStudio><UserProperties appsettings_1json__JsonSchema="" /></VisualStudio></ProjectExtensions>
 
 </Project>
