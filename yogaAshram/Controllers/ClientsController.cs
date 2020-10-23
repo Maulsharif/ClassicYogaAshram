@@ -380,7 +380,16 @@ namespace yogaAshram.Controllers
                     DateOfExpiry = endDate,
                     FirstDateOfLesson =   schedule.ClientsCreateModelView.StartDate
                 };
-                
+                Payment payment = new Payment()
+                {
+                    Debts = membership.Price,
+                    ClientsMembership = clientsMembership,
+                    Type = PaymentType.Pay,
+                    CreatorId = employee.Id,
+                    BranchId = group.BranchId,
+                    Comment = "Платеж при создании клиента"
+                };
+                _db.Entry(payment).State = EntityState.Added;
                 _db.Entry(clientsMembership).State = EntityState.Added;
                 int daysFrozen = 0;
                 if (membership.AttendanceDays == 12)
@@ -469,7 +478,7 @@ namespace yogaAshram.Controllers
                      };
                 }
                 
-                client.Paid = Paid.Не_оплачено;
+                client.Paid = Paid.Есть_долг;
                 client.WhatsAppGroup = WhatsAppGroup.Не_состоит_в_группе;
                 client.Contract = Contract.Нет_договора;
                 client.GroupId = schedule.ClientsCreateModelView.GroupId;
@@ -502,7 +511,17 @@ namespace yogaAshram.Controllers
                    DateOfExpiry = endDate,
                    FirstDateOfLesson =   schedule.ClientsCreateModelView.StartDate
                };
-               _db.Entry(clientsMembership).State = EntityState.Added;
+                Payment payment = new Payment()
+                {
+                    Debts = membership.Price,
+                    ClientsMembership = clientsMembership,
+                    Type = PaymentType.Pay,
+                    CreatorId = employee.Id,
+                    BranchId = group.BranchId,
+                    Comment = "Платеж при создании клиента"
+                };
+                _db.Entry(payment).State = EntityState.Added;
+                _db.Entry(clientsMembership).State = EntityState.Added;
                 
                 int daysFrozen = 0;
                 if (membership.AttendanceDays == 12)
@@ -564,11 +583,15 @@ namespace yogaAshram.Controllers
         
         
         //Сделать клиента не активным
+        [ValidateAntiForgeryToken]
         [HttpPost]
         public async Task<IActionResult> MakeClientUnActive(long? clientId)
         {
             Client client = _db.Clients.FirstOrDefault(c => c.Id == clientId);
-            if (client != null) client.ClientType = ClientType.NotEngaged;
+            if (client != null && client.ClientType == ClientType.AreEngaged) 
+                client.ClientType = ClientType.NotEngaged;
+            else if (client != null && client.ClientType == ClientType.NotEngaged)
+                client.ClientType = ClientType.AreEngaged;
             _db.Entry(client).State = EntityState.Modified;
             await _db.SaveChangesAsync();
             return RedirectToAction("RegularClients", new{branchId=client.Group.BranchId});
@@ -576,11 +599,15 @@ namespace yogaAshram.Controllers
 
         
         //Добавить клиента в группу WA
+        [ValidateAntiForgeryToken]
         [HttpPost]
         public async Task<IActionResult> MakeClientJoinInWhatsAppGroup(long? clientId)
         {
             Client client = _db.Clients.FirstOrDefault(c => c.Id == clientId);
-            if (client != null) client.WhatsAppGroup = WhatsAppGroup.Состоит_в_группе;
+            if (client != null && client.WhatsAppGroup == WhatsAppGroup.Не_состоит_в_группе) 
+                client.WhatsAppGroup = WhatsAppGroup.Состоит_в_группе;
+            else if (client != null && client.WhatsAppGroup == WhatsAppGroup.Состоит_в_группе)
+                client.WhatsAppGroup = WhatsAppGroup.Не_состоит_в_группе;
             _db.Entry(client).State = EntityState.Modified;
             await _db.SaveChangesAsync();
             return RedirectToAction("RegularClients", new{branchId=client.Group.BranchId});
