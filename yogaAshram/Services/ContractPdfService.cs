@@ -71,7 +71,7 @@ namespace yogaAshram.Services
                 y += 5 + 2 * ls;
                 gfx.DrawString($"Наличие заболеваний: {client.Sickness.Name}", fontRegular, XBrushes.Black, x, y);
                 y += 20 + 2 * ls;
-                gfx.DrawString($"Дата: {client.DateCreate.ToString("dd.MM.yyyy")} г.", font, XBrushes.Black, x, y);
+                gfx.DrawString($"Дата: {DateTime.Now:dd.MM.yyyy} г.", font, XBrushes.Black, x, y);
                 gfx.DrawString("Подпись: ______________", font, XBrushes.Black, x += 300, y);
             }
             else
