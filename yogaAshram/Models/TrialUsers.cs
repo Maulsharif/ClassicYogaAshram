@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 
 namespace yogaAshram.Models
-{ public enum State
+{ 
+         public enum State
          {
              willAttend=1,
              attended,
@@ -15,6 +16,7 @@ namespace yogaAshram.Models
             public long Id { get; set; }
             public long ClientId { get; set; }
             public virtual  Client Client { get; set; }
+            
             public long GroupId { get; set; }
             public virtual  Group Group { get; set; }
             public DateTime LessonTime { get; set; }

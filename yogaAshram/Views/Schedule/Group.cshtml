@@ -31,141 +31,145 @@
 	    @{ Html.RenderPartial("PartialViews/_GroupInfoPartialView.cshtml");
 	    }
     </div>
-  <div id="content-2">
-	  @{
-		  Html.RenderPartial("PartialViews/_AttendanceCheckPartial.cshtml");
-	  }
-  </div>
-    <div id="content-3">
-	  
-      		<h2>Записать на пробное занятие</h2>
-      		<form method="post" asp-controller="Clients" asp-action="CreateClients">
-		    <div class="row">
-      			<input asp-for="BranchId" value="@Model.BranchId" type="hidden">
-			      <input type="hidden" asp-for="@Model.ClientsCreateModelView.ClientType" value="0">
-			      <input class="form-control mb-4" asp-for="@Model.ClientsCreateModelView.GroupId" value="@Model.GroupId" type="hidden">
-			    <div class="col-sm-6">
-				    <label class="form-control">
-					    <strong>Группа:</strong> @Model.Group.Name</label>
-			    </div>
-			    <div class="col-sm-6">
-				    <label class="form-control">
-					    <strong>Дата первого занятия:</strong> @Model.ChosenDate.ToString("D")</label>
-			    </div>
-			      	<div class="col-sm-6">
-                        				<label>
-                        					Количество занятий
-                        				</label>	
-                        				<select asp-for="@Model.ClientsCreateModelView.LessonNumbers" class="form-control mb-4">
-                        					<option value="1" class="form-control mb-4">1 пробное занятие</option>
-                        					<option value="3" class="form-control mb-4">3 пробных занятии</option>
-                        				</select>				
-                        			</div>	
-			    <div class="col-sm-6">
-				    <label>
-					    Электронная почта
-				    </label>
-				    <span asp-validation-for="@Model.ClientsCreateModelView.Email"></span>
-				    <input class="form-control mb-4" asp-for="@Model.ClientsCreateModelView.Email" placeholder="Еmаil"/>
-			    </div>
-			    <input type="hidden" class="form-control mb-4 w-50" value="@Model.GroupId" asp-for="@Model.ClientsCreateModelView.GroupId">
-			    <input type="hidden" asp-for="@Model.ClientsCreateModelView.StartDate" value="@Model.ChosenDate">
-		    </div>
-			      <div class="row">
-			    <div class="col-sm-6">
-				    <label >
-					    ФИО<span class="text-danger">*</span>
-				    </label>
-				   <span asp-validation-for="@Model.NameSurname"></span>
-				    <input class="form-control mb-4" asp-for="@Model.NameSurname" placeholder="Ф.И.О"/>
-				     
-			    </div>
-			    <div class="col-sm-6">
-				    <label>
-					    Дата рождения<span class="text-danger">*</span>
-				    </label>
-				    <span asp-validation-for="@Model.ClientsCreateModelView.DateOfBirth"></span>
-				    <input type="datetime" min="01.01.1920"  class="form-control mb-4" asp-for="@Model.ClientsCreateModelView.DateOfBirth" >
-			    </div>
-		    </div>
-			      <div class="row">
-			    <div class="col-sm-6">
-				    <label>
-					    Номер телефона<span class="text-danger">*</span>
-				    </label>
-				    <span asp-validation-for="@Model.PhoneNumber"></span>
-				    <input class="form-control mb-4" id="phone-mask" asp-for="@Model.PhoneNumber" placeholder="8777777777"/>
-			    </div>
-			    <div class="col-sm-6">
-				    <label>Откуда вы о нас узнали? <span class="text-danger">*</span></label><br/>
-				    <span asp-validation-for="@Model.ClientsCreateModelView.Source"></span>
-				    <select class="form-control mb-4" asp-for="ClientsCreateModelView.Source">
-					    <option value="">...</option>
-					    <option value="Инстаграм страница">Инстаграм страница</option>
-					    <option value="Таргет в инстаграмме">Таргет в инстаграмме</option>
-					    <option value="Инстаграм страница">Инстаграм страница</option>
-					    <option value="Вывеска">Вывеска</option>
-					    <option value="По рекомендации">По рекомендации</option>
-					    <option value="По брошюре">По брошюре</option>
-					    <option value="2ГИС">2ГИС</option>
-					    <option value="1Fit">1Fit</option>
-					    <option value="Гугл реклама">Гугл реклама</option>
-					    <option value="Яндекс реклама">Яндекс реклама </option>
-					    <option value="Другое">Другое</option>
-				    </select>
-			    </div>
-		    </div>
-		    <div class="row">
-			    <div class="col-sm-6">
-				    <label>Наличие заболеваний</label>
-				    <select class="form-control mb-4" asp-for="@Model.ClientsCreateModelView.SicknessId" >
-					    @foreach (Sickness sickness in  @ViewBag.Sicknesses)
-					    {
-						    <option value="@sickness.Id">
-							    @sickness.Name
-						    </option>
-					    }
-				    </select>
-				    
-				    <button  id="show" type="button" class="btn btn-light mb-2">Добавить другое</button> 
-				    <div class="input-group mb-3"  id="showAddinialField" >
-					    <input type="text" class="form-control" id="sicknessInput" name="newSikness" placeholder="Название болезни"  aria-describedby="basic-addon2">
-					    <div class="input-group-append">
-						    <span class="input-group-text" id="basic-addon2"><a onclick="hideAdditinal()" ><i class="fa fa-times" aria-hidden="true"></i></a></span>
-					    </div>
-				    </div>
-				    
-				    
-				    
-			    </div> 
-			   
-			    
-			    <div class="col-sm-6">
-				    
-				    <label>Место работы и должность</label><br/>
-				    <input class="form-control mb-4" asp-for="@Model.ClientsCreateModelView.WorkPlace">
-			    </div>
-		    </div>
-		    <div class="row separate "></div>
-		    <div class="row">
-			    <div class="col-sm-12">
-				    <label>Комментари</label><br/>
-				    <span asp-validation-for="@Model.ClientsCreateModelView.Comment"></span>
+<div id="content-2">
+	@{
+		Html.RenderPartial("PartialViews/_AttendanceCheckPartial.cshtml");
+	}
+</div>
+@* Форма добавления пробника  *@
+<div id="content-3">
 
-				    <textarea class="form-control mb-4" asp-for="@Model.ClientsCreateModelView.Comment" rows="2" placeholder="Коментарии"></textArea>
-			    </div>
-      		</div>		
-      					<input class="form-control mb-4 w-50" asp-for="@Model.ClientsCreateModelView.StartDate" type="hidden" value="@Model.ChosenDate">
-			      <button class="btn btn-light mt-3" type="submit">Добавить</button>
-      		</form>
-   
-    </div>
-    <div id="content-4">
+	<h2>Записать на пробное занятие</h2>
+	<form method="post" asp-controller="Clients" asp-action="CreateClients">
+		<div class="row">
+			<input asp-for="BranchId" value="@Model.BranchId" type="hidden">
+			<input type="hidden" asp-for="@Model.ClientsCreateModelView.ClientType" value="0">
+			<input class="form-control mb-4" asp-for="@Model.ClientsCreateModelView.GroupId" value="@Model.GroupId" type="hidden">
+			<div class="col-sm-6">
+				<label class="form-control">
+					<strong>Группа:</strong> @Model.Group.Name</label>
+			</div>
+			<div class="col-sm-6">
+				<label class="form-control">
+					<strong>Дата первого занятия:</strong> @Model.ChosenDate.ToString("D")</label>
+			</div>
+			<div class="col-sm-6">
+				<label>
+					Количество занятий
+				</label>
+				<select asp-for="@Model.ClientsCreateModelView.LessonNumbers" class="form-control mb-4">
+					<option value="1" class="form-control mb-4">1 пробное занятие</option>
+					<option value="3" class="form-control mb-4">3 пробных занятии</option>
+				</select>
+			</div>
+			<div class="col-sm-6">
+				<label>
+					Электронная почта
+				</label>
+				<span asp-validation-for="@Model.ClientsCreateModelView.Email"></span>
+				<input class="form-control mb-4" asp-for="@Model.ClientsCreateModelView.Email" placeholder="Еmаil"/>
+			</div>
+			<input type="hidden" class="form-control mb-4 w-50" value="@Model.GroupId" asp-for="@Model.ClientsCreateModelView.GroupId">
+			<input type="hidden" asp-for="@Model.ClientsCreateModelView.StartDate" value="@Model.ChosenDate">
+		</div>
+		<div class="row">
+			<div class="col-sm-6">
+				<label >
+					ФИО<span class="text-danger">*</span>
+				</label>
+				<span asp-validation-for="@Model.NameSurname"></span>
+				<input class="form-control mb-4" asp-for="@Model.NameSurname" placeholder="Ф.И.О"/>
+
+			</div>
+			<div class="col-sm-6">
+				<label>
+					Дата рождения</label>
+				<input type="date" value="1900-02-02" min="1900-01-01" max="2015-12-31" class="form-control mb-4" asp-for="@Model.ClientsCreateModelView.DateOfBirth">
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-sm-6">
+				<label>
+					Номер телефона<span class="text-danger">*</span>
+				</label>
+				<span asp-validation-for="@Model.PhoneNumber"></span>
+				<input class="form-control mb-4" id="phone-mask" asp-for="@Model.PhoneNumber" placeholder="8777777777"/>
+			</div>
+			<div class="col-sm-6">
+				<label>Откуда вы о нас узнали? <span class="text-danger">*</span></label><br/>
+				<span asp-validation-for="@Model.ClientsCreateModelView.Source"></span>
+				<select class="form-control mb-4" asp-for="ClientsCreateModelView.Source">
+					<option value="">...</option>
+					<option value="Инстаграм страница">Инстаграм страница</option>
+					<option value="Таргет в инстаграмме">Таргет в инстаграмме</option>
+					<option value="Инстаграм страница">Инстаграм страница</option>
+					<option value="Вывеска">Вывеска</option>
+					<option value="По рекомендации">По рекомендации</option>
+					<option value="По брошюре">По брошюре</option>
+					<option value="2ГИС">2ГИС</option>
+					<option value="1Fit">1Fit</option>
+					<option value="Гугл реклама">Гугл реклама</option>
+					<option value="Яндекс реклама">Яндекс реклама </option>
+					<option value="Другое">Другое</option>
+				</select>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-sm-6">
+				<label>Наличие заболеваний</label>
+				<select class="form-control mb-4" asp-for="@Model.ClientsCreateModelView.SicknessId">
+					@foreach (Sickness sickness in  @ViewBag.Sicknesses)
+					{
+						<option value="@sickness.Id">
+							@sickness.Name
+						</option>
+					}
+				</select>
+
+				<button id="show" type="button" class="btn btn-light mb-2">Добавить другое</button>
+				<div class="input-group mb-3" id="showAddinialField">
+					<input type="text" class="form-control" id="sicknessInput" name="newSikness" placeholder="Название болезни" aria-describedby="basic-addon2">
+					<div class="input-group-append">
+						<span class="input-group-text" id="basic-addon2">
+							<a onclick="hideAdditinal()">
+								<i class="fa fa-times" aria-hidden="true"></i>
+							</a>
+						</span>
+					</div>
+				</div>
+
+
+			</div>
+
+
+			<div class="col-sm-6">
+
+				<label>Место работы и должность</label><br/>
+				<input class="form-control mb-4" asp-for="@Model.ClientsCreateModelView.WorkPlace">
+			</div>
+		</div>
+		<div class="row separate "></div>
+		<div class="row">
+			<div class="col-sm-12">
+				<label>Комментари</label><br/>
+				<span asp-validation-for="@Model.ClientsCreateModelView.Comment"></span>
+
+				<textarea class="form-control mb-4" asp-for="@Model.ClientsCreateModelView.Comment" rows="2" placeholder="Коментарии"></textArea>
+			</div>
+		</div>
+		<input class="form-control mb-4 w-50" asp-for="@Model.ClientsCreateModelView.StartDate" type="hidden" value="@Model.ChosenDate">
+		<button class="btn btn-light mt-3" type="submit">Добавить</button>
+	</form>
+
+</div>
+
+@* Форма нового клиента *@
+<div id="content-4">
 	 
       		<h5 class="mb-3">Форма для нового клиента</h5>
       		<form method="post" asp-controller="Clients" asp-action="NewClientRegister">
                    <label>Выберите абонемент</label>
-            			<select id="subscriptionType" class="form-control mb-4" asp-for="@Model.ClientsCreateModelView.MembershipId">
+            			<select id="subscriptionType" class="form-control mb-4" asp-for="@Model.ClientsCreateModelView.MembershipId" >
             				@foreach (Membership membership in  @ViewBag.Memberships)
             				{
             					<option value="@membership.Id">"@membership.Name". Цена - @membership.Price тг.</option>
@@ -184,7 +188,7 @@
 		    <div class="row">
 			    <div class="col-sm-12">
 				    <span>Выберите клиента</span>
-                		    <select id="regularClients" class="form-control statesSelect " style="width: 50%" onchange="openRegularClientForm()">
+                		    <select id="regularClients" class="form-control statesSelect " style="width: 50%" onchange="openRegularClientForm()" required="required">
                 			    <option value="">Выберите из списка</option>
                 			    @foreach (Client client in (IEnumerable) @ViewBag.OldClients)
                 			    {
@@ -312,7 +316,14 @@
     	var phoneMask = IMask(
           document.getElementById('phone-mask'), {
             mask: '+{7}(700)000-00-00'
+            
           });
+    	var phoneMask2 = IMask(
+                  document.getElementById('phone-mask2'), {
+                    mask: '+{7}(700)000-00-00'
+                    
+                  });
+    	
     	</script>
 	
 	<script>
@@ -637,6 +648,7 @@
              $("#showAddinialField").hide();
           $("#show").click(function(){
             $("#showAddinialField").show();
+            
           });
         });
     </script>
@@ -648,6 +660,7 @@
 	  
 	}
 	</script>
+	
 	
 }
 

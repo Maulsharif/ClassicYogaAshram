@@ -37,15 +37,19 @@
 
         @if (User.IsInRole("chief"))
         {
-            <input id="search" type="search" class="search-input search-form" placeholder="Поиск сотрудников" name="search" autocomplete="off">
-            <div class="popup-overlay" id="myModal">
-                <div class="popup-content">
-                    <div class="scrollbar-3" id="style-4">
-                        <div class="force-overflow-2">
-                            <div id="result"></div>
+            <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
+                <form class="form-inline my-2 my-lg-0">
+                    <input id="search" type="search" class="search-input search-form" placeholder="Поиск сотрудников" name="search" autocomplete="off" aria-label="Search">
+                    <div class="popup-overlay" id="myModal">
+                        <div class="popup-content">
+                            <div class="scrollbar-3" id="style-4">
+                                <div class="force-overflow-2">
+                                    <div id="result"></div>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
+                </form>
             </div>
         }
         @if (User.IsInRole("manager"))
@@ -274,7 +278,7 @@
 </header>
 @if (User.Identity.IsAuthenticated)
 {
-    <nav class="navbar navbar-expand-lg navbar-light bg-light rounded">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light rounded" id="navbar_second">
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExample10" aria-controls="navbarsExample10" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -303,6 +307,13 @@ else
         </main>
     </div>
 }
+
+
+
+
+
+
+
 
 @* Модалка для добавления филиала *@
 @{
@@ -372,8 +383,8 @@ else
          });
 </script>
 <script>
-var now = new Date();
-var millisTill10 = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 20, 30, 0, 0) - now;
+let now = new Date();
+let millisTill10 = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 20, 30, 0, 0) - now;
 if (millisTill10 < 0) {
     millisTill10 += 86400000;
 }

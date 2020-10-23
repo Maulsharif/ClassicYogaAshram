@@ -9,9 +9,9 @@
 
 <h2>Список клиентов</h2>
 <div class="btn-group mb-2">
-	<button type="button" class="btn btn-danger btn-filter" data-target="Есть_долг">Должники</button>
-	<button type="button" class="btn btn-warning btn-filter" data-target="Нет_договора">Нет договора</button>
-	<button type="button" class="btn btn-success btn-filter" data-target="Не_состоит_в_группе">Не состоит Whatsapp группе</button>
+	<button type="button" class="btn btn-danger btn-filter" data-target="Долг">Должники</button>
+	<button type="button" class="btn btn-warning btn-filter" data-target="нет">Нет договора</button>
+	<button type="button" class="btn btn-success btn-filter" data-target="не состоит">Не состоит Whatsapp группе</button>
     <button type="button" class="btn btn-primary btn-filter" data-target="all">Все</button>
     <input type="text" id="filter" class="form-control w-25 ml-1" placeholder="Группа, имя, тренер">
 </div>
@@ -39,9 +39,9 @@
         <td>@client.Group.Name</td>
         <td>@client.Group.Coach.NameSurname</td>
             <td>@GetEnumDescription.GetDescription(@client.ClientType)</td>
-            <td class="bg-@{string colorDebt = String.Empty;if (@client.Paid == Paid.Есть_долг){ colorDebt = "danger";}@colorDebt}">@client.Paid.ToString()</td>
-        <td class="bg-@{string colorWhat = String.Empty;if (@client.WhatsAppGroup == WhatsAppGroup.Не_состоит_в_группе){ colorWhat = "success";}@colorWhat}">@client.WhatsAppGroup.ToString()</td>
-            <td class="bg-@{string colorCon = String.Empty;if (@client.Contract == Contract.Нет_договора){ colorCon = "warning";}@colorCon}">@client.Contract.ToString()</td>
+            <td class="bg-@{string colorDebt = String.Empty;if (@client.Paid == Paid.Есть_долг){ colorDebt = "danger";}@colorDebt}">@GetEnumDescription.GetDescription(@client.Paid)</td>
+        <td class="bg-@{string colorWhat = String.Empty;if (@client.WhatsAppGroup == WhatsAppGroup.Не_состоит_в_группе){ colorWhat = "success";}@colorWhat}">@GetEnumDescription.GetDescription(@client.WhatsAppGroup)</td>
+            <td class="bg-@{string colorCon = String.Empty;if (@client.Contract == Contract.Нет_договора){ colorCon = "warning";}@colorCon}">@GetEnumDescription.GetDescription(@client.Contract)</td>
             <td>@client.Membership.Name</td>
             <td>
             @if (@client.Comments != null)

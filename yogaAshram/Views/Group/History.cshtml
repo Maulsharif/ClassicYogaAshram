@@ -9,8 +9,6 @@
    
 }
 
-
-
 <form method="get">
     <div class="form-inline form-group">
         <label class="p-2 font-weight-bold"> Месяц </label>
@@ -31,70 +29,53 @@
 </form>
 
 
-
-
-
-@if(@Model.Count>0)
+@if (@Model.Count > 0)
 {
     <h3> Список посещении центра @Model[0][0].Group.Branch.Name </h3>
     <h4> Тренер @Model[0][0].Group.Coach.NameSurname </h4>
-                                                               
- <div class="table-responsive">
-    <table class=" table table-bordered small">
-    
-    
-        <tr>
-            <thead>
-            <th>
-                ФИО клиента
-            </th>
-            <th>
-                Дата абонемента
-            </th>
-    
-            @for (int i = 1; i < @Model[0].Count + 1; i++)
-            {
+
+    <div class="table-responsive">
+        <table class=" table table-bordered small">
+            <tr>
+                <thead>
                 <th>
-                    @i
-    
+                    ФИО клиента
                 </th>
+                <th>
+                    Дата абонемента
+                </th>
+
+                @for (int i = 1; i < @Model[0].Count + 1; i++)
+                {
+                    <th>@i</th>
+                }
+                </thead>
+            </tr>
+            <tbody>
+            @foreach (var att in @Model)
+            {
+                <tr>
+                    <td>
+                        @att[0].Client.NameSurname
+                    </td>
+                    <td>
+                        @att[0].ClientsMembership.FirstDateOfLesson.ToShortDateString() - @att[0].ClientsMembership.DateOfExpiry.ToShortDateString()
+                    </td>
+                    @foreach (var a in @att.OrderBy(p => p.Date))
+                    {
+                        <td style="background-color: @a.GetColor()">
+                            @a.Date.ToShortDateString()<br/>
+                            @GetEnumDescription.GetDescription(a.AttendanceState)
+                        </td>
+                    }
+                </tr>
             }
-            </thead>
-               
-        </tr>
-      <tbody>
-    
-             @foreach (var att in @Model)
-             {
-                 <tr>
-                     <td>
-                         @att[0].Client.NameSurname
-                     </td>
-                     <td>
-                         @att[0].ClientsMembership.FirstDateOfLesson.ToShortDateString() - @att[0].ClientsMembership.DateOfExpiry.ToShortDateString()
-                     </td>
-                     @foreach (var a in @att.OrderBy(p => p.Date))
-                     {
-    
-                         <td style="background-color: @a.GetColor()">
-                             @a.Date.ToShortDateString()<br/>
-                             @GetEnumDescription.GetDescription(a.AttendanceState)
-                         </td>
-                     }
-    
-                 </tr>
-                 
-    
-             }
-    </tbody>
-         </table>
-
+            </tbody>
+        </table>
     </div>
-
-
-
 }
-else{
+else
+{
     <p> Список пуст </p>
 }
 

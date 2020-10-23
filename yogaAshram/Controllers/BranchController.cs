@@ -59,6 +59,7 @@ namespace yogaAshram.Controllers
             await _db.SaveChangesAsync();
             return RedirectToAction("Index", "Chief");
         }
+        
         [HttpPost]
         public async Task<IActionResult> Edit(long id, 
             string name, 

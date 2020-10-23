@@ -21,21 +21,21 @@ namespace yogaAshram.Models
         Оплачено,
         [Description("Не отплатил")]
         Не_оплачено,
-        [Description("Должник")]
+        [Description("Долг")]
         Есть_долг
     }
     
     public enum WhatsAppGroup
     {
-        [Description("В WA группе")]
+        [Description("состоит")]
         Состоит_в_группе,
-        [Description("Не в WA группе")]
+        [Description("не состоит")]
         Не_состоит_в_группе
     }
     public enum Contract
-    {   [Description("Договор есть")]
+    {   [Description("есть")]
         Есть_договор,
-        [Description("Договора нет")]
+        [Description(" нет")]
         Нет_договора
     }
     public class Client

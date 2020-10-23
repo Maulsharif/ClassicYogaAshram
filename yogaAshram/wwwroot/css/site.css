@@ -813,9 +813,11 @@ body {
 }
 @media (max-width: 992px) {
     .dropdown-menu{
-        width: 50%;
+        width: 100%;
     }
     .dropdown-menu .dropdown-submenu{
         width: auto;
     }
 }
+
+

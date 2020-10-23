@@ -29,6 +29,7 @@ namespace yogaAshram.Controllers
         }
         
         //Подробная информация об активном клиенте
+        [Authorize]
         public IActionResult ClientСabinet(long clientId)
         {
             var count = _db.AttendanceCounts.ToList();
@@ -41,6 +42,7 @@ namespace yogaAshram.Controllers
         
         
         //Информация о клиентах по пропускам итд 
+        [Authorize]
         public IActionResult Index(int? membershipLeftDays, int? pageNumber, int? frozenTimes, double? dateFrozen, double? dateAbsent, long? coachId)
         {
             
@@ -65,7 +67,7 @@ namespace yogaAshram.Controllers
             {
                 long employeeId = GetUserId.GetCurrentUserId(this.HttpContext);
                 long branchId = _db.Branches.FirstOrDefault(b => b.AdminId == employeeId).Id;
-                if (branchId != null)
+                if (branchId != 0)
                     model = clients.Where(c => c.Client.Group.BranchId == branchId).AsQueryable();
                 
             }
@@ -195,6 +197,7 @@ namespace yogaAshram.Controllers
         
         
         //Добавление комментария пробникам 
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> WriteComment(long clientId, string sellerComment)
         {
@@ -221,7 +224,7 @@ namespace yogaAshram.Controllers
 
         
         //Таблица с пробниками 
-     
+        [Authorize]
         public async Task<IActionResult> Trials(DateTime time, long branchId)
         {
             if (User.IsInRole("admin"))
@@ -240,13 +243,10 @@ namespace yogaAshram.Controllers
         
         
         //Отметка посещаемости пробников
-       
+       [Authorize]
         [HttpGet]
         public IActionResult CheckAttendanceTrial(long groupId, long clientId, long branchId)
         {
-            
-            
-            //исправлено 
             TrialUsers user = _db.TrialUserses.FirstOrDefault(u => u.Id == clientId);
             
             List<TrialUsers> clients = _db.TrialUserses
@@ -258,6 +258,7 @@ namespace yogaAshram.Controllers
 
         
         //Отметка  посещаемости пробников
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> CheckAttendanceTrial(long[] arrayOfCustomerID, int[] arrayOfState,
             long HbranchId)
@@ -305,9 +306,7 @@ namespace yogaAshram.Controllers
           List<TrialUsers> trialUsersesLessons = _db.TrialUserses.Where(p => p.ClientId == Id).ToList();
           ViewBag.Lessons = trialUsersesLessons;
           TrialUsers client = trialUsersesLessons[0];
-            
-           
-            return View(client);
+          return View(client);
 
         }
         
@@ -827,11 +826,7 @@ namespace yogaAshram.Controllers
         //Проверка неотмеченных клиентов для уведомления
         public bool GetGroupsLink()
         {
-            bool res;
-            if (_db.Attendances.Where(p => p.IsChecked == false && p.Date == DateTime.Today).ToList().Count > 0)
-                return true;
-            else
-                return false;
+            return _db.Attendances.Where(p => p.IsChecked == false && p.Date == DateTime.Today).ToList().Count > 0;
         }
         
         

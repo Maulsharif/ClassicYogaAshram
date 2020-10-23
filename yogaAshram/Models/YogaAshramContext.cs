@@ -144,7 +144,7 @@ namespace yogaAshram.Models
                 new Sickness {Id = Convert.ToInt64(10005), Name = "гипертония"},
                 new Sickness {Id = Convert.ToInt64(10006), Name = "сахарный диабет"},
                 new Sickness {Id = Convert.ToInt64(10007), Name = "сердечная недостаточность"},
-                new Sickness {Id = Convert.ToInt64(10008), Name = "ожирение"}
+                new Sickness {Id = Convert.ToInt64(10008), Name = "лишний вес"}
             );
         }
     }
