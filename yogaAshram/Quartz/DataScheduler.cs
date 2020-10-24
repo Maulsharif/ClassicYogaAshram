@@ -16,7 +16,7 @@ namespace yogaAshram.Quartz
             IJobDetail jobDetail = JobBuilder.Create<DataJob>().Build();
             ITrigger trigger = TriggerBuilder.Create()
                 .WithIdentity("MailingTrigger", "default")
-                .WithSchedule(CronScheduleBuilder.DailyAtHourAndMinute(21, 00))
+                .WithSchedule(CronScheduleBuilder.DailyAtHourAndMinute(15, 00))
                 .Build();
 
             await scheduler.ScheduleJob(jobDetail, trigger);
