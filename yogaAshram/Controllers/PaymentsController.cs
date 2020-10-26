@@ -142,7 +142,7 @@ namespace yogaAshram.Controllers
                 model = new PaymentsIndexModelView()
                 {
                     Payments = await payments.Skip((pageTo - 1) * model.PaymentsLength)
-                            .Take(model.PaymentsLength).OrderBy(p => p.CateringDate).ToListAsync()
+                            .Take(model.PaymentsLength).OrderByDescending(p => p.CateringDate).ToListAsync()
                 };
             }
             else if (model.SortSelect != SortPaymentsBy.None)
