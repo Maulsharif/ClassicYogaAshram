@@ -30,7 +30,7 @@ namespace yogaAshram.Models.ModelViews
         public long? SicknessId { get; set; }
         public int CurrentPage { get; set; } = 1;
         public bool IsNextPage { get; set; } = false;
-        public int PaymentsLength { get; set; } = 20;
+        public int PaymentsLength { get; set; } = 15;
         public int CashSum { get; set; } = 0;
         public int CardSum { get; set; }
         public Branch Branch { get; set; }
