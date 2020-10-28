@@ -10,9 +10,9 @@
             <div class="modal-body" id="addBranchReload">
                <form asp-action="CreateBranch" asp-controller="Branch">
                                    
-                   <input name="name" type="text" class="form-control mb-2" placeholder="Название" required>
-                   <input name="info" type="text" class="form-control mb-2" placeholder="Информация о центре">
-                   <input name="address" type="text" class="form-control mb-2" placeholder="Адрес">
+                   <input id="name" name="name" type="text" class="form-control mb-2" placeholder="Название" required>
+                   <input id="info" name="info" type="text" class="form-control mb-2" placeholder="Информация о центре">
+                   <input id="address" name="address" type="text" class="form-control mb-2" placeholder="Адрес">
                    @if (@ViewBag.Admin.Count == 0)
                    {
                        <p>Не найдено ни одного администратора .</p>

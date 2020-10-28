@@ -38,7 +38,7 @@
         @if (User.IsInRole("chief"))
         {
             <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
-                <form class="form-inline my-2 my-lg-0">
+                <form class="form-inline my-2 my-lg-0" >
                     <input id="search" type="search" class="search-input search-form" placeholder="Поиск сотрудников" name="search" autocomplete="off" aria-label="Search">
                     <div class="popup-overlay" id="myModal">
                         <div class="popup-content">
@@ -81,7 +81,7 @@
                        
                         <div class="btn-group top-right-buttons">
                             <button class="btn dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <span class="text-white">@User.Identity.Name</span>
+                                <span id="chief" class="text-white">@User.Identity.Name</span>
                             </button>
                             <div class="dropdown-menu">
                                 <li class="dropdown-item cursor-p">

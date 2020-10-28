@@ -25,7 +25,7 @@
         </li>
 
         <li class="nav-item">
-            <a class="nav-link" type="button" data-toggle="modal" data-target="#addBranch" onclick="validateAdminIds()">Добавить центр</a>
+            <a class="nav-link" type="button" data-toggle="modal" data-target="#addBranch" id="createBranch" onclick="validateAdminIds()">Добавить центр</a>
         </li>
         <li class="nav-item">
             <a class="nav-link " asp-action="CreateGroup" asp-controller="Group">Создать группу</a>
@@ -55,7 +55,7 @@
             <div class="dropdown-menu" aria-labelledby="dropdown10">
                 @foreach (var b in branches)
                 {
-                    <a class="dropdown-item" asp-action="Index" asp-controller="Transactions" asp-route-branchId="@b.Id">@b.Name</a>
+                    <a id="branchId" class="dropdown-item" asp-action="Index" asp-controller="Transactions" asp-route-branchId="@b.Id">@b.Name</a>
                 }
             </div>
         </li>
@@ -77,7 +77,7 @@
             <a class="nav-link dropdown-toggle cursor-p" id="dropdown10" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Активные клиенты</a>
             <div class="dropdown-menu" aria-labelledby="dropdown10">
                 @foreach (var b in branches)
-                {<a class="dropdown-item" asp-action="RegularClients" asp-controller="Clients" asp-route-branchId="@b.Id">@b.Name</a>}
+                {<a id="branchId" class="dropdown-item" asp-action="RegularClients" asp-controller="Clients" asp-route-branchId="@b.Id">@b.Name</a>}
             </div>
         </li>
         <li class="nav-item dropdown">
