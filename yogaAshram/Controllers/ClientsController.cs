@@ -299,9 +299,10 @@ namespace yogaAshram.Controllers
 
             return RedirectToAction("Trials", "Clients", new {branchId = HbranchId});
         }
-
-       
-        public IActionResult ClientInfo(long Id)
+        
+        
+        [Authorize]
+       public IActionResult ClientInfo(long Id)
         {
           List<TrialUsers> trialUsersesLessons = _db.TrialUserses.Where(p => p.ClientId == Id).ToList();
           ViewBag.Lessons = trialUsersesLessons;
@@ -312,6 +313,7 @@ namespace yogaAshram.Controllers
         
         
         //Добавление нового клиента 
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> NewClientRegister(Schedule schedule, string newSikness)
         {
@@ -882,8 +884,7 @@ namespace yogaAshram.Controllers
         public async Task<IActionResult> ClientEdit(ClientsEditModelView model)
         {
             Client client = _db.Clients.FirstOrDefault(c => c.Id == model.Id);
-            if (ModelState.IsValid)
-            {
+         
                 if (client != null)
                 {
                     client.PhoneNumber = model.PhoneNumber;
@@ -896,10 +897,9 @@ namespace yogaAshram.Controllers
                     
                     _db.Entry(client).State = EntityState.Modified;
                     await _db.SaveChangesAsync();
-                    
-                    return RedirectToAction("ClientСabinet", new {clientId = client.Id});
-                }
-            }
+                   
+                 }
+            
             return RedirectToAction("ClientСabinet", new {clientId = client.Id});
         }
     }

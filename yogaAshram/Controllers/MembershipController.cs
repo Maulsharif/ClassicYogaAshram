@@ -248,8 +248,6 @@ namespace yogaAshram.Controllers
                 client.ClientType = ClientType.AreEngaged;
                 client.CreatorId = GetUserId.GetCurrentUserId(this.HttpContext);
                 client.HasMembership = true;
-                //изменили !! важно
-
                 Models.Group group = _db.Groups.FirstOrDefault(g => g.Id == groupId);
                 if (group != null && group.Clients.Count == 0)
                     group.Clients = new List<Client>()
@@ -311,8 +309,7 @@ namespace yogaAshram.Controllers
                 }
 
                 _db.Entry(client).State = EntityState.Modified;
-                await _db.SaveChangesAsync();
-                _db.Entry(group).State = EntityState.Modified;
+             _db.Entry(group).State = EntityState.Modified;
                 await _db.SaveChangesAsync();     
                 await Task.Delay(500);
                 return RedirectToAction("RegularClients", "Clients", new {branchId =client.Group.BranchId });
