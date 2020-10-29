@@ -1,7 +1,8 @@
 
 # ClassicYogaAshram
 Веб приложение с использованием CRM системы для внутреннего использования для студии Classical Yoga Ashram
- [Ссылка на тесты](https://github.com/iskander1234/YogaWebTwst)
+
+[Ссылка на тесты](https://github.com/iskander1234/YogaWebTwst)
 
 ## Используются:
 *	.NET Core SDK 3.1
