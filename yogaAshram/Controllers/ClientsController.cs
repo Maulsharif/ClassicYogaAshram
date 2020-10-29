@@ -598,6 +598,19 @@ namespace yogaAshram.Controllers
             await _db.SaveChangesAsync();
             return RedirectToAction("RegularClients", new{branchId=client.Group.BranchId});
         }
+        
+        [ValidateAntiForgeryToken]
+        [HttpPost]
+        public async Task<IActionResult> DeleteClient(long clientId)
+        {
+            Client client = _db.Clients.FirstOrDefault(c => c.Id == clientId);
+            if (client == null) return NotFound();
+            _db.Entry(client).State = EntityState.Deleted;
+            await _db.SaveChangesAsync();
+            return RedirectToAction("RegularClients", new{branchId=client.Group.BranchId});
+        }
+        
+        
 
         
         //Добавить клиента в группу WA
