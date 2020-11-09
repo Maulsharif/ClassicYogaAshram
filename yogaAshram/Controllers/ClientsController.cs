@@ -604,10 +604,24 @@ namespace yogaAshram.Controllers
         public async Task<IActionResult> DeleteClient(long clientId)
         {
             Client client = _db.Clients.FirstOrDefault(c => c.Id == clientId);
-            if (client == null) return NotFound();
+            if (client == null) 
+                return NotFound();
+            long branchId = client.Group.BranchId;
+            foreach (var attendance in _db.Attendances.Where(a => a.ClientId == clientId))
+            {
+                _db.Entry(attendance).State = EntityState.Deleted;
+            }
+            foreach (var membership in _db.ClientsMemberships.Where(a => a.ClientId == clientId))
+            {
+                _db.Entry(membership).State = EntityState.Deleted;
+            }
+            foreach (var comment in _db.Comments.Where(a => a.ClientId == clientId))
+            {
+                _db.Entry(comment).State = EntityState.Deleted;
+            }
             _db.Entry(client).State = EntityState.Deleted;
             await _db.SaveChangesAsync();
-            return RedirectToAction("RegularClients", new{branchId=client.Group.BranchId});
+            return RedirectToAction("RegularClients", new {branchId = branchId});
         }
         
         

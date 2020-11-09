@@ -46,15 +46,18 @@
 
 
             <button type="submit" class="col-md-3 ml-5 mt-4 btn-1 btn btn-outline-dark" id="btn_modal_window" style="margin-bottom: 30px">Редактировать</button>
+             <button class="col-md-3 ml-5 mt-4 btn-1 btn btn-outline-dark" data-toggle="modal" data-target="#deleteClient" style="margin-bottom: 30px">Удалить</button>
         </div>
+        <div class="m-2">
         @if (Model.Balance < 0)
         {
-            <p>Присутствует задолженность в размере @(-Model.Balance)</p>
+            <p class="text-center">Присутствует задолженность в размере <strong>@(-Model.Balance) тг.</strong></p>
         }
         else if (Model.Balance > 0)
         {
-            <p>Имеется переплата в размере @Model.Balance</p>
+            <p class="text-center">Имеется переплата в размере <strong>@Model.Balance тг.</strong></p>
         }
+        </div>
     </div>
 </div>
 
@@ -78,7 +81,7 @@
         <div class="form-group" id="table">
             <form class="was-validated" asp-action="ClientEdit" method="post">
                 <div class="form-group">
-                    <label asp-for="@Model.ClientsEditModelView.NameSurname">Имя Фамиля</label>
+                    <label asp-for="@Model.ClientsEditModelView.NameSurname">ФИО</label>
                     <input class="form-control" asp-for="NameSurname">
                     <span asp-validation-for="@Model.ClientsEditModelView.NameSurname"></span>
                 </div>
@@ -138,7 +141,29 @@
         </div>
     </div>
 </div>
+<div class="modal fade" id="deleteClient" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+       <h3 class="text-center">Удалить @Model.NameSurname?</h3>
+      </div>
+        <div class="modal-footer">
+            <form asp-action="DeleteClient" method="post">
+                <input type="hidden" value="@Model.Id" name="clientId">
+                <button type="submit" class="btn btn-primary">Да</button>
+            </form>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Нет</button>
 
+        </div>
+    </div>
+  </div>
+</div>
 @section Scripts{
 
     @{
