@@ -171,7 +171,7 @@ namespace yogaAshram.Controllers
                 {
                     if (!_db.Employees.Any(p => p.Role == "coach" && p.Id == model.CoachId))
                         return NotFound();
-                    payments = model.Payments.Where(p => p.ClientsMembership.Client.Group.CoachId == (long)model.CoachId).AsQueryable();
+                    payments = payments.Where(p => p.ClientsMembership.Client.Group.CoachId == (long)model.CoachId).AsQueryable();
                 }
                 model.Payments = await payments.ToListAsync();
             }
