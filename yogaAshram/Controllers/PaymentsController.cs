@@ -123,6 +123,7 @@ namespace yogaAshram.Controllers
                 if (branch is null)
                     return BadRequest();
                 branchId = branch.Id;
+                payments = payments.Where(p => p.ClientsMembership.Client.Group.BranchId == branchId);
             }
             else if (!_db.Branches.Any(p => p.Id == branchId))
                 return NotFound();
