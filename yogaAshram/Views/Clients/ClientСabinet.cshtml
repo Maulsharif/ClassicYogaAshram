@@ -46,7 +46,11 @@
 
 
             <button type="submit" class="col-md-3 ml-5 mt-4 btn-1 btn btn-outline-dark" id="btn_modal_window" style="margin-bottom: 30px">Редактировать</button>
-             <button class="col-md-3 ml-5 mt-4 btn-1 btn btn-outline-dark" data-toggle="modal" data-target="#deleteClient" style="margin-bottom: 30px">Удалить</button>
+            @if (User.IsInRole("chief") || User.IsInRole("manager"))
+            {
+                <button class="col-md-3 ml-5 mt-4 btn-1 btn btn-outline-dark" data-toggle="modal" data-target="#deleteClient" style="margin-bottom: 30px">Удалить</button>
+            }
+             
         </div>
         <div class="m-2">
         @if (Model.Balance < 0)
