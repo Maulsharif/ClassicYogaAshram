@@ -18,12 +18,13 @@ namespace yogaAshram.Models
     { 
         private readonly TelegramBotClient _bot;
         private readonly YogaAshramContext _db;
-     
+        private readonly string tgToken="1075772843:AAGgxPk2l_FG6EDEbNtn4pEDipx2vKHVVUI";
+        private readonly string grId="-1001160591311";
    
         public Bot(YogaAshramContext db)
         {
             _db = db;
-            _bot = new TelegramBotClient("1075772843:AAGgxPk2l_FG6EDEbNtn4pEDipx2vKHVVUI");
+            _bot = new TelegramBotClient(tgToken);
         }
        
       
@@ -33,7 +34,7 @@ namespace yogaAshram.Models
             List<Attendance> clients =
                 _db.Attendances.Where(p => p.IsChecked == false && p.Date == DateTime.Today).ToList();
       
-            string mes = "";
+            string mes =string.Empty;
             if (clients.Count() > 0)
             {
                 
@@ -51,12 +52,11 @@ namespace yogaAshram.Models
             }
 
            
-            _bot.SendTextMessageAsync("-1001160591311",mes);
+            _bot.SendTextMessageAsync(grId,mes);
             _bot.StartReceiving();
             while (true)
             {
-                Console.WriteLine("Bot is worked all right");
-                Thread.Sleep(int.MaxValue);
+               Thread.Sleep(int.MaxValue);
             }
         }
 
